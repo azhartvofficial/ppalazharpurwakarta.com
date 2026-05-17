@@ -452,7 +452,20 @@ export default function AdminDashboardPage() {
                   }}
                   className="sidebar-logout-btn"
                 >
-                  🚪 Keluar Sesi Admin
+                  <svg 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2.5" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    style={{ width: '18px', height: '18px', flexShrink: 0 }}
+                  >
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
+                  <span>Logout</span>
                 </button>
               </div>
             </div>
@@ -1377,14 +1390,15 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           background: rgba(239, 68, 68, 0.15);
           border: 1px solid #ef4444;
           color: #fca5a5;
-          padding: 0.35rem 0.8rem;
+          padding: 0.45rem 1rem;
           border-radius: 6px;
-          font-size: 0.65rem;
+          font-size: 0.72rem;
           font-weight: 800;
           cursor: pointer;
           display: flex;
           align-items: center;
-          gap: 6px;
+          justify-content: center;
+          gap: 8px;
           width: fit-content;
           transition: all 0.2s ease;
         }
