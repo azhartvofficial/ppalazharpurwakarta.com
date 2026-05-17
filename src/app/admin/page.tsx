@@ -395,14 +395,6 @@ export default function AdminDashboardPage() {
 
         {/* Sidebar */}
         <aside className={`sidebar ${sidebarOpen ? "mobile-open" : ""}`}>
-          <div className="sidebar-header">
-            <img 
-              src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999182/izzlhzwa6vvmkfa95eww.png" 
-              alt="Azwa Page Logo" 
-              className="sidebar-logo"
-            />
-            <span className="sidebar-subtitle">PENGURUS PANEL</span>
-          </div>
 
           <nav className="sidebar-nav">
             <button 
@@ -1150,12 +1142,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           border-right: 1px solid rgba(0, 0, 0, 0.05);
           display: flex;
           flex-direction: column;
-          padding: 2.5rem 1.5rem;
+          padding: 100px 1.5rem 2rem 1.5rem;
           position: sticky;
           top: 0;
           height: 100vh;
           box-sizing: border-box;
-          z-index: 10005;
+          z-index: 99;
         }
 
         .sidebar-header {
@@ -2143,16 +2135,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         }
 
         /* Responsive styling */
-        @media (min-width: 1200px) {
-          :global(.main-nav) {
-            left: 280px !important;
-            width: calc(100% - 280px) !important;
-          }
-          :global(.top-bar) {
-            left: 280px !important;
-            width: calc(100% - 280px) !important;
-          }
-        }
 
         @media (max-width: 1200px) {
           .dashboard-grid { grid-template-columns: 80px 1fr; }
