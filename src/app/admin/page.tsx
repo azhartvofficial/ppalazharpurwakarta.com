@@ -552,8 +552,112 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
+                  {/* Vercel Analytics Visualizer Section */}
+                  <div className="analytics-visualizer-card" style={{ marginBottom: '2rem' }}>
+                    <div className="visualizer-header">
+                      <h3>📊 Laporan & Analisis Pengunjung (Vercel Web Analytics)</h3>
+                      <span className="live-badge" style={{ backgroundColor: supabaseSyncActive ? 'rgba(76, 175, 80, 0.15)' : 'rgba(255, 140, 0, 0.15)', color: supabaseSyncActive ? '#4CAF50' : '#ff8c00' }}>
+                        ● {supabaseSyncActive ? 'SUPABASE SYNCED' : 'DEMO MODE ACTIVE'}
+                      </span>
+                    </div>
+                    <p className="visualizer-desc">
+                      Statistik kunjungan, demografi perangkat, dan performa pemuatan web dideteksi secara presisi melalui integrasi langsung <code>@vercel/analytics</code> di server CDN Vercel.
+                    </p>
+
+                    <div className="analytics-metrics-grid">
+                      <div className="metric-box">
+                        <span className="metric-box-label">Halaman Paling Sering Dikunjungi (Top Pages)</span>
+                        <div className="progress-list">
+                          {topPages.map((page, idx) => (
+                            <div key={idx} className="progress-item">
+                              <div className="progress-labels">
+                                <span>{page.path}</span>
+                                <span>{page.pct}% ({page.count} views)</span>
+                              </div>
+                              <div className="progress-bar-bg">
+                                <div className="progress-bar-fill" style={{ width: `${page.pct}%`, backgroundColor: idx === 0 ? '#002147' : idx === 1 ? '#ff8c00' : '#4CAF50' }}></div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="metric-box">
+                        <span className="metric-box-label">Sumber Lalu Lintas (Traffic Sources)</span>
+                        <div className="progress-list">
+                          {trafficSources.map((src, idx) => (
+                            <div key={idx} className="progress-item">
+                              <div className="progress-labels">
+                                <span>{src.source}</span>
+                                <span>{src.pct}%</span>
+                              </div>
+                              <div className="progress-bar-bg">
+                                <div className="progress-bar-fill" style={{ width: `${src.pct}%`, backgroundColor: idx === 0 ? '#002147' : idx === 1 ? '#ff8c00' : '#4CAF50' }}></div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="metric-box device-box">
+                        <span className="metric-box-label">Perangkat Pengunjung</span>
+                        <div className="device-stats">
+                          <div className="device-stat">
+                            <span className="device-stat-icon">📱</span>
+                            <span className="device-stat-val">{deviceStats.mobile}%</span>
+                            <span className="device-stat-name">Mobile</span>
+                          </div>
+                          <div className="device-stat">
+                            <span className="device-stat-icon">💻</span>
+                            <span className="device-stat-val">{deviceStats.desktop}%</span>
+                            <span className="device-stat-name">Desktop</span>
+                          </div>
+                          <div className="device-stat">
+                            <span className="device-stat-icon">📟</span>
+                            <span className="device-stat-val">{deviceStats.tablet}%</span>
+                            <span className="device-stat-name">Tablet</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="analytics-integration-info">
+                      <span className="info-icon">💡</span>
+                      <p>
+                        <strong>Sistem Pelacakan Vercel Analytics Berhasil Dipasang:</strong> Kami telah menyuntikkan komponen pelacakan <code>&lt;Analytics /&gt;</code> ke dalam <code>RootLayout</code> website. Seluruh data lalu lintas pengunjung yang sah akan direkam secara aman oleh Vercel. Untuk melihat laporan analitik lengkap yang mencakup rasio pentalan (*bounce rate*), durasi sesi, dan peta asal negara pengunjung, Anda dapat langsung masuk ke <strong>Vercel Dashboard Project</strong> Anda di panel resmi Vercel.
+                      </p>
+                    </div>
+
+                    {!supabaseSyncActive && (
+                      <div className="supabase-migration-alert" style={{ marginTop: '1.5rem', border: '1.5px dashed #ff8c00', background: '#fffbeb', padding: '1.25rem', borderRadius: '12px' }}>
+                        <span style={{ fontSize: '1.1rem', marginRight: '0.5rem' }}>⚡</span>
+                        <strong style={{ color: '#b45309', fontSize: '0.85rem' }}>Hubungkan Database Supabase Secara Riil:</strong>
+                        <p style={{ margin: '0.5rem 0', fontSize: '0.8rem', color: '#78350f', lineHeight: '1.5' }}>
+                          Untuk melacak kunjungan pengunjung Anda secara 100% riil tanpa simulasi, silakan buka <strong>Supabase Dashboard &gt; SQL Editor &gt; New Query</strong>, lalu salin dan jalankan perintah SQL berikut untuk membuat tabel tracking:
+                        </p>
+                        <pre style={{ background: '#1e293b', color: '#f8fafc', padding: '0.75rem', borderRadius: '8px', fontSize: '0.7rem', overflowX: 'auto', fontFamily: 'monospace', margin: '0.5rem 0' }}>
+{`CREATE TABLE public.visitor_logs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  session_id TEXT NOT NULL,
+  pathname TEXT NOT NULL,
+  referrer TEXT,
+  device_type TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.visitor_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public inserts" ON public.visitor_logs FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (true);`}
+                        </pre>
+                        <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#b45309', fontWeight: 'bold' }}>
+                          💡 Setelah query dijalankan, statistik kunjungan dari seluruh halaman website Anda akan terekam secara live!
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
                   {/* Control Panel Integrasi & Langganan */}
-                  <div className="control-panel-card">
+                  <div className="control-panel-card" style={{ marginBottom: '2rem' }}>
                     <div className="control-panel-header">
                       <h3>⚙️ Control Panel Integrasi & Langganan Layanan</h3>
                       <span className="account-badge">
@@ -682,110 +786,6 @@ export default function AdminDashboardPage() {
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Vercel Analytics Visualizer Section */}
-                  <div className="analytics-visualizer-card" style={{ marginBottom: '2rem' }}>
-                    <div className="visualizer-header">
-                      <h3>📊 Laporan & Analisis Pengunjung (Vercel Web Analytics)</h3>
-                      <span className="live-badge" style={{ backgroundColor: supabaseSyncActive ? 'rgba(76, 175, 80, 0.15)' : 'rgba(255, 140, 0, 0.15)', color: supabaseSyncActive ? '#4CAF50' : '#ff8c00' }}>
-                        ● {supabaseSyncActive ? 'SUPABASE SYNCED' : 'DEMO MODE ACTIVE'}
-                      </span>
-                    </div>
-                    <p className="visualizer-desc">
-                      Statistik kunjungan, demografi perangkat, dan performa pemuatan web dideteksi secara presisi melalui integrasi langsung <code>@vercel/analytics</code> di server CDN Vercel.
-                    </p>
-
-                    <div className="analytics-metrics-grid">
-                      <div className="metric-box">
-                        <span className="metric-box-label">Halaman Paling Sering Dikunjungi (Top Pages)</span>
-                        <div className="progress-list">
-                          {topPages.map((page, idx) => (
-                            <div key={idx} className="progress-item">
-                              <div className="progress-labels">
-                                <span>{page.path}</span>
-                                <span>{page.pct}% ({page.count} views)</span>
-                              </div>
-                              <div className="progress-bar-bg">
-                                <div className="progress-bar-fill" style={{ width: `${page.pct}%`, backgroundColor: idx === 0 ? '#002147' : idx === 1 ? '#ff8c00' : '#4CAF50' }}></div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="metric-box">
-                        <span className="metric-box-label">Sumber Lalu Lintas (Traffic Sources)</span>
-                        <div className="progress-list">
-                          {trafficSources.map((src, idx) => (
-                            <div key={idx} className="progress-item">
-                              <div className="progress-labels">
-                                <span>{src.source}</span>
-                                <span>{src.pct}%</span>
-                              </div>
-                              <div className="progress-bar-bg">
-                                <div className="progress-bar-fill" style={{ width: `${src.pct}%`, backgroundColor: idx === 0 ? '#002147' : idx === 1 ? '#ff8c00' : '#4CAF50' }}></div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="metric-box device-box">
-                        <span className="metric-box-label">Perangkat Pengunjung</span>
-                        <div className="device-stats">
-                          <div className="device-stat">
-                            <span className="device-stat-icon">📱</span>
-                            <span className="device-stat-val">{deviceStats.mobile}%</span>
-                            <span className="device-stat-name">Mobile</span>
-                          </div>
-                          <div className="device-stat">
-                            <span className="device-stat-icon">💻</span>
-                            <span className="device-stat-val">{deviceStats.desktop}%</span>
-                            <span className="device-stat-name">Desktop</span>
-                          </div>
-                          <div className="device-stat">
-                            <span className="device-stat-icon">📟</span>
-                            <span className="device-stat-val">{deviceStats.tablet}%</span>
-                            <span className="device-stat-name">Tablet</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="analytics-integration-info">
-                      <span className="info-icon">💡</span>
-                      <p>
-                        <strong>Sistem Pelacakan Vercel Analytics Berhasil Dipasang:</strong> Kami telah menyuntikkan komponen pelacakan <code>&lt;Analytics /&gt;</code> ke dalam <code>RootLayout</code> website. Seluruh data lalu lintas pengunjung yang sah akan direkam secara aman oleh Vercel. Untuk melihat laporan analitik lengkap yang mencakup rasio pentalan (*bounce rate*), durasi sesi, dan peta asal negara pengunjung, Anda dapat langsung masuk ke <strong>Vercel Dashboard Project</strong> Anda di panel resmi Vercel.
-                      </p>
-                    </div>
-
-                    {!supabaseSyncActive && (
-                      <div className="supabase-migration-alert" style={{ marginTop: '1.5rem', border: '1.5px dashed #ff8c00', background: '#fffbeb', padding: '1.25rem', borderRadius: '12px' }}>
-                        <span style={{ fontSize: '1.1rem', marginRight: '0.5rem' }}>⚡</span>
-                        <strong style={{ color: '#b45309', fontSize: '0.85rem' }}>Hubungkan Database Supabase Secara Riil:</strong>
-                        <p style={{ margin: '0.5rem 0', fontSize: '0.8rem', color: '#78350f', lineHeight: '1.5' }}>
-                          Untuk melacak kunjungan pengunjung Anda secara 100% riil tanpa simulasi, silakan buka <strong>Supabase Dashboard &gt; SQL Editor &gt; New Query</strong>, lalu salin dan jalankan perintah SQL berikut untuk membuat tabel tracking:
-                        </p>
-                        <pre style={{ background: '#1e293b', color: '#f8fafc', padding: '0.75rem', borderRadius: '8px', fontSize: '0.7rem', overflowX: 'auto', fontFamily: 'monospace', margin: '0.5rem 0' }}>
-{`CREATE TABLE public.visitor_logs (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  session_id TEXT NOT NULL,
-  pathname TEXT NOT NULL,
-  referrer TEXT,
-  device_type TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
-ALTER TABLE public.visitor_logs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public inserts" ON public.visitor_logs FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (true);`}
-                        </pre>
-                        <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#b45309', fontWeight: 'bold' }}>
-                          💡 Setelah query dijalankan, statistik kunjungan dari seluruh halaman website Anda akan terekam secara live!
-                        </p>
-                      </div>
-                    )}
                   </div>
 
                   {/* Activity and PPDB Preview */}
