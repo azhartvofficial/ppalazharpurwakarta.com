@@ -164,7 +164,7 @@ export default function Navbar() {
           {/* Mobile Utility + Toggle */}
           <div className="nav-mobile-actions">
             {isAdminLoggedIn ? (
-              <div className="navbar-profile-dropdown-wrapper" style={{ position: 'relative' }}>
+              <div className="navbar-profile-dropdown-wrapper" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', height: 'fit-content' }}>
                 <div 
                   className="navbar-profile-bubble-container"
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
@@ -407,7 +407,8 @@ export default function Navbar() {
 
         /* Glassmorphic Navbar Profile Dropdown Panel */
         .navbar-profile-dropdown-panel {
-          position: absolute;
+          position: absolute !important;
+          margin: 0 !important;
           top: calc(100% + 10px);
           right: 0;
           width: 230px;
