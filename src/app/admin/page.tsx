@@ -81,6 +81,7 @@ export default function AdminDashboardPage() {
   const [deviceStats, setDeviceStats] = useState({ mobile: 74, desktop: 22, tablet: 4 });
   const [supabaseSyncActive, setSupabaseSyncActive] = useState(false);
   const [loadingVisitors, setLoadingVisitors] = useState(false);
+  const [hoveredChartPoint, setHoveredChartPoint] = useState<number | null>(null);
   
   // Auth states
   const [user, setUser] = useState<any>(null);
@@ -563,6 +564,129 @@ export default function AdminDashboardPage() {
                     <p className="visualizer-desc">
                       Statistik kunjungan, demografi perangkat, dan performa pemuatan web dideteksi secara presisi melalui integrasi langsung <code>@vercel/analytics</code> di server CDN Vercel.
                     </p>
+
+                    {/* Interactive Glowing Statistical Line/Area Chart */}
+                    <div className="analytics-chart-container" style={{ margin: '1.5rem 0 2rem 0', background: 'rgba(255,255,255,0.65)', border: '1.5px solid rgba(0,33,71,0.06)', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 4px 25px rgba(0,0,0,0.02)' }}>
+                      <div className="chart-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                          <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Grafik Tren Lalu Lintas</span>
+                          <span style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--primary)', marginTop: '2px' }}>📊 Statistik Kunjungan Harian (7 Hari Terakhir)</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          <button className="badge-chart-range active">7D</button>
+                          <button className="badge-chart-range">30D</button>
+                        </div>
+                      </div>
+
+                      {/* SVG Responsive Statistical Area Chart */}
+                      <div className="svg-chart-wrapper" style={{ position: 'relative', width: '100%', overflowX: 'visible' }}>
+                        <svg viewBox="0 0 700 220" style={{ width: '100%', height: 'auto', display: 'block', overflow: 'visible' }}>
+                          {/* Grids and Axes */}
+                          <line x1="50" y1="40" x2="650" y2="40" stroke="rgba(0,33,71,0.04)" strokeDasharray="4 4" strokeWidth="1" />
+                          <line x1="50" y1="90" x2="650" y2="90" stroke="rgba(0,33,71,0.04)" strokeDasharray="4 4" strokeWidth="1" />
+                          <line x1="50" y1="140" x2="650" y2="140" stroke="rgba(0,33,71,0.04)" strokeDasharray="4 4" strokeWidth="1" />
+                          <line x1="50" y1="190" x2="650" y2="190" stroke="rgba(0,33,71,0.06)" strokeWidth="1.5" />
+
+                          {/* Y-axis Labels */}
+                          <text x="35" y="44" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">800</text>
+                          <text x="35" y="94" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">500</text>
+                          <text x="35" y="144" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">250</text>
+                          <text x="35" y="194" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">0</text>
+
+                          {/* Gradient Definitions */}
+                          <defs>
+                            <linearGradient id="chartGlowGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.2" />
+                              <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.0" />
+                            </linearGradient>
+                          </defs>
+
+                          {/* Filled Area */}
+                          <path
+                            d="M 50,142 L 150,123 L 250,129 L 350,106 L 450,87 L 550,78 L 650,44 L 650,190 L 50,190 Z"
+                            fill="url(#chartGlowGrad)"
+                            style={{ transition: 'all 0.3s ease' }}
+                          />
+
+                          {/* Core Stroke Line */}
+                          <path
+                            d="M 50,142 L 150,123 L 250,129 L 350,106 L 450,87 L 550,78 L 650,44"
+                            fill="none"
+                            stroke="var(--primary)"
+                            strokeWidth="3.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{ filter: 'drop-shadow(0px 6px 10px rgba(0,33,71,0.12))', transition: 'all 0.3s ease' }}
+                          />
+
+                          {/* X-axis labels and points */}
+                          {[
+                            { date: "11 Mei", visitors: 320, x: 50, y: 142 },
+                            { date: "12 Mei", visitors: 410, x: 150, y: 123 },
+                            { date: "13 Mei", visitors: 380, x: 250, y: 129 },
+                            { date: "14 Mei", visitors: 490, x: 350, y: 106 },
+                            { date: "15 Mei", visitors: 580, x: 450, y: 87 },
+                            { date: "16 Mei", visitors: 620, x: 550, y: 78 },
+                            { date: "17 Mei", visitors: 780, x: 650, y: 44 }
+                          ].map((pt, idx) => (
+                            <g key={idx}>
+                              {/* Vertical Guide Line on Hover */}
+                              {hoveredChartPoint === idx && (
+                                <line x1={pt.x} y1="30" x2={pt.x} y2="190" stroke="rgba(230,126,34,0.3)" strokeDasharray="3 3" strokeWidth="1.5" />
+                              )}
+
+                              {/* Interactive Dot */}
+                              <circle
+                                cx={pt.x}
+                                cy={pt.y}
+                                r={hoveredChartPoint === idx ? "7" : "5"}
+                                fill={hoveredChartPoint === idx ? "var(--secondary)" : "white"}
+                                stroke="var(--primary)"
+                                strokeWidth="3"
+                                style={{ cursor: 'pointer', transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}
+                                onMouseEnter={() => setHoveredChartPoint(idx)}
+                                onMouseLeave={() => setHoveredChartPoint(null)}
+                              />
+
+                              {/* X Label */}
+                              <text x={pt.x} y="212" fill="#64748b" fontSize="10" fontWeight="800" textAnchor="middle">
+                                {pt.date}
+                              </text>
+                            </g>
+                          ))}
+                        </svg>
+
+                        {/* Interactive Tooltip Bubble */}
+                        {hoveredChartPoint !== null && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: `${[142, 123, 129, 106, 87, 78, 44][hoveredChartPoint] - 40}px`,
+                              left: `${([50, 150, 250, 350, 450, 550, 650][hoveredChartPoint] / 700) * 100}%`,
+                              transform: 'translateX(-50%)',
+                              background: '#0f172a',
+                              color: 'white',
+                              padding: '6px 12px',
+                              borderRadius: '8px',
+                              fontSize: '0.72rem',
+                              fontWeight: 900,
+                              whiteSpace: 'nowrap',
+                              boxShadow: '0 8px 24px rgba(15,23,42,0.2)',
+                              pointerEvents: 'none',
+                              zIndex: 10,
+                              border: '1px solid rgba(255,255,255,0.1)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              transition: 'all 0.15s ease'
+                            }}
+                          >
+                            <span style={{ color: '#10b981' }}>📈</span>
+                            <span>{[320, 410, 380, 490, 580, 620, 780][hoveredChartPoint]} Pengunjung</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
                     <div className="analytics-metrics-grid">
                       <div className="metric-box">
@@ -2206,6 +2330,29 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
           margin-top: 2rem;
           border: 1.5px solid #f1f5f9;
+        }
+
+        .badge-chart-range {
+          font-size: 0.65rem;
+          font-weight: 800;
+          padding: 0.3rem 0.7rem;
+          border-radius: 50px;
+          border: 1.5px solid rgba(0, 33, 71, 0.1);
+          color: #64748b;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          background: transparent;
+        }
+
+        .badge-chart-range.active {
+          background: var(--primary) !important;
+          color: white !important;
+          border-color: var(--primary) !important;
+        }
+
+        .badge-chart-range:hover:not(.active) {
+          background: rgba(0, 33, 71, 0.05);
+          color: var(--primary);
         }
 
         .visualizer-header {
