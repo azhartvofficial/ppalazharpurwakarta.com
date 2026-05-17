@@ -637,6 +637,35 @@ export default function AdminDashboardPage() {
                             <span>Email Terdaftar</span>
                             <strong>danishalzam8002@gmail.com</strong>
                           </div>
+                          <div style={{ marginTop: '0.8rem' }}>
+                            <a 
+                              href="https://play.google.com/store/account/subscriptions"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn-renew-subscription"
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px',
+                                width: '100%',
+                                padding: '0.55rem',
+                                borderRadius: '10px',
+                                border: '1px solid rgba(255, 140, 0, 0.3)',
+                                background: 'rgba(255, 140, 0, 0.08)',
+                                color: '#ff8c00',
+                                fontWeight: 800,
+                                fontSize: '0.7rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                textDecoration: 'none',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.5px'
+                              }}
+                            >
+                              💳 Perpanjang Langganan
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1520,6 +1549,14 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         .detail-row strong {
           color: #334155;
           text-align: right;
+        }
+
+        .btn-renew-subscription:hover {
+          background: #ff8c00 !important;
+          color: white !important;
+          border-color: #ff8c00 !important;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(255, 140, 0, 0.25);
         }
 
         .content-header {
