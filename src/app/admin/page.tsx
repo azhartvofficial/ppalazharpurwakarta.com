@@ -43,6 +43,7 @@ export default function AdminDashboardPage() {
   // Real-time visitor states
   const [totalVisitors, setTotalVisitors] = useState(1482);
   const [activeVisitors, setActiveVisitors] = useState(12);
+  const [todayVisitors, setTodayVisitors] = useState(148);
   const [topPages, setTopPages] = useState<any[]>([
     { path: "🏠 / (Beranda Utama)", pct: 68, count: 1008 },
     { path: "📝 /pendaftaran (PPDB)", pct: 22, count: 326 },
@@ -170,6 +171,16 @@ export default function AdminDashboardPage() {
             .map(d => d.session_id)
         ));
         setActiveVisitors(Math.max(activeSessions.length, 1));
+
+        // Calculate unique visitors today
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        const todaySessions = Array.from(new Set(
+          data
+            .filter(d => new Date(d.created_at) >= startOfToday)
+            .map(d => d.session_id)
+        ));
+        setTodayVisitors(Math.max(todaySessions.length, 1));
 
         // 3. Top Pages
         const pathCounts: Record<string, number> = {};
@@ -462,22 +473,22 @@ export default function AdminDashboardPage() {
                   <div className="summary-grid">
                     <div className="summary-card navy">
                       <div className="card-top">
-                        <span className="card-label">TOTAL PENGUNJUNG WEBSITE</span>
+                        <span className="card-label">PENGUNJUNG AKTIF</span>
                         <span className="card-icon">🌐</span>
                       </div>
-                      <span className="card-value">{totalVisitors.toLocaleString()}</span>
+                      <span className="card-value">{activeVisitors}</span>
                       <span className="card-trend">
-                        {supabaseSyncActive ? `🟢 ${activeVisitors} Aktif Saat Ini (Supabase)` : `🟢 ${activeVisitors} Aktif Saat Ini (Vercel Live)`}
+                        🟢 Total: {totalVisitors.toLocaleString()} Pengunjung Aktif
                       </span>
                     </div>
 
                     <div className="summary-card orange">
                       <div className="card-top">
-                        <span className="card-label">ARTIKEL BERITA</span>
-                        <span className="card-icon">📰</span>
+                        <span className="card-label">PENGUNJUNG HARI INI</span>
+                        <span className="card-icon">📈</span>
                       </div>
-                      <span className="card-value">{totalBerita}</span>
-                      <span className="card-trend">📝 {news.filter(n => n.status === "Published").length} Terbit, {news.filter(n => n.status === "Draft").length} Draf</span>
+                      <span className="card-value">{todayVisitors.toLocaleString()}</span>
+                      <span className="card-trend">🟢 Terdeteksi Live (Hari Ini)</span>
                     </div>
 
                     <div className="summary-card green">
