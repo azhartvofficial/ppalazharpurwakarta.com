@@ -82,6 +82,16 @@ export default function AdminDashboardPage() {
   const [supabaseSyncActive, setSupabaseSyncActive] = useState(false);
   const [loadingVisitors, setLoadingVisitors] = useState(false);
   const [hoveredChartPoint, setHoveredChartPoint] = useState<number | null>(null);
+  const [chartMaxVal, setChartMaxVal] = useState<number>(800);
+  const [chartData, setChartData] = useState<any[]>([
+    { date: "11 Mei", visitors: 320, x: 50, y: 142 },
+    { date: "12 Mei", visitors: 410, x: 150, y: 123 },
+    { date: "13 Mei", visitors: 380, x: 250, y: 129 },
+    { date: "14 Mei", visitors: 490, x: 350, y: 106 },
+    { date: "15 Mei", visitors: 580, x: 450, y: 87 },
+    { date: "16 Mei", visitors: 620, x: 550, y: 78 },
+    { date: "17 Mei", visitors: 780, x: 650, y: 44 }
+  ]);
   
   // Auth states
   const [user, setUser] = useState<any>(null);
@@ -271,6 +281,47 @@ export default function AdminDashboardPage() {
           desktop: Math.round((devCounts.Desktop / devTotal) * 100) || 22,
           tablet: Math.round((devCounts.Tablet / devTotal) * 100) || 4
         });
+
+        // 6. Calculate dynamic chart data from visitor_logs database!
+        const last7DaysList = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const dateStr = d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+          
+          const dayStart = new Date(d);
+          dayStart.setHours(0, 0, 0, 0);
+          const dayEnd = new Date(d);
+          dayEnd.setHours(23, 59, 59, 999);
+          
+          const dayLogs = data.filter(log => {
+            const logDate = new Date(log.created_at);
+            return logDate >= dayStart && logDate <= dayEnd;
+          });
+          
+          const daySessions = Array.from(new Set(dayLogs.map(l => l.session_id))).length;
+          
+          last7DaysList.push({
+            date: dateStr,
+            visitors: daySessions
+          });
+        }
+
+        const maxVal = Math.max(...last7DaysList.map(item => item.visitors), 10);
+        const scaledMax = Math.ceil(maxVal / 10) * 10;
+        setChartMaxVal(scaledMax);
+
+        const activeChartPoints = last7DaysList.map((item, idx) => {
+          const x = 50 + idx * 100;
+          const y = 190 - ((item.visitors / scaledMax) * 150);
+          return {
+            date: item.date,
+            visitors: item.visitors,
+            x,
+            y
+          };
+        });
+        setChartData(activeChartPoints);
       }
     } catch (err) {
       console.warn("Table visitor_logs not available or setup in Supabase yet. Using beautiful realistic mock data.");
@@ -375,6 +426,9 @@ export default function AdminDashboardPage() {
     if (!confirm("Hapus foto dari galeri dokumentasi?")) return;
     setPhotos(prev => prev.filter(p => p.id !== id));
   };
+
+  const strokePath = chartData.map((pt, idx) => `${idx === 0 ? 'M' : 'L'} ${pt.x},${pt.y}`).join(' ');
+  const areaPath = chartData.length > 0 ? `${strokePath} L ${chartData[chartData.length - 1].x},190 L ${chartData[0].x},190 Z` : '';
 
   return (
     <>
@@ -588,9 +642,9 @@ export default function AdminDashboardPage() {
                           <line x1="50" y1="190" x2="650" y2="190" stroke="rgba(0,33,71,0.06)" strokeWidth="1.5" />
 
                           {/* Y-axis Labels */}
-                          <text x="35" y="44" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">800</text>
-                          <text x="35" y="94" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">500</text>
-                          <text x="35" y="144" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">250</text>
+                          <text x="35" y="44" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">{chartMaxVal}</text>
+                          <text x="35" y="94" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">{Math.round(chartMaxVal * 0.625)}</text>
+                          <text x="35" y="144" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">{Math.round(chartMaxVal * 0.3125)}</text>
                           <text x="35" y="194" fill="#94a3b8" fontSize="10" fontWeight="800" textAnchor="end">0</text>
 
                           {/* Gradient Definitions */}
@@ -602,33 +656,29 @@ export default function AdminDashboardPage() {
                           </defs>
 
                           {/* Filled Area */}
-                          <path
-                            d="M 50,142 L 150,123 L 250,129 L 350,106 L 450,87 L 550,78 L 650,44 L 650,190 L 50,190 Z"
-                            fill="url(#chartGlowGrad)"
-                            style={{ transition: 'all 0.3s ease' }}
-                          />
+                          {areaPath && (
+                            <path
+                              d={areaPath}
+                              fill="url(#chartGlowGrad)"
+                              style={{ transition: 'all 0.3s ease' }}
+                            />
+                          )}
 
                           {/* Core Stroke Line */}
-                          <path
-                            d="M 50,142 L 150,123 L 250,129 L 350,106 L 450,87 L 550,78 L 650,44"
-                            fill="none"
-                            stroke="var(--primary)"
-                            strokeWidth="3.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            style={{ filter: 'drop-shadow(0px 6px 10px rgba(0,33,71,0.12))', transition: 'all 0.3s ease' }}
-                          />
+                          {strokePath && (
+                            <path
+                              d={strokePath}
+                              fill="none"
+                              stroke="var(--primary)"
+                              strokeWidth="3.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              style={{ filter: 'drop-shadow(0px 6px 10px rgba(0,33,71,0.12))', transition: 'all 0.3s ease' }}
+                            />
+                          )}
 
                           {/* X-axis labels and points */}
-                          {[
-                            { date: "11 Mei", visitors: 320, x: 50, y: 142 },
-                            { date: "12 Mei", visitors: 410, x: 150, y: 123 },
-                            { date: "13 Mei", visitors: 380, x: 250, y: 129 },
-                            { date: "14 Mei", visitors: 490, x: 350, y: 106 },
-                            { date: "15 Mei", visitors: 580, x: 450, y: 87 },
-                            { date: "16 Mei", visitors: 620, x: 550, y: 78 },
-                            { date: "17 Mei", visitors: 780, x: 650, y: 44 }
-                          ].map((pt, idx) => (
+                          {chartData.map((pt, idx) => (
                             <g key={idx}>
                               {/* Vertical Guide Line on Hover */}
                               {hoveredChartPoint === idx && (
@@ -657,12 +707,12 @@ export default function AdminDashboardPage() {
                         </svg>
 
                         {/* Interactive Tooltip Bubble */}
-                        {hoveredChartPoint !== null && (
+                        {hoveredChartPoint !== null && chartData[hoveredChartPoint] && (
                           <div
                             style={{
                               position: 'absolute',
-                              top: `${[142, 123, 129, 106, 87, 78, 44][hoveredChartPoint] - 40}px`,
-                              left: `${([50, 150, 250, 350, 450, 550, 650][hoveredChartPoint] / 700) * 100}%`,
+                              top: `${chartData[hoveredChartPoint].y - 40}px`,
+                              left: `${(chartData[hoveredChartPoint].x / 700) * 100}%`,
                               transform: 'translateX(-50%)',
                               background: '#0f172a',
                               color: 'white',
@@ -682,7 +732,7 @@ export default function AdminDashboardPage() {
                             }}
                           >
                             <span style={{ color: '#10b981' }}>📈</span>
-                            <span>{[320, 410, 380, 490, 580, 620, 780][hoveredChartPoint]} Pengunjung</span>
+                            <span>{chartData[hoveredChartPoint].visitors} Pengunjung</span>
                           </div>
                         )}
                       </div>
