@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 const Preloader = () => {
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
-  const [active, setActive] = useState(false); // Controls opacity entrance/exit
+  const [active, setActive] = useState(true); // Set to true by default to prevent layout/skeleton flash during initial load
 
   useEffect(() => {
     // Trigger on EVERY mount (which happens on refresh/initial load)
