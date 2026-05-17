@@ -505,6 +505,19 @@ export default function AdminDashboardPage() {
                 >
                   {/* Summary Cards */}
                   <div className="summary-grid">
+                    <div className={`summary-card ${maintenanceMode ? 'red' : 'green'}`}>
+                      <div className="card-top">
+                        <span className="card-label">STATUS WEB</span>
+                        <span className="card-icon">⚙️</span>
+                      </div>
+                      <span className="card-value" style={{ fontSize: '1.8rem', fontWeight: 800, color: maintenanceMode ? '#ef4444' : '#10b981' }}>
+                        {maintenanceMode ? "MAINTENANCE" : "PUBLISH (LIVE)"}
+                      </span>
+                      <span className="card-trend" style={{ color: maintenanceMode ? '#ef4444' : '#10b981', fontWeight: 700 }}>
+                        {maintenanceMode ? "🔴 Akses Pengunjung Dibatasi" : "🟢 Diakses Secara Publik"}
+                      </span>
+                    </div>
+
                     <div className="summary-card navy">
                       <div className="card-top">
                         <span className="card-label">PENGUNJUNG AKTIF</span>
@@ -524,19 +537,6 @@ export default function AdminDashboardPage() {
                       <span className="card-value">{formatNumber(todayVisitors)}</span>
                       <span className="card-trend">🟢 Terdeteksi Live (Hari Ini)</span>
                     </div>
-
-                    <div className={`summary-card ${maintenanceMode ? 'red' : 'green'}`}>
-                      <div className="card-top">
-                        <span className="card-label">STATUS WEB</span>
-                        <span className="card-icon">⚙️</span>
-                      </div>
-                      <span className="card-value" style={{ fontSize: '1.8rem', fontWeight: 800, color: maintenanceMode ? '#ef4444' : '#10b981' }}>
-                        {maintenanceMode ? "MAINTENANCE" : "PUBLISH (LIVE)"}
-                      </span>
-                      <span className="card-trend" style={{ color: maintenanceMode ? '#ef4444' : '#10b981', fontWeight: 700 }}>
-                        {maintenanceMode ? "🔴 Akses Pengunjung Dibatasi" : "🟢 Diakses Secara Publik"}
-                      </span>
-                    </div>
                   </div>
 
                   {/* Control Panel Integrasi & Langganan */}
@@ -555,7 +555,7 @@ export default function AdminDashboardPage() {
                       {/* Card 1: Supabase */}
                       <div className="integration-card">
                         <div className="integration-card-header">
-                          <span className="integration-logo-text">⚡ Supabase Cloud</span>
+                          <span className="integration-logo-text">⚡ Supabase</span>
                           <span className="status-pill green">🟢 AKTIF</span>
                         </div>
                         <div className="integration-details">
@@ -577,7 +577,7 @@ export default function AdminDashboardPage() {
                       {/* Card 2: Cloudinary */}
                       <div className="integration-card">
                         <div className="integration-card-header">
-                          <span className="integration-logo-text">📸 Cloudinary Media</span>
+                          <span className="integration-logo-text">📸 Cloudinary</span>
                           <span className="status-pill green">🟢 AKTIF</span>
                         </div>
                         <div className="integration-details">
@@ -599,7 +599,7 @@ export default function AdminDashboardPage() {
                       {/* Card 3: Vercel */}
                       <div className="integration-card">
                         <div className="integration-card-header">
-                          <span className="integration-logo-text">🔺 Vercel Hosting</span>
+                          <span className="integration-logo-text">🔺 Vercel</span>
                           <span className="status-pill green">🟢 AKTIF</span>
                         </div>
                         <div className="integration-details">
