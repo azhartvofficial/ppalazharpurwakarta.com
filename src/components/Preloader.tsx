@@ -28,7 +28,24 @@ const Preloader = () => {
   if (!loading) return null;
 
   return (
-    <div className={`preloader-overlay ${active ? "active" : ""}`}>
+    <div 
+      className={`preloader-overlay ${active ? "active" : ""}`}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "#002147",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 99999,
+        opacity: active ? 1 : 0,
+        visibility: active ? "visible" : "hidden",
+        transition: active ? "none" : "opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s"
+      }}
+    >
       <div className="loader-content">
         <div className="logo-wrapper">
           <div className="balls-container">
