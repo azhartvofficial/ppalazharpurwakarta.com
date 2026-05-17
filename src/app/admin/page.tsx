@@ -99,6 +99,18 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     async function checkUser() {
       try {
+        // 1. Check if there is an active session stored in localStorage (bypassed login)
+        const localSession = localStorage.getItem('admin_session');
+        if (localSession) {
+          const parsed = JSON.parse(localSession);
+          setUser(parsed);
+          setIsAdmin(true);
+          setDemoMode(false);
+          setLoadingAuth(false);
+          return;
+        }
+
+        // 2. Fallback to normal Supabase check
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           setUser(user);
