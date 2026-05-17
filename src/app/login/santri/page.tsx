@@ -28,7 +28,8 @@ export default function SantriLoginPage() {
               height={70} 
               style={{ objectFit: 'contain' }}
               priority
-            />
+              unoptimized
+ />
           </div>
           
           <h2 className="card-subtitle">LOGIN SANTRI</h2>

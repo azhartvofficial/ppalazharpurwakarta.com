@@ -28,7 +28,8 @@ export default function LoginPage() {
               height={80} 
               style={{ objectFit: 'contain' }}
               priority
-            />
+              unoptimized
+ />
           </div>
           
           <h2 className="card-subtitle">LOGIN</h2>

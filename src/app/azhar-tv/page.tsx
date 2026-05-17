@@ -139,7 +139,8 @@ export default function AzharTvPage() {
                 whileHover={{ y: -10 }}
               >
                 <div className="thumb-container">
-                  <Image src={vid.thumbnail} alt={vid.title} fill style={{ objectFit: 'cover' }} />
+                  <Image src={vid.thumbnail} alt={vid.title} fill style={{ objectFit: 'cover' }} unoptimized
+ />
                   <div className="play-overlay">
                     <div className="play-icon">▶</div>
                   </div>
@@ -196,7 +197,8 @@ export default function AzharTvPage() {
                   width={300} 
                   height={200} 
                   className="gallery-img"
-                />
+                  unoptimized
+ />
               </div>
             ))}
           </div>

@@ -92,7 +92,8 @@ export default function PendiriPage() {
                   width={450} 
                   height={550} 
                   className="img-fluid"
-                />
+                  unoptimized
+ />
               </div>
             </motion.div>
           </div>
@@ -114,7 +115,8 @@ export default function PendiriPage() {
                   width={450} 
                   height={550} 
                   className="img-fluid"
-                />
+                  unoptimized
+ />
               </div>
             </motion.div>
             <motion.div 

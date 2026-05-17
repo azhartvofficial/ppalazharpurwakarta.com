@@ -110,7 +110,8 @@ const GlobalAlumni = () => {
                       height={85} 
                       className="uni-img" 
                       loading="lazy"
-                    />
+                      unoptimized
+ />
                   </motion.div>
                 </div>
               );
@@ -126,7 +127,8 @@ const GlobalAlumni = () => {
               width={160} 
               height={160} 
               className="hub-logo-img"
-            />
+              unoptimized
+ />
           </div>
         </div>
 
