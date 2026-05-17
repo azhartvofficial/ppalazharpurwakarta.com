@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import localFont from "next/font/local";
+import Navbar from "@/components/Navbar";
 
 const frizQuadrata = localFont({
   src: "../../Font/friz-quadrata-std-medium-5870338ec7ef8.otf",
@@ -48,6 +49,25 @@ export default function AdminDashboardPage() {
   const [totalVisitors, setTotalVisitors] = useState(1482);
   const [activeVisitors, setActiveVisitors] = useState(12);
   const [todayVisitors, setTodayVisitors] = useState(148);
+
+  // Maintenance states
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedMaintenance = localStorage.getItem('web_maintenance_mode') === 'true';
+      setMaintenanceMode(savedMaintenance);
+    }
+  }, []);
+
+  const toggleMaintenanceMode = () => {
+    const nextState = !maintenanceMode;
+    setMaintenanceMode(nextState);
+    localStorage.setItem('web_maintenance_mode', String(nextState));
+    window.dispatchEvent(new Event('storage'));
+    window.dispatchEvent(new Event('maintenanceChange'));
+  };
+
   const [topPages, setTopPages] = useState<any[]>([
     { path: "🏠 / (Beranda Utama)", pct: 68, count: 1008 },
     { path: "📝 /pendaftaran (PPDB)", pct: 22, count: 326 },
@@ -356,7 +376,9 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <main className="dashboard-layout">
+    <>
+      <Navbar />
+      <main className="dashboard-layout">
       {/* Top Banner (Demo Mode Alert) */}
       {demoMode && (
         <div className="demo-banner">
@@ -507,13 +529,37 @@ export default function AdminDashboardPage() {
                       <span className="card-trend">🟢 Terdeteksi Live (Hari Ini)</span>
                     </div>
 
-                    <div className="summary-card green">
+                    <div className={`summary-card ${maintenanceMode ? 'red' : 'green'}`}>
                       <div className="card-top">
-                        <span className="card-label">GALERI ALUMNI</span>
-                        <span className="card-icon">📸</span>
+                        <span className="card-label">STATUS WEB</span>
+                        <span className="card-icon">⚙️</span>
                       </div>
-                      <span className="card-value">{totalFoto}</span>
-                      <span className="card-trend">🖼️ Tersimpan aman di Cloudinary</span>
+                      <span className="card-value" style={{ fontSize: '1.8rem', fontWeight: 800, color: maintenanceMode ? '#ef4444' : '#10b981' }}>
+                        {maintenanceMode ? "MAINTENANCE" : "PUBLISH (LIVE)"}
+                      </span>
+                      <div style={{ marginTop: '0.8rem' }}>
+                        <button 
+                          onClick={toggleMaintenanceMode}
+                          className="btn-status-toggle"
+                          style={{
+                            width: '100%',
+                            padding: '0.6rem',
+                            borderRadius: '10px',
+                            border: 'none',
+                            background: maintenanceMode ? '#10b981' : '#ef4444',
+                            color: 'white',
+                            fontWeight: 800,
+                            fontSize: '0.78rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px'
+                          }}
+                        >
+                          {maintenanceMode ? "🟢 Aktifkan Live" : "🔴 Aktifkan Maintenance"}
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -1043,11 +1089,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
       <style jsx>{`
         .dashboard-layout {
-          min-height: 100vh;
+          min-height: calc(100vh - 90px);
           background-color: #f1f5f9;
           color: #0f172a;
           font-family: 'Inter', sans-serif;
           overflow-x: hidden;
+          margin-top: 90px;
         }
 
         .demo-banner {
@@ -1059,7 +1106,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           justify-content: space-between;
           align-items: center;
           position: sticky;
-          top: 0;
+          top: 90px;
           z-index: 1000;
           box-shadow: 0 4px 15px rgba(255, 140, 0, 0.15);
         }
@@ -1095,8 +1142,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           flex-direction: column;
           padding: 2rem 1.5rem;
           position: sticky;
-          top: 0;
-          height: 100vh;
+          top: 90px;
+          height: calc(100vh - 90px);
           box-sizing: border-box;
         }
 
@@ -1335,6 +1382,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         .summary-card.navy::before { background: #002147; }
         .summary-card.orange::before { background: #ff8c00; }
         .summary-card.green::before { background: #10b981; }
+        .summary-card.red::before { background: #ef4444; }
 
         .card-top {
           display: flex;
@@ -2187,5 +2235,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         }
       `}</style>
     </main>
+    </>
   );
 }
