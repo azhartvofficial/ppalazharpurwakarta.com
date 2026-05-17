@@ -213,11 +213,27 @@ export default function Navbar() {
               </div>
             </Link>
 
-            <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-              <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
-              <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
-              <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
-            </button>
+            <div className="menu-toggle-wrapper">
+              <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+                <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
+                <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
+                <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
+              </button>
+              <AnimatePresence>
+                {!menuOpen && (
+                  <motion.div 
+                    className="menu-helper-bubble"
+                    initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, x: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <span className="helper-pulse-dot"></span>
+                    <span>Buka Menu Lainnya</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>
@@ -702,6 +718,8 @@ export default function Navbar() {
         @media (max-width: 992px) {
           .main-nav {
             padding: 0.5rem 0;
+            backdrop-filter: none !important;
+            background: rgba(255, 255, 255, 0.98) !important;
           }
           
           .nav-container {
@@ -710,48 +728,177 @@ export default function Navbar() {
             align-items: center;
           }
 
-          .menu-toggle { display: flex; }
-          .nav-links {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 80%;
-            height: 100vh;
-            background: white;
+          @keyframes pulse-glow-left {
+            0% {
+              box-shadow: 0 8px 24px rgba(0, 33, 71, 0.3), 0 0 8px rgba(230, 126, 34, 0.3);
+              transform: translateY(0);
+            }
+            100% {
+              box-shadow: 0 12px 32px rgba(0, 33, 71, 0.45), 0 0 20px rgba(230, 126, 34, 0.6);
+              transform: translateY(-5px);
+            }
+          }
+
+          @keyframes dot-pulse {
+            0% {
+              transform: scale(0.95);
+              box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            }
+            70% {
+              transform: scale(1);
+              box-shadow: 0 0 0 6px rgba(76, 175, 80, 0);
+            }
+            100% {
+              transform: scale(0.95);
+              box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+          }
+
+          .menu-toggle {
+            display: flex !important;
+            position: fixed !important;
+            bottom: 25px !important;
+            left: 25px !important;
+            right: auto !important;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 8px 32px rgba(0, 33, 71, 0.3), 0 0 15px rgba(230, 126, 34, 0.45) !important;
+            border-radius: 50% !important;
+            width: 60px !important;
+            height: 60px !important;
+            z-index: 99999 !important;
+            justify-content: center !important;
+            align-items: center !important;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            animation: pulse-glow-left 2s infinite alternate !important;
             flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start; /* Rata kiri */
-            padding: 6rem 2.5rem;
-            gap: 1rem;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-            transform: translateX(100%);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            z-index: 1000;
+            gap: 5px;
+            padding: 0 !important;
+          }
+
+          .menu-toggle:hover {
+            transform: scale(1.1) !important;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%) !important;
+          }
+
+          .menu-toggle:active {
+            transform: scale(0.9) !important;
+          }
+
+          :global(.menu-helper-bubble) {
+            position: fixed !important;
+            bottom: 36px !important;
+            left: 95px !important;
+            right: auto !important;
+            background: rgba(0, 33, 71, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            color: white !important;
+            padding: 8px 16px !important;
+            border-radius: 50px !important;
+            font-size: 0.72rem !important;
+            font-weight: 800 !important;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 8px !important;
+            z-index: 99999 !important;
+            box-shadow: 0 4px 15px rgba(0, 33, 71, 0.25) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            white-space: nowrap !important;
+            pointer-events: none !important;
+          }
+
+          :global(.helper-pulse-dot) {
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            animation: dot-pulse 1.5s infinite;
+          }
+
+          .bar {
+            background: white !important;
+            height: 3px !important;
+            width: 22px !important;
+            border-radius: 4px !important;
+            margin: 0 !important;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          }
+
+          .bar.active:nth-child(1) { transform: translateY(8px) rotate(45deg) !important; }
+          .bar.active:nth-child(2) { opacity: 0 !important; }
+          .bar.active:nth-child(3) { transform: translateY(-8px) rotate(-45deg) !important; }
+
+          .nav-links {
+            position: fixed !important;
+            bottom: 100px !important;
+            left: 25px !important;
+            right: auto !important;
+            top: auto !important;
+            width: calc(100% - 50px) !important;
+            max-width: 360px !important;
+            height: auto !important;
+            max-height: calc(100vh - 150px) !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(25px) !important;
+            -webkit-backdrop-filter: blur(25px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            border-radius: 24px !important;
+            flex-direction: column !important;
+            padding: 1.5rem !important;
+            gap: 0.6rem !important;
+            box-shadow: 0 20px 50px rgba(0, 33, 71, 0.25) !important;
+            transform: scale(0.7) translateY(50px) translateX(-50px) !important;
+            transform-origin: bottom left !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important; /* Spring elastic animation! */
+            z-index: 99998 !important;
+            overflow-y: auto !important;
+            scrollbar-width: none;
+          }
+
+          .nav-links::-webkit-scrollbar {
+            display: none;
           }
 
           .nav-links.active {
-            transform: translateX(0);
-            opacity: 1;
-            visibility: visible;
-          }
+            transform: scale(1) translateY(0) translateX(0) !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+          }     }
 
           .nav-item { 
-            font-size: 1rem; 
-            width: 100%; 
-            text-align: left;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem !important; 
+            width: 100% !important; 
+            text-align: left !important;
+            padding: 0.6rem 1.2rem !important;
+            border-bottom: none !important;
+            border-radius: 12px !important;
+            background: rgba(0, 33, 71, 0.03) !important;
+            color: var(--primary) !important;
+            transition: all 0.3s ease !important;
           }
           
+          .nav-item:hover {
+            background: rgba(230, 126, 34, 0.08) !important;
+            color: var(--secondary) !important;
+            padding-left: 1.5rem !important;
+          }
+
           .dropdown-trigger {
-            font-size: 1.1rem;
-            width: 100%;
-            text-align: left;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid #f0f0f0;
-            justify-content: flex-start;
+            font-size: 0.9rem !important;
+            width: 100% !important;
+            text-align: left !important;
+            padding: 0.6rem 1.2rem !important;
+            border-bottom: none !important;
+            border-radius: 12px !important;
+            background: rgba(0, 33, 71, 0.03) !important;
+            color: var(--primary) !important;
+            justify-content: space-between !important;
           }
 
           .nav-item-dropdown { width: 100%; }
@@ -766,19 +913,22 @@ export default function Navbar() {
             background: #f8f9fa;
             width: 100%;
             min-width: unset;
+            border-radius: 12px !important;
+            border: 1px solid rgba(0, 0, 0, 0.04) !important;
+            margin-top: 4px !important;
           }
           .dropdown-menu.show { display: flex; }
           
           .nav-cta-special, .nav-cta-admin, .nav-login-premium {
-            width: 100%;
-            margin: 0;
-            justify-content: flex-start;
+            width: 100% !important;
+            margin: 0 !important;
+            justify-content: center !important;
           }
           
           .nav-cta-special, .nav-cta-admin {
-            width: fit-content;
-            margin: 0.5rem 0;
-          }
+            width: 100% !important;
+            margin: 0.3rem 0 !important;
+          }     }
 
           .nav-mobile-actions {
             margin-left: auto;
