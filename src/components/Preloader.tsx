@@ -65,6 +65,13 @@ const Preloader = () => {
               <div className="trail trail-2"></div>
             </div>
           </div>
+          <img 
+            src="/Logo/Logo%20Pondok%20Pesantren.png" 
+            alt="Al-Azhar Logo" 
+            className="preloader-logo" 
+            width={130}
+            height={130}
+          />
         </div>
       </div>
 
@@ -103,10 +110,15 @@ const Preloader = () => {
 
         .preloader-logo {
           width: 130px; 
-          height: auto;
+          height: 130px;
+          aspect-ratio: 1;
+          object-fit: contain;
           position: relative;
           z-index: 10;
           filter: drop-shadow(0 0 10px rgba(255,255,255,0.15));
+          transform: scale(1) !important;
+          transition: none !important;
+          animation: none !important;
         }
 
         .balls-container {
