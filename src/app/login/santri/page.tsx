@@ -3,14 +3,40 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
+import { supabase } from "@/lib/supabase";
 
 export default function SantriLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Sistem Login Santri sedang dalam tahap pengembangan!");
+    setIsLoading(true);
+    setErrorMsg("");
+    setLoginSuccess(false);
+
+    try {
+      // In Supabase, users register with E-Mail. If they enter their email/NIS in the field,
+      // we attempt to log in using that.
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      setLoginSuccess(true);
+      alert(`Selamat datang kembali, Santri Al-Azhar! Anda berhasil login.`);
+    } catch (error: any) {
+      setErrorMsg(error.message || "E-Mail atau password salah.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -29,19 +55,32 @@ export default function SantriLoginPage() {
               style={{ objectFit: 'contain' }}
               priority
               unoptimized
- />
+            />
           </div>
           
           <h2 className="card-subtitle">LOGIN SANTRI</h2>
+
+          {errorMsg && (
+            <div className="login-alert error">
+              ⚠️ {errorMsg}
+            </div>
+          )}
+
+          {loginSuccess && (
+            <div className="login-alert success">
+              🎉 Login Berhasil!
+            </div>
+          )}
           
           <form onSubmit={handleLogin} className="login-form">
             <input 
               type="text" 
               className="form-input" 
-              placeholder="Nomor Induk Santri (NIS)" 
+              placeholder="Alamat E-Mail Santri" 
               required 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading || loginSuccess}
             />
             
             <input 
@@ -51,10 +90,11 @@ export default function SantriLoginPage() {
               required 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading || loginSuccess}
             />
             
-            <button type="submit" className="btn-login">
-              Log In Santri
+            <button type="submit" className="btn-login" disabled={isLoading || loginSuccess}>
+              {isLoading ? "Memproses..." : "Log In Santri"}
             </button>
           </form>
 
@@ -215,6 +255,25 @@ export default function SantriLoginPage() {
           .login-card {
             margin-top: 1.5rem;
           }
+        }
+
+        .login-alert {
+          padding: 0.75rem 1rem;
+          border-radius: 8px;
+          font-size: 0.8rem;
+          margin-bottom: 1rem;
+          line-height: 1.4;
+          text-align: left;
+        }
+        .login-alert.error {
+          background-color: #fef2f2;
+          border: 1px solid #fca5a5;
+          color: #991b1b;
+        }
+        .login-alert.success {
+          background-color: #f0fdf4;
+          border: 1px solid #bbf7d0;
+          color: #166534;
         }
       `}</style>
     </main>

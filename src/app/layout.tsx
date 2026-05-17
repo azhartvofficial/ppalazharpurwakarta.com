@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
+import VisitorTracker from "@/components/VisitorTracker";
 
 const customFont = localFont({
   src: "../Font/friz-quadrata-std-medium-5870338ec7ef8.otf",
@@ -25,9 +27,11 @@ export default function RootLayout({
     <html lang="id" className={customFont.variable}>
       <body>
         <Preloader />
+        <VisitorTracker />
         <LanguageProvider>
           {children}
         </LanguageProvider>
+        <Analytics />
       </body>
     </html>
   );

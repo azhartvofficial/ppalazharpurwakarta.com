@@ -122,6 +122,25 @@ export default function Navbar() {
               </div>
             </div>
 
+            {/* Access to Panel Pengurus with custom dashboard icon */}
+            <Link href="/admin" className="nav-cta-admin" onClick={() => setMenuOpen(false)}>
+              <svg 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                style={{ width: '14px', height: '14px', marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }}
+              >
+                <rect x="3" y="3" width="7" height="9" />
+                <rect x="14" y="3" width="7" height="5" />
+                <rect x="14" y="12" width="7" height="9" />
+                <rect x="3" y="16" width="7" height="5" />
+              </svg>
+              <span>{language === 'ID' ? 'Panel Pengurus' : 'Admin Panel'}</span>
+            </Link>
+
           </div>
 
           {/* Mobile Utility + Toggle */}
@@ -549,6 +568,28 @@ export default function Navbar() {
           box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
         }
 
+        /* Admin CTA Button */
+        .nav-cta-admin {
+          background: rgba(0, 33, 71, 0.06);
+          border: 1.5px solid var(--primary);
+          color: var(--primary) !important;
+          padding: 0.55rem 1.3rem;
+          border-radius: 50px;
+          font-weight: 800;
+          font-size: 0.8rem;
+          display: flex;
+          align-items: center;
+          transition: var(--transition);
+          text-decoration: none;
+        }
+
+        .nav-cta-admin:hover {
+          background: var(--primary);
+          color: white !important;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 15px rgba(0, 33, 71, 0.15);
+        }
+
         /* Premium Login Button */
         .nav-mobile-actions {
           display: flex;
@@ -728,13 +769,13 @@ export default function Navbar() {
           }
           .dropdown-menu.show { display: flex; }
           
-          .nav-cta-special, .nav-login-premium {
+          .nav-cta-special, .nav-cta-admin, .nav-login-premium {
             width: 100%;
             margin: 0;
             justify-content: flex-start;
           }
           
-          .nav-cta-special {
+          .nav-cta-special, .nav-cta-admin {
             width: fit-content;
             margin: 0.5rem 0;
           }
