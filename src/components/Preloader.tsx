@@ -116,8 +116,7 @@ const Preloader = () => {
           z-index: 10;
           filter: drop-shadow(0 0 10px rgba(255,255,255,0.15));
           transform: scale(1) !important;
-          transition: none !important;
-          animation: none !important;
+          animation: logoFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
         }
 
         .balls-container {
@@ -209,6 +208,17 @@ const Preloader = () => {
 
         @keyframes load {
           to { width: 100%; }
+        }
+
+        @keyframes logoFadeIn {
+          from {
+            opacity: 0;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.0)) blur(4px);
+          }
+          to {
+            opacity: 1;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.15)) blur(0px);
+          }
         }
       `}</style>
     </div>
