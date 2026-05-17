@@ -1092,12 +1092,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
       <style jsx>{`
         .dashboard-layout {
-          min-height: calc(100vh - 90px);
+          min-height: 100vh;
           background-color: #f1f5f9;
           color: #0f172a;
           font-family: 'Inter', sans-serif;
           overflow-x: hidden;
-          margin-top: 90px;
         }
 
         .demo-banner {
@@ -1143,10 +1142,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           border-right: 1px solid rgba(0, 0, 0, 0.05);
           display: flex;
           flex-direction: column;
-          padding: 2.5rem 1.5rem;
+          padding: 160px 1.5rem 2rem 1.5rem;
           position: sticky;
-          top: 90px;
-          height: calc(100vh - 90px);
+          top: 0;
+          height: 100vh;
           box-sizing: border-box;
           z-index: 99;
         }
@@ -1314,10 +1313,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
         /* Main Content Styling - Light Grey Clean Background */
         .main-content {
-          padding: 3rem 4rem;
+          padding: 8.5rem 4rem 3rem 4rem;
           box-sizing: border-box;
           overflow-y: auto;
-          height: calc(100vh - 90px);
+          height: 100vh;
         }
 
         .content-header {
