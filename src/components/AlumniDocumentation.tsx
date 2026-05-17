@@ -12,7 +12,7 @@ const AlumniDocumentation = () => {
   // Sample alumni documentation images
   const photos = [
     { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999166/mnxrqkh8y8lei8wjio1f.png", size: "large", rotate: -5, y: 0 },
-    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999175/cozsitklqvfpdvamka5w.svg", size: "medium", rotate: 8, y: 40 },
+    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999167/lmj09gushldyzgflpfms.png", size: "medium", rotate: 8, y: 40 },
     { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999168/fttozmnhyylwwegvwl6r.png", size: "small", rotate: -12, y: -20 },
     { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999169/gxnrrxwaie8ln7niagop.jpg", size: "medium", rotate: 15, y: 10 },
     { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999170/lgceqxazwh0wwjqp0gte.png", size: "large", rotate: -3, y: 50 },
