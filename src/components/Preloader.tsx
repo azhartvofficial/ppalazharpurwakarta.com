@@ -9,11 +9,9 @@ const Preloader = () => {
 
   useEffect(() => {
     // Trigger on EVERY mount (which happens on refresh/initial load)
-    // OR if navigating to login
-    const isLogin = pathname === "/login";
+    // OR if navigating to any login route (like /login or /login/santri)
+    const isLogin = pathname ? pathname.startsWith("/login") : false;
     
-    // We want it to show on every refresh (mount) 
-    // and specifically when hitting /login
     setLoading(true);
     setActive(true);
 
@@ -23,7 +21,7 @@ const Preloader = () => {
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [pathname === "/login"]); // Only re-trigger if entering/leaving login, otherwise it only runs once on mount (refresh)
+  }, [pathname ? pathname.startsWith("/login") : false]); // Re-trigger when entering/leaving any login page
 
   if (!loading) return null;
 
@@ -66,8 +64,8 @@ const Preloader = () => {
             </div>
           </div>
           <img 
-            src="/Logo/Logo%20Pondok%20Pesantren.png" 
-            alt="Al-Azhar Logo" 
+            src={pathname && pathname.startsWith("/login") ? "/Logo/azwa page.png" : "/Logo/Logo Pondok Pesantren.png"} 
+            alt="Logo" 
             className="preloader-logo" 
             width={130}
             height={130}
