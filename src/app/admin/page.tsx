@@ -531,69 +531,6 @@ export default function AdminDashboardPage() {
                 {activeTab === "accounts" && "Manajemen Data & Hak Akses Pengurus"}
               </h2>
             </div>
-
-            {/* Top-Right Premium Profile & Logout Dropdown */}
-            <div className="top-profile-container" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginLeft: 'auto' }}>
-              
-              <div className="profile-dropdown-trigger">
-                <div className="top-profile-avatar-bubble">
-                  {(user?.email || "A").substring(0, 1).toUpperCase()}
-                </div>
-
-                {/* Gold Crown Account Type Badge */}
-                <div className="admin-role-badge">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '11px', height: '11px', flexShrink: 0 }}>
-                    <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z" />
-                    <path d="M3 20h18" />
-                  </svg>
-                  <span>Admin</span>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', minWidth: '0' }}>
-                  <span className="top-profile-name">
-                    {user?.email || "Super Admin"}
-                  </span>
-                </div>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '12px', height: '12px', marginLeft: '2px', flexShrink: 0 }}>
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-
-                {/* Glassmorphic Dropdown Panel */}
-                <div className="profile-dropdown-panel">
-                  <div className="dropdown-user-info">
-                    <strong>Al-Azhar Purwakarta</strong>
-                    <span>{user?.email || "danishalzam8002@gmail.com"}</span>
-                  </div>
-                  <div className="dropdown-divider"></div>
-                  <button 
-                    onClick={async () => {
-                      await supabase.auth.signOut();
-                      localStorage.removeItem('admin_session');
-                      window.dispatchEvent(new Event('storage'));
-                      window.dispatchEvent(new Event('maintenanceChange'));
-                      window.location.href = '/login';
-                    }}
-                    className="dropdown-logout-btn"
-                  >
-                    <svg 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2.5" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      style={{ width: '15px', height: '15px', flexShrink: 0 }}
-                    >
-                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                      <polyline points="16 17 21 12 16 7" />
-                      <line x1="21" y1="12" x2="9" y2="12" />
-                    </svg>
-                    <span>Logout</span>
-                  </button>
-                </div>
-              </div>
-
-            </div>
           </header>
 
           <div className="content-body">

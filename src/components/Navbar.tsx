@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { useLanguage } from "@/context/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/lib/supabase";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -14,6 +15,7 @@ export default function Navbar() {
   const [maintenanceActive, setMaintenanceActive] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [adminName, setAdminName] = useState("Admin");
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   const isLoginPage = typeof window !== 'undefined' && (
     window.location.pathname.includes('/login') || 
@@ -162,8 +164,12 @@ export default function Navbar() {
           {/* Mobile Utility + Toggle */}
           <div className="nav-mobile-actions">
             {isAdminLoggedIn ? (
-              <Link href="/admin" className="nav-admin-profile-pill-new" style={{ textDecoration: 'none' }}>
-                <div className="navbar-profile-bubble-container">
+              <div className="navbar-profile-dropdown-wrapper" style={{ position: 'relative' }}>
+                <div 
+                  className="navbar-profile-bubble-container"
+                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div className="navbar-avatar-bubble">
                     {adminName.substring(0, 1).toUpperCase()}
                   </div>
@@ -173,8 +179,67 @@ export default function Navbar() {
                     </span>
                     <span className="navbar-profile-role">PENGURUS</span>
                   </div>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '10px', height: '10px', marginLeft: '2px', flexShrink: 0, color: 'var(--primary)', transition: 'transform 0.2s', transform: profileDropdownOpen ? 'rotate(180deg)' : 'none' }}>
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
                 </div>
-              </Link>
+
+                {/* Glassmorphic Dropdown Panel */}
+                <AnimatePresence>
+                  {profileDropdownOpen && (
+                    <motion.div 
+                      className="navbar-profile-dropdown-panel"
+                      initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                      transition={{ duration: 0.15, ease: 'easeOut' }}
+                    >
+                      <div className="dropdown-user-info">
+                        <strong>Al-Azhar Purwakarta</strong>
+                        <span>{adminName}</span>
+                      </div>
+                      <div className="dropdown-divider"></div>
+                      
+                      <Link href="/admin" className="dropdown-action-btn panel-btn" onClick={() => setProfileDropdownOpen(false)}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                          <rect x="3" y="3" width="7" height="9" />
+                          <rect x="14" y="3" width="7" height="5" />
+                          <rect x="14" y="12" width="7" height="9" />
+                          <rect x="3" y="16" width="7" height="5" />
+                        </svg>
+                        <span>Dashboard Admin</span>
+                      </Link>
+
+                      <button 
+                        onClick={async () => {
+                          setProfileDropdownOpen(false);
+                          await supabase.auth.signOut();
+                          localStorage.removeItem('admin_session');
+                          window.dispatchEvent(new Event('storage'));
+                          window.dispatchEvent(new Event('maintenanceChange'));
+                          window.location.href = '/login';
+                        }}
+                        className="dropdown-logout-btn-new"
+                      >
+                        <svg 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          style={{ width: '14px', height: '14px', flexShrink: 0 }}
+                        >
+                          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                          <polyline points="16 17 21 12 16 7" />
+                          <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        <span>Logout</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ) : (
               <Link href="/login" className="nav-login-premium" onClick={() => setMenuOpen(false)}>
                 <div className="login-switch-container">
@@ -338,6 +403,105 @@ export default function Navbar() {
           color: #ff8c00;
           font-weight: 900;
           letter-spacing: 0.3px;
+        }
+
+        /* Glassmorphic Navbar Profile Dropdown Panel */
+        .navbar-profile-dropdown-panel {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          width: 230px;
+          background: rgba(255, 255, 255, 0.98);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(0, 33, 71, 0.08);
+          border-radius: 12px;
+          box-shadow: 0 10px 30px rgba(0, 33, 71, 0.12);
+          padding: 0.95rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.7rem;
+          z-index: 100000;
+          box-sizing: border-box;
+        }
+
+        .dropdown-user-info {
+          display: flex;
+          flex-direction: column;
+          text-align: left;
+          gap: 0.1rem;
+        }
+
+        .dropdown-user-info strong {
+          font-size: 0.75rem;
+          color: #002147;
+          font-weight: 800;
+        }
+
+        .dropdown-user-info span {
+          font-size: 0.68rem;
+          color: #64748b;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .dropdown-divider {
+          height: 1px;
+          background: rgba(0, 33, 71, 0.06);
+          margin: 0.15rem 0;
+        }
+
+        .dropdown-action-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          width: 100%;
+          padding: 0.55rem;
+          font-size: 0.72rem;
+          font-weight: 800;
+          border-radius: 6px;
+          text-decoration: none;
+          transition: all 0.2s;
+          box-sizing: border-box;
+        }
+
+        .dropdown-action-btn.panel-btn {
+          background: rgba(0, 33, 71, 0.04);
+          border: 1px solid rgba(0, 33, 71, 0.08);
+          color: #002147;
+        }
+
+        .dropdown-action-btn.panel-btn:hover {
+          background: #002147;
+          color: white;
+          border-color: #002147;
+          box-shadow: 0 4px 12px rgba(0, 33, 71, 0.1);
+        }
+
+        .dropdown-logout-btn-new {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          width: 100%;
+          padding: 0.55rem;
+          background: rgba(239, 68, 68, 0.08);
+          border: 1px solid rgba(239, 68, 68, 0.15);
+          color: #ef4444;
+          font-size: 0.72rem;
+          font-weight: 800;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-sizing: border-box;
+        }
+
+        .dropdown-logout-btn-new:hover {
+          background: #ef4444;
+          color: white;
+          border-color: #ef4444;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
         }
 
         .navbar {
