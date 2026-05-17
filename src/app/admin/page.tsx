@@ -593,24 +593,23 @@ export default function AdminDashboardPage() {
                       </div>
                       <span className="card-value">{activeVisitors}</span>
                       <span className="card-trend">
-                        🟢 Total: {formatNumber(totalVisitors)} Pengunjung Aktif
+                        Total: {formatNumber(totalVisitors)} Pengunjung Aktif
                       </span>
                     </div>
 
                     <div className="summary-card orange">
                       <div className="card-top">
                         <span className="card-label">PENGUNJUNG HARI INI</span>
-                        <span className="card-icon">📈</span>
                       </div>
                       <span className="card-value">{formatNumber(todayVisitors)}</span>
-                      <span className="card-trend">🟢 Terdeteksi Live (Hari Ini)</span>
+                      <span className="card-trend">Terdeteksi Live (Hari Ini)</span>
                     </div>
                   </div>
 
                   {/* Vercel Analytics Visualizer Section */}
                   <div className="analytics-visualizer-card" style={{ marginBottom: '2rem' }}>
                     <div className="visualizer-header">
-                      <h3>📊 Laporan & Analisis Pengunjung (Vercel Web Analytics)</h3>
+                      <h3>Laporan & Analisis Pengunjung (Vercel Web Analytics)</h3>
                       <span className="live-badge" style={{ backgroundColor: supabaseSyncActive ? 'rgba(76, 175, 80, 0.15)' : 'rgba(255, 140, 0, 0.15)', color: supabaseSyncActive ? '#4CAF50' : '#ff8c00' }}>
                         ● {supabaseSyncActive ? 'SUPABASE SYNCED' : 'DEMO MODE ACTIVE'}
                       </span>
@@ -624,7 +623,7 @@ export default function AdminDashboardPage() {
                       <div className="chart-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
                           <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Grafik Tren Lalu Lintas</span>
-                          <span style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--primary)', marginTop: '2px' }}>📊 Statistik Kunjungan Harian (7 Hari Terakhir)</span>
+                          <span style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--primary)', marginTop: '2px' }}>Statistik Kunjungan Harian (7 Hari Terakhir)</span>
                         </div>
                         <div style={{ display: 'flex', gap: '6px' }}>
                           <button className="badge-chart-range active">7D</button>
@@ -731,7 +730,6 @@ export default function AdminDashboardPage() {
                               transition: 'all 0.15s ease'
                             }}
                           >
-                            <span style={{ color: '#10b981' }}>📈</span>
                             <span>{chartData[hoveredChartPoint].visitors} Pengunjung</span>
                           </div>
                         )}
@@ -796,7 +794,6 @@ export default function AdminDashboardPage() {
                     </div>
 
                     <div className="analytics-integration-info">
-                      <span className="info-icon">💡</span>
                       <p>
                         <strong>Sistem Pelacakan Vercel Analytics Berhasil Dipasang:</strong> Kami telah menyuntikkan komponen pelacakan <code>&lt;Analytics /&gt;</code> ke dalam <code>RootLayout</code> website. Seluruh data lalu lintas pengunjung yang sah akan direkam secara aman oleh Vercel. Untuk melihat laporan analitik lengkap yang mencakup rasio pentalan (*bounce rate*), durasi sesi, dan peta asal negara pengunjung, Anda dapat langsung masuk ke <strong>Vercel Dashboard Project</strong> Anda di panel resmi Vercel.
                       </p>
@@ -804,7 +801,6 @@ export default function AdminDashboardPage() {
 
                     {!supabaseSyncActive && (
                       <div className="supabase-migration-alert" style={{ marginTop: '1.5rem', border: '1.5px dashed #ff8c00', background: '#fffbeb', padding: '1.25rem', borderRadius: '12px' }}>
-                        <span style={{ fontSize: '1.1rem', marginRight: '0.5rem' }}>⚡</span>
                         <strong style={{ color: '#b45309', fontSize: '0.85rem' }}>Hubungkan Database Supabase Secara Riil:</strong>
                         <p style={{ margin: '0.5rem 0', fontSize: '0.8rem', color: '#78350f', lineHeight: '1.5' }}>
                           Untuk melacak kunjungan pengunjung Anda secara 100% riil tanpa simulasi, silakan buka <strong>Supabase Dashboard &gt; SQL Editor &gt; New Query</strong>, lalu salin dan jalankan perintah SQL berikut untuk membuat tabel tracking:
@@ -824,7 +820,7 @@ CREATE POLICY "Allow public inserts" ON public.visitor_logs FOR INSERT WITH CHEC
 CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (true);`}
                         </pre>
                         <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#b45309', fontWeight: 'bold' }}>
-                          💡 Setelah query dijalankan, statistik kunjungan dari seluruh halaman website Anda akan terekam secara live!
+                          Setelah query dijalankan, statistik kunjungan dari seluruh halaman website Anda akan terekam secara live!
                         </p>
                       </div>
                     )}
