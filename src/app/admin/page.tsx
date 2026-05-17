@@ -36,6 +36,10 @@ interface DocPhoto {
   date: string;
 }
 
+function formatNumber(num: number): string {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "ppdb" | "news" | "docs" | "settings">("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -490,7 +494,7 @@ export default function AdminDashboardPage() {
                       </div>
                       <span className="card-value">{activeVisitors}</span>
                       <span className="card-trend">
-                        🟢 Total: {totalVisitors.toLocaleString()} Pengunjung Aktif
+                        🟢 Total: {formatNumber(totalVisitors)} Pengunjung Aktif
                       </span>
                     </div>
 
@@ -499,7 +503,7 @@ export default function AdminDashboardPage() {
                         <span className="card-label">PENGUNJUNG HARI INI</span>
                         <span className="card-icon">📈</span>
                       </div>
-                      <span className="card-value">{todayVisitors.toLocaleString()}</span>
+                      <span className="card-value">{formatNumber(todayVisitors)}</span>
                       <span className="card-trend">🟢 Terdeteksi Live (Hari Ini)</span>
                     </div>
 

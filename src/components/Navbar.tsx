@@ -245,6 +245,11 @@ export default function Navbar() {
           font-size: 0.75rem;
           font-weight: 500;
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          transition: var(--transition);
+        }
+
+        .navbar.scrolled .top-bar {
+          display: none !important;
         }
 
         .top-bar-content {
@@ -684,6 +689,10 @@ export default function Navbar() {
         }
 
         @media (max-width: 992px) {
+          .top-bar {
+            display: none !important;
+          }
+
           .main-nav {
             padding: 0.5rem 0;
             backdrop-filter: none !important;
