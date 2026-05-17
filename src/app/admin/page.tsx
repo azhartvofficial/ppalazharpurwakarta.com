@@ -544,7 +544,7 @@ export default function AdminDashboardPage() {
                     <div className="control-panel-header">
                       <h3>⚙️ Control Panel Integrasi & Langganan Layanan</h3>
                       <span className="account-badge">
-                        👤 Akun Utama: danishalzma8002@gmail.com
+                        👤 Akun Utama: danishalzam8002@gmail.com
                       </span>
                     </div>
                     <p className="control-panel-desc">
@@ -635,7 +635,7 @@ export default function AdminDashboardPage() {
                           </div>
                           <div className="detail-row">
                             <span>Email Terdaftar</span>
-                            <strong>danishalzma8002@gmail.com</strong>
+                            <strong>danishalzam8002@gmail.com</strong>
                           </div>
                         </div>
                       </div>
