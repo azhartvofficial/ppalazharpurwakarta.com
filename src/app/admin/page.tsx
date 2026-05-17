@@ -489,14 +489,7 @@ export default function AdminDashboardPage() {
               </h2>
             </div>
 
-            <div className="header-actions">
-              <button onClick={fetchPpdbData} className="btn-refresh" title="Sinkronkan Database">
-                🔄 Sinkronkan Database
-              </button>
-              <Link href="/pendaftaran" target="_blank" className="btn-view-site">
-                Lihat Form Live 🌐
-              </Link>
-            </div>
+
           </header>
 
           <div className="content-body">
