@@ -533,22 +533,25 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Top-Right Premium Profile & Logout Dropdown */}
-            <div className="top-profile-container" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div className="top-profile-container" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginLeft: 'auto' }}>
               
-              <Link href="/" className="btn-view-site-classic">
-                Kunjungi Situs
-              </Link>
-
               <div className="profile-dropdown-trigger">
                 <div className="top-profile-avatar-bubble">
                   {(user?.email || "A").substring(0, 1).toUpperCase()}
                 </div>
+
+                {/* Gold Crown Account Type Badge */}
+                <div className="admin-role-badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '11px', height: '11px', flexShrink: 0 }}>
+                    <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z" />
+                    <path d="M3 20h18" />
+                  </svg>
+                  <span>Admin</span>
+                </div>
+
                 <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', minWidth: '0' }}>
                   <span className="top-profile-name">
                     {user?.email || "Super Admin"}
-                  </span>
-                  <span className="top-profile-role">
-                    Azwa Page Manager
                   </span>
                 </div>
                 <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '12px', height: '12px', marginLeft: '2px', flexShrink: 0 }}>

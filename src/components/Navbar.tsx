@@ -30,7 +30,8 @@ export default function Navbar() {
         setMaintenanceActive(isMaintenance);
         setIsAdminLoggedIn(!!session);
         if (session) {
-          setAdminName("Admin");
+          const email = session.user?.email || session.email || "Admin";
+          setAdminName(email);
         }
       }
     };
@@ -161,39 +162,17 @@ export default function Navbar() {
           {/* Mobile Utility + Toggle */}
           <div className="nav-mobile-actions">
             {isAdminLoggedIn ? (
-              <Link href="/admin" className="nav-admin-profile-pill" style={{ textDecoration: 'none' }}>
-                <div
-                  className="login-graphic admin-badge-graphic"
-                  style={{ 
-                    display: 'flex', 
-                    flexDirection: 'row', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    gap: '8px',
-                    background: 'rgba(0, 33, 71, 0.08)',
-                    border: '2px solid var(--primary)',
-                    padding: '6px 16px',
-                    borderRadius: '50px',
-                    color: 'var(--primary)',
-                    fontWeight: 800,
-                    fontSize: '0.8rem',
-                    whiteSpace: 'nowrap',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                  <svg 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2.5" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    style={{ width: '16px', height: '16px', flexShrink: 0, color: 'var(--primary)' }}
-                  >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  </svg>
-                  <span>ADMIN</span>
+              <Link href="/admin" className="nav-admin-profile-pill-new" style={{ textDecoration: 'none' }}>
+                <div className="navbar-profile-bubble-container">
+                  <div className="navbar-avatar-bubble">
+                    {adminName.substring(0, 1).toUpperCase()}
+                  </div>
+                  <div className="navbar-profile-details">
+                    <span className="navbar-profile-name">
+                      {adminName.includes('@') ? adminName.split('@')[0] : adminName}
+                    </span>
+                    <span className="navbar-profile-role">PENGURUS</span>
+                  </div>
                 </div>
               </Link>
             ) : (
@@ -301,6 +280,66 @@ export default function Navbar() {
       `}</style>
 
       <style jsx>{`
+        /* Premium Compact Navbar Admin Profile Bubble */
+        .navbar-profile-bubble-container {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          background: rgba(0, 33, 71, 0.05);
+          border: 1.5px solid var(--primary);
+          padding: 4px 10px 4px 6px;
+          border-radius: 50px;
+          transition: all 0.25s ease;
+          max-width: 220px;
+          box-sizing: border-box;
+          user-select: none;
+        }
+
+        .navbar-profile-bubble-container:hover {
+          background: rgba(0, 33, 71, 0.09);
+          border-color: #ff8c00;
+          box-shadow: 0 2px 8px rgba(255, 140, 0, 0.12);
+        }
+
+        .navbar-avatar-bubble {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: var(--primary);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.72rem;
+          font-weight: 800;
+          flex-shrink: 0;
+        }
+
+        .navbar-profile-details {
+          display: flex;
+          flex-direction: column;
+          text-align: left;
+          min-width: 0;
+          line-height: 1.1;
+        }
+
+        .navbar-profile-name {
+          font-size: 0.65rem;
+          font-weight: 800;
+          color: #002147;
+          max-width: 140px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .navbar-profile-role {
+          font-size: 0.5rem;
+          color: #ff8c00;
+          font-weight: 900;
+          letter-spacing: 0.3px;
+        }
+
         .navbar {
           position: fixed;
           top: 0;
