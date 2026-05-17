@@ -8,7 +8,17 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function SistemPendidikanPage() {
   const { t } = useLanguage();
 
-  const concepts = [
+  interface ConceptItem {
+    title: string;
+    subtitle: string;
+    desc: string;
+    image?: string;
+    images?: string[];
+    icon?: React.ReactNode;
+    color: string;
+  }
+
+  const concepts: ConceptItem[] = [
     {
       title: "Kurikulum Pesantren",
       subtitle: "Al-Qur'an & Sunnah",
