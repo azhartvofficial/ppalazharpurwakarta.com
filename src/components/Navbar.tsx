@@ -162,9 +162,39 @@ export default function Navbar() {
           <div className="nav-mobile-actions">
             {isAdminLoggedIn ? (
               <Link href="/admin" className="nav-admin-profile-pill" style={{ textDecoration: 'none' }}>
-                <span className="admin-status-dot"></span>
-                <span className="admin-avatar-premium">👑</span>
-                <span className="admin-badge-text">ADMIN</span>
+                <div
+                  className="login-graphic admin-badge-graphic"
+                  style={{ 
+                    display: 'flex', 
+                    flexDirection: 'row', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    gap: '8px',
+                    background: 'rgba(0, 33, 71, 0.08)',
+                    border: '2px solid var(--primary)',
+                    padding: '6px 16px',
+                    borderRadius: '50px',
+                    color: 'var(--primary)',
+                    fontWeight: 800,
+                    fontSize: '0.8rem',
+                    whiteSpace: 'nowrap',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <svg 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2.5" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    style={{ width: '16px', height: '16px', flexShrink: 0, color: 'var(--primary)' }}
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                  <span>ADMIN</span>
+                </div>
               </Link>
             ) : (
               <Link href="/login" className="nav-login-premium" onClick={() => setMenuOpen(false)}>
@@ -599,87 +629,26 @@ export default function Navbar() {
           box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
         }
 
-        /* High-End Admin Badge CSS */
+        /* Sleek Admin Badge CSS */
         .nav-admin-profile-pill {
           display: flex;
           align-items: center;
-          gap: 8px;
-          background: linear-gradient(135deg, rgba(0, 33, 71, 0.08) 0%, rgba(230, 126, 34, 0.08) 100%);
-          border: 2px solid var(--primary);
-          padding: 6px 14px;
-          border-radius: 50px;
-          color: var(--primary) !important;
-          font-weight: 800;
-          font-size: 0.75rem;
-          letter-spacing: 0.5px;
-          transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-          box-shadow: 0 4px 15px rgba(0, 33, 71, 0.05);
-          position: relative;
-          overflow: hidden;
-          cursor: pointer;
+          text-decoration: none;
         }
 
-        .nav-admin-profile-pill::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
-          transition: all 0.6s ease;
+        .admin-badge-graphic {
+          transition: all 0.3s ease;
         }
 
-        .nav-admin-profile-pill:hover {
+        .admin-badge-graphic:hover {
+          background: rgba(0, 33, 71, 0.15) !important;
+          border-color: var(--secondary) !important;
           transform: translateY(-2px);
-          border-color: var(--secondary);
-          background: linear-gradient(135deg, rgba(0, 33, 71, 0.95) 0%, rgba(230, 126, 34, 0.95) 100%);
-          color: white !important;
-          box-shadow: 0 8px 25px rgba(230, 126, 34, 0.3);
+          box-shadow: 0 6px 20px rgba(0, 33, 71, 0.1);
         }
 
-        .nav-admin-profile-pill:hover::before {
-          left: 100%;
-        }
-
-        .nav-admin-profile-pill:hover .admin-avatar-premium {
-          transform: scale(1.2) rotate(15deg);
-        }
-
-        .admin-avatar-premium {
-          font-size: 1rem;
-          display: inline-block;
-          transition: transform 0.4s ease;
-        }
-
-        .admin-badge-text {
-          font-weight: 900;
-        }
-
-        .admin-status-dot {
-          width: 8px;
-          height: 8px;
-          background: #10b981; /* Glowing Green */
-          border-radius: 50%;
-          display: inline-block;
-          position: relative;
-          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-          animation: admin-pulse 1.8s infinite;
-        }
-
-        @keyframes admin-pulse {
-          0% {
-            transform: scale(0.95);
-            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-          }
-          70% {
-            transform: scale(1);
-            box-shadow: 0 0 0 5px rgba(16, 185, 129, 0);
-          }
-          100% {
-            transform: scale(0.95);
-            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-          }
+        .admin-badge-graphic:active {
+          transform: scale(0.95);
         }
 
         /* Admin CTA Button */
