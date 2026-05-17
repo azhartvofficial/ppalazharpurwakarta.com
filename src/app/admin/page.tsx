@@ -576,20 +576,18 @@ export default function AdminDashboardPage() {
                     <div className={`summary-card ${maintenanceMode ? 'red' : 'green'}`}>
                       <div className="card-top">
                         <span className="card-label">STATUS WEB</span>
-                        <span className="card-icon">⚙️</span>
                       </div>
                       <span className="card-value" style={{ fontSize: '1.8rem', fontWeight: 800, color: maintenanceMode ? '#ef4444' : '#10b981' }}>
                         {maintenanceMode ? "MAINTENANCE" : "PUBLISH (LIVE)"}
                       </span>
                       <span className="card-trend" style={{ color: maintenanceMode ? '#ef4444' : '#10b981', fontWeight: 700 }}>
-                        {maintenanceMode ? "🔴 Akses Pengunjung Dibatasi" : "🟢 Diakses Secara Publik"}
+                        {maintenanceMode ? "Akses Pengunjung Dibatasi" : "Diakses Secara Publik"}
                       </span>
                     </div>
 
                     <div className="summary-card navy">
                       <div className="card-top">
                         <span className="card-label">PENGUNJUNG AKTIF</span>
-                        <span className="card-icon">🌐</span>
                       </div>
                       <span className="card-value">{activeVisitors}</span>
                       <span className="card-trend">
@@ -829,9 +827,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   {/* Control Panel Integrasi & Langganan */}
                   <div className="control-panel-card" style={{ marginBottom: '2rem' }}>
                     <div className="control-panel-header">
-                      <h3>⚙️ Control Panel Integrasi & Langganan Layanan</h3>
+                      <h3>Control Panel Integrasi & Langganan Layanan</h3>
                       <span className="account-badge">
-                        👤 Akun Utama: danishalzam8002@gmail.com
+                        Akun Utama: danishalzam8002@gmail.com
                       </span>
                     </div>
                     <p className="control-panel-desc">
@@ -1752,16 +1750,27 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         }
 
         .header-breadcrumbs {
-          font-size: 0.75rem;
-          font-weight: 800;
-          color: #64748b;
-          letter-spacing: 1px;
+          font-size: 0.7rem;
+          font-weight: 900;
+          color: #ff8c00;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          background: rgba(255, 140, 0, 0.08);
+          padding: 0.35rem 0.85rem;
+          border-radius: 50px;
+          display: inline-block;
+          margin-bottom: 0.4rem;
+          border: 1px solid rgba(255, 140, 0, 0.15);
         }
 
         .header-title {
-          font-size: 2.2rem;
-          color: #002147;
-          margin-top: 0.5rem;
+          font-size: 2.6rem;
+          font-weight: 900;
+          background: linear-gradient(135deg, #002147 25%, #ff8c00 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          margin-top: 0.2rem;
+          letter-spacing: -0.8px;
         }
 
         .header-actions {
