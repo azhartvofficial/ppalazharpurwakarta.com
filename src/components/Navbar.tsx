@@ -162,8 +162,9 @@ export default function Navbar() {
           <div className="nav-mobile-actions">
             {isAdminLoggedIn ? (
               <Link href="/admin" className="nav-admin-profile-pill" style={{ textDecoration: 'none' }}>
-                <span className="admin-avatar">👤</span>
-                <span className="admin-name">{adminName}</span>
+                <span className="admin-status-dot"></span>
+                <span className="admin-avatar-premium">👑</span>
+                <span className="admin-badge-text">ADMIN</span>
               </Link>
             ) : (
               <Link href="/login" className="nav-login-premium" onClick={() => setMenuOpen(false)}>
@@ -596,6 +597,89 @@ export default function Navbar() {
           align-items: center;
           transition: var(--transition);
           box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        /* High-End Admin Badge CSS */
+        .nav-admin-profile-pill {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: linear-gradient(135deg, rgba(0, 33, 71, 0.08) 0%, rgba(230, 126, 34, 0.08) 100%);
+          border: 2px solid var(--primary);
+          padding: 6px 14px;
+          border-radius: 50px;
+          color: var(--primary) !important;
+          font-weight: 800;
+          font-size: 0.75rem;
+          letter-spacing: 0.5px;
+          transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+          box-shadow: 0 4px 15px rgba(0, 33, 71, 0.05);
+          position: relative;
+          overflow: hidden;
+          cursor: pointer;
+        }
+
+        .nav-admin-profile-pill::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+          transition: all 0.6s ease;
+        }
+
+        .nav-admin-profile-pill:hover {
+          transform: translateY(-2px);
+          border-color: var(--secondary);
+          background: linear-gradient(135deg, rgba(0, 33, 71, 0.95) 0%, rgba(230, 126, 34, 0.95) 100%);
+          color: white !important;
+          box-shadow: 0 8px 25px rgba(230, 126, 34, 0.3);
+        }
+
+        .nav-admin-profile-pill:hover::before {
+          left: 100%;
+        }
+
+        .nav-admin-profile-pill:hover .admin-avatar-premium {
+          transform: scale(1.2) rotate(15deg);
+        }
+
+        .admin-avatar-premium {
+          font-size: 1rem;
+          display: inline-block;
+          transition: transform 0.4s ease;
+        }
+
+        .admin-badge-text {
+          font-weight: 900;
+        }
+
+        .admin-status-dot {
+          width: 8px;
+          height: 8px;
+          background: #10b981; /* Glowing Green */
+          border-radius: 50%;
+          display: inline-block;
+          position: relative;
+          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+          animation: admin-pulse 1.8s infinite;
+        }
+
+        @keyframes admin-pulse {
+          0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+          }
+          70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 5px rgba(16, 185, 129, 0);
+          }
+          100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+          }
         }
 
         /* Admin CTA Button */
