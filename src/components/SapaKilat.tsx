@@ -38,7 +38,7 @@ const SapaKilat = () => {
         <div className="features-row">
           <div className={`feature-item ${isVisible ? 'animate-reveal' : ''}`} style={{ animationDelay: '0.2s', opacity: isVisible ? 1 : 0 }}>
             <div className="cutout-wrapper">
-              <img src="/Santri%201.png" className="feature-img-cutout" alt="Santri Tahfidz" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999222/ukeruaf1uucte6dv8iga.png" className="feature-img-cutout" alt="Santri Tahfidz" />
             </div>
             <div className="feature-text">
               <h4>Tahfidzul Qur'an</h4>
@@ -48,7 +48,7 @@ const SapaKilat = () => {
           </div>
           <div className={`feature-item ${isVisible ? 'animate-reveal' : ''}`} style={{ animationDelay: '0.4s', opacity: isVisible ? 1 : 0 }}>
             <div className="cutout-wrapper">
-              <img src="/Santri%202.png" className="feature-img-cutout larger-cutout" alt="Santri Bahasa" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999223/u4w8kpjgqksooonrotdc.png" className="feature-img-cutout larger-cutout" alt="Santri Bahasa" />
             </div>
             <div className="feature-text">
               <h4>Mahir Bahasa</h4>
@@ -58,7 +58,7 @@ const SapaKilat = () => {
           </div>
           <div className={`feature-item ${isVisible ? 'animate-reveal' : ''}`} style={{ animationDelay: '0.6s', opacity: isVisible ? 1 : 0 }}>
             <div className="cutout-wrapper">
-              <img src="/Santri%203.png" className="feature-img-cutout" alt="Santri Mandiri" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999224/ahpnbq38rhqyywfylijn.png" className="feature-img-cutout" alt="Santri Mandiri" />
             </div>
             <div className="feature-text">
               <h4>MANDIRI</h4>
@@ -85,7 +85,7 @@ const SapaKilat = () => {
               <Link href="/profil/pendiri" className="photo-link-wrapper">
                 <div className="photo-container">
                   <img 
-                    src="/Pimpinan%20Ponpes%20AL%20Azhar%20-%20Sapa%20Kilat.png" 
+                    src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999220/hjozyz9pb8puevlg2ynu.png" 
                     alt="Pimpinan Pondok" 
                     className="leader-img"
                   />

@@ -22,7 +22,7 @@ export default function SantriLoginPage() {
         <div className="login-card">
           <div className="logo-container">
             <Image 
-              src="/Logo/Logo Pondok Pesantren.png" 
+              src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" 
               alt="Santri Login Logo" 
               width={140} 
               height={70} 
@@ -71,7 +71,7 @@ export default function SantriLoginPage() {
         .login-layout {
           height: 100vh;
           overflow: hidden;
-          background: url('/pesantren_hero.png') center/cover no-repeat fixed;
+          background: url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999215/vdc4p1otuifswwdjx7zt.jpg') center/cover no-repeat fixed;
           font-family: 'Inter', sans-serif;
           position: relative;
         }

@@ -22,7 +22,7 @@ export default function LoginPage() {
         <div className="login-card">
           <div className="logo-container">
             <Image 
-              src="/Logo/azwa page.png" 
+              src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999182/izzlhzwa6vvmkfa95eww.png" 
               alt="Azwa Page Logo" 
               width={190} 
               height={80} 
@@ -71,7 +71,7 @@ export default function LoginPage() {
         .login-layout {
           height: 100vh;
           overflow: hidden;
-          background: url('/pesantren_hero.png') center/cover no-repeat fixed;
+          background: url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999215/vdc4p1otuifswwdjx7zt.jpg') center/cover no-repeat fixed;
           font-family: 'Inter', sans-serif;
           position: relative;
         }

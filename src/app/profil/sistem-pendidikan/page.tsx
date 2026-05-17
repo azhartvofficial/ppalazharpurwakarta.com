@@ -23,21 +23,21 @@ export default function SistemPendidikanPage() {
       title: "Kurikulum Pesantren",
       subtitle: "Al-Qur'an & Sunnah",
       desc: "Kurikulum ini berlandaskan pada Al-Qur'an dan Sunnah sebagai pedoman utama dalam mendidik santri. Dalam implementasinya, kami tidak berafiliasi pada satu organisasi atau mazhab tertentu, melainkan mengkaji secara mendalam pemikiran dan pendapat 4 Imam Mazhab guna memberikan wawasan keilmuan yang luas, inklusif, dan objektif bagi setiap santri.",
-      image: "/Logo/Logo Pondok Pesantren.png",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png",
       color: "#002147"
     },
     {
       title: "Kurikulum Nasional",
       subtitle: "STANDAR PENDIDIKAN",
       desc: "Kami menerapkan kurikulum resmi dari Kemendikbud dan Kemenag untuk menjamin kualitas akademik dan kompetensi standar nasional. Pembelajaran diintegrasikan untuk membekali santri dengan penguasaan sains, teknologi, dan ilmu pengetahuan umum yang selaras dengan nilai-nilai religius dan moderasi beragama.",
-      images: ["/Logo/Logo Kemendikbud.png", "/Logo/Logo Kemenag.png"],
+      images: ["https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999205/kcxd6nww2odklcfja7nc.png", "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999203/bimpfoqu0ynwkj1vhtr9.png"],
       color: "#ffffff"
     },
     {
       title: "Wawasan Modern",
       subtitle: "INTERNASIONAL",
       desc: "Pendidikan kami mengadopsi standar kurikulum nasional hingga internasional guna mencetak lulusan yang berdaya saing global. Melalui penguatan bahasa asing dan kompetensi modern, kami berkomitmen mengantarkan para alumni untuk melanjutkan studi ke berbagai perguruan tinggi ternama, baik di dalam negeri maupun mancanegara.",
-      image: "/Logo/UNESCO.png",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999211/fxmonzs0skgcc25mazkv.png",
       color: "#002147"
     }
   ];
@@ -128,7 +128,7 @@ export default function SistemPendidikanPage() {
               </div>
             </div>
             <div className="details-image">
-              <img src="/Sistem Pendidikan.png" alt="Sistem Pendidikan" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999228/dsdyt7oncdtvh0jtn5uw.png" alt="Sistem Pendidikan" />
               <div className="image-overlay-box">
                 <strong>Profesional dan Sinergi</strong>
                 <span>Menuju lembaga modern untuk mencapai berkah dan ridho ilahi</span>
@@ -157,7 +157,7 @@ export default function SistemPendidikanPage() {
 
         .hero-header {
           padding: 12rem 0 6rem;
-          background: linear-gradient(rgba(0, 33, 71, 0.9), rgba(0, 33, 71, 0.8)), url('/Al-Azhar 1.png');
+          background: linear-gradient(rgba(0, 33, 71, 0.9), rgba(0, 33, 71, 0.8)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999165/qyvcomndxiwejcvzmfsl.png');
           background-size: cover;
           background-position: center;
           background-attachment: fixed;

@@ -4,7 +4,7 @@ import mapping from "./cloudinary-mapping.json";
  * Resolves a local asset path to its remote Cloudinary CDN URL from the pre-uploaded mapping.
  * Falls back to the original local path if no match is found or during development.
  * 
- * @param localPath The local asset path (e.g. "/Logo/Logo Pondok Pesantren.png" or "pesantren_hero.png")
+ * @param localPath The local asset path (e.g. "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" or "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999215/vdc4p1otuifswwdjx7zt.jpg")
  * @returns The optimized Cloudinary URL or the original local path
  */
 export function getCloudinaryUrl(localPath: string): string {

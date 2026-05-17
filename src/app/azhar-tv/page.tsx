@@ -42,9 +42,9 @@ export default function AzharTvPage() {
   ];
 
   const youtubeVideos = [
-    { title: "Profil Pondok Pesantren Al-Azhar", category: "OFFICIAL PROFILE", thumbnail: "/pesantren_mosque.png", url: "#" },
-    { title: "Kegiatan Harian Santri Tahfidz", category: "SANTRI LIFE", thumbnail: "/Santri 1.png", url: "#" },
-    { title: "Tips Menghafal Al-Qur'an Metode Azhari", category: "TIPS & TRICK", thumbnail: "/Santri 2.png", url: "#" },
+    { title: "Profil Pondok Pesantren Al-Azhar", category: "OFFICIAL PROFILE", thumbnail: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999219/yfb3mbixr4otuvcl6wmp.jpg", url: "#" },
+    { title: "Kegiatan Harian Santri Tahfidz", category: "SANTRI LIFE", thumbnail: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999222/ukeruaf1uucte6dv8iga.png", url: "#" },
+    { title: "Tips Menghafal Al-Qur'an Metode Azhari", category: "TIPS & TRICK", thumbnail: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999223/u4w8kpjgqksooonrotdc.png", url: "#" },
   ];
 
   const documentationEvents = [

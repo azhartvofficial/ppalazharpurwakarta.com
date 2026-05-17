@@ -13,20 +13,20 @@ const GlobalAlumni = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const unis = [
-    { name: "Al-Azhar Kairo", path: "/Logo/Log Kampus/AL-AZHAR.png", location: "Kairo, Mesir", type: "Luar Negeri", color: "#2d5a27" },
-    { name: "IAIN Kendari", path: "/Logo/Log Kampus/IAIN KENDARI.png", location: "Kendari, Indonesia", type: "Dalam Negeri", color: "#006400" },
-    { name: "IPB University", path: "/Logo/Log Kampus/IPB.png", location: "Bogor, Indonesia", type: "Dalam Negeri", color: "#004d99" },
-    { name: "Islamabad Pakistan", path: "/Logo/Log Kampus/ISLAMABAD PAKISTAN.png", location: "Islamabad, Pakistan", type: "Luar Negeri", color: "#01411c" },
-    { name: "ITB Bandung", path: "/Logo/Log Kampus/ITB.png", location: "Bandung, Indonesia", type: "Dalam Negeri", color: "#003366" },
-    { name: "LIPIA Jakarta", path: "/Logo/Log Kampus/LIPIA.png", location: "Jakarta, Indonesia", type: "Dalam Negeri", color: "#002147" },
-    { name: "UDB Surakarta", path: "/Logo/Log Kampus/UDB.png", location: "Surakarta, Indonesia", type: "Dalam Negeri", color: "#800000" },
-    { name: "UIM Madinah", path: "/Logo/Log Kampus/UIM.png", location: "Madinah, Arab Saudi", type: "Luar Negeri", color: "#004b23" },
-    { name: "UIN Sunan Gunung Djati", path: "/Logo/Log Kampus/UIN BDG.png", location: "Bandung, Indonesia", type: "Dalam Negeri", color: "#0056b3" },
-    { name: "UIN Syarif Hidayatullah", path: "/Logo/Log Kampus/UIN JKT.png", location: "Jakarta, Indonesia", type: "Dalam Negeri", color: "#007bff" },
-    { name: "UMY Yogyakarta", path: "/Logo/Log Kampus/UMY.png", location: "Yogyakarta, Indonesia", type: "Dalam Negeri", color: "#a52a2a" },
-    { name: "Universitas Airlangga", path: "/Logo/Log Kampus/UNAIR.png", location: "Surabaya, Indonesia", type: "Dalam Negeri", color: "#004085" },
-    { name: "Universitas Padjadjaran", path: "/Logo/Log Kampus/UNPAD.png", location: "Sumedang, Indonesia", type: "Dalam Negeri", color: "#856404" },
-    { name: "UPI Bandung", path: "/Logo/Log Kampus/UPI.png", location: "Bandung, Indonesia", type: "Dalam Negeri", color: "#721c24" },
+    { name: "Al-Azhar Kairo", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999184/ecl7gxzzcn2nezni5lln.png", location: "Kairo, Mesir", type: "Luar Negeri", color: "#2d5a27" },
+    { name: "IAIN Kendari", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999185/uoaachuvnprbhu0w0nt2.png", location: "Kendari, Indonesia", type: "Dalam Negeri", color: "#006400" },
+    { name: "IPB University", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999187/wy1dg6gjopdenga1vwof.png", location: "Bogor, Indonesia", type: "Dalam Negeri", color: "#004d99" },
+    { name: "Islamabad Pakistan", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999188/pa5lvfauhx9c1jgjw5yy.png", location: "Islamabad, Pakistan", type: "Luar Negeri", color: "#01411c" },
+    { name: "ITB Bandung", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999189/jkpow9b6no5pmfjypxrd.png", location: "Bandung, Indonesia", type: "Dalam Negeri", color: "#003366" },
+    { name: "LIPIA Jakarta", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999190/xzgr0s5k65nn3ltm5xrl.png", location: "Jakarta, Indonesia", type: "Dalam Negeri", color: "#002147" },
+    { name: "UDB Surakarta", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999191/fzlcmewmtoagcb7tzp3h.png", location: "Surakarta, Indonesia", type: "Dalam Negeri", color: "#800000" },
+    { name: "UIM Madinah", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999193/lqek1rndhgmvhlwd1lc2.png", location: "Madinah, Arab Saudi", type: "Luar Negeri", color: "#004b23" },
+    { name: "UIN Sunan Gunung Djati", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999194/not3f8g6bwgsgxlfhhqx.png", location: "Bandung, Indonesia", type: "Dalam Negeri", color: "#0056b3" },
+    { name: "UIN Syarif Hidayatullah", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999195/biyeqktqqkzjiwxweadn.png", location: "Jakarta, Indonesia", type: "Dalam Negeri", color: "#007bff" },
+    { name: "UMY Yogyakarta", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999196/sbf6wnsxlyw2dfut0f1a.png", location: "Yogyakarta, Indonesia", type: "Dalam Negeri", color: "#a52a2a" },
+    { name: "Universitas Airlangga", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999198/oc5uuhe0hpuviymqowvp.png", location: "Surabaya, Indonesia", type: "Dalam Negeri", color: "#004085" },
+    { name: "Universitas Padjadjaran", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999199/jc5lwyoxhumrdhj92asa.png", location: "Sumedang, Indonesia", type: "Dalam Negeri", color: "#856404" },
+    { name: "UPI Bandung", path: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999200/ahqlda50v9cmm7ijiybx.png", location: "Bandung, Indonesia", type: "Dalam Negeri", color: "#721c24" },
   ];
 
   const scrollLeft = () => {
@@ -121,7 +121,7 @@ const GlobalAlumni = () => {
 
           <div className="center-hub">
             <Image 
-              src="/Logo/Logo Pondok Pesantren.png" 
+              src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" 
               alt="Logo Pesantren Al-Azhar" 
               width={160} 
               height={160} 

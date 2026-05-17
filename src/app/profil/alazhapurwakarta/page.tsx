@@ -32,17 +32,17 @@ export default function SejarahPage() {
               </p>
             </div>
             <div className="sejarah-img">
-              <img src="/Profil%20Pendiri.png" alt="Profil Al-Azhar Purwakarta" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999221/jbdav9rhoivmmytzjjen.png" alt="Profil Al-Azhar Purwakarta" />
             </div>
           </div>
 
           <div className="visi-misi-section">
             <div className="vm-logos-column">
-              <img src="/Logo/Logo%20Pondok%20Pesantren.png" alt="Logo Ponpes" />
-              <img src="/Logo/Logo%20SDIT.png" alt="Logo SDIT" />
-              <img src="/Logo/Logo%20SMP.png" alt="Logo SMP" />
-              <img src="/Logo/Logo%20Madrasah%20Aliyah.png" alt="Logo MA" />
-              <img src="/Logo/Logo%20TK.png" alt="Logo TK" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Ponpes" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999208/vqmahfuz6iqrzg916oab.png" alt="Logo SDIT" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999209/ftxowvzkp4bix7mimh3v.png" alt="Logo SMP" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999206/tseftzv1omefjsldurni.png" alt="Logo MA" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999210/xblypre0sq4suc8bjdld.png" alt="Logo TK" />
             </div>
             <div className="v-m-box">
               <div className="v-m-item">

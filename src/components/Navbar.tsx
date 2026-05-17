@@ -66,7 +66,7 @@ export default function Navbar() {
       <div className="main-nav">
         <div className="container nav-container">
           <Link href="/" className="logo" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
-            <img src="/Logo/Logo%20Pondok%20Pesantren.png" alt="Logo Al Azhar" className="logo-img" />
+            <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Al Azhar" className="logo-img" />
             <div className="logo-box">
               <span className="logo-main">PESANTREN AL-AZHAR</span>
               <span className="logo-sub">PURWAKARTA</span>
@@ -132,7 +132,7 @@ export default function Navbar() {
                   {isLogoActive ? (
                     <motion.img
                       key="logo"
-                      src="/Logo/azwa page login.png"
+                      src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999181/gn0jliybqazmk5nelrwf.png"
                       alt="Login"
                       className="nav-login-img"
                       initial={{ opacity: 0, scale: 0.98, filter: "blur(12px)" }}

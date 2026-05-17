@@ -87,7 +87,7 @@ export default function PendiriPage() {
             >
               <div className="image-wrapper">
                 <Image 
-                  src="/Pimpinan Ponpes AL Azhar - Sapa Kilat.png" 
+                  src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999220/hjozyz9pb8puevlg2ynu.png" 
                   alt="KH. Andi Mappaenre" 
                   width={450} 
                   height={550} 
@@ -109,7 +109,7 @@ export default function PendiriPage() {
             >
               <div className="image-wrapper left-accent">
                 <Image 
-                  src="/Ketua%20Yayasan%20Andi%20Azhar.png" 
+                  src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999180/hpw4kbe8jglic4kpdtbj.png" 
                   alt="Ketua Yayasan Andi Azhar" 
                   width={450} 
                   height={550} 
@@ -174,7 +174,7 @@ export default function PendiriPage() {
         .header-section {
           padding: 14rem 0 8rem;
           text-align: center;
-          background: linear-gradient(rgba(0, 33, 71, 0.8), rgba(0, 33, 71, 0.7)), url('/Al-Azhar 1.png');
+          background: linear-gradient(rgba(0, 33, 71, 0.8), rgba(0, 33, 71, 0.7)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999165/qyvcomndxiwejcvzmfsl.png');
           background-size: cover;
           background-position: center;
           background-attachment: fixed;
