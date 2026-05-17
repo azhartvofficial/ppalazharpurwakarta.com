@@ -109,7 +109,7 @@ const SapaKilat = () => {
                 Di bawah bimbingan DR. (c) KH. ANDI MAPPAENRE, LC, MM, serta jajaran tenaga pendidik yang ahli di bidangnya, pesantren ini menerapkan kurikulum yang menitik beratkan pada pembentukan karakter unggul melalui pembiasaan ibadah dan keteladanan akhlak. Kami percaya bahwa penguasaan bahasa Arab adalah kunci untuk mendalami ilmu-ilmu syar’i secara otentik, sementara hafalan Al-Qur’an menjadi pondasi keimanan yang kokoh.
               </p>
               <Link href="/profil/pendiri">
-                <button className="outline-btn">SELENGKAPNYA <span style={{ marginLeft: '8px' }}>→</span></button>
+                <button className="outline-btn">PROFIL SELENGKAPNYA <span style={{ marginLeft: '8px' }}>→</span></button>
               </Link>
             </div>
           </div>
@@ -641,9 +641,9 @@ const SapaKilat = () => {
           .sapa-kilat-section {
             padding-top: 1.5rem;
           }
-          .main-title { font-size: 2.2rem; }
+          .main-title { font-size: 1.7rem !important; }
           .tagline-vision { 
-            font-size: 1.4rem; 
+            font-size: 1.2rem !important; 
             max-width: 95%; 
             margin: 0 auto;
             line-height: 1.3;
@@ -702,22 +702,28 @@ const SapaKilat = () => {
 
           /* New horizontal leadership row for mobile */
           .leader-row {
-            flex-direction: row !important;
+            display: flow-root !important;
             text-align: left !important;
-            gap: 1.5rem !important;
-            align-items: flex-start !important;
           }
           .leader-cutout {
-            flex: 0 0 140px !important;
+            float: left !important;
+            width: 140px !important;
+            margin: 0 15px 10px 0 !important;
+            flex: none !important;
           }
           .leader-img {
             height: 200px !important;
             border-radius: 15px !important;
           }
+          .leader-description {
+            display: block !important;
+            width: auto !important;
+          }
           .leader-description p {
             font-size: 0.8rem !important;
             line-height: 1.5 !important;
             margin-bottom: 1rem !important;
+            text-align: justify !important;
           }
           .name-tag-main span {
             font-size: 0.6rem !important;
@@ -737,6 +743,14 @@ const SapaKilat = () => {
             font-size: 0.55rem !important;
             padding: 0.4rem 0.8rem !important;
             letter-spacing: 1px !important;
+          }
+          .outline-btn {
+            font-size: 0.72rem !important;
+            padding: 8px 20px !important;
+            display: block !important;
+            margin: 1.5rem auto 0 auto !important;
+            width: fit-content !important;
+            text-align: center !important;
           }
         }
       `}</style>

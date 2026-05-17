@@ -39,7 +39,7 @@ const AlumniDocumentation = () => {
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 200 }}
         >
-          " Tidak ada Proses yang Mudah untuk Hasil yang Indah "
+          " Tidak ada Proses yang Mudah <br className="mobile-br" /> untuk Hasil yang Indah "
         </motion.h2>
 
         <div className="absurd-grid">
@@ -93,6 +93,10 @@ const AlumniDocumentation = () => {
           width: 100% !important;
           display: block !important;
           line-height: 1.4 !important;
+        }
+        
+        .mobile-br {
+          display: none;
         }
 
         .absurd-grid {
@@ -148,9 +152,29 @@ const AlumniDocumentation = () => {
         }
 
         @media (max-width: 768px) {
-          .funny-title { font-size: 2.2rem !important; }
-          .absurd-grid { gap: 1.5rem; }
-          .photo-card { width: 160px !important; height: 200px !important; padding: 5px; padding-bottom: 30px; }
+          .funny-title { 
+            font-size: 1.5rem !important; 
+            margin: 0 auto 2rem auto !important;
+            line-height: 1.4 !important;
+          }
+          .mobile-br {
+            display: block !important;
+          }
+          .absurd-grid { 
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 1.2rem !important;
+            justify-items: center !important;
+            padding: 1rem !important;
+          }
+          .photo-card { 
+            width: 42vw !important; 
+            height: 52vw !important; 
+            max-width: 160px !important;
+            max-height: 200px !important;
+            padding: 5px !important; 
+            padding-bottom: 25px !important; 
+          }
           .photo-tape { width: 50px; height: 18px; }
         }
       `}</style>

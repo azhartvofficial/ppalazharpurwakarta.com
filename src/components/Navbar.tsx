@@ -43,9 +43,9 @@ export default function Navbar() {
       <div className="top-bar">
         <div className="container top-bar-content">
           <div className="top-links">
-            <Link href="/login">{t('portalSantri')}</Link>
-            <Link href="/login">{t('portalGuru')}</Link>
-            <Link href="/azhar-learn">{t('lms')}</Link>
+            <Link href="/login">Azwa Page</Link>
+            <Link href="/login/santri">Santri Page</Link>
+            <Link href="/azhar-learn">Azhar Learn</Link>
           </div>
           <div className="top-utils">
             <div className="lang-switcher-v2">
@@ -121,25 +121,6 @@ export default function Navbar() {
                 <Link href="/jelajahi/beasiswa" onClick={() => setMenuOpen(false)}>{t('jalur_beasiswa') || 'Jalur Beasiswa'}</Link>
               </div>
             </div>
-
-            {/* Access to Panel Pengurus with custom dashboard icon */}
-            <Link href="/admin" className="nav-cta-admin" onClick={() => setMenuOpen(false)}>
-              <svg 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2.5" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                style={{ width: '14px', height: '14px', marginRight: '6px', display: 'inline-block', verticalAlign: 'middle' }}
-              >
-                <rect x="3" y="3" width="7" height="9" />
-                <rect x="14" y="3" width="7" height="5" />
-                <rect x="14" y="12" width="7" height="9" />
-                <rect x="3" y="16" width="7" height="5" />
-              </svg>
-              <span>{language === 'ID' ? 'Panel Pengurus' : 'Admin Panel'}</span>
-            </Link>
 
           </div>
 
@@ -219,20 +200,6 @@ export default function Navbar() {
                 <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
                 <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
               </button>
-              <AnimatePresence>
-                {!menuOpen && (
-                  <motion.div 
-                    className="menu-helper-bubble"
-                    initial={{ opacity: 0, scale: 0.8, x: -10 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    exit={{ opacity: 0, scale: 0.8, x: -10 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <span className="helper-pulse-dot"></span>
-                    <span>Buka Menu Lainnya</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -346,7 +313,8 @@ export default function Navbar() {
 
         .top-links {
           display: flex;
-          gap: 1.5rem;
+          gap: 0.75rem;
+          font-size: 0.68rem;
         }
 
         .top-links a:hover {
@@ -723,7 +691,7 @@ export default function Navbar() {
           }
           
           .nav-container {
-            padding: 0 1.5rem;
+            padding: 0 0.6rem !important;
             display: flex;
             align-items: center;
           }
@@ -758,7 +726,7 @@ export default function Navbar() {
             display: flex !important;
             position: fixed !important;
             bottom: 25px !important;
-            left: 25px !important;
+            left: 15px !important;
             right: auto !important;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%) !important;
             border: 2px solid rgba(255, 255, 255, 0.4) !important;
@@ -788,7 +756,7 @@ export default function Navbar() {
           :global(.menu-helper-bubble) {
             position: fixed !important;
             bottom: 36px !important;
-            left: 95px !important;
+            left: 85px !important;
             right: auto !important;
             background: rgba(0, 33, 71, 0.95) !important;
             backdrop-filter: blur(10px) !important;
@@ -835,11 +803,13 @@ export default function Navbar() {
           .nav-links {
             position: fixed !important;
             bottom: 100px !important;
-            left: 25px !important;
+            left: 15px !important;
             right: auto !important;
             top: auto !important;
-            width: calc(100% - 50px) !important;
+            width: calc(100% - 30px) !important;
             max-width: 360px !important;
+            margin: 0 !important;
+            margin-left: 0 !important;
             height: auto !important;
             max-height: calc(100vh - 150px) !important;
             background: rgba(255, 255, 255, 0.95) !important;
@@ -848,6 +818,7 @@ export default function Navbar() {
             border: 1px solid rgba(255, 255, 255, 0.5) !important;
             border-radius: 24px !important;
             flex-direction: column !important;
+            align-items: flex-start !important;
             padding: 1.5rem !important;
             gap: 0.6rem !important;
             box-shadow: 0 20px 50px rgba(0, 33, 71, 0.25) !important;
@@ -855,7 +826,7 @@ export default function Navbar() {
             transform-origin: bottom left !important;
             opacity: 0 !important;
             visibility: hidden !important;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important; /* Spring elastic animation! */
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
             z-index: 99998 !important;
             overflow-y: auto !important;
             scrollbar-width: none;
@@ -869,9 +840,11 @@ export default function Navbar() {
             transform: scale(1) translateY(0) translateX(0) !important;
             opacity: 1 !important;
             visibility: visible !important;
-          }     }
+          }
 
-          .nav-item { 
+          :global(.nav-item) { 
+            display: flex !important;
+            align-items: center !important;
             font-size: 0.9rem !important; 
             width: 100% !important; 
             text-align: left !important;
@@ -883,7 +856,7 @@ export default function Navbar() {
             transition: all 0.3s ease !important;
           }
           
-          .nav-item:hover {
+          :global(.nav-item:hover) {
             background: rgba(230, 126, 34, 0.08) !important;
             color: var(--secondary) !important;
             padding-left: 1.5rem !important;
@@ -919,16 +892,19 @@ export default function Navbar() {
           }
           .dropdown-menu.show { display: flex; }
           
-          .nav-cta-special, .nav-cta-admin, .nav-login-premium {
-            width: 100% !important;
-            margin: 0 !important;
-            justify-content: center !important;
-          }
-          
-          .nav-cta-special, .nav-cta-admin {
+          :global(.nav-cta-special) {
+            display: flex !important;
+            align-items: center !important;
+            font-size: 0.9rem !important;
             width: 100% !important;
             margin: 0.3rem 0 !important;
-          }     }
+            justify-content: flex-start !important;
+            padding: 0.6rem 1.2rem !important;
+            border-radius: 12px !important;
+            background: var(--secondary) !important;
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.2) !important;
+          }
 
           .nav-mobile-actions {
             margin-left: auto;

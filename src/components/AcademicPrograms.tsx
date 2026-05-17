@@ -134,6 +134,7 @@ const AcademicPrograms = () => {
           line-height: 1.6;
           max-width: 850px;
           margin: 0 auto;
+          text-align: justify;
         }
 
         /* Slider Styles */
@@ -365,14 +366,16 @@ const AcademicPrograms = () => {
           .academic-section { padding: 1rem 0 0.5rem 0; }
           .academic-cta-banner {
             flex-direction: column;
-            padding: 3rem 2rem;
+            padding: 2.5rem 1rem !important;
             text-align: center;
             gap: 2rem;
             margin: 2rem 0;
           }
           .cta-text {
-            font-size: 1.6rem;
+            font-size: 1.28rem !important;
             text-align: center;
+            line-height: 1.3;
+            letter-spacing: -0.3px !important;
           }
           .cta-button {
             width: 100%;

@@ -169,25 +169,54 @@ const Admission = () => {
 
         @media (max-width: 768px) {
           .admission-grid {
-            grid-template-columns: 1fr 0.7fr;
-            gap: 1.5rem;
+            grid-template-columns: 1fr !important;
+            gap: 2.5rem !important;
+            text-align: center !important;
           }
-          .admission-title { font-size: 1.8rem; }
-          .admission-description { font-size: 0.9rem; margin-bottom: 1.5rem; }
+          .admission-content {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center !important;
+          }
+          .admission-title { 
+            font-size: 1.8rem; 
+            margin-bottom: 1rem !important;
+          }
+          .admission-description { 
+            font-size: 0.9rem; 
+            margin-bottom: 1.5rem;
+            text-align: center !important;
+            margin: 0 auto 1.5rem auto !important;
+          }
           .main-image-box { height: 250px; border-radius: 20px; }
-          .admission-cta { padding: 0.8rem 1.5rem; font-size: 0.9rem; }
+          .admission-cta { 
+            padding: 0.8rem 1.8rem !important; 
+            font-size: 0.85rem !important;
+            white-space: nowrap !important;
+            display: inline-flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin: 0 auto !important;
+            width: fit-content !important;
+          }
         }
 
         @media (max-width: 480px) {
           .admission-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            grid-template-columns: 1fr !important;
+            gap: 2rem !important;
           }
-          .admission-title { font-size: 1.2rem; }
-          .admission-description { font-size: 0.75rem; margin-bottom: 1rem; }
-          .main-image-box { height: 280px; border-radius: 12px; }
-          .admission-cta { padding: 0.6rem 1.2rem; font-size: 0.8rem; }
-          .admission-premium { padding: 0 0 3rem 0; }
+          .admission-title { font-size: 1.4rem !important; }
+          .admission-description { font-size: 0.8rem !important; margin-bottom: 1.2rem !important; }
+          .main-image-box { height: 220px !important; }
+          .admission-cta { 
+            padding: 0.7rem 1.4rem !important; 
+            font-size: 0.8rem !important; 
+            white-space: nowrap !important;
+            width: fit-content !important;
+          }
+          .admission-premium { padding: 1rem 0 2rem 0 !important; }
         }
       `}</style>
     </section>
