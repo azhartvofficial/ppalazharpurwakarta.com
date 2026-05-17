@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { getCloudinaryUrl } from "@/utils/cloudinary";
 
 const Preloader = () => {
   const pathname = usePathname();
@@ -64,7 +65,7 @@ const Preloader = () => {
             </div>
           </div>
           <img 
-            src={pathname && pathname.startsWith("/login") ? "/Logo/azwa page.png" : "/Logo/Logo Pondok Pesantren.png"} 
+            src={getCloudinaryUrl(pathname && pathname.startsWith("/login") ? "/Logo/azwa page.png" : "/Logo/Logo Pondok Pesantren.png")} 
             alt="Logo" 
             className="preloader-logo" 
             width={130}
