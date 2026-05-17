@@ -11,6 +11,40 @@ export default function Navbar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { language, setLanguage, t } = useLanguage();
 
+  const [maintenanceActive, setMaintenanceActive] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [adminName, setAdminName] = useState("Admin");
+
+  const isLoginPage = typeof window !== 'undefined' && (
+    window.location.pathname.includes('/login') || 
+    window.location.pathname.includes('/admin')
+  );
+
+  useEffect(() => {
+    const checkMaintenanceAndSession = () => {
+      if (typeof window !== 'undefined') {
+        const isMaintenance = localStorage.getItem('web_maintenance_mode') === 'true';
+        const sessionStr = localStorage.getItem('admin_session');
+        const session = sessionStr ? JSON.parse(sessionStr) : null;
+        
+        setMaintenanceActive(isMaintenance);
+        setIsAdminLoggedIn(!!session);
+        if (session) {
+          setAdminName("Admin");
+        }
+      }
+    };
+
+    checkMaintenanceAndSession();
+
+    window.addEventListener('storage', checkMaintenanceAndSession);
+    window.addEventListener('maintenanceChange', checkMaintenanceAndSession);
+    return () => {
+      window.removeEventListener('storage', checkMaintenanceAndSession);
+      window.removeEventListener('maintenanceChange', checkMaintenanceAndSession);
+    };
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -126,73 +160,91 @@ export default function Navbar() {
 
           {/* Mobile Utility + Toggle */}
           <div className="nav-mobile-actions">
-            <Link href="/login" className="nav-login-premium" onClick={() => setMenuOpen(false)}>
-              <div className="login-switch-container">
-                <AnimatePresence mode="wait">
-                  {isLogoActive ? (
-                    <motion.img
-                      key="logo"
-                      src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999181/gn0jliybqazmk5nelrwf.png"
-                      alt="Login"
-                      className="nav-login-img"
-                      initial={{ opacity: 0, scale: 0.98, filter: "blur(12px)" }}
-                      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                      exit={{ opacity: 0, scale: 0.98, filter: "blur(12px)" }}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ 
-                        duration: 3.5,
-                        ease: [0.22, 1, 0.36, 1] /* Quintic ease out for ultra smoothness */
-                      }}
-                    />
-                  ) : (
-                    <motion.div
-                      key="text"
-                      className="login-graphic"
-                      style={{ 
-                        display: 'flex', 
-                        flexDirection: 'row', 
-                        alignItems: 'center', 
-                        justifyContent: 'center',
-                        gap: '8px',
-                        background: 'rgba(230, 126, 34, 0.1)',
-                        border: '2px solid var(--secondary)',
-                        padding: '6px 16px',
-                        borderRadius: '50px',
-                        color: 'var(--primary)',
-                        fontWeight: 800,
-                        fontSize: '0.8rem',
-                        whiteSpace: 'nowrap',
-                        cursor: 'pointer'
-                      }}
-                      initial={{ opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.98 }}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ 
-                        duration: 3.5,
-                        ease: [0.22, 1, 0.36, 1]
-                      }}
-                    >
-                      <svg 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        strokeWidth="2.5" 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        style={{ width: '16px', height: '16px', flexShrink: 0, color: 'var(--primary)' }}
-                      >
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                      </svg>
-                      <span>{t('login')}</span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+            {isAdminLoggedIn ? (
+              <div className="nav-admin-profile-pill">
+                <span className="admin-avatar">👤</span>
+                <span className="admin-name">{adminName}</span>
+                <button 
+                  onClick={() => {
+                    localStorage.removeItem('admin_session');
+                    window.dispatchEvent(new Event('storage'));
+                    window.location.reload();
+                  }}
+                  className="admin-logout-btn"
+                  title="Keluar dari Sesi Admin"
+                >
+                  🚪
+                </button>
               </div>
-            </Link>
+            ) : (
+              <Link href="/login" className="nav-login-premium" onClick={() => setMenuOpen(false)}>
+                <div className="login-switch-container">
+                  <AnimatePresence mode="wait">
+                    {isLogoActive ? (
+                      <motion.img
+                        key="logo"
+                        src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999181/gn0jliybqazmk5nelrwf.png"
+                        alt="Login"
+                        className="nav-login-img"
+                        initial={{ opacity: 0, scale: 0.98, filter: "blur(12px)" }}
+                        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, scale: 0.98, filter: "blur(12px)" }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ 
+                          duration: 3.5,
+                          ease: [0.22, 1, 0.36, 1] /* Quintic ease out for ultra smoothness */
+                        }}
+                      />
+                    ) : (
+                      <motion.div
+                        key="text"
+                        className="login-graphic"
+                        style={{ 
+                          display: 'flex', 
+                          flexDirection: 'row', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          gap: '8px',
+                          background: 'rgba(230, 126, 34, 0.1)',
+                          border: '2px solid var(--secondary)',
+                          padding: '6px 16px',
+                          borderRadius: '50px',
+                          color: 'var(--primary)',
+                          fontWeight: 800,
+                          fontSize: '0.8rem',
+                          whiteSpace: 'nowrap',
+                          cursor: 'pointer'
+                        }}
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ 
+                          duration: 3.5,
+                          ease: [0.22, 1, 0.36, 1]
+                        }}
+                      >
+                        <svg 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          style={{ width: '16px', height: '16px', flexShrink: 0, color: 'var(--primary)' }}
+                        >
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                          <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        <span>{t('login')}</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </Link>
+            )}
 
             <div className="menu-toggle-wrapper">
               <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
@@ -958,7 +1010,194 @@ export default function Navbar() {
             font-size: 0.38rem !important;
           }
         }
+
+        /* Maintenance Overlay CSS */
+        .maintenance-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: rgba(0, 33, 71, 0.85); /* Deep navy tint */
+          backdrop-filter: blur(25px);
+          -webkit-backdrop-filter: blur(25px);
+          z-index: 9999999; /* Higher than everything */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 2rem;
+          color: white;
+        }
+
+        .maintenance-glass-card {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          padding: 3rem 2rem;
+          border-radius: 28px;
+          max-width: 500px;
+          width: 100%;
+          text-align: center;
+          box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+          animation: fadeInUp 0.8s ease;
+        }
+
+        .maintenance-logo {
+          height: 90px;
+          margin-bottom: 1.5rem;
+          filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+        }
+
+        .maintenance-title {
+          font-family: var(--font-custom), 'Inter', sans-serif;
+          font-size: 2.2rem;
+          font-weight: 800;
+          color: var(--secondary); /* Vibrant Orange */
+          letter-spacing: 2px;
+          margin-bottom: 1rem;
+        }
+
+        .maintenance-gear-container {
+          margin: 1.5rem 0;
+        }
+
+        .maintenance-gear-icon {
+          display: inline-block;
+          font-size: 3.5rem;
+        }
+
+        .maintenance-gear-icon.spinning {
+          animation: gear-spin 4s linear infinite;
+        }
+
+        @keyframes gear-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        .maintenance-text {
+          font-size: 0.95rem;
+          line-height: 1.6;
+          color: rgba(255, 255, 255, 0.85);
+          margin-bottom: 2rem;
+        }
+
+        .maintenance-status-badge {
+          display: inline-block;
+          background: rgba(239, 68, 68, 0.2);
+          border: 1.5px solid #ef4444;
+          color: #fca5a5;
+          padding: 0.4rem 1.2rem;
+          font-weight: 800;
+          font-size: 0.75rem;
+          border-radius: 50px;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+        }
+
+        .maintenance-admin-btn {
+          display: inline-block;
+          padding: 0.8rem 2.2rem;
+          background: #ff8c00;
+          color: white !important;
+          font-weight: 900;
+          font-size: 0.82rem;
+          border-radius: 50px;
+          text-decoration: none;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          transition: all 0.3s ease;
+          box-shadow: 0 10px 25px rgba(255, 140, 0, 0.3);
+        }
+
+        .maintenance-admin-btn:hover {
+          transform: translateY(-3px);
+          background: #e67e00;
+          box-shadow: 0 15px 30px rgba(255, 140, 0, 0.5);
+        }
+
+        /* Admin profile pill */
+        .nav-admin-profile-pill {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(0, 33, 71, 0.08);
+          border: 2px solid var(--primary);
+          padding: 6px 12px;
+          border-radius: 50px;
+          color: var(--primary);
+          font-weight: 800;
+          font-size: 0.8rem;
+          white-space: nowrap;
+          box-shadow: 0 4px 15px rgba(0, 33, 71, 0.08);
+          transition: all 0.3s ease;
+        }
+
+        .nav-admin-profile-pill:hover {
+          background: rgba(0, 33, 71, 0.12);
+          transform: translateY(-1px);
+        }
+
+        .admin-avatar {
+          font-size: 0.9rem;
+        }
+
+        .admin-name {
+          max-width: 120px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .admin-logout-btn {
+          background: none;
+          border: none;
+          font-size: 0.95rem;
+          cursor: pointer;
+          padding: 2px;
+          border-radius: 50%;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .admin-logout-btn:hover {
+          transform: scale(1.2);
+          filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.4));
+        }
+
+        @media (max-width: 992px) {
+          .nav-admin-profile-pill {
+            padding: 4px 8px;
+            font-size: 0.72rem;
+            border-width: 1.5px;
+          }
+          
+          .admin-name {
+            max-width: 75px;
+          }
+        }
       `}</style>
+
+      {maintenanceActive && !isAdminLoggedIn && !isLoginPage && (
+        <div className="maintenance-overlay">
+          <div className="maintenance-glass-card">
+            <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Al Azhar" className="maintenance-logo" />
+            <h1 className="maintenance-title">SISTEM MAINTENANCE</h1>
+            <div className="maintenance-gear-container">
+              <span className="maintenance-gear-icon spinning">⚙️</span>
+            </div>
+            <p className="maintenance-text">
+              Mohon maaf atas ketidaknyamanannya. Website Resmi Pondok Pesantren Al-Azhar Purwakarta sedang dalam pemeliharaan sistem berkala untuk meningkatkan kualitas layanan.
+            </p>
+            <div className="maintenance-status-badge">🚨 Offline Sementara</div>
+            <div style={{ marginTop: '2rem' }}>
+              <Link href="/login" className="maintenance-admin-btn">
+                🔑 Masuk Sebagai Admin
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
