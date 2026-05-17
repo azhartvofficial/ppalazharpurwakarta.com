@@ -464,7 +464,6 @@ export default function AdminDashboardPage() {
                 </button>
               </div>
             </div>
-            <Link href="/" className="btn-logout">Kembali ke Web ↩</Link>
           </div>
         </aside>
 
@@ -1101,12 +1100,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
       <style jsx>{`
         .dashboard-layout {
-          min-height: calc(100vh - 90px);
+          min-height: 100vh;
           background-color: #f1f5f9;
           color: #0f172a;
           font-family: 'Inter', sans-serif;
           overflow-x: hidden;
-          margin-top: 90px;
         }
 
         .demo-banner {
@@ -1152,11 +1150,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           border-right: 1px solid rgba(0, 0, 0, 0.05);
           display: flex;
           flex-direction: column;
-          padding: 2rem 1.5rem;
+          padding: 2.5rem 1.5rem;
           position: sticky;
-          top: 90px;
-          height: calc(100vh - 90px);
+          top: 0;
+          height: 100vh;
           box-sizing: border-box;
+          z-index: 10005;
         }
 
         .sidebar-header {
@@ -1322,7 +1321,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
         /* Main Content Styling - Light Grey Clean Background */
         .main-content {
-          padding: 3rem 4rem;
+          padding: 8.5rem 4rem 3rem 4rem;
           box-sizing: border-box;
           overflow-y: auto;
           height: 100vh;
@@ -2144,6 +2143,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         }
 
         /* Responsive styling */
+        @media (min-width: 1200px) {
+          :global(.main-nav) {
+            left: 280px !important;
+            width: calc(100% - 280px) !important;
+          }
+          :global(.top-bar) {
+            left: 280px !important;
+            width: calc(100% - 280px) !important;
+          }
+        }
+
         @media (max-width: 1200px) {
           .dashboard-grid { grid-template-columns: 80px 1fr; }
           .sidebar-logo, .sidebar-subtitle, .profile-details, .btn-logout { display: none; }
@@ -2170,7 +2180,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             color: white;
             padding: 0.9rem 1.2rem;
             position: sticky;
-            top: 0;
+            top: 58px;
             z-index: 999;
             margin: -2rem -1.5rem 1.5rem -1.5rem;
             box-shadow: 0 4px 15px rgba(0, 33, 71, 0.2);
@@ -2218,6 +2228,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             width: 290px;
             height: 100vh;
             z-index: 10000;
+            padding: 7rem 1.5rem 2rem 1.5rem !important;
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 10px 0 35px rgba(0, 0, 0, 0.3);
