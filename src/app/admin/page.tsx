@@ -497,41 +497,7 @@ export default function AdminDashboardPage() {
               <span className="nav-icon"></span> <span>Kelola Data & Akun</span>
             </button>
           </nav>
-
-          <div className="sidebar-footer">
-            <div className="admin-profile">
-              <div className="profile-avatar">{(user?.email || "A").substring(0, 1).toUpperCase()}</div>
-              <div className="profile-details">
-                <span className="profile-name">{user?.email || "Super Admin"}</span>
-                <span className="profile-role">Azwa Page Manager</span>
-                <button 
-                  onClick={async () => {
-                    await supabase.auth.signOut();
-                    localStorage.removeItem('admin_session');
-                    window.dispatchEvent(new Event('storage'));
-                    window.dispatchEvent(new Event('maintenanceChange'));
-                    window.location.href = '/login';
-                  }}
-                  className="sidebar-logout-btn"
-                >
-                  <svg 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2.5" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    style={{ width: '18px', height: '18px', flexShrink: 0 }}
-                  >
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                    <polyline points="16 17 21 12 16 7" />
-                    <line x1="21" y1="12" x2="9" y2="12" />
-                  </svg>
-                  <span>Logout</span>
-                </button>
-              </div>
-            </div>
-          </div>
+          <div className="sidebar-decor-glow" style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', height: '150px', background: 'linear-gradient(to top, rgba(255,140,0,0.03), transparent)', pointerEvents: 'none' }} />
         </aside>
 
         {/* Main Content Area */}
@@ -550,6 +516,7 @@ export default function AdminDashboardPage() {
               <span>PANEL PENGURUS</span>
             </div>
           </header>
+          
           <header className="content-header">
             <div>
               <span className="header-breadcrumbs">
@@ -565,7 +532,65 @@ export default function AdminDashboardPage() {
               </h2>
             </div>
 
+            {/* Top-Right Premium Profile & Logout Dropdown */}
+            <div className="top-profile-container" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              
+              <Link href="/" className="btn-view-site-classic">
+                Kunjungi Situs
+              </Link>
 
+              <div className="profile-dropdown-trigger">
+                <div className="top-profile-avatar-bubble">
+                  {(user?.email || "A").substring(0, 1).toUpperCase()}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', minWidth: '0' }}>
+                  <span className="top-profile-name">
+                    {user?.email || "Super Admin"}
+                  </span>
+                  <span className="top-profile-role">
+                    Azwa Page Manager
+                  </span>
+                </div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '12px', height: '12px', marginLeft: '2px', flexShrink: 0 }}>
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+
+                {/* Glassmorphic Dropdown Panel */}
+                <div className="profile-dropdown-panel">
+                  <div className="dropdown-user-info">
+                    <strong>Al-Azhar Purwakarta</strong>
+                    <span>{user?.email || "danishalzam8002@gmail.com"}</span>
+                  </div>
+                  <div className="dropdown-divider"></div>
+                  <button 
+                    onClick={async () => {
+                      await supabase.auth.signOut();
+                      localStorage.removeItem('admin_session');
+                      window.dispatchEvent(new Event('storage'));
+                      window.dispatchEvent(new Event('maintenanceChange'));
+                      window.location.href = '/login';
+                    }}
+                    className="dropdown-logout-btn"
+                  >
+                    <svg 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2.5" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      style={{ width: '15px', height: '15px', flexShrink: 0 }}
+                    >
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                      <polyline points="16 17 21 12 16 7" />
+                      <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    <span>Logout</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
           </header>
 
           <div className="content-body">
@@ -1650,21 +1675,26 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           display: flex;
           flex-direction: column;
           text-align: left;
+          min-width: 0;
         }
 
         .profile-name {
-          font-size: 0.8rem;
+          font-size: 0.7rem;
           font-weight: 700;
           color: white;
-          max-width: 170px;
+          max-width: 190px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
         }
 
         .profile-role {
-          font-size: 0.65rem;
-          color: #94a3b8;
+          font-size: 0.58rem;
+          color: #ff8c00;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          white-space: nowrap;
         }
 
         .sidebar-logout-btn {
@@ -1923,6 +1953,161 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           background: #ff8c00;
           transform: translateY(-2px);
           box-shadow: 0 4px 15px rgba(255, 140, 0, 0.15);
+        }
+
+        /* Top-Right Premium Profile & Logout Dropdown */
+        .btn-view-site-classic {
+          text-decoration: none;
+          padding: 0.55rem 1.1rem;
+          background: rgba(0, 33, 71, 0.04);
+          border: 1px solid rgba(0, 33, 71, 0.1);
+          color: #002147;
+          font-size: 0.72rem;
+          font-weight: 800;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          transition: all 0.2s;
+        }
+
+        .btn-view-site-classic:hover {
+          background: #002147;
+          color: white;
+          border-color: #002147;
+        }
+
+        .profile-dropdown-trigger {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 0.65rem;
+          background: #ffffff;
+          border: 1.5px solid #e2e8f0;
+          padding: 0.35rem 0.85rem;
+          border-radius: 50px;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+          user-select: none;
+        }
+
+        .profile-dropdown-trigger:hover {
+          border-color: #ff8c00;
+          box-shadow: 0 4px 15px rgba(255, 140, 0, 0.08);
+        }
+
+        .top-profile-avatar-bubble {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #002147, #003366);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.8rem;
+          font-weight: 800;
+          border: 1.5px solid rgba(255, 255, 255, 0.2);
+          box-shadow: 0 0 10px rgba(0, 33, 71, 0.1);
+        }
+
+        .top-profile-name {
+          font-size: 0.72rem;
+          font-weight: 800;
+          color: #0f172a;
+          max-width: 130px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .top-profile-role {
+          font-size: 0.55rem;
+          color: #ff8c00;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          white-space: nowrap;
+        }
+
+        .profile-dropdown-panel {
+          position: absolute;
+          top: calc(100% + 8px);
+          right: 0;
+          width: 220px;
+          background: rgba(255, 255, 255, 0.98);
+          backdrop-filter: blur(15px);
+          -webkit-backdrop-filter: blur(15px);
+          border: 1px solid rgba(0, 33, 71, 0.08);
+          border-radius: 12px;
+          box-shadow: 0 10px 30px rgba(0, 33, 71, 0.08);
+          padding: 0.85rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.65rem;
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(8px);
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 10000;
+        }
+
+        .profile-dropdown-trigger:hover .profile-dropdown-panel {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+        }
+
+        .dropdown-user-info {
+          display: flex;
+          flex-direction: column;
+          text-align: left;
+          gap: 0.1rem;
+        }
+
+        .dropdown-user-info strong {
+          font-size: 0.75rem;
+          color: #002147;
+          font-weight: 800;
+        }
+
+        .dropdown-user-info span {
+          font-size: 0.68rem;
+          color: #64748b;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .dropdown-divider {
+          height: 1px;
+          background: rgba(0, 33, 71, 0.06);
+          margin: 0.15rem 0;
+        }
+
+        .dropdown-logout-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          width: 100%;
+          padding: 0.5rem;
+          background: rgba(239, 68, 68, 0.08);
+          border: 1px solid rgba(239, 68, 68, 0.15);
+          color: #ef4444;
+          font-size: 0.72rem;
+          font-weight: 800;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .dropdown-logout-btn:hover {
+          background: #ef4444;
+          color: white;
+          border-color: #ef4444;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
         }
 
         /* Tab Content Overview - White Card Design */
