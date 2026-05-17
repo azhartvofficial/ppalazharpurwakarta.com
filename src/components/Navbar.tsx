@@ -161,21 +161,10 @@ export default function Navbar() {
           {/* Mobile Utility + Toggle */}
           <div className="nav-mobile-actions">
             {isAdminLoggedIn ? (
-              <div className="nav-admin-profile-pill">
+              <Link href="/admin" className="nav-admin-profile-pill" style={{ textDecoration: 'none' }}>
                 <span className="admin-avatar">👤</span>
                 <span className="admin-name">{adminName}</span>
-                <button 
-                  onClick={() => {
-                    localStorage.removeItem('admin_session');
-                    window.dispatchEvent(new Event('storage'));
-                    window.location.reload();
-                  }}
-                  className="admin-logout-btn"
-                  title="Keluar dari Sesi Admin"
-                >
-                  🚪
-                </button>
-              </div>
+              </Link>
             ) : (
               <Link href="/login" className="nav-login-premium" onClick={() => setMenuOpen(false)}>
                 <div className="login-switch-container">

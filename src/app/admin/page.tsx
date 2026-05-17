@@ -450,6 +450,18 @@ export default function AdminDashboardPage() {
               <div className="profile-details">
                 <span className="profile-name">{user?.email || "Super Admin"}</span>
                 <span className="profile-role">Azwa Page Manager</span>
+                <button 
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    localStorage.removeItem('admin_session');
+                    window.dispatchEvent(new Event('storage'));
+                    window.dispatchEvent(new Event('maintenanceChange'));
+                    window.location.href = '/login';
+                  }}
+                  className="sidebar-logout-btn"
+                >
+                  🚪 Keluar Sesi Admin
+                </button>
               </div>
             </div>
             <Link href="/" className="btn-logout">Kembali ke Web ↩</Link>
@@ -1262,6 +1274,30 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         .profile-role {
           font-size: 0.65rem;
           color: #94a3b8;
+        }
+
+        .sidebar-logout-btn {
+          margin-top: 0.5rem;
+          background: rgba(239, 68, 68, 0.15);
+          border: 1px solid #ef4444;
+          color: #fca5a5;
+          padding: 0.35rem 0.8rem;
+          border-radius: 6px;
+          font-size: 0.65rem;
+          font-weight: 800;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          width: fit-content;
+          transition: all 0.2s ease;
+        }
+
+        .sidebar-logout-btn:hover {
+          background: #ef4444 !important;
+          color: white !important;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
         }
 
         .btn-logout {
