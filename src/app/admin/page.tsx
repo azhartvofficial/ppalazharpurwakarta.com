@@ -559,62 +559,111 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  {/* Activity and PPDB Preview */}
-                  <div className="activity-grid">
-                    <div className="activity-card">
-                      <h3>Pendaftar Terbaru (Butuh Verifikasi)</h3>
-                      <div className="table-responsive">
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>Nama Calon Santri</th>
-                              <th>Pilihan Jenjang</th>
-                              <th>Kontak</th>
-                              <th>Status</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {pendaftaran.slice(0, 3).map((p, idx) => (
-                              <tr key={idx}>
-                                <td><strong>{p.nama_lengkap}</strong></td>
-                                <td><span className="jenjang-badge">{p.jenjang}</span></td>
-                                <td>{p.no_hp}</td>
-                                <td>
-                                  <span className={`status-badge ${p.status.toLowerCase()}`}>
-                                    {p.status}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      <button onClick={() => setActiveTab("ppdb")} className="btn-card-action">
-                        Lihat Seluruh Pendaftar PPDB →
-                      </button>
+                  {/* Control Panel Integrasi & Langganan */}
+                  <div className="control-panel-card">
+                    <div className="control-panel-header">
+                      <h3>⚙️ Control Panel Integrasi & Langganan Layanan</h3>
+                      <span className="account-badge">
+                        👤 Akun Utama: danishalzma8002@gmail.com
+                      </span>
                     </div>
+                    <p className="control-panel-desc">
+                      Pusat monitoring status layanan cloud, basis data, dan langganan AI Gemini Advanced untuk mendukung operasional optimal portal Pondok Pesantren Al-Azhar Purwakarta.
+                    </p>
+                    
+                    <div className="control-panel-grid">
+                      {/* Card 1: Supabase */}
+                      <div className="integration-card">
+                        <div className="integration-card-header">
+                          <span className="integration-logo-text">⚡ Supabase Cloud</span>
+                          <span className="status-pill green">🟢 AKTIF</span>
+                        </div>
+                        <div className="integration-details">
+                          <div className="detail-row">
+                            <span>Status Sinkron</span>
+                            <strong>Connected (PostgreSQL)</strong>
+                          </div>
+                          <div className="detail-row">
+                            <span>Data Usage</span>
+                            <strong>12.4 MB / 500 MB (Free Tier)</strong>
+                          </div>
+                          <div className="detail-row">
+                            <span>SSL Security</span>
+                            <strong>Enabled (AES-256)</strong>
+                          </div>
+                        </div>
+                      </div>
 
-                    <div className="activity-card quick-actions-card">
-                      <h3>Jalan Pintas Cepat (Quick Actions)</h3>
-                      <div className="quick-actions-grid">
-                        <button onClick={() => setShowAddNewsModal(true)} className="quick-action-btn">
-                          <span className="qa-icon">📰</span> Tulis Berita Baru
-                        </button>
-                        <button onClick={() => setShowAddPhotoModal(true)} className="quick-action-btn">
-                          <span className="qa-icon">📸</span> Upload Foto Galeri
-                        </button>
-                        <Link href="/login" className="quick-action-btn">
-                          <span className="qa-icon">🔐</span> Uji Halaman Login
-                        </Link>
-                        <button onClick={() => setActiveTab("settings")} className="quick-action-btn">
-                          <span className="qa-icon">⚙️</span> Edit Kontak & Banner
-                        </button>
+                      {/* Card 2: Cloudinary */}
+                      <div className="integration-card">
+                        <div className="integration-card-header">
+                          <span className="integration-logo-text">📸 Cloudinary Media</span>
+                          <span className="status-pill green">🟢 AKTIF</span>
+                        </div>
+                        <div className="integration-details">
+                          <div className="detail-row">
+                            <span>Penyimpanan</span>
+                            <strong>1.4 GB / 25 GB (Free Tier)</strong>
+                          </div>
+                          <div className="detail-row">
+                            <span>Transformations</span>
+                            <strong>385 / 25,000 Credits</strong>
+                          </div>
+                          <div className="detail-row">
+                            <span>CDN Delivery</span>
+                            <strong>Secure HTTPS CDN</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card 3: Vercel */}
+                      <div className="integration-card">
+                        <div className="integration-card-header">
+                          <span className="integration-logo-text">🔺 Vercel Hosting</span>
+                          <span className="status-pill green">🟢 AKTIF</span>
+                        </div>
+                        <div className="integration-details">
+                          <div className="detail-row">
+                            <span>Status Server</span>
+                            <strong>Hobby / Production</strong>
+                          </div>
+                          <div className="detail-row">
+                            <span>Bandwidth</span>
+                            <strong>4.2 GB / 100 GB</strong>
+                          </div>
+                          <div className="detail-row">
+                            <span>Domain Resmi</span>
+                            <strong>pp-alazharpwk.com</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card 4: Gemini Advanced Subscription */}
+                      <div className="integration-card warning">
+                        <div className="integration-card-header">
+                          <span className="integration-logo-text">♊ Gemini Advanced AI</span>
+                          <span className="status-pill orange-badge">🟡 HAMPIR HABIS</span>
+                        </div>
+                        <div className="integration-details">
+                          <div className="detail-row">
+                            <span>Google Play Plan</span>
+                            <strong>Google One AI Premium (2 TB)</strong>
+                          </div>
+                          <div className="detail-row">
+                            <span>Masa Berlaku</span>
+                            <strong style={{ color: '#ff8c00' }}>Hingga 24 Juni 2026</strong>
+                          </div>
+                          <div className="detail-row">
+                            <span>Email Terdaftar</span>
+                            <strong>danishalzma8002@gmail.com</strong>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Vercel Analytics Visualizer Section */}
-                  <div className="analytics-visualizer-card">
+                  <div className="analytics-visualizer-card" style={{ marginBottom: '2rem' }}>
                     <div className="visualizer-header">
                       <h3>📊 Laporan & Analisis Pengunjung (Vercel Web Analytics)</h3>
                       <span className="live-badge" style={{ backgroundColor: supabaseSyncActive ? 'rgba(76, 175, 80, 0.15)' : 'rgba(255, 140, 0, 0.15)', color: supabaseSyncActive ? '#4CAF50' : '#ff8c00' }}>
@@ -715,6 +764,60 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         </p>
                       </div>
                     )}
+                  </div>
+
+                  {/* Activity and PPDB Preview */}
+                  <div className="activity-grid">
+                    <div className="activity-card">
+                      <h3>Pendaftar Terbaru (Butuh Verifikasi)</h3>
+                      <div className="table-responsive">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Nama Calon Santri</th>
+                              <th>Pilihan Jenjang</th>
+                              <th>Kontak</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {pendaftaran.slice(0, 3).map((p, idx) => (
+                              <tr key={idx}>
+                                <td><strong>{p.nama_lengkap}</strong></td>
+                                <td><span className="jenjang-badge">{p.jenjang}</span></td>
+                                <td>{p.no_hp}</td>
+                                <td>
+                                  <span className={`status-badge ${p.status.toLowerCase()}`}>
+                                    {p.status}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <button onClick={() => setActiveTab("ppdb")} className="btn-card-action">
+                        Lihat Seluruh Pendaftar PPDB →
+                      </button>
+                    </div>
+
+                    <div className="activity-card quick-actions-card">
+                      <h3>Jalan Pintas Cepat (Quick Actions)</h3>
+                      <div className="quick-actions-grid">
+                        <button onClick={() => setShowAddNewsModal(true)} className="quick-action-btn">
+                          <span className="qa-icon">📰</span> Tulis Berita Baru
+                        </button>
+                        <button onClick={() => setShowAddPhotoModal(true)} className="quick-action-btn">
+                          <span className="qa-icon">📸</span> Upload Foto Galeri
+                        </button>
+                        <Link href="/login" className="quick-action-btn">
+                          <span className="qa-icon">🔐</span> Uji Halaman Login
+                        </Link>
+                        <button onClick={() => setActiveTab("settings")} className="quick-action-btn">
+                          <span className="qa-icon">⚙️</span> Edit Kontak & Banner
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -1306,10 +1409,137 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
         /* Main Content Styling - Light Grey Clean Background */
         .main-content {
-          padding: 8.5rem 4rem 3rem 4rem;
+          padding: 11.5rem 4rem 3rem 4rem;
           box-sizing: border-box;
           overflow-y: auto;
           height: 100vh;
+        }
+
+        /* Control Panel CSS */
+        .control-panel-card {
+          background: white;
+          border-radius: 20px;
+          padding: 2rem;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+          margin-bottom: 2rem;
+          text-align: left;
+        }
+
+        .control-panel-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+
+        .control-panel-header h3 {
+          font-family: var(--font-custom), 'Inter', sans-serif;
+          font-size: 1.25rem;
+          font-weight: 800;
+          color: #002147;
+          margin: 0;
+        }
+
+        .account-badge {
+          display: inline-block;
+          background: rgba(0, 33, 71, 0.06);
+          border: 1px solid rgba(0, 33, 71, 0.1);
+          color: #002147;
+          padding: 0.4rem 1rem;
+          border-radius: 50px;
+          font-size: 0.78rem;
+          font-weight: 800;
+        }
+
+        .control-panel-desc {
+          font-size: 0.85rem;
+          color: #64748b;
+          margin: 0 0 2rem 0;
+          line-height: 1.5;
+        }
+
+        .control-panel-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 1.5rem;
+        }
+
+        .integration-card {
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 1.5rem;
+          transition: all 0.3s ease;
+        }
+
+        .integration-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+        }
+
+        .integration-card.warning {
+          border-color: rgba(255, 140, 0, 0.25);
+          background: rgba(255, 140, 0, 0.02);
+        }
+
+        .integration-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.25rem;
+          border-bottom: 1px solid rgba(0,0,0,0.05);
+          padding-bottom: 0.75rem;
+        }
+
+        .integration-logo-text {
+          font-size: 0.95rem;
+          font-weight: 800;
+          color: #0f172a;
+        }
+
+        .status-pill {
+          display: inline-block;
+          font-size: 0.65rem;
+          font-weight: 900;
+          padding: 0.25rem 0.6rem;
+          border-radius: 50px;
+          letter-spacing: 0.5px;
+        }
+
+        .status-pill.green {
+          background: rgba(16, 185, 129, 0.15);
+          color: #10b981;
+          border: 1px solid #10b981;
+        }
+
+        .status-pill.orange-badge {
+          background: rgba(255, 140, 0, 0.15);
+          color: #ff8c00;
+          border: 1px solid #ff8c00;
+        }
+
+        .integration-details {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .detail-row {
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.75rem;
+          line-height: 1.4;
+        }
+
+        .detail-row span {
+          color: #64748b;
+        }
+
+        .detail-row strong {
+          color: #334155;
+          text-align: right;
         }
 
         .content-header {
