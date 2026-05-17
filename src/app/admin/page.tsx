@@ -533,29 +533,9 @@ export default function AdminDashboardPage() {
                       <span className="card-value" style={{ fontSize: '1.8rem', fontWeight: 800, color: maintenanceMode ? '#ef4444' : '#10b981' }}>
                         {maintenanceMode ? "MAINTENANCE" : "PUBLISH (LIVE)"}
                       </span>
-                      <div style={{ marginTop: '0.8rem' }}>
-                        <button 
-                          onClick={toggleMaintenanceMode}
-                          className="btn-status-toggle"
-                          style={{
-                            width: '100%',
-                            padding: '0.6rem',
-                            borderRadius: '10px',
-                            border: 'none',
-                            background: maintenanceMode ? '#10b981' : '#ef4444',
-                            color: 'white',
-                            fontWeight: 800,
-                            fontSize: '0.78rem',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px'
-                          }}
-                        >
-                          {maintenanceMode ? "🟢 Aktifkan Live" : "🔴 Aktifkan Maintenance"}
-                        </button>
-                      </div>
+                      <span className="card-trend" style={{ color: maintenanceMode ? '#ef4444' : '#10b981', fontWeight: 700 }}>
+                        {maintenanceMode ? "🔴 Akses Pengunjung Dibatasi" : "🟢 Diakses Secara Publik"}
+                      </span>
                     </div>
                   </div>
 
