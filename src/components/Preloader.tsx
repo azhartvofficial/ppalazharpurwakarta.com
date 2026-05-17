@@ -65,11 +65,6 @@ const Preloader = () => {
               <div className="trail trail-2"></div>
             </div>
           </div>
-          <img 
-            src="/Logo/Logo%20Pondok%20Pesantren.png" 
-            alt="Al-Azhar Logo" 
-            className="preloader-logo" 
-          />
         </div>
       </div>
 
