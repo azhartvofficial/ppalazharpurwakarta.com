@@ -44,6 +44,7 @@ function formatNumber(num: number): string {
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "ppdb" | "news" | "docs" | "settings" | "accounts">("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activePriorityModal, setActivePriorityModal] = useState<"santri" | "pendaftaran" | "azlearn" | null>(null);
 
   // Real-time visitor states
   const [totalVisitors, setTotalVisitors] = useState(1482);
@@ -708,20 +709,65 @@ export default function AdminDashboardPage() {
                     </div>
 
                     <div className="analytics-metrics-grid">
-                      <div className="metric-box">
-                        <span className="metric-box-label">Halaman Paling Sering Dikunjungi (Top Pages)</span>
-                        <div className="progress-list">
-                          {topPages.map((page, idx) => (
-                            <div key={idx} className="progress-item">
-                              <div className="progress-labels">
-                                <span>{page.path}</span>
-                                <span>{page.pct}% ({page.count} views)</span>
-                              </div>
-                              <div className="progress-bar-bg">
-                                <div className="progress-bar-fill" style={{ width: `${page.pct}%`, backgroundColor: idx === 0 ? '#002147' : idx === 1 ? '#ff8c00' : '#4CAF50' }}></div>
-                              </div>
+                      {/* Priority Pages Interactive Card */}
+                      <div className="metric-box priority-pages-box" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)', border: '1.5px solid rgba(255, 140, 0, 0.15)', boxShadow: '0 8px 32px rgba(255, 140, 0, 0.05)' }}>
+                        <span className="metric-box-label" style={{ color: 'var(--secondary)', fontWeight: '900', letterSpacing: '0.5px' }}>📌 DAFTAR HALAMAN PRIORITAS (INTERAKTIF)</span>
+                        <div className="progress-list" style={{ marginTop: '0.85rem' }}>
+                          
+                          {/* Item 1: Santri Page */}
+                          <div 
+                            className="priority-item-card" 
+                            onClick={() => setActivePriorityModal("santri")}
+                            style={{ cursor: 'pointer', padding: '0.85rem', borderRadius: '12px', background: 'rgba(0, 33, 71, 0.03)', border: '1px solid rgba(0, 33, 71, 0.06)', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '0.75rem' }}
+                          >
+                            <div className="priority-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                🎓 Portal Layanan Santri (Santri Page)
+                              </span>
+                              <span className="badge-priority" style={{ fontSize: '0.62rem', fontWeight: 900, background: 'rgba(76, 175, 80, 0.12)', color: '#4CAF50', padding: '2px 8px', borderRadius: '20px' }}>PRIORITAS 1</span>
                             </div>
-                          ))}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#64748b', marginTop: '4px' }}>
+                              <span>Path: /login/santri</span>
+                              <span style={{ fontWeight: 700, color: 'var(--primary)' }}>Detail Portal →</span>
+                            </div>
+                          </div>
+
+                          {/* Item 2: Pendaftaran */}
+                          <div 
+                            className="priority-item-card" 
+                            onClick={() => setActivePriorityModal("pendaftaran")}
+                            style={{ cursor: 'pointer', padding: '0.85rem', borderRadius: '12px', background: 'rgba(0, 33, 71, 0.03)', border: '1px solid rgba(0, 33, 71, 0.06)', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '0.75rem' }}
+                          >
+                            <div className="priority-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                📝 Formulir Pendaftaran PPDB (Pendaftaran)
+                              </span>
+                              <span className="badge-priority" style={{ fontSize: '0.62rem', fontWeight: 900, background: 'rgba(255, 140, 0, 0.12)', color: '#ff8c00', padding: '2px 8px', borderRadius: '20px' }}>PRIORITAS 2</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#64748b', marginTop: '4px' }}>
+                              <span>Path: /pendaftaran</span>
+                              <span style={{ fontWeight: 700, color: 'var(--primary)' }}>Cek Grafik PPDB →</span>
+                            </div>
+                          </div>
+
+                          {/* Item 3: Az-Learn */}
+                          <div 
+                            className="priority-item-card" 
+                            onClick={() => setActivePriorityModal("azlearn")}
+                            style={{ cursor: 'pointer', padding: '0.85rem', borderRadius: '12px', background: 'rgba(0, 33, 71, 0.03)', border: '1px solid rgba(0, 33, 71, 0.06)', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', gap: '4px' }}
+                          >
+                            <div className="priority-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                🌐 LMS Al-Azhar Academics (Az-Learn)
+                              </span>
+                              <span className="badge-priority" style={{ fontSize: '0.62rem', fontWeight: 900, background: 'rgba(0, 150, 136, 0.12)', color: '#009688', padding: '2px 8px', borderRadius: '20px' }}>PRIORITAS 3</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#64748b', marginTop: '4px' }}>
+                              <span>Path: /azhar-learn</span>
+                              <span style={{ fontWeight: 700, color: 'var(--primary)' }}>Status LMS →</span>
+                            </div>
+                          </div>
+
                         </div>
                       </div>
 
@@ -1394,14 +1440,160 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 />
               </div>
 
-              <div className="modal-actions">
-                <button type="submit" className="btn-modal-save">Tambahkan Foto</button>
-                <button type="button" onClick={() => setShowAddPhotoModal(false)} className="btn-modal-cancel">Batal</button>
-              </div>
             </form>
           </motion.div>
         </div>
       )}
+
+      {/* POPUP 1: PORTAL LAYANAN SANTRI */}
+      <AnimatePresence>
+        {activePriorityModal === "santri" && (
+          <div className="modal-backdrop-priority" onClick={() => setActivePriorityModal(null)}>
+            <motion.div 
+              className="modal-content-priority"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header-priority">
+                <h3>🎓 Detail Portal Layanan Santri (Santri Page)</h3>
+                <button className="btn-close-modal-priority" onClick={() => setActivePriorityModal(null)}>&times;</button>
+              </div>
+              <div className="modal-body-priority">
+                <div className="priority-stats-grid">
+                  <div className="priority-stat-card">
+                    <span className="p-label">STATUS PORTAL</span>
+                    <span className="p-value green">🟢 ONLINE</span>
+                  </div>
+                  <div className="priority-stat-card">
+                    <span className="p-label">TOTAL SANTRI AKTIF</span>
+                    <span className="p-value">420 Santri</span>
+                  </div>
+                  <div className="priority-stat-card">
+                    <span className="p-label">KEHADIRAN HARI INI</span>
+                    <span className="p-value">98.4%</span>
+                  </div>
+                </div>
+                <div className="priority-details-section">
+                  <h4>📊 Laporan Lalu Lintas & Aktivitas (Santri Portal)</h4>
+                  <p>Halaman ini digunakan oleh santri aktif Pondok Pesantren Al-Azhar Purwakarta untuk mengunduh raport, mengecek jadwal pelajaran, serta memantau status hafalan Qur'an secara real-time.</p>
+                  <div className="data-table-mini">
+                    <div className="mini-row"><strong>Rata-rata Waktu Sesi:</strong> <span>12 menit 45 detik</span></div>
+                    <div className="mini-row"><strong>Rasio Pentalan (Bounce Rate):</strong> <span>14.2% (Sangat Sehat)</span></div>
+                    <div className="mini-row"><strong>Browser Terbanyak:</strong> <span>Chrome Mobile (68%)</span></div>
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer-priority">
+                <button className="btn-modal-action-priority secondary" onClick={() => setActivePriorityModal(null)}>Tutup Halaman</button>
+                <Link href="/login" className="btn-modal-action-priority primary" onClick={() => setActivePriorityModal(null)}>Buka Portal Santri →</Link>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* POPUP 2: FORMULIR PENDAFTARAN PPDB */}
+      <AnimatePresence>
+        {activePriorityModal === "pendaftaran" && (
+          <div className="modal-backdrop-priority" onClick={() => setActivePriorityModal(null)}>
+            <motion.div 
+              className="modal-content-priority"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header-priority">
+                <h3>📝 Detail Formulir Pendaftaran PPDB (Pendaftaran)</h3>
+                <button className="btn-close-modal-priority" onClick={() => setActivePriorityModal(null)}>&times;</button>
+              </div>
+              <div className="modal-body-priority">
+                <div className="priority-stats-grid">
+                  <div className="priority-stat-card">
+                    <span className="p-label">STATUS GELOMBANG</span>
+                    <span className="p-value orange">🟠 GELOMBANG 1</span>
+                  </div>
+                  <div className="priority-stat-card">
+                    <span className="p-label">TOTAL PENDAFTAR</span>
+                    <span className="p-value">{totalPendaftar} Calon Santri</span>
+                  </div>
+                  <div className="priority-stat-card">
+                    <span className="p-label">DIVERIFIKASI</span>
+                    <span className="p-value">{pendaftaran.filter(p => p.status === "Approved").length || 8} Santri</span>
+                  </div>
+                </div>
+                <div className="priority-details-section">
+                  <h4>📊 Statistik PPDB Online Terintegrasi Supabase</h4>
+                  <p>Halaman pendaftaran adalah gerbang utama bagi calon wali santri untuk mendaftarkan putra-putri mereka ke jenjang SMP, MA, maupun Takhossus Tahfidz Al-Qur'an secara digital.</p>
+                  <div className="data-table-mini">
+                    <div className="mini-row"><strong>Pendaftaran Terbanyak:</strong> <span>Jenjang Takhossus (48%)</span></div>
+                    <div className="mini-row"><strong>Pendaftar Hari Ini:</strong> <span>{pendaftaran.filter(p => p.created_at?.startsWith(new Date().toISOString().split('T')[0])).length || 2} Calon Baru</span></div>
+                    <div className="mini-row"><strong>Rasio Konversi Form:</strong> <span>85.4% (Tinggi)</span></div>
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer-priority">
+                <button className="btn-modal-action-priority secondary" onClick={() => setActivePriorityModal(null)}>Tutup Halaman</button>
+                <button className="btn-modal-action-priority primary" onClick={() => { setActivePriorityModal(null); setActiveTab("ppdb"); }}>Kelola PPDB Supabase →</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* POPUP 3: LMS AL-AZHAR ACADEMICS */}
+      <AnimatePresence>
+        {activePriorityModal === "azlearn" && (
+          <div className="modal-backdrop-priority" onClick={() => setActivePriorityModal(null)}>
+            <motion.div 
+              className="modal-content-priority"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header-priority">
+                <h3>🌐 Detail LMS Al-Azhar Academics (Az-Learn)</h3>
+                <button className="btn-close-modal-priority" onClick={() => setActivePriorityModal(null)}>&times;</button>
+              </div>
+              <div className="modal-body-priority">
+                <div className="priority-stats-grid">
+                  <div className="priority-stat-card">
+                    <span className="p-label">STATUS ENGINE</span>
+                    <span className="p-value green">🟢 AKTIF (V2.1)</span>
+                  </div>
+                  <div className="priority-stat-card">
+                    <span className="p-label">KELAS BERJALAN</span>
+                    <span className="p-value">28 Rombel</span>
+                  </div>
+                  <div className="priority-stat-card">
+                    <span className="p-label">PENGGUNA AKTIF HARI INI</span>
+                    <span className="p-value">186 Siswa & Guru</span>
+                  </div>
+                </div>
+                <div className="priority-details-section">
+                  <h4>📊 Analitik Layanan Pembelajaran Mandiri (Az-Learn)</h4>
+                  <p>Az-Learn adalah portal Learning Management System (LMS) khusus santri untuk mengakses materi pelajaran, mengumpulkan tugas harian, serta melaksanakan ujian secara mandiri.</p>
+                  <div className="data-table-mini">
+                    <div className="mini-row"><strong>Storage Cloud Terpakai:</strong> <span>42.8 GB / 100 GB</span></div>
+                    <div className="mini-row"><strong>Tugas Terkumpul Hari Ini:</strong> <span>85 File</span></div>
+                    <div className="mini-row"><strong>Uptime Server:</strong> <span>99.98%</span></div>
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer-priority">
+                <button className="btn-modal-action-priority secondary" onClick={() => setActivePriorityModal(null)}>Tutup Halaman</button>
+                <Link href="/azhar-learn" className="btn-modal-action-priority primary" onClick={() => setActivePriorityModal(null)}>Buka Platform Az-Learn →</Link>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <style jsx>{`
         .dashboard-layout {
@@ -2904,6 +3096,256 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             justify-content: space-around;
             padding: 0.5rem 0;
           }
+        }
+
+        /* Premium Modal Backdrop & Content Styles for Priority Pages */
+        .modal-backdrop-priority {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          background: rgba(0, 33, 71, 0.45) !important;
+          backdrop-filter: blur(15px) !important;
+          -webkit-backdrop-filter: blur(15px) !important;
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          z-index: 999999 !important;
+          padding: 1.5rem !important;
+        }
+
+        .modal-content-priority {
+          width: 100% !important;
+          max-width: 520px !important;
+          background: rgba(255, 255, 255, 0.95) !important;
+          border: 1px solid rgba(255, 255, 255, 0.7) !important;
+          border-radius: 20px !important;
+          box-shadow: 0 30px 60px rgba(0, 33, 71, 0.2) !important;
+          overflow: hidden !important;
+          position: relative !important;
+          display: flex !important;
+          flex-direction: column !important;
+        }
+
+        .modal-content-priority::before {
+          content: '' !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100% !important;
+          height: 5px !important;
+          background: linear-gradient(90deg, var(--primary), var(--secondary)) !important;
+        }
+
+        .modal-header-priority {
+          padding: 1.5rem 1.5rem 1rem 1.5rem !important;
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: center !important;
+          border-bottom: 1px solid rgba(0, 33, 71, 0.06) !important;
+        }
+
+        .modal-header-priority h3 {
+          font-size: 1.05rem !important;
+          font-weight: 900 !important;
+          color: var(--primary) !important;
+          margin: 0 !important;
+        }
+
+        .btn-close-modal-priority {
+          background: none !important;
+          border: none !important;
+          color: #94a3b8 !important;
+          font-size: 1.7rem !important;
+          font-weight: 300 !important;
+          cursor: pointer !important;
+          transition: all 0.2s ease !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 32px !important;
+          height: 32px !important;
+          border-radius: 50% !important;
+        }
+
+        .btn-close-modal-priority:hover {
+          color: #ef4444 !important;
+          background: rgba(239, 68, 68, 0.08) !important;
+        }
+
+        .modal-body-priority {
+          padding: 1.5rem !important;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 1.25rem !important;
+          overflow-y: auto !important;
+          max-height: 70vh !important;
+        }
+
+        .priority-stats-grid {
+          display: grid !important;
+          grid-template-columns: repeat(3, 1fr) !important;
+          gap: 0.75rem !important;
+        }
+
+        .priority-stat-card {
+          background: rgba(0, 33, 71, 0.03) !important;
+          border: 1px solid rgba(0, 33, 71, 0.06) !important;
+          border-radius: 12px !important;
+          padding: 0.75rem !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          text-align: center !important;
+          gap: 4px !important;
+        }
+
+        .priority-stat-card .p-label {
+          font-size: 0.58rem !important;
+          font-weight: 800 !important;
+          color: #64748b !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.3px !important;
+        }
+
+        .priority-stat-card .p-value {
+          font-size: 0.85rem !important;
+          font-weight: 900 !important;
+          color: var(--primary) !important;
+        }
+
+        .priority-stat-card .p-value.green {
+          color: #10b981 !important;
+        }
+
+        .priority-stat-card .p-value.orange {
+          color: #ff8c00 !important;
+        }
+
+        .priority-details-section {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 8px !important;
+          text-align: left !important;
+        }
+
+        .priority-details-section h4 {
+          font-size: 0.85rem !important;
+          font-weight: 850 !important;
+          color: var(--primary) !important;
+          margin-bottom: 2px !important;
+        }
+
+        .priority-details-section p {
+          font-size: 0.76rem !important;
+          color: #4b5563 !important;
+          line-height: 1.5 !important;
+        }
+
+        .data-table-mini {
+          background: rgba(0, 33, 71, 0.02) !important;
+          border: 1px dashed rgba(0, 33, 71, 0.08) !important;
+          border-radius: 12px !important;
+          padding: 0.75rem 0.95rem !important;
+          margin-top: 0.25rem !important;
+        }
+
+        .mini-row {
+          display: flex !important;
+          justify-content: space-between !important;
+          font-size: 0.72rem !important;
+          padding: 6px 0 !important;
+          border-bottom: 1px solid rgba(0, 33, 71, 0.04) !important;
+        }
+
+        .mini-row:last-child {
+          border-bottom: none !important;
+          padding-bottom: 0 !important;
+        }
+
+        .mini-row:first-child {
+          padding-top: 0 !important;
+        }
+
+        .mini-row strong {
+          color: #475569 !important;
+        }
+
+        .mini-row span {
+          color: var(--primary) !important;
+          font-weight: 750 !important;
+        }
+
+        .modal-footer-priority {
+          padding: 1rem 1.5rem 1.5rem 1.5rem !important;
+          border-top: 1px solid rgba(0, 33, 71, 0.06) !important;
+          display: flex !important;
+          justify-content: flex-end !important;
+          gap: 0.75rem !important;
+        }
+
+        .btn-modal-action-priority {
+          padding: 0.65rem 1.1rem !important;
+          font-size: 0.78rem !important;
+          font-weight: 800 !important;
+          border-radius: 10px !important;
+          cursor: pointer !important;
+          transition: all 0.25s ease !important;
+          border: none !important;
+          text-decoration: none !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        .btn-modal-action-priority.primary {
+          background: var(--primary) !important;
+          color: white !important;
+        }
+
+        .btn-modal-action-priority.primary:hover {
+          background: var(--primary-light) !important;
+          transform: translateY(-1.5px) !important;
+          box-shadow: 0 4px 12px rgba(0, 33, 71, 0.15) !important;
+        }
+
+        .btn-modal-action-priority.secondary {
+          background: rgba(0, 33, 71, 0.05) !important;
+          color: var(--primary) !important;
+          border: 1px solid rgba(0, 33, 71, 0.08) !important;
+        }
+
+        .btn-modal-action-priority.secondary:hover {
+          background: rgba(0, 33, 71, 0.08) !important;
+        }
+
+        /* Hover animation for Priority Cards */
+        .priority-item-card {
+          position: relative !important;
+          overflow: hidden !important;
+        }
+
+        .priority-item-card::after {
+          content: '' !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 4px !important;
+          height: 100% !important;
+          background: transparent !important;
+          transition: all 0.3s ease !important;
+        }
+
+        .priority-item-card:hover {
+          background: rgba(0, 33, 71, 0.05) !important;
+          border-color: rgba(255, 140, 0, 0.25) !important;
+          transform: translateY(-2px) scale(1.005) !important;
+          box-shadow: 0 6px 20px rgba(0, 33, 71, 0.04) !important;
+        }
+
+        .priority-item-card:hover::after {
+          background: var(--secondary) !important;
         }
       `}</style>
     </main>
