@@ -27,6 +27,23 @@ body {
   line-height: 1.6;
 }
 
+/* Premium Smooth Entrance to Prevent Sudden Layout Flashes & Hydration Shifts */
+@keyframes mainEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main {
+  opacity: 0;
+  animation: mainEntrance 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.15s forwards;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Inter', sans-serif; /* ITB uses cleaner sans-serif for most things */
   font-weight: 700;

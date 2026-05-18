@@ -74,6 +74,19 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
+  const getShortenedAdminName = (name: string) => {
+    if (!name) return "Admin";
+    let displayName = name.includes('@') ? name.split('@')[0] : name;
+    const parts = displayName.split(/[._-]/);
+    if (parts.length > 0 && parts[0].length >= 3) {
+      displayName = parts[0];
+    }
+    if (displayName.length > 8) {
+      displayName = displayName.substring(0, 7) + "..";
+    }
+    return displayName;
+  };
+
   return (
     <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
       {/* Top Utility Bar */}
@@ -175,7 +188,7 @@ export default function Navbar() {
                   </div>
                   <div className="navbar-profile-details">
                     <span className="navbar-profile-name">
-                      {adminName.includes('@') ? adminName.split('@')[0] : adminName}
+                      {getShortenedAdminName(adminName)}
                     </span>
                     <span className="navbar-profile-role">PENGURUS</span>
                   </div>
@@ -194,9 +207,14 @@ export default function Navbar() {
                       exit={{ opacity: 0, y: 8, scale: 0.95 }}
                       transition={{ duration: 0.15, ease: 'easeOut' }}
                     >
-                      <div className="dropdown-user-info">
-                        <strong>Al-Azhar Purwakarta</strong>
-                        <span>{adminName}</span>
+                      <div className="dropdown-user-header">
+                        <div className="dropdown-avatar-bubble">
+                          {adminName.substring(0, 1).toUpperCase()}
+                        </div>
+                        <div className="dropdown-user-info">
+                          <strong>Al-Azhar Purwakarta</strong>
+                          <span>{adminName}</span>
+                        </div>
                       </div>
                       <div className="dropdown-divider"></div>
                       
@@ -342,6 +360,175 @@ export default function Navbar() {
           border: none !important;
           box-shadow: none !important;
         }
+
+        /* Premium Floating Glassmorphic Profile Dropdown Panel */
+        .navbar-profile-dropdown-panel {
+          position: absolute !important;
+          margin: 0 !important;
+          top: calc(100% + 15px);
+          right: 0;
+          width: 250px;
+          background: rgba(255, 255, 255, 0.95) !important;
+          backdrop-filter: blur(25px) !important;
+          -webkit-backdrop-filter: blur(25px) !important;
+          border: 1px solid rgba(255, 255, 255, 0.6) !important;
+          border-radius: 16px !important;
+          box-shadow: 0 20px 50px rgba(0, 33, 71, 0.15) !important;
+          padding: 1.1rem !important;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 0.75rem !important;
+          z-index: 100000 !important;
+          box-sizing: border-box !important;
+          overflow: visible !important;
+        }
+
+        /* Top linear gradient border for premium aesthetic */
+        .navbar-profile-dropdown-panel::before {
+          content: '' !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100% !important;
+          height: 4px !important;
+          background: linear-gradient(90deg, var(--primary), var(--secondary)) !important;
+          z-index: 100001 !important;
+          border-radius: 16px 16px 0 0 !important;
+        }
+
+        .dropdown-user-header {
+          display: flex !important;
+          align-items: center !important;
+          gap: 12px !important;
+          width: 100% !important;
+        }
+
+        .dropdown-avatar-bubble {
+          width: 38px !important;
+          height: 38px !important;
+          border-radius: 50% !important;
+          background: linear-gradient(135deg, var(--primary) 0%, #002147 100%) !important;
+          color: white !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          font-size: 0.95rem !important;
+          font-weight: 800 !important;
+          flex-shrink: 0 !important;
+          box-shadow: 0 4px 10px rgba(0, 33, 71, 0.12) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .dropdown-user-info {
+          display: flex !important;
+          flex-direction: column !important;
+          text-align: left !important;
+          gap: 0.15rem !important;
+        }
+
+        .dropdown-user-info strong {
+          font-size: 0.8rem !important;
+          color: var(--primary) !important;
+          font-weight: 800 !important;
+        }
+
+        .dropdown-user-info span {
+          font-size: 0.72rem !important;
+          color: #64748b !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          white-space: nowrap !important;
+        }
+
+        .dropdown-divider {
+          height: 1px !important;
+          background: rgba(0, 33, 71, 0.08) !important;
+          margin: 0.15rem 0 !important;
+        }
+
+        .dropdown-action-btn {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 8px !important;
+          width: 100% !important;
+          padding: 0.65rem 0.95rem !important;
+          font-size: 0.78rem !important;
+          font-weight: 800 !important;
+          border-radius: 8px !important;
+          text-decoration: none !important;
+          transition: all 0.25s ease !important;
+          box-sizing: border-box !important;
+        }
+
+        .dropdown-action-btn.panel-btn {
+          background: rgba(0, 33, 71, 0.04) !important;
+          border: 1px solid rgba(0, 33, 71, 0.08) !important;
+          color: var(--primary) !important;
+        }
+
+        .dropdown-action-btn.panel-btn:hover {
+          background: var(--primary) !important;
+          color: white !important;
+          border-color: var(--primary) !important;
+          box-shadow: 0 4px 12px rgba(0, 33, 71, 0.1) !important;
+        }
+
+        .dropdown-logout-btn-new {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 8px !important;
+          width: 100% !important;
+          padding: 0.65rem 0.95rem !important;
+          background: rgba(239, 68, 68, 0.08) !important;
+          border: 1px solid rgba(239, 68, 68, 0.15) !important;
+          color: #ef4444 !important;
+          font-size: 0.78rem !important;
+          font-weight: 800 !important;
+          border-radius: 8px !important;
+          cursor: pointer !important;
+          transition: all 0.25s ease !important;
+          box-sizing: border-box !important;
+        }
+
+        .dropdown-logout-btn-new:hover {
+          background: #ef4444 !important;
+          color: white !important;
+          border-color: #ef4444 !important;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        @media (max-width: 992px) {
+          .navbar-profile-dropdown-panel {
+            width: 220px !important;
+            right: -5px !important;
+            top: calc(100% + 10px) !important;
+            padding: 0.85rem !important;
+          }
+
+          .dropdown-user-header {
+            gap: 8px !important;
+          }
+
+          .dropdown-avatar-bubble {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 0.85rem !important;
+          }
+
+          .dropdown-user-info strong {
+            font-size: 0.68rem !important;
+          }
+
+          .dropdown-user-info span {
+            font-size: 0.60rem !important;
+            max-width: 130px !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+          }
+        }
       `}</style>
 
       <style jsx>{`
@@ -405,105 +592,7 @@ export default function Navbar() {
           letter-spacing: 0.3px;
         }
 
-        /* Glassmorphic Navbar Profile Dropdown Panel */
-        .navbar-profile-dropdown-panel {
-          position: absolute !important;
-          margin: 0 !important;
-          top: calc(100% + 10px);
-          right: 0;
-          width: 230px;
-          background: rgba(255, 255, 255, 0.98);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(0, 33, 71, 0.08);
-          border-radius: 12px;
-          box-shadow: 0 10px 30px rgba(0, 33, 71, 0.12);
-          padding: 0.95rem;
-          display: flex;
-          flex-direction: column;
-          gap: 0.7rem;
-          z-index: 100000;
-          box-sizing: border-box;
-        }
-
-        .dropdown-user-info {
-          display: flex;
-          flex-direction: column;
-          text-align: left;
-          gap: 0.1rem;
-        }
-
-        .dropdown-user-info strong {
-          font-size: 0.75rem;
-          color: #002147;
-          font-weight: 800;
-        }
-
-        .dropdown-user-info span {
-          font-size: 0.68rem;
-          color: #64748b;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        .dropdown-divider {
-          height: 1px;
-          background: rgba(0, 33, 71, 0.06);
-          margin: 0.15rem 0;
-        }
-
-        .dropdown-action-btn {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          width: 100%;
-          padding: 0.55rem;
-          font-size: 0.72rem;
-          font-weight: 800;
-          border-radius: 6px;
-          text-decoration: none;
-          transition: all 0.2s;
-          box-sizing: border-box;
-        }
-
-        .dropdown-action-btn.panel-btn {
-          background: rgba(0, 33, 71, 0.04);
-          border: 1px solid rgba(0, 33, 71, 0.08);
-          color: #002147;
-        }
-
-        .dropdown-action-btn.panel-btn:hover {
-          background: #002147;
-          color: white;
-          border-color: #002147;
-          box-shadow: 0 4px 12px rgba(0, 33, 71, 0.1);
-        }
-
-        .dropdown-logout-btn-new {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          width: 100%;
-          padding: 0.55rem;
-          background: rgba(239, 68, 68, 0.08);
-          border: 1px solid rgba(239, 68, 68, 0.15);
-          color: #ef4444;
-          font-size: 0.72rem;
-          font-weight: 800;
-          border-radius: 6px;
-          cursor: pointer;
-          transition: all 0.2s;
-          box-sizing: border-box;
-        }
-
-        .dropdown-logout-btn-new:hover {
-          background: #ef4444;
-          color: white;
-          border-color: #ef4444;
-          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
-        }
+        /* Old local dropdown styles removed in favor of gorgeous new global styles above */
 
         .navbar {
           position: fixed;
@@ -987,6 +1076,21 @@ export default function Navbar() {
         }
 
         @media (max-width: 992px) {
+          .navbar-profile-bubble-container {
+            padding: 3px 6px 3px 4px !important;
+            gap: 4px !important;
+            max-width: 95px !important;
+          }
+
+          .navbar-profile-name {
+            font-size: 0.58rem !important;
+            max-width: 45px !important;
+          }
+
+          .navbar-profile-role {
+            font-size: 0.45rem !important;
+          }
+
           .top-bar {
             display: none !important;
           }

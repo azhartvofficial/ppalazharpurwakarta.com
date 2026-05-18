@@ -929,59 +929,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     </div>
                   </div>
 
-                  {/* Activity and PPDB Preview */}
-                  <div className="activity-grid">
-                    <div className="activity-card">
-                      <h3>Pendaftar Terbaru (Butuh Verifikasi)</h3>
-                      <div className="table-responsive">
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>Nama Calon Santri</th>
-                              <th>Pilihan Jenjang</th>
-                              <th>Kontak</th>
-                              <th>Status</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {pendaftaran.slice(0, 3).map((p, idx) => (
-                              <tr key={idx}>
-                                <td><strong>{p.nama_lengkap}</strong></td>
-                                <td><span className="jenjang-badge">{p.jenjang}</span></td>
-                                <td>{p.no_hp}</td>
-                                <td>
-                                  <span className={`status-badge ${p.status.toLowerCase()}`}>
-                                    {p.status}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      <button onClick={() => setActiveTab("ppdb")} className="btn-card-action">
-                        Lihat Seluruh Pendaftar PPDB →
-                      </button>
-                    </div>
-
-                    <div className="activity-card quick-actions-card">
-                      <h3>Jalan Pintas Cepat (Quick Actions)</h3>
-                      <div className="quick-actions-grid">
-                        <button onClick={() => setShowAddNewsModal(true)} className="quick-action-btn">
-                          <span className="qa-icon"></span> Tulis Berita Baru
-                        </button>
-                        <button onClick={() => setShowAddPhotoModal(true)} className="quick-action-btn">
-                          <span className="qa-icon"></span> Upload Foto Galeri
-                        </button>
-                        <Link href="/login" className="quick-action-btn">
-                          <span className="qa-icon"></span> Uji Halaman Login
-                        </Link>
-                        <button onClick={() => setActiveTab("settings")} className="quick-action-btn">
-                          <span className="qa-icon"></span> Edit Kontak & Banner
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Activity and PPDB Preview removed by request */}
                 </motion.div>
               )}
 
