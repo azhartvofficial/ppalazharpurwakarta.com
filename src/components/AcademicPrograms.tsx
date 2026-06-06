@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -10,26 +10,93 @@ const AcademicPrograms = () => {
     {
       title: "Tahfidz Al-Qur'an",
       subtitle: "Mujahid Qur'ani",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780782481/trrd55vxurqlcvps7er4.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786528/n2oc9q4aa503gzpgqsnn.jpg",
     },
     {
       title: "Bahasa Arab",
-      subtitle: "Literasi Islam",
-      image: "https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?q=80&w=2070&auto=format&fit=crop",
+      subtitle: "Komunikasi Global",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786522/ervfhnfl8qphmkzgb2fr.jpg",
     },
     {
       title: "Sains & Teknologi",
       subtitle: "Mujahid Digital",
-      image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786527/tqkqys7wtvykwecjixoq.jpg",
     },
     {
       title: "Kitab Kuning",
       subtitle: "Dirasah Islamiyah",
-      image: "https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=2070&auto=format&fit=crop",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786525/qnxb3x7hoguxf9lzebh7.jpg",
+    },
+    {
+      title: "Bahasa Inggris",
+      subtitle: "Komunikasi Global",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786523/npfdawgze3pvsga3ygau.jpg",
+    },
+    {
+      title: "Fiqih 4 Mazhab",
+      subtitle: "Dirasah Islamiyah",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786524/o53twqvwfneikr2ws8cb.jpg",
+    },
+    {
+      title: "Sosial Humanity",
+      subtitle: "Wawasan Kemanusiaan",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786527/usdo5ctfnamku7cbnoq9.jpg",
     },
   ];
 
   const allPrograms = [...programs, ...programs, ...programs, ...programs, ...programs]; 
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  useEffect(() => {
+    let animationFrameId: number;
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const scrollStep = () => {
+      if (!isDragging) {
+         container.scrollLeft += 1;
+         // Calculate the width of exactly one set of programs
+         const oneSetWidth = container.scrollWidth / 5;
+         if (container.scrollLeft >= oneSetWidth) {
+           container.scrollLeft -= oneSetWidth;
+         }
+      }
+      animationFrameId = requestAnimationFrame(scrollStep);
+    };
+    
+    animationFrameId = requestAnimationFrame(scrollStep);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isDragging]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    if (!scrollRef.current) return;
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleTouchStart = () => setIsDragging(true);
+  const handleTouchEnd = () => setIsDragging(false);
 
   return (
     <section className="academic-section">
@@ -47,17 +114,28 @@ const AcademicPrograms = () => {
       </div>
 
       <div className="slider-wrapper">
-        <div className="slider-track">
-          {allPrograms.map((item, index) => (
-            <div className="program-card" key={index}>
-              <div className="card-bg" style={{ backgroundImage: `url(${item.image})` }}></div>
-              <div className="card-overlay"></div>
-              <div className="card-content">
-                <span className="card-subtitle">{item.subtitle}</span>
-                <h3 className="card-title">{item.title}</h3>
+        <div 
+          className="slider-scroll-container"
+          ref={scrollRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="slider-track">
+            {allPrograms.map((item, index) => (
+              <div className="program-card" key={index}>
+                <div className="card-bg" style={{ backgroundImage: `url(${item.image})` }}></div>
+                <div className="card-overlay"></div>
+                <div className="card-content">
+                  <span className="card-subtitle">{item.subtitle}</span>
+                  <h3 className="card-title">{item.title}</h3>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
@@ -166,16 +244,26 @@ const AcademicPrograms = () => {
           background: linear-gradient(to left, white 0%, white 20%, transparent 100%);
         }
 
+        .slider-scroll-container {
+          overflow-x: auto;
+          scroll-behavior: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          cursor: grab;
+        }
+        
+        .slider-scroll-container:active {
+          cursor: grabbing;
+        }
+        
+        .slider-scroll-container::-webkit-scrollbar {
+          display: none;
+        }
+
         .slider-track {
           display: flex;
           gap: 1rem;
           width: fit-content;
-          animation: infiniteScroll 40s linear infinite;
-        }
-
-        @keyframes infiniteScroll {
-          from { transform: translateX(0); }
-          to { transform: translateX(calc(-300px * 4 - 4rem)); } /* Total width of one set of 4 cards */
         }
 
         .program-card {
@@ -260,12 +348,6 @@ const AcademicPrograms = () => {
 
           .slider-track {
             margin-left: 0;
-            animation: infiniteScrollMobile 25s linear infinite;
-          }
-
-          @keyframes infiniteScrollMobile {
-            from { transform: translateX(0); }
-            to { transform: translateX(calc(-260px * 4 - 4rem)); }
           }
         }
 
