@@ -66,8 +66,8 @@ export default function Programs() {
       <div className="container">
         <div className="section-header">
           <div className="header-left">
-            <span className="pre-title">KABAR TERKINI</span>
-            <h2 className="blue-title">Berita Al-Azhar</h2>
+            <span className="pre-title">Azhar TV</span>
+            <h2 className="blue-title">Berita Terkini</h2>
           </div>
         </div>
 

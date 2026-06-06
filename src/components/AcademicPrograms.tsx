@@ -10,7 +10,7 @@ const AcademicPrograms = () => {
     {
       title: "Tahfidz Al-Qur'an",
       subtitle: "Mujahid Qur'ani",
-      image: "https://images.unsplash.com/photo-1584281729155-3c9933073019?q=80&w=2070&auto=format&fit=crop",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780782481/trrd55vxurqlcvps7er4.jpg",
     },
     {
       title: "Bahasa Arab",

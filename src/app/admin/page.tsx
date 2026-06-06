@@ -37,6 +37,24 @@ interface DocPhoto {
   date: string;
 }
 
+interface LoginRequest {
+  id: string;
+  email: string;
+  requestedAt: string;
+  device: string;
+  status: "Pending" | "Approved" | "Rejected";
+}
+
+interface UserAccount {
+  id: string;
+  name: string;
+  email: string;
+  role: "Admin" | "Wali";
+  status: "Aktif" | "Nonaktif";
+  createdAt: string;
+  lastLogin: string;
+}
+
 function formatNumber(num: number): string {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
@@ -125,6 +143,71 @@ export default function AdminDashboardPage() {
   const [newPhotoUrl, setNewPhotoUrl] = useState("");
   const [newPhotoDesc, setNewPhotoDesc] = useState("");
   const [showAddPhotoModal, setShowAddPhotoModal] = useState(false);
+
+  // Accounts sub-tab and login requests states
+  const [accountsSubTab, setAccountsSubTab] = useState<"kelola_akun" | "kelola_data" | "permintaan_login">("kelola_akun");
+  const [accountsMenuExpanded, setAccountsMenuExpanded] = useState(false);
+  const [loginRequests, setLoginRequests] = useState<LoginRequest[]>([
+    { id: "1", email: "ustadz.ahmad@alazharpwk.com", requestedAt: "2026-05-19 14:32", device: "Chrome / Windows 11", status: "Pending" },
+    { id: "2", email: "humas.pesantren@alazharpwk.com", requestedAt: "2026-05-18 09:15", device: "Safari / iPhone 15", status: "Approved" },
+    { id: "3", email: "tahfidz.guru@alazharpwk.com", requestedAt: "2026-05-17 11:22", device: "Firefox / Android", status: "Rejected" },
+  ]);
+
+  const handleUpdateLoginRequestStatus = (id: string, newStatus: "Approved" | "Rejected") => {
+    setLoginRequests(prev => prev.map(r => r.id === id ? { ...r, status: newStatus } : r));
+  };
+
+  // User Accounts States
+  const [userAccounts, setUserAccounts] = useState<UserAccount[]>([
+    { id: "1", name: "Super Admin Al-Azhar", email: "danishalzam8002@gmail.com", role: "Admin", status: "Aktif", createdAt: "2026-01-10", lastLogin: "Hari Ini, 02:15" },
+    { id: "2", name: "Ustadz Ahmad Fauzi", email: "ahmad.fauzi@alazharpwk.com", role: "Admin", status: "Aktif", createdAt: "2026-02-15", lastLogin: "Kemarin, 14:32" },
+    { id: "3", name: "Herman Susanto (Wali Rian)", email: "herman.s@gmail.com", role: "Wali", status: "Aktif", createdAt: "2026-05-01", lastLogin: "18 Mei 2026, 09:12" },
+    { id: "4", name: "Siti Aminah (Wali Aisyah)", email: "siti.aminah@yahoo.com", role: "Wali", status: "Aktif", createdAt: "2026-05-12", lastLogin: "15 Mei 2026, 20:04" },
+    { id: "5", name: "Ustadzah Fatimah", email: "fatimah@alazharpwk.com", role: "Admin", status: "Nonaktif", createdAt: "2026-03-01", lastLogin: "01 Mei 2026, 11:22" },
+  ]);
+  const [selectedAccountForEdit, setSelectedAccountForEdit] = useState<UserAccount | null>(null);
+  const [showAddAccountModal, setShowAddAccountModal] = useState(false);
+
+  // New Account form state
+  const [newAccName, setNewAccName] = useState("");
+  const [newAccEmail, setNewAccEmail] = useState("");
+  const [newAccRole, setNewAccRole] = useState<"Admin" | "Wali">("Wali");
+
+  const handleAddAccount = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAccName || !newAccEmail) return;
+    const newAcc: UserAccount = {
+      id: Date.now().toString(),
+      name: newAccName,
+      email: newAccEmail,
+      role: newAccRole,
+      status: "Aktif",
+      createdAt: new Date().toISOString().split('T')[0],
+      lastLogin: "-"
+    };
+    setUserAccounts([...userAccounts, newAcc]);
+    setNewAccName("");
+    setNewAccEmail("");
+    setNewAccRole("Wali");
+    setShowAddAccountModal(false);
+    alert("Akun baru berhasil ditambahkan!");
+  };
+
+  const handleUpdateAccount = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedAccountForEdit) return;
+    setUserAccounts(prev => prev.map(acc => acc.id === selectedAccountForEdit.id ? selectedAccountForEdit : acc));
+    setSelectedAccountForEdit(null);
+    alert("Detail akun berhasil diperbarui!");
+  };
+
+  const handleDeleteAccount = (id: string) => {
+    if (!confirm("Hapus akun ini secara permanen dari sistem?")) return;
+    setUserAccounts(prev => prev.filter(acc => acc.id !== id));
+    if (selectedAccountForEdit?.id === id) {
+      setSelectedAccountForEdit(null);
+    }
+  };
 
   // Stats
   const totalPendaftar = pendaftaran.length || 12; // Fallback to mock values if empty
@@ -460,15 +543,55 @@ export default function AdminDashboardPage() {
               <span className="nav-icon"></span> <span>Data Aktivitas Web</span>
             </button>
             
-            <button 
-              className={`nav-item ${activeTab === "ppdb" ? "active" : ""}`}
-              onClick={() => { setActiveTab("ppdb"); setSidebarOpen(false); }}
-            >
-              <span className="nav-icon"></span> <span>Pendaftaran PPDB</span>
-              {pendaftaran.filter(p => p.status === "Pending").length > 0 && (
-                <span className="nav-badge">{pendaftaran.filter(p => p.status === "Pending").length}</span>
+            <div className="sidebar-accordion-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <button 
+                className={`nav-item ${activeTab === "accounts" ? "active" : ""}`}
+                onClick={() => { 
+                  setActiveTab("accounts"); 
+                  setSidebarOpen(false);
+                  setAccountsMenuExpanded(!accountsMenuExpanded);
+                }}
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span className="nav-icon"></span> <span>Kelola Data & Akun</span>
+                </div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '10px', height: '10px', transition: 'transform 0.2s', transform: accountsMenuExpanded || activeTab === "accounts" ? 'rotate(180deg)' : 'none', color: activeTab === "accounts" ? 'var(--primary)' : '#64748b' }}>
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+
+              {(accountsMenuExpanded || activeTab === "accounts") && (
+                <div className="sidebar-submenu" style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingLeft: '1.25rem', borderLeft: '2px solid rgba(0, 33, 71, 0.08)', marginLeft: '1rem', marginTop: '2px', marginBottom: '4px' }}>
+                  <button 
+                    onClick={() => { setActiveTab("accounts"); setAccountsSubTab("kelola_akun"); setSidebarOpen(false); }}
+                    className={`nav-item sub-nav-item ${activeTab === "accounts" && accountsSubTab === "kelola_akun" ? "active" : ""}`}
+                    style={{ fontSize: '0.78rem', padding: '6px 12px', background: activeTab === "accounts" && accountsSubTab === "kelola_akun" ? 'rgba(0, 33, 71, 0.05)' : 'transparent', border: 'none', textAlign: 'left', cursor: 'pointer', color: activeTab === "accounts" && accountsSubTab === "kelola_akun" ? 'var(--primary)' : '#475569', fontWeight: activeTab === "accounts" && accountsSubTab === "kelola_akun" ? 800 : 600 }}
+                  >
+                    Kelola Akun
+                  </button>
+                  <button 
+                    onClick={() => { setActiveTab("accounts"); setAccountsSubTab("kelola_data"); setSidebarOpen(false); }}
+                    className={`nav-item sub-nav-item ${activeTab === "accounts" && accountsSubTab === "kelola_data" ? "active" : ""}`}
+                    style={{ fontSize: '0.78rem', padding: '6px 12px', background: activeTab === "accounts" && accountsSubTab === "kelola_data" ? 'rgba(0, 33, 71, 0.05)' : 'transparent', border: 'none', textAlign: 'left', cursor: 'pointer', color: activeTab === "accounts" && accountsSubTab === "kelola_data" ? 'var(--primary)' : '#475569', fontWeight: activeTab === "accounts" && accountsSubTab === "kelola_data" ? 800 : 600 }}
+                  >
+                    Kelola Data
+                  </button>
+                  <button 
+                    onClick={() => { setActiveTab("accounts"); setAccountsSubTab("permintaan_login"); setSidebarOpen(false); }}
+                    className={`nav-item sub-nav-item ${activeTab === "accounts" && accountsSubTab === "permintaan_login" ? "active" : ""}`}
+                    style={{ fontSize: '0.78rem', padding: '6px 12px', background: activeTab === "accounts" && accountsSubTab === "permintaan_login" ? 'rgba(0, 33, 71, 0.05)' : 'transparent', border: 'none', textAlign: 'left', cursor: 'pointer', color: activeTab === "accounts" && accountsSubTab === "permintaan_login" ? 'var(--primary)' : '#475569', fontWeight: activeTab === "accounts" && accountsSubTab === "permintaan_login" ? 800 : 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: 'auto' }}
+                  >
+                    <span>Permintaan Login</span>
+                    {loginRequests.filter(r => r.status === "Pending").length > 0 && (
+                      <span className="nav-badge" style={{ background: '#ef4444', color: 'white', fontSize: '0.65rem', padding: '1px 5px', borderRadius: '10px', marginLeft: '6px' }}>
+                        {loginRequests.filter(r => r.status === "Pending").length}
+                      </span>
+                    )}
+                  </button>
+                </div>
               )}
-            </button>
+            </div>
             
             <button 
               className={`nav-item ${activeTab === "news" ? "active" : ""}`}
@@ -491,11 +614,23 @@ export default function AdminDashboardPage() {
               <span className="nav-icon"></span> <span>Konfigurasi</span>
             </button>
 
-            <button 
-              className={`nav-item ${activeTab === "accounts" ? "active" : ""}`}
-              onClick={() => { setActiveTab("accounts"); setSidebarOpen(false); }}
+            <Link 
+              href="/antigravity"
+              className="nav-item"
+              onClick={() => setSidebarOpen(false)}
+              style={{ color: '#ff8c00', border: '1px solid rgba(255, 140, 0, 0.25)', background: 'rgba(255, 140, 0, 0.05)', display: 'flex', alignItems: 'center' }}
             >
-              <span className="nav-icon"></span> <span>Kelola Data & Akun</span>
+              <span className="nav-icon">⚡</span> <span>Antigravity IDE</span>
+            </Link>
+
+            <button 
+              className={`nav-item ${activeTab === "ppdb" ? "active" : ""}`}
+              onClick={() => { setActiveTab("ppdb"); setSidebarOpen(false); }}
+            >
+              <span className="nav-icon"></span> <span>Pendaftaran PPDB</span>
+              {pendaftaran.filter(p => p.status === "Pending").length > 0 && (
+                <span className="nav-badge">{pendaftaran.filter(p => p.status === "Pending").length}</span>
+              )}
             </button>
           </nav>
           <div className="sidebar-decor-glow" style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', height: '150px', background: 'linear-gradient(to top, rgba(255,140,0,0.03), transparent)', pointerEvents: 'none' }} />
@@ -1256,100 +1391,506 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   exit={{ opacity: 0, y: -15 }}
                   className="tab-content"
                 >
-                  <div className="config-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                    
-                    {/* User Account Settings Card */}
-                    <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-                      <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002147', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>Detail Akun Pengurus</h3>
-                      
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', background: 'rgba(0,33,71,0.03)', padding: '1rem', borderRadius: '12px' }}>
-                        <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--primary)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', fontWeight: 'bold' }}>
-                          A
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                          <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0f172a' }}>Super Admin Al-Azhar</span>
-                          <span style={{ fontSize: '0.75rem', color: '#64748b' }}>danishalzam8002@gmail.com</span>
-                        </div>
-                      </div>
+                  {/* Glassmorphic Sub-Navbar pop up / tab menu */}
+                  <div className="accounts-sub-navbar" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'rgba(0, 33, 71, 0.03)',
+                    padding: '6px',
+                    borderRadius: '12px',
+                    border: '1.5px solid rgba(0, 33, 71, 0.05)',
+                    marginBottom: '1.75rem',
+                    width: 'fit-content',
+                    boxShadow: '0 4px 15px rgba(0, 33, 71, 0.02)'
+                  }}>
+                    <button
+                      onClick={() => setAccountsSubTab("kelola_akun")}
+                      className={`sub-nav-btn ${accountsSubTab === "kelola_akun" ? "active" : ""}`}
+                      style={{
+                        padding: '8px 18px',
+                        border: 'none',
+                        background: accountsSubTab === "kelola_akun" ? 'var(--primary)' : 'transparent',
+                        color: accountsSubTab === "kelola_akun" ? '#fff' : 'var(--primary)',
+                        fontWeight: 800,
+                        borderRadius: '8px',
+                        fontSize: '0.8rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease'
+                      }}
+                    >
+                      Kelola Akun
+                    </button>
+                    <button
+                      onClick={() => setAccountsSubTab("kelola_data")}
+                      className={`sub-nav-btn ${accountsSubTab === "kelola_data" ? "active" : ""}`}
+                      style={{
+                        padding: '8px 18px',
+                        border: 'none',
+                        background: accountsSubTab === "kelola_data" ? 'transparent' : 'transparent',
+                        backgroundColor: accountsSubTab === "kelola_data" ? 'var(--primary)' : 'transparent',
+                        color: accountsSubTab === "kelola_data" ? '#fff' : 'var(--primary)',
+                        fontWeight: 800,
+                        borderRadius: '8px',
+                        fontSize: '0.8rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease'
+                      }}
+                    >
+                      Kelola Data
+                    </button>
+                    <button
+                      onClick={() => setAccountsSubTab("permintaan_login")}
+                      className={`sub-nav-btn ${accountsSubTab === "permintaan_login" ? "active" : ""}`}
+                      style={{
+                        padding: '8px 18px',
+                        border: 'none',
+                        background: accountsSubTab === "permintaan_login" ? 'transparent' : 'transparent',
+                        backgroundColor: accountsSubTab === "permintaan_login" ? 'var(--primary)' : 'transparent',
+                        color: accountsSubTab === "permintaan_login" ? '#fff' : 'var(--primary)',
+                        fontWeight: 800,
+                        borderRadius: '8px',
+                        fontSize: '0.8rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <span>Permintaan Login</span>
+                      {loginRequests.filter(r => r.status === "Pending").length > 0 && (
+                        <span style={{
+                          background: '#ef4444',
+                          color: '#fff',
+                          fontSize: '0.65rem',
+                          fontWeight: 900,
+                          padding: '2px 6px',
+                          borderRadius: '10px',
+                          lineHeight: 1
+                        }}>
+                          {loginRequests.filter(r => r.status === "Pending").length}
+                        </span>
+                      )}
+                    </button>
+                  </div>
 
-                      <form className="config-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} onSubmit={(e) => { e.preventDefault(); alert("Profil admin berhasil diperbarui!"); }}>
-                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                          <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Nama Lengkap Pengurus</label>
-                          <input type="text" defaultValue="Super Admin Al-Azhar" style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.7rem 1rem', borderRadius: '8px', fontSize: '0.85rem' }} />
-                        </div>
-                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                          <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>E-Mail Utama (Login & Tagihan)</label>
-                          <input type="email" defaultValue="danishalzam8002@gmail.com" disabled style={{ background: '#f1f5f9', border: '1.5px solid #e2e8f0', padding: '0.7rem 1rem', borderRadius: '8px', fontSize: '0.85rem', color: '#94a3b8', cursor: 'not-allowed' }} />
-                        </div>
-                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                          <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Password Baru</label>
-                          <input type="password" placeholder="••••••••" style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.7rem 1rem', borderRadius: '8px', fontSize: '0.85rem' }} />
-                        </div>
-                        <button type="submit" className="btn-submit-config" style={{ padding: '0.75rem', background: '#002147', color: 'white', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', transition: 'all 0.2s' }}>Perbarui Profil Akun</button>
-                      </form>
-                    </div>
-
-                    {/* Database Operations & Backup Section */}
-                    <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-                      <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002147', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>Operasi Tabel & Salinan Data (Backup)</h3>
-                      <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 1.25rem 0', lineHeight: 1.5, textAlign: 'left' }}>
-                        Kelola volume baris tabel database PostgreSQL di Supabase dan buat salinan cadangan instan untuk keamanan berkas data portal pesantren.
-                      </p>
-
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                        {[
-                          { name: "visitor_logs", desc: "Log aktivitas Web Analytics", count: totalVisitors || 1482, status: "Tersinkronisasi" },
-                          { name: "pendaftaran", desc: "Data formulir pendaftaran santri baru (PPDB)", count: pendaftaran.length || 8, status: "Tersinkronisasi" },
-                          { name: "berita", desc: "Artikel warta & kabar berita pesantren", count: news.length || 3, status: "Tersimpan" },
-                          { name: "galeri_dokumentasi", desc: "Galeri foto & dokumentasi dokumenter alumni", count: photos.length || 3, status: "Tersimpan" }
-                        ].map((tbl, idx) => (
-                          <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '0.75rem 1rem' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                              <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0f172a', fontFamily: 'monospace' }}>{tbl.name}</span>
-                              <span style={{ fontSize: '0.7rem', color: '#64748b' }}>{tbl.desc}</span>
+                  <AnimatePresence mode="wait">
+                    {accountsSubTab === "kelola_akun" && (
+                      <motion.div
+                        key="kelola_akun"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div className="accounts-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.8fr) minmax(0, 1.2fr)', gap: '1.5rem', alignItems: 'start' }}>
+                          
+                          {/* Left Column: Daftar Akun */}
+                          <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>
+                              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002147', margin: 0 }}>Daftar Akun Pengguna</h3>
+                              <button 
+                                onClick={() => {
+                                  setSelectedAccountForEdit(null);
+                                  setShowAddAccountModal(true);
+                                }}
+                                style={{
+                                  padding: '6px 12px',
+                                  background: 'var(--primary)',
+                                  color: 'white',
+                                  border: 'none',
+                                  borderRadius: '6px',
+                                  fontWeight: 700,
+                                  fontSize: '0.75rem',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                + Tambah Akun
+                              </button>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '0.75rem', fontWeight: 900, background: '#e0f2fe', color: '#0369a1', padding: '0.15rem 0.5rem', borderRadius: '5px' }}>{tbl.count} baris</span>
-                              <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#10b981' }}>● {tbl.status}</span>
+
+                            <div className="table-responsive">
+                              <table className="main-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                  <tr>
+                                    <th style={{ textAlign: 'left', padding: '10px 8px', fontSize: '0.8rem' }}>Nama Akun</th>
+                                    <th style={{ textAlign: 'left', padding: '10px 8px', fontSize: '0.8rem' }}>Tipe Akses</th>
+                                    <th style={{ textAlign: 'left', padding: '10px 8px', fontSize: '0.8rem' }}>Status</th>
+                                    <th style={{ textAlign: 'center', padding: '10px 8px', fontSize: '0.8rem' }}>Aksi</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {userAccounts.map((acc) => (
+                                    <tr key={acc.id} style={{ borderBottom: '1px solid #f8fafc' }}>
+                                      <td style={{ padding: '12px 8px' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                                          <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.82rem' }}>{acc.name}</span>
+                                          <span style={{ fontSize: '0.7rem', color: '#64748b' }}>{acc.email}</span>
+                                        </div>
+                                      </td>
+                                      <td style={{ padding: '12px 8px' }}>
+                                        <span style={{
+                                          fontSize: '0.7rem',
+                                          fontWeight: 800,
+                                          padding: '2px 8px',
+                                          borderRadius: '6px',
+                                          background: acc.role === "Admin" ? 'rgba(0, 33, 71, 0.08)' : 'rgba(255, 140, 0, 0.08)',
+                                          color: acc.role === "Admin" ? '#002147' : '#ff8c00'
+                                        }}>
+                                          {acc.role}
+                                        </span>
+                                      </td>
+                                      <td style={{ padding: '12px 8px' }}>
+                                        <span style={{
+                                          fontSize: '0.7rem',
+                                          fontWeight: 800,
+                                          padding: '2px 8px',
+                                          borderRadius: '6px',
+                                          background: acc.status === "Aktif" ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                          color: acc.status === "Aktif" ? '#10b981' : '#ef4444'
+                                        }}>
+                                          {acc.status}
+                                        </span>
+                                      </td>
+                                      <td style={{ padding: '12px 8px', textAlign: 'center' }}>
+                                        <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                                          <button
+                                            onClick={() => {
+                                              setSelectedAccountForEdit({ ...acc });
+                                              setShowAddAccountModal(false);
+                                            }}
+                                            style={{
+                                              padding: '4px 8px',
+                                              background: '#f1f5f9',
+                                              border: '1px solid #cbd5e1',
+                                              borderRadius: '4px',
+                                              fontSize: '0.7rem',
+                                              fontWeight: 700,
+                                              cursor: 'pointer',
+                                              color: '#334155'
+                                            }}
+                                          >
+                                            Edit
+                                          </button>
+                                          <button
+                                            onClick={() => handleDeleteAccount(acc.id)}
+                                            style={{
+                                              padding: '4px 8px',
+                                              background: 'rgba(239, 68, 68, 0.05)',
+                                              border: '1px solid rgba(239, 68, 68, 0.2)',
+                                              borderRadius: '4px',
+                                              fontSize: '0.7rem',
+                                              fontWeight: 700,
+                                              cursor: 'pointer',
+                                              color: '#ef4444'
+                                            }}
+                                          >
+                                            Hapus
+                                          </button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
                             </div>
                           </div>
-                        ))}
-                      </div>
 
-                      <div style={{ display: 'flex', gap: '10px' }}>
-                        <button 
-                          onClick={() => {
-                            const backupData = {
-                              timestamp: new Date().toISOString(),
-                              visitorsCount: totalVisitors,
-                              registrations: pendaftaran,
-                              newsCount: news.length,
-                              photosCount: photos.length
-                            };
-                            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.href = url;
-                            a.download = `backup_alazhar_${new Date().toISOString().split('T')[0]}.json`;
-                            a.click();
-                            alert("Ekspor file cadangan berhasil diunduh!");
-                          }}
-                          style={{ flex: 1, padding: '0.75rem', background: '#ff8c00', color: 'white', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s', textAlign: 'center' }}
-                        >
-                          Unduh Berkas Cadangan (JSON)
-                        </button>
-                        <button 
-                          onClick={() => {
-                            alert("Optimalisasi indeks tabel PostgreSQL berhasil dijalankan!");
-                          }}
-                          style={{ flex: 0.8, padding: '0.75rem', background: '#f1f5f9', border: '1px solid #cbd5e1', color: '#334155', fontWeight: 700, borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s' }}
-                        >
-                          Optimalkan Indeks
-                        </button>
-                      </div>
-                    </div>
+                          {/* Right Column: Edit or Summary / Add Form */}
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            {selectedAccountForEdit ? (
+                              <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>
+                                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#002147', margin: 0 }}>Edit Akun</h3>
+                                  <button 
+                                    onClick={() => setSelectedAccountForEdit(null)}
+                                    style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 700 }}
+                                  >
+                                    Batal
+                                  </button>
+                                </div>
 
-                  </div>
+                                <form className="config-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} onSubmit={handleUpdateAccount}>
+                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
+                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Nama Lengkap</label>
+                                    <input 
+                                      type="text" 
+                                      value={selectedAccountForEdit.name} 
+                                      onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, name: e.target.value })}
+                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
+                                      required
+                                    />
+                                  </div>
+                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
+                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>E-Mail</label>
+                                    <input 
+                                      type="email" 
+                                      value={selectedAccountForEdit.email} 
+                                      onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, email: e.target.value })}
+                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
+                                      required
+                                    />
+                                  </div>
+                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
+                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Tipe Akses (Role)</label>
+                                    <select 
+                                      value={selectedAccountForEdit.role} 
+                                      onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, role: e.target.value as "Admin" | "Wali" })}
+                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}
+                                    >
+                                      <option value="Admin">Admin</option>
+                                      <option value="Wali">Wali Santri</option>
+                                    </select>
+                                  </div>
+                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
+                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Status Akun</label>
+                                    <select 
+                                      value={selectedAccountForEdit.status} 
+                                      onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, status: e.target.value as "Aktif" | "Nonaktif" })}
+                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}
+                                    >
+                                      <option value="Aktif">Aktif</option>
+                                      <option value="Nonaktif">Nonaktif</option>
+                                    </select>
+                                  </div>
+                                  <button type="submit" className="btn-submit-config" style={{ padding: '0.7rem', background: '#002147', color: 'white', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem' }}>Simpan Perubahan</button>
+                                </form>
+                              </div>
+                            ) : showAddAccountModal ? (
+                              <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>
+                                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#002147', margin: 0 }}>Tambah Akun Baru</h3>
+                                  <button 
+                                    onClick={() => setShowAddAccountModal(false)}
+                                    style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 700 }}
+                                  >
+                                    Batal
+                                  </button>
+                                </div>
+
+                                <form className="config-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} onSubmit={handleAddAccount}>
+                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
+                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Nama Lengkap</label>
+                                    <input 
+                                      type="text" 
+                                      placeholder="Contoh: Budi Santoso"
+                                      value={newAccName} 
+                                      onChange={(e) => setNewAccName(e.target.value)}
+                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
+                                      required
+                                    />
+                                  </div>
+                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
+                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>E-Mail</label>
+                                    <input 
+                                      type="email" 
+                                      placeholder="Contoh: budi@gmail.com"
+                                      value={newAccEmail} 
+                                      onChange={(e) => setNewAccEmail(e.target.value)}
+                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
+                                      required
+                                    />
+                                  </div>
+                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
+                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Tipe Akses (Role)</label>
+                                    <select 
+                                      value={newAccRole} 
+                                      onChange={(e) => setNewAccRole(e.target.value as "Admin" | "Wali")}
+                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}
+                                    >
+                                      <option value="Admin">Admin</option>
+                                      <option value="Wali">Wali Santri</option>
+                                    </select>
+                                  </div>
+                                  <button type="submit" className="btn-submit-config" style={{ padding: '0.7rem', background: '#002147', color: 'white', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem' }}>Tambah Akun</button>
+                                </form>
+                              </div>
+                            ) : (
+                              <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', textAlign: 'center' }}>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#002147', marginBottom: '1rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>Statistik Akses Akun</h3>
+                                
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+                                  <div style={{ background: 'rgba(0, 33, 71, 0.03)', padding: '1rem', borderRadius: '10px' }}>
+                                    <span style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', display: 'block' }}>
+                                      {userAccounts.filter(acc => acc.role === "Admin").length}
+                                    </span>
+                                    <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 700 }}>Total Admin</span>
+                                  </div>
+                                  <div style={{ background: 'rgba(255, 140, 0, 0.03)', padding: '1rem', borderRadius: '10px' }}>
+                                    <span style={{ fontSize: '1.5rem', fontWeight: 900, color: '#ff8c00', display: 'block' }}>
+                                      {userAccounts.filter(acc => acc.role === "Wali").length}
+                                    </span>
+                                    <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 700 }}>Total Wali Santri</span>
+                                  </div>
+                                </div>
+
+                                <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '8px', fontSize: '0.75rem', color: '#64748b', marginBottom: '1.25rem', border: '1px dashed #cbd5e1' }}>
+                                  Pilih salah satu akun di samping untuk melakukan pengeditan atau hapus akun, atau klik tombol tambah di atas untuk membuat pengguna baru.
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {accountsSubTab === "kelola_data" && (
+                      <motion.div
+                        key="kelola_data"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        style={{ maxWidth: '750px' }}
+                      >
+                        {/* Database Operations & Backup Section */}
+                        <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+                          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002147', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>Operasi Tabel & Salinan Data (Backup)</h3>
+                          <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 1.25rem 0', lineHeight: 1.5, textAlign: 'left' }}>
+                            Kelola volume baris tabel database PostgreSQL di Supabase dan buat salinan cadangan instan untuk keamanan berkas data portal pesantren.
+                          </p>
+
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                            {[
+                              { name: "visitor_logs", desc: "Log aktivitas Web Analytics", count: totalVisitors || 1482, status: "Tersinkronisasi" },
+                              { name: "pendaftaran", desc: "Data formulir pendaftaran santri baru (PPDB)", count: pendaftaran.length || 8, status: "Tersinkronisasi" },
+                              { name: "berita", desc: "Artikel warta & kabar berita pesantren", count: news.length || 3, status: "Tersimpan" },
+                              { name: "galeri_dokumentasi", desc: "Galeri foto & dokumentasi dokumenter alumni", count: photos.length || 3, status: "Tersimpan" }
+                            ].map((tbl, idx) => (
+                              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '0.75rem 1rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0f172a', fontFamily: 'monospace' }}>{tbl.name}</span>
+                                  <span style={{ fontSize: '0.7rem', color: '#64748b' }}>{tbl.desc}</span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <span style={{ fontSize: '0.75rem', fontWeight: 900, background: '#e0f2fe', color: '#0369a1', padding: '0.15rem 0.5rem', borderRadius: '5px' }}>{tbl.count} baris</span>
+                                  <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#10b981' }}>● {tbl.status}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <button 
+                              onClick={() => {
+                                const backupData = {
+                                  timestamp: new Date().toISOString(),
+                                  visitorsCount: totalVisitors,
+                                  registrations: pendaftaran,
+                                  newsCount: news.length,
+                                  photosCount: photos.length
+                                };
+                                const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = `backup_alazhar_${new Date().toISOString().split('T')[0]}.json`;
+                                a.click();
+                                alert("Ekspor file cadangan berhasil diunduh!");
+                              }}
+                              style={{ flex: 1, padding: '0.75rem', background: '#ff8c00', color: 'white', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s', textAlign: 'center' }}
+                            >
+                              Unduh Berkas Cadangan (JSON)
+                            </button>
+                            <button 
+                              onClick={() => {
+                                alert("Optimalisasi indeks tabel PostgreSQL berhasil dijalankan!");
+                              }}
+                              style={{ flex: 0.8, padding: '0.75rem', background: '#f1f5f9', border: '1px solid #cbd5e1', color: '#334155', fontWeight: 700, borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s' }}
+                            >
+                              Optimalkan Indeks
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {accountsSubTab === "permintaan_login" && (
+                      <motion.div
+                        key="permintaan_login"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {/* Permintaan Login Section */}
+                        <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+                          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002147', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>Permintaan Log Masuk Pengurus</h3>
+                          <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 1.25rem 0', lineHeight: 1.5, textAlign: 'left' }}>
+                            Otorisasi dan tinjau berkas permintaan akses log masuk ke panel administrator dari peranti pengurus lainnya.
+                          </p>
+
+                          <div className="table-responsive">
+                            <table className="main-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                              <thead>
+                                <tr>
+                                  <th style={{ textAlign: 'left', padding: '12px' }}>Alamat E-mail</th>
+                                  <th style={{ textAlign: 'left', padding: '12px' }}>Waktu Pengajuan</th>
+                                  <th style={{ textAlign: 'left', padding: '12px' }}>Perangkat / Browser</th>
+                                  <th style={{ textAlign: 'left', padding: '12px' }}>Status</th>
+                                  <th style={{ textAlign: 'left', padding: '12px' }}>Tindakan Otorisasi</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {loginRequests.map((req, idx) => (
+                                  <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                    <td style={{ fontWeight: 800, color: 'var(--primary)', padding: '12px' }}>{req.email}</td>
+                                    <td style={{ padding: '12px' }}>{req.requestedAt}</td>
+                                    <td style={{ padding: '12px' }}><span style={{ fontSize: '0.75rem', color: '#64748b' }}>{req.device}</span></td>
+                                    <td style={{ padding: '12px' }}>
+                                      <span className={`status-pill ${req.status.toLowerCase()}`}>
+                                        {req.status === 'Pending' ? 'Menunggu' : req.status === 'Approved' ? 'Disetujui' : 'Ditolak'}
+                                      </span>
+                                    </td>
+                                    <td style={{ padding: '12px' }}>
+                                      <div className="action-buttons" style={{ display: 'flex', gap: '8px' }}>
+                                        <button
+                                          onClick={() => handleUpdateLoginRequestStatus(req.id, "Approved")}
+                                          className="btn-approve"
+                                          disabled={req.status !== "Pending"}
+                                          style={{
+                                            padding: '4px 10px',
+                                            borderRadius: '6px',
+                                            border: 'none',
+                                            background: req.status === 'Pending' ? '#10b981' : '#e2e8f0',
+                                            fontWeight: 700,
+                                            fontSize: '0.75rem',
+                                            cursor: req.status === 'Pending' ? 'pointer' : 'default',
+                                            color: '#fff'
+                                          }}
+                                        >
+                                          Setujui
+                                        </button>
+                                        <button
+                                          onClick={() => handleUpdateLoginRequestStatus(req.id, "Rejected")}
+                                          className="btn-reject"
+                                          disabled={req.status !== "Pending"}
+                                          style={{
+                                            padding: '4px 10px',
+                                            borderRadius: '6px',
+                                            border: 'none',
+                                            background: req.status === 'Pending' ? '#ef4444' : '#e2e8f0',
+                                            fontWeight: 700,
+                                            fontSize: '0.75rem',
+                                            cursor: req.status === 'Pending' ? 'pointer' : 'default',
+                                            color: '#fff'
+                                          }}
+                                        >
+                                          Tolak
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>

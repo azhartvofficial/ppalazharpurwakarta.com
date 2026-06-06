@@ -9,20 +9,125 @@ const Preloader = () => {
   const [active, setActive] = useState(true); // Set to true by default to prevent layout/skeleton flash during initial load
 
   useEffect(() => {
-    // Trigger on EVERY mount (which happens on refresh/initial load)
-    // OR if navigating to any login route (like /login or /login/santri)
-    const isLogin = pathname ? pathname.startsWith("/login") : false;
-    
     setLoading(true);
     setActive(true);
 
-    const timer = setTimeout(() => {
-      setActive(false);
-      setTimeout(() => setLoading(false), 1000);
-    }, 2000);
+    let isMounted = true;
+    const startTime = Date.now();
+    let safetyTimeoutId: NodeJS.Timeout;
+    let initDelayId: NodeJS.Timeout;
+    const activeListeners: { img: HTMLImageElement; handler: () => void }[] = [];
 
-    return () => clearTimeout(timer);
-  }, [pathname ? pathname.startsWith("/login") : false]); // Re-trigger when entering/leaving any login page
+    const finishLoading = () => {
+      if (!isMounted) return;
+      
+      const elapsed = Date.now() - startTime;
+      const minDisplayTime = 400; // 400ms min display for smooth UI transition
+      const delay = Math.max(0, minDisplayTime - elapsed);
+
+      setTimeout(() => {
+        if (!isMounted) return;
+        setActive(false);
+        setTimeout(() => {
+          if (isMounted) setLoading(false);
+        }, 800); // Fades out in sync with opacity transition (0.8s)
+      }, delay);
+    };
+
+    const verifyAllAssetsLoaded = () => {
+      if (typeof window === 'undefined' || !isMounted) return;
+
+      // 1. Gather all <img> elements on the page
+      const imgElements = Array.from(document.querySelectorAll('img'));
+
+      // 2. Gather background image URLs from computed styles (e.g. Hero slides)
+      const bgImageUrls: string[] = [];
+      const allElements = document.querySelectorAll('*');
+      allElements.forEach(el => {
+        const bg = window.getComputedStyle(el).backgroundImage;
+        if (bg && bg !== 'none' && bg.startsWith('url(')) {
+          const match = bg.match(/url\((['"]?)(.*?)\1\)/);
+          if (match && match[2] && !match[2].startsWith('data:')) {
+            bgImageUrls.push(match[2]);
+          }
+        }
+      });
+
+      const uniqueUrls = Array.from(new Set(bgImageUrls));
+      const totalImages = imgElements.length + uniqueUrls.length;
+
+      if (totalImages === 0) {
+        finishLoading();
+        return;
+      }
+
+      let loadedCount = 0;
+      const checkCompletion = () => {
+        if (loadedCount >= totalImages) {
+          finishLoading();
+          return true;
+        }
+        return false;
+      };
+
+      // Track normal images
+      imgElements.forEach(img => {
+        if (img.complete) {
+          loadedCount++;
+        } else {
+          const onImgLoad = () => {
+            img.removeEventListener('load', onImgLoad);
+            img.removeEventListener('error', onImgLoad);
+            loadedCount++;
+            checkCompletion();
+          };
+          img.addEventListener('load', onImgLoad);
+          img.addEventListener('error', onImgLoad);
+          activeListeners.push({ img, handler: onImgLoad });
+        }
+      });
+
+      // Track background images
+      uniqueUrls.forEach(url => {
+        const tempImg = new Image();
+        tempImg.src = url;
+        if (tempImg.complete) {
+          loadedCount++;
+        } else {
+          tempImg.onload = () => {
+            loadedCount++;
+            checkCompletion();
+          };
+          tempImg.onerror = () => {
+            loadedCount++;
+            checkCompletion();
+          };
+        }
+      });
+
+      checkCompletion();
+    };
+
+    // Safety timeout: auto-resolve after max 3.5 seconds to prevent freezing on broken/slow links
+    safetyTimeoutId = setTimeout(() => {
+      finishLoading();
+    }, 3500);
+
+    // Give DOM 150ms to mount/render the page content, then check and track image states
+    initDelayId = setTimeout(() => {
+      verifyAllAssetsLoaded();
+    }, 150);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(safetyTimeoutId);
+      clearTimeout(initDelayId);
+      activeListeners.forEach(({ img, handler }) => {
+        img.removeEventListener('load', handler);
+        img.removeEventListener('error', handler);
+      });
+    };
+  }, [pathname]);
 
   if (!loading) return null;
 

@@ -1,12 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import localFont from "next/font/local";
 
-const frizQuadrata = localFont({
-  src: "../Font/friz-quadrata-std-medium-5870338ec7ef8.otf",
-  variable: "--font-friz",
-});
 
 const AlumniDocumentation = () => {
   // Sample alumni documentation images
@@ -33,15 +28,14 @@ const AlumniDocumentation = () => {
         </motion.div>
 
         <motion.h2 
-          className={`funny-title ${frizQuadrata.className}`}
+          className="funny-title"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 200 }}
         >
-          " Tidak ada Proses yang Mudah <br className="mobile-br" /> untuk Hasil yang Indah "
+          Jejak Karir Para Alumni
         </motion.h2>
-
         <div className="absurd-grid">
           {photos.map((photo, index) => (
             <motion.div
@@ -64,7 +58,7 @@ const AlumniDocumentation = () => {
 
       <style jsx global>{`
         .docs-section {
-          padding: 6rem 0;
+          padding: 2rem 0 6rem 0;
           background: #fdfdfd;
           overflow: hidden;
           position: relative;
@@ -84,6 +78,7 @@ const AlumniDocumentation = () => {
         }
 
         .funny-title {
+          font-family: var(--font-custom), sans-serif !important;
           font-size: 2.8rem !important;
           color: #002147 !important;
           text-align: center !important;
@@ -152,6 +147,9 @@ const AlumniDocumentation = () => {
         }
 
         @media (max-width: 768px) {
+          .docs-section {
+            padding: 1.5rem 0 4rem 0 !important;
+          }
           .funny-title { 
             font-size: 1.5rem !important; 
             margin: 0 auto 2rem auto !important;

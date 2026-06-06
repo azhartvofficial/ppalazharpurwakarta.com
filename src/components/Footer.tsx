@@ -1,5 +1,6 @@
 "use client";
 import localFont from "next/font/local";
+import Link from "next/link";
 
 const frizQuadrata = localFont({
   src: "../Font/friz-quadrata-std-medium-5870338ec7ef8.otf",
@@ -17,34 +18,42 @@ export default function Footer() {
             </h3>
             <h4 className="logo-sub">PURWAKARTA</h4>
             <p className="logo-tagline">TAKHOSSUS TAHFIDZ QUR'AN DAN BAHASA ARAB</p>
-            <p className="footer-desc">Membentuk pemimpin masa depan dengan karakter Islami dan integritas intelektual.</p>
+            <p className="footer-desc">“Profesional dan sinergi menuju lembaga modern <br /> untuk mencapai berkah dan ridho ilahi”</p>
           </div>
           
           <div className="footer-col">
-            <h5>INSTITUSI</h5>
+            <h5>TENTANG KAMI</h5>
             <ul>
-              <li><a href="#">Tentang Kami</a></li>
-              <li><a href="#">Visi & Misi</a></li>
-              <li><a href="#">Struktur Organisasi</a></li>
-              <li><a href="#">Pimpinan</a></li>
+              <li><Link href="/profil/alazhapurwakarta">Al-Azhar Purwakarta</Link></li>
+              <li><Link href="/profil/sistem-pendidikan">Sistem Pendidikan</Link></li>
+              <li><Link href="/profil/pendiri">Profil Pendiri</Link></li>
+              <li><Link href="/azhar-tv">Azhar TV</Link></li>
             </ul>
           </div>
 
           <div className="footer-col">
             <h5>AKADEMIK</h5>
             <ul>
-              <li><a href="#">Pendidikan SMP</a></li>
-              <li><a href="#">Pendidikan SMA</a></li>
-              <li><a href="#">Tahfidz Qur'an</a></li>
-              <li><a href="#">Ekstrakurikuler</a></li>
+              <li><Link href="/unit/sdit">SDIT Al-Azhar</Link></li>
+              <li><Link href="/unit/smp">SMP Islam Al-Azhar</Link></li>
+              <li><Link href="/unit/ma">MA Unggulan Al-Azhar</Link></li>
             </ul>
           </div>
 
-          <div className="footer-col">
-            <h5>KONTAK</h5>
-            <p>Jl. Terusan Ibrahim Singadilaga No. 1, Purwakarta</p>
-            <p>T. +62 264 1234567</p>
-            <p>E. info@alazhapurwakarta.com</p>
+          <div className="footer-col contact-col">
+            <h5>ALAMAT & KONTAK</h5>
+            <div className="contact-item">
+              <span className="contact-label">Alamat Lengkap</span>
+              <p>Gang Coklat, Kp. Warungkandang RT.19/RW.04 Desa Sindangsari Kecamatan Plered, Kab. Purwakarta Jawa Barat</p>
+            </div>
+            <div className="contact-item">
+              <span className="contact-label">Kontak Whatsaap</span>
+              <p>0895-0455-0090 <br />( Cecep Rahmat, M. Ag )</p>
+            </div>
+            <div className="contact-item">
+              <span className="contact-label">Email</span>
+              <p>abah.rahmat86@gmail.com</p>
+            </div>
           </div>
         </div>
 
@@ -120,6 +129,26 @@ export default function Footer() {
           font-size: 0.9rem;
           line-height: 1.8;
           margin-bottom: 1rem;
+        }
+
+        .contact-item {
+          margin-bottom: 1.2rem;
+        }
+
+        .contact-label {
+          display: block;
+          font-size: 0.65rem;
+          color: var(--secondary);
+          font-weight: 800;
+          letter-spacing: 1px;
+          margin-bottom: 0.1rem;
+          text-transform: uppercase;
+        }
+
+        .contact-item p {
+          margin-top: 0;
+          margin-bottom: 0 !important;
+          line-height: 1.5;
         }
 
         .footer-bottom {

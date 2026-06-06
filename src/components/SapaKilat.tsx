@@ -30,7 +30,7 @@ const SapaKilat = () => {
         <div className="bottom-vision">
           <span className={`motto-badge ${isVisible ? 'animate-reveal' : ''}`} style={{ opacity: isVisible ? 1 : 0 }}>Motto Lembaga</span>
           <div className={`tagline-vision ${isVisible ? 'animate-vision' : ''}`}>
-            “Menjadikan Hafidz yang Sarjana <br /> dan Sarjana yang Hafidz”
+            “Profesional dan sinergi <br className="mobile-break" /> menuju lembaga modern <br /> untuk mencapai berkah dan ridho ilahi”
           </div>
         </div>
 
@@ -161,6 +161,10 @@ const SapaKilat = () => {
           -webkit-text-fill-color: transparent;
           animation: shine 8s linear infinite;
           display: inline-block;
+        }
+
+        .mobile-break {
+          display: none;
         }
 
         @keyframes shine {
@@ -641,12 +645,19 @@ const SapaKilat = () => {
           .sapa-kilat-section {
             padding-top: 1.5rem;
           }
+          .sapa-kilat-section .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+          }
           .main-title { font-size: 1.7rem !important; }
           .tagline-vision { 
-            font-size: 1.2rem !important; 
+            font-size: 1.4rem !important; 
             max-width: 95%; 
             margin: 0 auto;
             line-height: 1.3;
+          }
+          .mobile-break {
+            display: block;
           }
           .bottom-vision {
             margin-bottom: 3.5rem;
@@ -751,6 +762,11 @@ const SapaKilat = () => {
             margin: 1.5rem auto 0 auto !important;
             width: fit-content !important;
             text-align: center !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .tagline-vision {
+            font-size: 1.1rem !important;
           }
         }
       `}</style>

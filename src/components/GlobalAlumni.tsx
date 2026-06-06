@@ -170,7 +170,7 @@ const GlobalAlumni = () => {
 
       <style jsx>{`
         .global-alumni-section {
-          padding: 2rem 0 4rem 0;
+          padding: 2rem 0 2rem 0;
           background: #ffffff;
           overflow: hidden;
           position: relative;
@@ -393,7 +393,7 @@ const GlobalAlumni = () => {
         @media (max-width: 768px) {
           .orbit-wrapper { height: 450px; transform: scale(0.65); }
           .title-main { font-size: 2rem !important; }
-          .global-alumni-section { padding: 2rem 0 2rem 0; }
+          .global-alumni-section { padding: 2rem 0 1rem 0; }
           .uni-info-card { min-width: 220px; max-width: 220px; }
           .nav-btn { display: none; }
         }
