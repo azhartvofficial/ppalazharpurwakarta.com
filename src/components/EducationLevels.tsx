@@ -256,8 +256,9 @@ const EducationLevels = () => {
           font-size: 1.1rem;
           font-weight: 700;
           color: var(--primary);
-          margin: 0;
+          margin: 0.8rem 0 0 0;
           transition: color 0.3s ease;
+          text-align: center;
         }
         
         .level-card:hover .level-label {

@@ -177,6 +177,7 @@ const Preloader = () => {
             height={130}
           />
         </div>
+        <div className="loading-text">Memuat...</div>
       </div>
 
       <style jsx>{`
@@ -324,6 +325,23 @@ const Preloader = () => {
             opacity: 1;
             filter: drop-shadow(0 0 10px rgba(255,255,255,0.15)) blur(0px);
           }
+        }
+
+        .loading-text {
+          margin-top: 2rem;
+          color: white;
+          font-size: 1rem;
+          font-family: 'Georgia', 'Times New Roman', serif;
+          font-style: italic;
+          letter-spacing: 3px;
+          text-transform: uppercase;
+          text-align: center;
+          animation: pulseText 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseText {
+          from { opacity: 0.5; }
+          to { opacity: 1; }
         }
       `}</style>
     </div>

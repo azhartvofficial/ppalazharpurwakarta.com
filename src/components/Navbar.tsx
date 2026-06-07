@@ -868,7 +868,7 @@ export default function Navbar() {
           opacity: 0;
           visibility: hidden;
           transform: translateY(10px) scale(0.95);
-          transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+          transition: all 0.2s ease-out;
           display: flex;
           flex-direction: column;
           z-index: 100;
@@ -1276,7 +1276,7 @@ export default function Navbar() {
             transform-origin: bottom left !important;
             opacity: 0 !important;
             visibility: hidden !important;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            transition: all 0.2s ease-out !important;
             z-index: 99998 !important;
             overflow-y: auto !important;
             scrollbar-width: none;
