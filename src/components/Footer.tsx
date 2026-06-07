@@ -49,7 +49,7 @@ export default function Footer() {
             <div className="contact-item">
               <span className="contact-label">Kontak Whatsaap</span>
               <p>
-                <a href="https://api.whatsapp.com/send/?phone=081289852035" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                <a href="https://wa.me/6281289852035?text=Assalamualaikum%20Ustadz%20afwan%20mau%20tanya%20terkait%20info%20PPDB%20Al-Azhar%20Purwakarta" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
                   0895-0455-0090 <br />( Cecep Rahmat, M. Ag )
                 </a>
               </p>

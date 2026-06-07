@@ -1276,7 +1276,7 @@ export default function Navbar() {
             transform-origin: bottom left !important;
             opacity: 0 !important;
             visibility: hidden !important;
-            transition: all 0.2s ease-out !important;
+            transition: none !important;
             z-index: 99998 !important;
             overflow-y: auto !important;
             scrollbar-width: none;
