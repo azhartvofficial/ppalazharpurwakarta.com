@@ -27,7 +27,7 @@ export default function Footer() {
               <li><Link href="/profil/alazhapurwakarta">Al-Azhar Purwakarta</Link></li>
               <li><Link href="/profil/sistem-pendidikan">Sistem Pendidikan</Link></li>
               <li><Link href="/profil/pendiri">Profil Pendiri</Link></li>
-              <li><Link href="/azhar-tv">Azhar TV</Link></li>
+              <li><Link href="/azhar-tv">Media Azhar TV</Link></li>
             </ul>
           </div>
 
@@ -48,7 +48,11 @@ export default function Footer() {
             </div>
             <div className="contact-item">
               <span className="contact-label">Kontak Whatsaap</span>
-              <p>0895-0455-0090 <br />( Cecep Rahmat, M. Ag )</p>
+              <p>
+                <a href="https://api.whatsapp.com/send/?phone=081289852035" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                  0895-0455-0090 <br />( Cecep Rahmat, M. Ag )
+                </a>
+              </p>
             </div>
             <div className="contact-item">
               <span className="contact-label">Email</span>
@@ -59,13 +63,16 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <div className="copyright">
-            &copy; 2026 Pondok Pesantren Al Azhar Purwakarta.
+            &copy; Copyright Media Azhar TV | Pondok Pesantren Al Azhar Purwakarta 2026
           </div>
-          <div className="social-links">
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
-            <a href="#">LinkedIn</a>
+          <div className="social-section">
+            <p className="social-text">Ikuti akun media sosial resmi kami:</p>
+            <div className="social-links">
+              <a href="https://www.facebook.com/ponpes.alazharpurwakarra" target="_blank" rel="noopener noreferrer">Facebook</a>
+              <a href="https://www.instagram.com/azhar_tv_" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://www.youtube.com/@Tvazhar" target="_blank" rel="noopener noreferrer">YouTube</a>
+              <a href="https://alazharpwk.cazh.id/ppdb/ponpes-al-azhar-purwakarta" target="_blank" rel="noopener noreferrer">Cazh</a>
+            </div>
           </div>
         </div>
       </div>
@@ -160,6 +167,20 @@ export default function Footer() {
           font-size: 0.8rem;
         }
 
+        .social-section {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 0.5rem;
+        }
+
+        .social-text {
+          font-size: 0.75rem;
+          color: #ffcc00;
+          letter-spacing: 0.5px;
+          align-self: flex-start;
+        }
+
         .social-links {
           display: flex;
           gap: 1.5rem;
@@ -170,8 +191,26 @@ export default function Footer() {
         }
 
         @media (max-width: 768px) {
-          .footer-top { grid-template-columns: 1fr; gap: 3rem; }
-          .footer-bottom { flex-direction: column; gap: 1.5rem; text-align: center; }
+          .footer-top { grid-template-columns: 1fr; gap: 3rem; margin-bottom: 2rem; }
+          .footer-bottom { 
+            flex-direction: column-reverse; 
+            gap: 1.5rem; 
+            text-align: center; 
+            border-top: none;
+            padding-top: 0;
+          }
+          .copyright {
+            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+          }
+          .social-section { 
+            align-items: center; 
+            width: 100%; 
+          }
+          .social-text {
+            align-self: center;
+          }
         }
       `}</style>
     </footer>

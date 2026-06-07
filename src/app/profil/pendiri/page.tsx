@@ -25,7 +25,7 @@ export default function PendiriPage() {
             className="header-content"
           >
             <span className="pre-title">PROFILE TOKOH</span>
-            <h1 className={frizQuadrata.className}>Pendiri & Pimpinan Lembaga</h1>
+            <h1 className={frizQuadrata.className}>Pendiri & Pimpinan <br />Lembaga</h1>
             <div className="accent-divider"></div>
           </motion.div>
         </div>
@@ -56,24 +56,50 @@ export default function PendiriPage() {
                 <h3>Latar Belakang Pendidikan</h3>
                 <ul className="education-list">
                   <li>
-                    <div className="edu-icon">🎓</div>
+                    <div className="edu-icon">
+                      <Image src="/Logo/Log%20Kampus/UIN%20BDG.png" alt="UIN Bandung" width={55} height={55} style={{ objectFit: 'contain' }} />
+                    </div>
                     <div className="edu-details">
-                      <strong>Program Doktoral (S3)</strong>
+                      <strong>Doktoral (S3) Pendidikan Bahasa Arab</strong>
                       <span>UIN Sunan Gunung Djati Bandung (Sedang Berjalan)</span>
                     </div>
                   </li>
                   <li>
-                    <div className="edu-icon">🎓</div>
+                    <div className="edu-icon">
+                      <Image src="/Logo/Log%20Kampus/AL-AZHAR.png" alt="Al-Azhar Mesir" width={55} height={55} style={{ objectFit: 'contain' }} />
+                    </div>
                     <div className="edu-details">
-                      <strong>Program Magister (S2)</strong>
-                      <span>UIN Syarif Hidayatullah</span>
+                      <strong>Magister (S2) Manajemen Pendidikan</strong>
+                      <span>Universitas Al-Azhar Mesir</span>
                     </div>
                   </li>
                   <li>
-                    <div className="edu-icon">🎓</div>
+                    <div className="edu-icon">
+                      <Image src="/Logo/Log%20Kampus/AL-AZHAR.png" alt="Al-Azhar Mesir" width={55} height={55} style={{ objectFit: 'contain' }} />
+                    </div>
                     <div className="edu-details">
-                      <strong>Program Sarjana (S1)</strong>
+                      <strong>Sarjana (S1) Syariah Islamiyah</strong>
                       <span>Universitas Al-Azhar Mesir</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="education-section works-section" style={{ marginTop: '2rem' }}>
+                <h3>Karya Tulis & Kitab</h3>
+                <ul className="education-list works-list">
+                  <li>
+                    <div className="edu-icon" style={{ background: '#fff3e0' }}>📚</div>
+                    <div className="edu-details">
+                      <strong>[Judul Kitab Pertama]</strong>
+                      <span>Deskripsi singkat / tahun terbit</span>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="edu-icon" style={{ background: '#fff3e0' }}>📚</div>
+                    <div className="edu-details">
+                      <strong>[Judul Kitab Kedua]</strong>
+                      <span>Deskripsi singkat / tahun terbit</span>
                     </div>
                   </li>
                 </ul>
@@ -140,22 +166,56 @@ export default function PendiriPage() {
                 <h3>Latar Belakang Pendidikan</h3>
                 <ul className="education-list">
                   <li>
-                    <div className="edu-icon">🎓</div>
+                    <div className="edu-icon">
+                      <Image src="/Logo/Log%20Kampus/UIN%20BDG.png" alt="UIN Bandung" width={55} height={55} style={{ objectFit: 'contain' }} />
+                    </div>
                     <div className="edu-details">
-                      <strong>Program Magister (S2)</strong>
-                      <span>UIN Kiai Haji Achmad Siddiq Jember</span>
+                      <strong>Magister (S2) Pendidikan Bahasa Arab</strong>
+                      <span>UIN Sunan Gunung Djati Bandung</span>
                     </div>
                   </li>
                   <li>
-                    <div className="edu-icon">🎓</div>
+                    <div className="edu-icon">
+                      <Image src="/Logo/Log%20Kampus/AL-AZHAR.png" alt="Al-Azhar Mesir" width={55} height={55} style={{ objectFit: 'contain' }} />
+                    </div>
                     <div className="edu-details">
-                      <strong>Program Sarjana (S1)</strong>
+                      <strong>Sarjana (S1) Ushuluddin</strong>
                       <span>Universitas Al-Azhar Mesir</span>
                     </div>
                   </li>
                 </ul>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section className="galeri-section">
+        <div className="container">
+          <div className="section-header">
+            <h2 className={frizQuadrata.className}>Galeri Pimpinan</h2>
+            <div className="accent-divider"></div>
+          </div>
+          <div className="galeri-grid">
+            {[...Array(21)].map((_, i) => {
+              const images = [
+                "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999220/hjozyz9pb8puevlg2ynu.png",
+                "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999180/hpw4kbe8jglic4kpdtbj.png",
+                "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999165/qyvcomndxiwejcvzmfsl.png"
+              ];
+              return (
+                <motion.div 
+                  key={i}
+                  className="galeri-item"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: (i % 7) * 0.05 }}
+                >
+                  <img src={images[i % 3]} alt={`Galeri Pimpinan ${i + 1}`} className="galeri-img" />
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -344,17 +404,14 @@ export default function PendiriPage() {
         }
 
         .edu-icon {
-          background: #f0f4ff;
-          width: 45px;
-          height: 45px;
-          border-radius: 12px;
+          background: transparent;
+          width: 55px;
+          height: 55px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.2rem;
-          color: #002147;
           flex-shrink: 0;
-          border: 1px solid rgba(0, 33, 71, 0.1);
+          border: none;
         }
 
         .edu-details strong {
@@ -384,6 +441,53 @@ export default function PendiriPage() {
           h2 { font-size: 2rem; }
           .quote-box { border-left: none; border-top: 6px solid #002147; border-radius: 0 0 20px 20px; text-align: left; }
           .alt-border { border-top-color: #ff8c00; }
+        }
+        @media (max-width: 768px) {
+          h1 { font-size: 2rem; line-height: 1.3; }
+          .galeri-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 0.5rem !important; }
+          .galeri-item { border-radius: 6px !important; }
+          .section-header h2 { font-size: 2rem; }
+        }
+
+        /* Galeri Styles */
+        .galeri-section {
+          padding: 5rem 0 8rem;
+          background: #f8fafc;
+        }
+        .section-header {
+          text-align: center;
+          margin-bottom: 3rem;
+        }
+        .section-header h2 {
+          font-size: 2.8rem;
+          color: #002147;
+          margin-bottom: 1rem;
+        }
+        .galeri-grid {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          gap: 1rem;
+        }
+        .galeri-item {
+          position: relative;
+          aspect-ratio: 3 / 2;
+          height: auto;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 5px 15px rgba(0, 33, 71, 0.08);
+          transition: transform 0.3s ease;
+        }
+        .galeri-item:hover {
+          transform: translateY(-10px);
+        }
+        .galeri-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.5s ease;
+        }
+        .galeri-item:hover .galeri-img {
+          transform: scale(1.05);
         }
       `}</style>
     </main>

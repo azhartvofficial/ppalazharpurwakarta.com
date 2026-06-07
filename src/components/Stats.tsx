@@ -2,10 +2,10 @@
 
 export default function Stats() {
   const stats = [
-    { label: "SANTRI AKTIF", value: "1.200+" },
     { label: "TENAGA PENGAJAR", value: "85" },
     { label: "PROGRAM STUDI", value: "12" },
-    { label: "ALUMNI", value: "5.000+" },
+    { label: "CABANG", value: "5" },
+    { label: "TAHUN BERDIRI", value: "2017" },
   ];
 
   return (

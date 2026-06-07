@@ -67,8 +67,9 @@ export default function Hero() {
             <Link href="/pendaftaran" className="glass-btn-pill">
               {t('ctaDaftar')}
             </Link>
-            <Link href="#profil" className="glass-btn-pill secondary">
-              {t('ctaJelajahi')}
+            <Link href="/profil/alazhapurwakarta" className="glass-btn-pill secondary">
+              <span className="desk-text">{t('ctaJelajahi')}</span>
+              <span className="mob-text">JELAJAHI<br/>AL-AZHAR</span>
             </Link>
           </div>
         </div>
@@ -213,19 +214,15 @@ export default function Hero() {
         }
 
         :global(.glass-btn-pill:hover) {
-          background: rgba(255, 255, 255, 0.1) !important;
+          background: rgba(255, 255, 255, 0.15) !important;
           border-color: rgba(255, 255, 255, 0.5) !important;
-          transform: scale(1.08) translateY(-4px) !important;
-          opacity: 1 !important;
           color: #ffffff !important;
-          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         :global(.glass-btn-pill:active) {
-          transform: scale(0.94) translateY(0) !important;
-          background: rgba(255, 255, 255, 0.3) !important;
+          background: rgba(255, 255, 255, 0.25) !important;
           box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-          transition: all 0.1s ease !important;
         }
 
         .btn-white {
@@ -235,6 +232,9 @@ export default function Hero() {
           font-weight: 700;
           border-radius: 4px;
         }
+
+        .mob-text { display: none; }
+        .desk-text { display: inline-block; }
 
         .hero-timeline-container {
           position: absolute;
@@ -331,12 +331,18 @@ export default function Hero() {
             width: 100%;
           }
           :global(.glass-btn-pill) {
-            padding: 0.7rem 1.2rem !important;
+            padding: 0.5rem 1.2rem !important;
             font-size: 0.72rem !important;
             letter-spacing: 1px !important;
             width: fit-content;
             min-width: 130px;
+            height: 50px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
           }
+          .desk-text { display: none; }
+          .mob-text { display: inline-block; line-height: 1.1; text-align: center; }
           .nav-btn { width: 40px; height: 40px; font-size: 1rem; }
           .prev { left: 10px; }
           .next { right: 10px; }

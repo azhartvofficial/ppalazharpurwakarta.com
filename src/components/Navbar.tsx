@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 import { useLanguage } from "@/context/LanguageContext";
@@ -16,6 +16,45 @@ export default function Navbar() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [adminName, setAdminName] = useState("Admin");
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const profileDropdownRef = useRef<HTMLDivElement>(null);
+  const navMenuRef = useRef<HTMLDivElement>(null);
+  const lastOutsideClickTime = useRef<number>(0);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
+      const target = event.target as Node;
+      
+      // Close profile dropdown if clicked outside
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(target)) {
+        setProfileDropdownOpen(false);
+      }
+      
+      // Close mobile menu if clicked outside (and not on the toggle button itself)
+      // Menggunakan logika "double tap" / "double click"
+      if (
+        navMenuRef.current && 
+        !navMenuRef.current.contains(target) && 
+        !(target as Element).closest('.menu-toggle')
+      ) {
+        const now = Date.now();
+        if (now - lastOutsideClickTime.current < 500) {
+          // Jika jarak klik kurang dari 500ms, tutup menu
+          setMenuOpen(false);
+          lastOutsideClickTime.current = 0;
+        } else {
+          // Jika baru klik sekali, catat waktunya
+          lastOutsideClickTime.current = now;
+        }
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
 
   const isLoginPage = typeof window !== 'undefined' && (
     window.location.pathname.includes('/login') || 
@@ -125,7 +164,7 @@ export default function Navbar() {
           </Link>
 
           {/* Nav Links */}
-          <div className={`nav-links ${menuOpen ? "active" : ""}`}>
+          <div ref={navMenuRef} className={`nav-links ${menuOpen ? "active" : ""}`}>
             <Link href="/" className="nav-item" onClick={() => setMenuOpen(false)}>{t('beranda')}</Link>
 
             <div
@@ -177,7 +216,7 @@ export default function Navbar() {
           {/* Mobile Utility + Toggle */}
           <div className="nav-mobile-actions">
             {isAdminLoggedIn ? (
-              <div className="navbar-profile-dropdown-wrapper" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', height: 'fit-content' }}>
+              <div ref={profileDropdownRef} className="navbar-profile-dropdown-wrapper" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', height: 'fit-content' }}>
                 <div 
                   className="navbar-profile-bubble-container"
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}

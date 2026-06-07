@@ -79,7 +79,7 @@ const AlumniDocumentation = () => {
 
         .funny-title {
           font-family: var(--font-custom), sans-serif !important;
-          font-size: 2.8rem !important;
+          font-size: 3.2rem !important;
           color: #002147 !important;
           text-align: center !important;
           margin: 0 auto 4rem auto !important;
@@ -151,7 +151,7 @@ const AlumniDocumentation = () => {
             padding: 1.5rem 0 4rem 0 !important;
           }
           .funny-title { 
-            font-size: 1.5rem !important; 
+            font-size: 1.8rem !important; 
             margin: 0 auto 2rem auto !important;
             line-height: 1.4 !important;
           }

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
@@ -12,6 +12,26 @@ const frizQuadrata = localFont({
 
 export default function SejarahPage() {
   const { t } = useLanguage();
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
+  const videoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVideoVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <main>
@@ -37,13 +57,13 @@ export default function SejarahPage() {
           </div>
 
           <div className="visi-misi-section">
-            <div className="vm-logos-column">
-              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Ponpes" />
-              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999208/vqmahfuz6iqrzg916oab.png" alt="Logo SDIT" />
-              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999209/ftxowvzkp4bix7mimh3v.png" alt="Logo SMP" />
-              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999206/tseftzv1omefjsldurni.png" alt="Logo MA" />
-              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999210/xblypre0sq4suc8bjdld.png" alt="Logo TK" />
-            </div>
+              <div className="vm-logos-column">
+                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Ponpes" />
+                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999209/ftxowvzkp4bix7mimh3v.png" alt="Logo SMP" />
+                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999206/tseftzv1omefjsldurni.png" alt="Logo MA" />
+                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999208/vqmahfuz6iqrzg916oab.png" alt="Logo SDIT" />
+                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999210/xblypre0sq4suc8bjdld.png" alt="Logo TK" />
+              </div>
             <div className="v-m-box">
               <div className="v-m-item">
                 <h3 className={frizQuadrata.className}>Visi</h3>
@@ -63,25 +83,26 @@ export default function SejarahPage() {
 
           <div className="video-profile-section">
             <div className="section-header-video">
-              <h3 className={frizQuadrata.className}>Video Profil <br /> Pondok Pesantren Al-Azhar Purwakarta</h3>
+              <h3 className={`${frizQuadrata.className} video-title`}>
+                <strong>Profil Pondok Pesantren <br /> Al-Azhar Purwakarta</strong>
+              </h3>
               <div className="title-accent"></div>
             </div>
-            <div className="video-container">
-              {/* Ganti URL src di bawah ini dengan link YouTube yang sebenarnya */}
-              <iframe 
-                src="https://www.youtube.com/embed/jfKfPfyJRdk" 
-                title="Video Profil Pondok Pesantren Al-Azhar Purwakarta" 
-                frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
+            <div className="video-container" ref={videoRef}>
+              {isVideoVisible ? (
+                <iframe 
+                  src="https://www.youtube.com/embed/S26388RIVdI?autoplay=1&mute=1&loop=1&playlist=S26388RIVdI&rel=0&showinfo=0&modestbranding=1" 
+                  title="Video Profil Pondok Pesantren Al-Azhar Purwakarta" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                ></iframe>
+              ) : null}
             </div>
             <p className="video-caption">Dikelola oleh Azhar TV</p>
           </div>
 
           <div className="history-timeline">
-            <h3 className={frizQuadrata.className}>Perjalanan Kami</h3>
+            <h3 className={frizQuadrata.className}>Sejak 2017</h3>
             <p>
               Didirikan dengan semangat untuk mencetak kader ulama yang intelek, Pondok Pesantren Al-Azhar Purwakarta terus bertransformasi menjadi lembaga pendidikan modern tanpa meninggalkan nilai-nilai luhur pesantren. 
               Hingga saat ini, kami telah meluluskan ribuan alumni yang berkiprah di berbagai sektor, baik di dalam maupun luar negeri.
@@ -133,26 +154,31 @@ export default function SejarahPage() {
         }
 
         .visi-misi-section {
-          display: grid;
-          grid-template-columns: 100px 1fr;
-          gap: 2rem;
+          display: flex;
+          flex-direction: column;
+          gap: 3rem;
           margin-top: 4rem;
           align-items: center;
         }
 
         .vm-logos-column {
           display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-          align-items: center;
-          padding: 1rem 0;
+          flex-wrap: nowrap;
+          justify-content: center;
+          gap: 2.5rem;
+          width: 100%;
+          max-width: 1000px;
         }
 
         .vm-logos-column img {
-          width: 65px;
+          width: 90px;
           height: auto;
           object-fit: contain;
           display: block;
+        }
+
+        .v-m-content {
+          width: 100%;
         }
 
         .v-m-box {
@@ -202,12 +228,12 @@ export default function SejarahPage() {
           margin-bottom: 2.5rem;
         }
 
-        .section-header-video h3 {
-          font-size: 3rem;
-          line-height: 1.15;
+        .section-header-video h3.video-title {
+          font-size: 2.2rem;
+          line-height: 1.25;
           color: var(--primary);
           margin-bottom: 1rem;
-          font-weight: 700;
+          font-weight: normal;
           font-style: normal;
           letter-spacing: -0.5px;
         }
@@ -254,12 +280,12 @@ export default function SejarahPage() {
             grid-template-columns: 1.5fr 1fr;
             gap: 1.5rem;
           }
-          .visi-misi-section {
-            grid-template-columns: 80px 1fr;
+          .vm-logos-column {
+            max-width: 500px;
             gap: 1.5rem;
           }
           .vm-logos-column img {
-            width: 60px;
+            max-width: 70px;
           }
           h2 {
             font-size: 1.8rem;
@@ -287,24 +313,20 @@ export default function SejarahPage() {
           .sejarah-text {
             text-align: justify;
           }
-          .visi-misi-section {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-          }
           .vm-logos-column {
-            flex-direction: row;
-            justify-content: center;
-            gap: 1rem;
             flex-wrap: wrap;
+            max-width: 320px;
+            gap: 1rem;
           }
           .vm-logos-column img {
-            width: 50px;
+            flex: 0 0 calc(33.333% - 1rem);
+            max-width: 65px;
           }
           h2 {
             font-size: 1.5rem;
           }
-          .section-header-video h3 {
-            font-size: 2rem;
+          .section-header-video h3.video-title {
+            font-size: 1.6rem;
           }
           .video-container {
             border-radius: 12px;

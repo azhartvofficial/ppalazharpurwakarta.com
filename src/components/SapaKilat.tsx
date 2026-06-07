@@ -1,9 +1,12 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const SapaKilat = () => {
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
+  const [tappedLeader, setTappedLeader] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -82,7 +85,21 @@ const SapaKilat = () => {
           {/* Row: Pimpinan Pondok */}
           <div className="leader-row">
             <div className={`leader-cutout ${isVisible ? 'animate-photo' : ''}`} style={{ opacity: isVisible ? 1 : 0 }}>
-              <Link href="/profil/pendiri" className="photo-link-wrapper">
+              <div 
+                className={`photo-link-wrapper ${tappedLeader ? 'mobile-tapped' : ''}`}
+                style={{ cursor: 'pointer' }}
+                onClick={(e) => {
+                  if (window.innerWidth <= 768) {
+                    if (!tappedLeader) {
+                      setTappedLeader(true);
+                    } else {
+                      router.push("/profil/pendiri");
+                    }
+                  } else {
+                    router.push("/profil/pendiri");
+                  }
+                }}
+              >
                 <div className="photo-container">
                   <img 
                     src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999220/hjozyz9pb8puevlg2ynu.png" 
@@ -100,7 +117,7 @@ const SapaKilat = () => {
                     </div>
                   </div>
                 </div>
-              </Link>
+              </div>
             </div>
             <div className={`leader-description ${isVisible ? 'animate-text' : ''}`} style={{ opacity: isVisible ? 1 : 0 }}>
               <p>
@@ -749,6 +766,12 @@ const SapaKilat = () => {
           .kenali-overlay {
             padding-bottom: 0 !important;
             justify-content: center !important;
+          }
+          .photo-link-wrapper.mobile-tapped .kenali-overlay {
+            opacity: 1 !important;
+          }
+          .photo-link-wrapper.mobile-tapped .kenali-overlay span {
+            transform: translateY(0) !important;
           }
           .kenali-overlay span {
             font-size: 0.55rem !important;
