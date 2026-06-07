@@ -19,6 +19,20 @@ export default function Footer() {
             <h4 className="logo-sub">PURWAKARTA</h4>
             <p className="logo-tagline">TAKHOSSUS TAHFIDZ QUR'AN DAN BAHASA ARAB</p>
             <p className="footer-desc">“Profesional dan sinergi menuju lembaga modern <br /> untuk mencapai berkah dan ridho ilahi”</p>
+            
+            {/* Lapor PUSPAR - Desktop */}
+            <div className="puspar-btn-desktop">
+              <Link href="/lapor-puspar" className="puspar-report-btn">
+                <div className="puspar-icon-wrapper">
+                  <span className="blink-indicator"></span>
+                  <span className="puspar-icon">📢</span>
+                </div>
+                <div className="puspar-text">
+                  <span className="puspar-title">Lapor PUSPAR</span>
+                  <span className="puspar-sub">Pusat Pengaduan & Aspirasi Santri</span>
+                </div>
+              </Link>
+            </div>
           </div>
           
           <div className="footer-col">
@@ -32,24 +46,62 @@ export default function Footer() {
           </div>
 
           <div className="footer-col">
-            <h5>AKADEMIK</h5>
-            <ul>
+            <h5>JENJANG</h5>
+            <ul style={{ marginBottom: '2rem' }}>
               <li><Link href="/unit/sdit">SDIT Al-Azhar</Link></li>
               <li><Link href="/unit/smp">SMP Islam Al-Azhar</Link></li>
               <li><Link href="/unit/ma">MA Unggulan Al-Azhar</Link></li>
             </ul>
+            
+            <h5>INFORMASI</h5>
+            <ul>
+              <li><Link href="/informasi">Tahap Pendaftaran</Link></li>
+              <li><Link href="/jelajahi/beasiswa">Jalur Beasiswa</Link></li>
+            </ul>
+
+            {/* Lapor PUSPAR - Mobile */}
+            <div className="puspar-btn-mobile">
+              <Link href="/lapor-puspar" className="puspar-report-btn">
+                <div className="puspar-icon-wrapper">
+                  <span className="blink-indicator"></span>
+                  <span className="puspar-icon">📢</span>
+                </div>
+                <div className="puspar-text">
+                  <span className="puspar-title">Lapor PUSPAR</span>
+                  <span className="puspar-sub">Pusat Pengaduan & Aspirasi Santri</span>
+                </div>
+              </Link>
+            </div>
           </div>
 
           <div className="footer-col contact-col">
             <h5>ALAMAT & KONTAK</h5>
             <div className="contact-item">
               <span className="contact-label">Alamat Lengkap</span>
-              <p>Gang Coklat, Kp. Warungkandang RT.19/RW.04 Desa Sindangsari Kecamatan Plered, Kab. Purwakarta Jawa Barat</p>
+              <p>
+                <a 
+                  href="https://share.google/DBFhjX2zTVpdCkv90" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  style={{ color: '#3b82f6', textDecoration: 'none' }}
+                  onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                  onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+                >
+                  Gang Coklat, Kp. Warungkandang RT.19/RW.04 Desa Sindangsari Kecamatan Plered, Kab. Purwakarta Jawa Barat
+                </a>
+              </p>
             </div>
             <div className="contact-item">
               <span className="contact-label">Kontak Whatsaap</span>
               <p>
-                <a href="https://wa.me/6281289852035?text=Assalamualaikum%20Ustadz%20afwan%20mau%20tanya%20terkait%20info%20PPDB%20Al-Azhar%20Purwakarta" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                <a 
+                  href="https://api.whatsapp.com/send/?phone=6281289852035&text=Assalamualaikum+Ustadz%2FPengurus+PPDB+Al-Azhar+Purwakarta.+Mohon+informasinya+mengenai+syarat+pendaftaran%2C+rincian+biaya%2C+dan+brosur+terbaru+untuk+tahun+ajaran+ini.+Terima+kasih&type=phone_number&app_absent=0" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  style={{ color: '#3b82f6', textDecoration: 'none' }}
+                  onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                  onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+                >
                   0895-0455-0090 <br />( Cecep Rahmat, M. Ag )
                 </a>
               </p>
@@ -187,7 +239,89 @@ export default function Footer() {
         }
 
         .social-links a:hover {
+          color: #ff8c00;
+        }
+
+        /* Lapor PUSPAR Button */
+        .puspar-btn-mobile {
+          display: none;
+        }
+
+        .puspar-btn-desktop {
+          margin-top: 2rem;
+        }
+
+        .puspar-report-btn {
+          display: inline-flex;
+          align-items: center;
+          background: rgba(15, 23, 42, 0.4);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 0.75rem 1.25rem;
+          border-radius: 15px;
+          text-decoration: none;
           color: white;
+          gap: 1.2rem;
+          position: relative;
+          transition: all 0.3s ease;
+        }
+
+        .puspar-report-btn:hover {
+          background: rgba(15, 23, 42, 0.8);
+          border-color: rgba(255, 140, 0, 0.5);
+          transform: translateY(-2px);
+        }
+
+        .puspar-icon-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 42px;
+          height: 42px;
+          background: linear-gradient(135deg, #ff8c00, #ffcc00);
+          border-radius: 12px;
+          flex-shrink: 0;
+          box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .blink-indicator {
+          position: absolute;
+          top: -3px;
+          right: -3px;
+          width: 12px;
+          height: 12px;
+          background-color: #ef4444;
+          border-radius: 50%;
+          border: 2px solid #001529;
+          box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+          animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+          0% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(1.2); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+
+        .puspar-icon {
+          font-size: 1.5rem;
+        }
+
+        .puspar-text {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .puspar-title {
+          font-weight: 700;
+          color: #ffffff;
+          font-size: 1.05rem;
+          letter-spacing: 0.5px;
+        }
+
+        .puspar-sub {
+          font-size: 0.8rem;
+          color: #ffcc00;
         }
 
         @media (max-width: 768px) {
@@ -210,6 +344,13 @@ export default function Footer() {
           }
           .social-text {
             align-self: center;
+          }
+          .puspar-btn-desktop {
+            display: none;
+          }
+          .puspar-btn-mobile {
+            display: block;
+            margin-top: 1.5rem;
           }
         }
       `}</style>

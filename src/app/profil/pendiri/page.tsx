@@ -91,15 +91,8 @@ export default function PendiriPage() {
                   <li>
                     <div className="edu-icon" style={{ background: '#fff3e0' }}>📚</div>
                     <div className="edu-details">
-                      <strong>[Judul Kitab Pertama]</strong>
-                      <span>Deskripsi singkat / tahun terbit</span>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="edu-icon" style={{ background: '#fff3e0' }}>📚</div>
-                    <div className="edu-details">
-                      <strong>[Judul Kitab Kedua]</strong>
-                      <span>Deskripsi singkat / tahun terbit</span>
+                      <strong>Ringkasan Ilmu Nahwu dari Kitab Al-Muyassar Fi Ilmi Nahwi</strong>
+                      <span>Akses Kitab-nya di Azhar Learn</span>
                     </div>
                   </li>
                 </ul>
@@ -123,10 +116,12 @@ export default function PendiriPage() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
 
-          <div className="tokoh-spacer"></div>
-
-          {/* Row 2: Ketua Yayasan (Reversed Grid) */}
+      {/* Row 2: Ketua Yayasan (Reversed Grid) */}
+      <section className="tokoh-section yayasan-section">
+        <div className="container">
           <div className="tokoh-grid reverse">
             <motion.div 
               className="tokoh-image"
@@ -234,7 +229,7 @@ export default function PendiriPage() {
         }
 
         .header-section {
-          padding: 14rem 0 8rem;
+          padding: 12rem 0 6rem;
           text-align: center;
           background: linear-gradient(rgba(0, 33, 71, 0.8), rgba(0, 33, 71, 0.7)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999165/qyvcomndxiwejcvzmfsl.png');
           background-size: cover;
@@ -270,8 +265,11 @@ export default function PendiriPage() {
           padding: 8rem 0;
         }
 
-        .tokoh-spacer {
-          height: 5rem;
+        .yayasan-section {
+          background-color: #f8fafc;
+          background-image: repeating-linear-gradient(45deg, rgba(0, 33, 71, 0.03) 0, rgba(0, 33, 71, 0.03) 1px, transparent 1px, transparent 20px),
+                            repeating-linear-gradient(-45deg, rgba(0, 33, 71, 0.03) 0, rgba(0, 33, 71, 0.03) 1px, transparent 1px, transparent 20px);
+          border-top: 1px solid #e2e8f0;
         }
 
         .tokoh-grid {
@@ -434,6 +432,7 @@ export default function PendiriPage() {
             text-align: center;
             align-items: center;
           }
+          .header-section { padding: 10rem 0 5rem; }
           .tokoh-grid.reverse {
             flex-direction: column; /* Ketua Yayasan: image is 1st in DOM, so column keeps it on top */
           }

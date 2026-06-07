@@ -455,6 +455,20 @@ export default function SistemPendidikanPage() {
           }
         }
 
+        @media (max-width: 768px) {
+          h1 {
+            font-size: clamp(1.8rem, 8vw, 2.5rem) !important;
+            white-space: nowrap;
+          }
+          .school-name {
+            font-size: clamp(0.65rem, 3.5vw, 1rem) !important;
+            letter-spacing: 2px !important;
+            white-space: nowrap;
+          }
+          .hero-desc {
+            display: none !important;
+        }
+
 
       `}</style>
     </main>

@@ -58,11 +58,15 @@ export default function SejarahPage() {
 
           <div className="visi-misi-section">
               <div className="vm-logos-column">
-                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Ponpes" />
-                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999209/ftxowvzkp4bix7mimh3v.png" alt="Logo SMP" />
-                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999206/tseftzv1omefjsldurni.png" alt="Logo MA" />
-                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999208/vqmahfuz6iqrzg916oab.png" alt="Logo SDIT" />
-                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999210/xblypre0sq4suc8bjdld.png" alt="Logo TK" />
+                <div className="vm-logos-row">
+                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Ponpes" />
+                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999209/ftxowvzkp4bix7mimh3v.png" alt="Logo SMP" />
+                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999206/tseftzv1omefjsldurni.png" alt="Logo MA" />
+                </div>
+                <div className="vm-logos-row">
+                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999208/vqmahfuz6iqrzg916oab.png" alt="Logo SDIT" />
+                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999210/xblypre0sq4suc8bjdld.png" alt="Logo TK" />
+                </div>
               </div>
             <div className="v-m-box">
               <div className="v-m-item">
@@ -91,7 +95,7 @@ export default function SejarahPage() {
             <div className="video-container" ref={videoRef}>
               {isVideoVisible ? (
                 <iframe 
-                  src="https://www.youtube.com/embed/S26388RIVdI?autoplay=1&mute=1&loop=1&playlist=S26388RIVdI&rel=0&showinfo=0&modestbranding=1" 
+                  src="https://www.youtube.com/embed/N7mmwdmUR98?autoplay=1&mute=1&loop=1&playlist=N7mmwdmUR98&rel=0&showinfo=0&modestbranding=1" 
                   title="Video Profil Pondok Pesantren Al-Azhar Purwakarta" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                   allowFullScreen
@@ -157,20 +161,27 @@ export default function SejarahPage() {
           display: flex;
           flex-direction: column;
           gap: 3rem;
-          margin-top: 4rem;
+          margin-top: 1.5rem;
           align-items: center;
         }
 
         .vm-logos-column {
           display: flex;
-          flex-wrap: nowrap;
-          justify-content: center;
-          gap: 2.5rem;
+          flex-direction: column;
+          align-items: center;
+          gap: 1.5rem;
           width: 100%;
           max-width: 1000px;
         }
 
-        .vm-logos-column img {
+        .vm-logos-row {
+          display: flex;
+          justify-content: center;
+          gap: 2.5rem;
+          flex-wrap: wrap;
+        }
+
+        .vm-logos-row img {
           width: 90px;
           height: auto;
           object-fit: contain;
@@ -284,7 +295,10 @@ export default function SejarahPage() {
             max-width: 500px;
             gap: 1.5rem;
           }
-          .vm-logos-column img {
+          .vm-logos-row {
+            gap: 1.5rem;
+          }
+          .vm-logos-row img {
             max-width: 70px;
           }
           h2 {
@@ -314,11 +328,13 @@ export default function SejarahPage() {
             text-align: justify;
           }
           .vm-logos-column {
-            flex-wrap: wrap;
             max-width: 320px;
             gap: 1rem;
           }
-          .vm-logos-column img {
+          .vm-logos-row {
+            gap: 1rem;
+          }
+          .vm-logos-row img {
             flex: 0 0 calc(33.333% - 1rem);
             max-width: 65px;
           }

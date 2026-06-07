@@ -73,7 +73,6 @@ export default function AzharTvPage() {
           <div className="news-content-wrapper">
             <div className="news-grid">
               <div className="news-text-content">
-                <span className="pre-title">Live Update Azhar TV</span>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeSlide}
@@ -119,6 +118,112 @@ export default function AzharTvPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Welcome Bar */}
+      <section className="welcome-tv">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="welcome-box"
+          >
+            <h2 className={`${frizQuadrata.className} rainbow-text`} style={{ fontSize: 'clamp(2rem, 6vw, 3.8rem)', margin: '0 0 -1.5rem 0', letterSpacing: '-1px', lineHeight: 1.2, position: 'relative', zIndex: 10 }}>
+              Selamat Datang di Laman Resmi Media
+            </h2>
+            <div className="welcome-logo">
+              <Image src="/Logo/Azhar%20Tv%20Logo.webp" alt="Azhar TV Logo" width={280} height={160} style={{ objectFit: 'contain' }} unoptimized />
+            </div>
+            <p style={{ fontSize: 'clamp(1rem, 4vw, 1.3rem)', color: '#475569', lineHeight: 1.7, margin: 0 }}>
+              Saluran informasi, dokumentasi, dan inspirasi seputar kegiatan Pondok Pesantren Al-Azhar Purwakarta.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Sambutan Manager */}
+      <section className="manager-greeting">
+        <div className="container">
+          <div className="manager-content">
+            <motion.div 
+              className="manager-image"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <Image 
+                src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1780854960/plwkjrnpeqnvdv79jwd7.png" 
+                alt="Darmawan Bahtiar, C. Sq" 
+                width={600} 
+                height={750} 
+                style={{ objectFit: 'contain' }} 
+                className="manager-img"
+                unoptimized 
+              />
+            </motion.div>
+            <motion.div 
+              className="manager-text"
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="manager-role">MANAGER OF AZHAR TV MEDIA</h3>
+              <h4 className="manager-name-large">Darmawan Bahtiar, C. Sq</h4>
+              <div className="blue-divider-small"></div>
+              <p className="quote-text">
+                "Assalamu'alaikum Warahmatullahi Wabarakatuh. Media Azhar TV hadir sebagai jendela informasi, wadah kreativitas santri, dan media dakwah untuk menyebarkan nilai-nilai Islam ke masyarakat luas. Semoga media ini bisa memberikan manfaat dan kebaikan bagi kita semua."
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Managed Platforms */}
+      <section className="managed-platforms">
+        <div className="container">
+          <div className="section-title text-center">
+            <h2 className={frizQuadrata.className} style={{ fontSize: '2.5rem', color: '#002147', marginBottom: '1rem' }}>Managed Platform by</h2>
+            <div className="title-accent" style={{ margin: '0 auto 3rem' }}></div>
+          </div>
+
+          <div className="platforms-grid">
+            <motion.div className="platform-card" whileHover={{ y: -10 }}>
+              <div className="platform-icon fb-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              </div>
+              <h4>Facebook</h4>
+            </motion.div>
+
+            <motion.div className="platform-card" whileHover={{ y: -10 }}>
+              <div className="platform-icon ig-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              </div>
+              <h4>Instagram</h4>
+            </motion.div>
+
+            <motion.div className="platform-card" whileHover={{ y: -10 }}>
+              <div className="platform-icon tt-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.23-.69 4.46-2.18 6.11-1.38 1.55-3.35 2.5-5.46 2.68-2.18.18-4.41-.35-6.15-1.68-1.55-1.18-2.61-2.91-2.92-4.83-.34-2.14.05-4.38 1.32-6.14 1.25-1.74 3.2-2.82 5.26-3.13 1.95-.29 3.99.04 5.71 1.05.02-1.38.01-2.76.01-4.14-1.13-.53-2.39-.73-3.64-.67-1.44.07-2.88.47-4.08 1.24-1.33.85-2.28 2.19-2.71 3.73-.42 1.54-.42 3.19-.04 4.74.37 1.51 1.18 2.87 2.34 3.86 1.25 1.05 2.86 1.54 4.49 1.55 1.63.02 3.26-.4 4.58-1.3 1.4-1.01 2.4-2.48 2.76-4.15.22-1.02.26-2.07.25-3.11-.02-5.71-.01-11.42-.01-17.13h-4.03z"/></svg>
+              </div>
+              <h4>TikTok</h4>
+            </motion.div>
+
+            <motion.div className="platform-card" whileHover={{ y: -10 }}>
+              <div className="platform-icon yt-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.376.55 9.376.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              </div>
+              <h4>YouTube</h4>
+            </motion.div>
+
+            <motion.div className="platform-card" whileHover={{ y: -10 }}>
+              <div className="platform-icon web-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              </div>
+              <h4>Website</h4>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -221,18 +326,10 @@ export default function AzharTvPage() {
 
         /* UPI Style News Section */
         .news-section {
-          padding: 8rem 0 6rem;
+          padding: 12rem 0 6rem;
           background: #002147;
           color: white;
           overflow: hidden;
-        }
-
-        .pre-title {
-          display: block;
-          color: #ffcc00;
-          font-weight: 800;
-          font-size: 1.4rem;
-          margin-bottom: 2.5rem;
         }
 
         .news-content-wrapper {
@@ -329,6 +426,198 @@ export default function AzharTvPage() {
           transform: scale(1.1);
         }
 
+        /* Welcome Bar */
+        .welcome-tv {
+          padding: 6rem 0 4rem;
+          text-align: center;
+          background-color: #f8fafc;
+          background-image: 
+            radial-gradient(at 90% 10%, rgba(255, 140, 0, 0.08) 0px, transparent 40%),
+            radial-gradient(at 10% 90%, rgba(0, 51, 204, 0.05) 0px, transparent 40%),
+            radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+          background-size: 100% 100%, 100% 100%, 32px 32px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .welcome-box {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          padding: 3rem 2.5rem;
+          border-radius: 20px;
+          position: relative;
+          box-shadow: 0 15px 40px rgba(0,33,71,0.06), 0 5px 15px rgba(255,140,0,0.05);
+          max-width: 800px;
+          margin: 0 auto;
+          border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .welcome-box::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 6px;
+          background: linear-gradient(90deg, #ff8c00, #ffcc00);
+          border-radius: 20px 20px 0 0;
+        }
+
+        .welcome-logo {
+          margin-top: -1rem;
+          margin-bottom: 1rem;
+          display: flex;
+          justify-content: center;
+          position: relative;
+          z-index: 1;
+        }
+
+        .rainbow-text {
+          background-image: linear-gradient(90deg, #002147, #0033cc, #ff8c00, #0033cc, #002147);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent !important;
+          animation: rainbowAnimation 6s linear infinite;
+          background-size: 200% auto;
+        }
+
+        @keyframes rainbowAnimation {
+          to { background-position: 200% center; }
+        }
+
+        .welcome-box h2 {
+          color: #002147;
+          font-size: 4.2rem;
+          margin-bottom: 0.5rem;
+          margin-top: 0;
+          letter-spacing: -1.5px;
+          line-height: 1.1;
+        }
+
+        .welcome-box p {
+          color: #475569;
+          font-size: 1.25rem;
+          line-height: 1.7;
+        }
+
+        /* Sambutan Manager */
+        .manager-greeting {
+          padding: 8rem 0;
+          background-color: #ffffff;
+        }
+
+        .manager-content {
+          display: flex;
+          align-items: center;
+          gap: 6rem;
+          position: relative;
+          z-index: 10;
+        }
+
+        .manager-image {
+          flex: 0 0 500px;
+          position: relative;
+        }
+
+        .manager-img {
+          width: 100%;
+          aspect-ratio: 4 / 5;
+          object-fit: contain;
+          position: relative;
+          z-index: 2;
+          transform: scale(1.05);
+        }
+
+        .manager-text {
+          flex: 1;
+        }
+
+        .manager-role {
+          font-size: 1rem;
+          color: #ff8c00;
+          font-weight: 800;
+          letter-spacing: 2px;
+          margin-bottom: 0.5rem;
+          text-transform: uppercase;
+        }
+
+        .manager-name-large {
+          font-size: 2.8rem;
+          color: #002147;
+          margin-bottom: 1.5rem;
+          font-weight: 700;
+          line-height: 1.1;
+        }
+
+        .blue-divider-small {
+          width: 60px;
+          height: 5px;
+          background: #0033cc;
+          margin-bottom: 2rem;
+          border-radius: 10px;
+        }
+
+        .quote-text {
+          font-size: 1.25rem;
+          line-height: 1.8;
+          color: #475569;
+          font-style: italic;
+          position: relative;
+        }
+
+        /* Managed Platforms */
+        .managed-platforms {
+          padding: 6rem 0;
+          background: #ffffff;
+        }
+
+        .platforms-grid {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 2rem;
+        }
+
+        .platform-card {
+          background: #f8fafc;
+          padding: 2rem;
+          border-radius: 20px;
+          text-align: center;
+          width: 180px;
+          border: 1px solid #f1f5f9;
+          transition: all 0.3s ease;
+          cursor: pointer;
+        }
+
+        .platform-card:hover {
+          box-shadow: 0 15px 30px rgba(0,33,71,0.08);
+          border-color: #e2e8f0;
+        }
+
+        .platform-icon {
+          width: 70px;
+          height: 70px;
+          margin: 0 auto 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          color: white;
+        }
+
+        .fb-icon { background: #1877F2; }
+        .ig-icon { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .tt-icon { background: #000000; }
+        .yt-icon { background: #FF0000; }
+        .web-icon { background: #002147; }
+
+        .platform-card h4 {
+          color: #002147;
+          font-size: 1.1rem;
+          font-weight: 600;
+        }
+
         /* YouTube Center */
         .youtube-center {
           padding: 8rem 0;
@@ -336,6 +625,7 @@ export default function AzharTvPage() {
 
         .section-title {
           margin-bottom: 4rem;
+          text-align: center;
         }
 
         .section-title h2 {
@@ -349,6 +639,7 @@ export default function AzharTvPage() {
           height: 5px;
           background: #ff8c00;
           border-radius: 10px;
+          margin: 0 auto;
         }
 
         .video-grid {
@@ -543,7 +834,7 @@ export default function AzharTvPage() {
 
         @media (max-width: 768px) {
           .news-section {
-            padding: 6rem 0 4rem;
+            padding: 10rem 0 5rem;
           }
           .news-grid {
             display: flex;
@@ -574,6 +865,25 @@ export default function AzharTvPage() {
           }
           .news-content-wrapper {
             min-height: auto;
+          }
+          .manager-content {
+            flex-direction: column;
+            gap: 3rem;
+            text-align: center;
+          }
+          .manager-image {
+            flex: 0 0 350px;
+            width: 350px;
+            margin: 0 auto;
+          }
+          .manager-img {
+            aspect-ratio: 4 / 5;
+          }
+          .blue-divider-small {
+            margin: 0 auto 2rem;
+          }
+          .manager-name-large {
+            font-size: 2.2rem;
           }
         }
       `}</style>

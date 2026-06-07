@@ -186,7 +186,23 @@ export default function Navbar() {
             </div>
 
             <Link href="/azhar-tv" className="nav-item" onClick={() => setMenuOpen(false)}>{t('tv')}</Link>
-            <Link href="/sekolah" className="nav-item" onClick={() => setMenuOpen(false)}>{t('sekolah')}</Link>
+            <div
+              className="nav-item-dropdown"
+              onMouseEnter={() => !menuOpen && setActiveDropdown('jenjang')}
+              onMouseLeave={() => !menuOpen && setActiveDropdown(null)}
+            >
+              <button
+                className="dropdown-trigger"
+                onClick={() => toggleDropdown('jenjang')}
+              >
+                {t('sekolah')} <span className="chevron">▾</span>
+              </button>
+              <div className={`dropdown-menu ${activeDropdown === 'jenjang' ? 'show' : ''}`}>
+                <Link href="/unit/sdit" onClick={() => setMenuOpen(false)}>SD Islam Terpadu</Link>
+                <Link href="/unit/smp" onClick={() => setMenuOpen(false)}>SMP Islam</Link>
+                <Link href="/unit/ma" onClick={() => setMenuOpen(false)}>Madrasah Aliyah</Link>
+              </div>
+            </div>
             <Link href="/fasilitas" className="nav-item" onClick={() => setMenuOpen(false)}>{t('fasilitas')}</Link>
             <Link href="/azhar-learn" className="nav-item" onClick={() => setMenuOpen(false)}>{t('learn')}</Link>
 

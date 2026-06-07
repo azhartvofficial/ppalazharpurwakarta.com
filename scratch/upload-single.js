@@ -35,4 +35,4 @@ async function uploadFile(filePath) {
   }
 }
 
-uploadFile(path.join(__dirname, '..', 'public', 'TAWWAB PA .png'));
+uploadFile(path.join(__dirname, '..', 'public', 'Ketua Media Azhar Tv.png'));

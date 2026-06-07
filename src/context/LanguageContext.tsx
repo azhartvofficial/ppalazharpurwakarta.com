@@ -18,7 +18,7 @@ const translations: Record<Language, Record<string, string>> = {
     sistem: "Sistem Pendidikan",
     pendiri: "Pendiri Lembaga",
     tv: "Azhar Tv",
-    sekolah: "Sekolah",
+    sekolah: "Jenjang",
     fasilitas: "Fasilitas",
     learn: "Az-Learn",
     daftar: "Pendaftaran",

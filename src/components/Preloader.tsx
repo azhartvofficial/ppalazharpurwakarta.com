@@ -22,7 +22,7 @@ const Preloader = () => {
       if (!isMounted) return;
       
       const elapsed = Date.now() - startTime;
-      const minDisplayTime = 400; // 400ms min display for smooth UI transition
+      const minDisplayTime = 200; // 200ms min display for smooth UI transition
       const delay = Math.max(0, minDisplayTime - elapsed);
 
       setTimeout(() => {
@@ -30,7 +30,7 @@ const Preloader = () => {
         setActive(false);
         setTimeout(() => {
           if (isMounted) setLoading(false);
-        }, 800); // Fades out in sync with opacity transition (0.8s)
+        }, 400); // Fades out in sync with opacity transition (0.4s)
       }, delay);
     };
 
@@ -108,10 +108,10 @@ const Preloader = () => {
       checkCompletion();
     };
 
-    // Safety timeout: auto-resolve after max 15 seconds to prevent freezing on broken/slow links
+    // Safety timeout: auto-resolve after max 4 seconds to prevent freezing on broken/slow links
     safetyTimeoutId = setTimeout(() => {
       finishLoading();
-    }, 15000);
+    }, 4000);
 
     // Give DOM 150ms to mount/render the page content, then check and track image states
     initDelayId = setTimeout(() => {
@@ -147,7 +147,7 @@ const Preloader = () => {
         zIndex: 99999,
         opacity: active ? 1 : 0,
         visibility: active ? "visible" : "hidden",
-        transition: active ? "none" : "opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s"
+        transition: active ? "none" : "opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s"
       }}
     >
       <div className="loader-content">
@@ -177,7 +177,6 @@ const Preloader = () => {
             height={130}
           />
         </div>
-        <div className="loading-text">Memuat...</div>
       </div>
 
       <style jsx>{`
@@ -194,7 +193,7 @@ const Preloader = () => {
           z-index: 9999;
           opacity: 0;
           visibility: hidden;
-          transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+          transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
         }
 
         .preloader-overlay.active {
@@ -327,22 +326,7 @@ const Preloader = () => {
           }
         }
 
-        .loading-text {
-          margin-top: 2rem;
-          color: white;
-          font-size: 1rem;
-          font-family: 'Georgia', 'Times New Roman', serif;
-          font-style: italic;
-          letter-spacing: 3px;
-          text-transform: uppercase;
-          text-align: center;
-          animation: pulseText 1.5s ease-in-out infinite alternate;
-        }
 
-        @keyframes pulseText {
-          from { opacity: 0.5; }
-          to { opacity: 1; }
-        }
       `}</style>
     </div>
   );
