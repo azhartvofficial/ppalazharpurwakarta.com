@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Hero() {
@@ -46,8 +47,15 @@ export default function Hero() {
         <div 
           key={index} 
           className={`slide ${index === current ? "active" : ""}`}
-          style={{ backgroundImage: `url(${slide.image})` }}
         >
+          <Image 
+            src={slide.image} 
+            alt={slide.title} 
+            fill 
+            priority 
+            style={{ objectFit: "cover", objectPosition: "center" }} 
+            sizes="100vw"
+          />
           <div className="hero-overlay"></div>
           <div className="container hero-content">
             <div className="content-inner">

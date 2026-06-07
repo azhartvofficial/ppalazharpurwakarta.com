@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 
 const AlumniDocumentation = () => {
@@ -47,8 +48,14 @@ const AlumniDocumentation = () => {
               whileHover={{ scale: 1.1, zIndex: 20, rotate: 0 }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
             >
-              <div className="photo-inner">
-                <img src={photo.url} alt={`Alumni ${index}`} />
+              <div className="photo-inner" style={{ position: "relative" }}>
+                <Image 
+                  src={photo.url} 
+                  alt={`Alumni ${index}`} 
+                  fill 
+                  style={{ objectFit: "cover" }} 
+                  sizes="(max-width: 768px) 160px, 240px" 
+                />
                 <div className="photo-tape"></div>
               </div>
             </motion.div>

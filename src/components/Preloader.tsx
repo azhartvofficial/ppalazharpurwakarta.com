@@ -108,10 +108,10 @@ const Preloader = () => {
       checkCompletion();
     };
 
-    // Safety timeout: auto-resolve after max 3.5 seconds to prevent freezing on broken/slow links
+    // Safety timeout: auto-resolve after max 15 seconds to prevent freezing on broken/slow links
     safetyTimeoutId = setTimeout(() => {
       finishLoading();
-    }, 3500);
+    }, 15000);
 
     // Give DOM 150ms to mount/render the page content, then check and track image states
     initDelayId = setTimeout(() => {
