@@ -13,7 +13,7 @@ const EducationLevels = () => {
   const levels = [
     {
       title: "Pondok Pesantren",
-      link: "/unit/ponpes",
+      link: "/profil/alazhapurwakarta",
       icon: (
         <img 
           src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" 

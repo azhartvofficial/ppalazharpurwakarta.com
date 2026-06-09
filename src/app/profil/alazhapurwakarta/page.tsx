@@ -110,10 +110,37 @@ export default function SejarahPage() {
           </div>
 
           <div className="history-timeline">
-            <h3 className={frizQuadrata.className}>Sejak 2017</h3>
+            <h3 className={frizQuadrata.className}>Kami Hadir Sejak 2017</h3>
+            <div className="timeline-image" style={{ marginBottom: '2rem', borderRadius: '16px', overflow: 'hidden', width: '100%', height: 'auto', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+              <img src="/Al-Azhar%202017%20Photo.png" alt="Al Azhar Purwakarta 2017" style={{ width: '100%', height: 'auto', display: 'block' }} />
+            </div>
             <p>
-              Didirikan dengan semangat untuk mencetak kader ulama yang intelek, Pondok Pesantren Al-Azhar Purwakarta terus bertransformasi menjadi lembaga pendidikan modern tanpa meninggalkan nilai-nilai luhur pesantren. 
-              Hingga saat ini, kami telah meluluskan ribuan alumni yang berkiprah di berbagai sektor, baik di dalam maupun luar negeri.
+              Sejak resmi berdiri di bawah naungan Yayasan Andi Azhar (YANHAR), Pondok Pesantren Al-Azhar Purwakarta telah berkomitmen penuh untuk menjadi kawah candradimuka bagi lahirnya generasi Muslim masa depan. Menempati lahan wakaf seluas 10.000 m² di Desa Sindangsari, Kecamatan Plered, Kabupaten Purwakarta, Jawa Barat, pesantren kami menawarkan lingkungan belajar berbasis boarding school yang asri dan kondusif, namun tetap strategis serta mudah dijangkau dari berbagai akses transportasi.
+            </p>
+            <p style={{ marginTop: '1rem' }}>
+              Sebagai lembaga pendidikan Islam yang independen, Pondok Pesantren Al-Azhar Purwakarta berdiri tegak di atas nilai-nilai inklusivitas—bebas dari intervensi partai politik, organisasi massa, maupun aliran/sekte apa pun yang dilarang oleh Pemerintah Republik Indonesia. Fokus utama kami adalah menghadirkan pendidikan agama yang murni, aman, dan mendalam bagi setiap santri.
+            </p>
+            <div className="timeline-image" style={{ marginTop: '3rem', marginBottom: '2rem', borderRadius: '16px', overflow: 'hidden', width: '100%', height: 'auto', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+              <img src="/Al-Azhar%202017%20Photo%202.png" alt="Dokumentasi Al Azhar Purwakarta 2017 2" style={{ width: '100%', height: 'auto', display: 'block' }} />
+            </div>
+            <p>
+              Kini, setelah sembilan tahun berjalan, perjuangan tersebut telah membuahkan hasil yang nyata. Pesantren ini mengalami perkembangan yang sangat pesat, baik dari segi kuantitas santri, perluasan sarana prasarana, maupun pengakuan atas kualitas lulusannya baik nasional maupun internasional. Transformasi dari sebuah rintisan lokal menjadi lembaga boarding school yang representatif menjadi bukti bahwa pengelolaan yang profesional, ikhlas, dan fokus pada mutu akademik serta akhlak mampu melahirkan kepercayaan yang besar dari masyarakat luas.
+            </p>
+            <h3 className={frizQuadrata.className} style={{ marginTop: '4rem' }}>Menuju Lembaga Modern Berstandar Internasional</h3>
+            <div className="timeline-image" style={{ marginTop: '2rem', marginBottom: '2rem', borderRadius: '16px', overflow: 'hidden', width: '100%', height: 'auto', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+              <img src="/Dokumentasi%20Ponpes%20Al-Azhar%20Tahun%202022.png" alt="Dokumentasi Al Azhar Purwakarta 2022" style={{ width: '100%', height: 'auto', display: 'block' }} />
+            </div>
+            <p>
+              Perjalanan sembilan tahun yang dimulai dari kesunyian tanah kini telah membawa Pondok Pesantren Al-Azhar Purwakarta bertransformasi menjadi hamparan pendidikan yang maju dan berkembang pesat. Di atas pondasi nilai-nilai keikhlasan tersebut, kami terus bergerak dinamis mengintegrasikan tradisi kepesantrenan yang luhur dengan tata kelola institusi yang modern dan profesional. Langkah ini diambil demi merealisasikan arah baru perjuangan kami: Menuju Lembaga Modern Berstandar Internasional.
+            </p>
+            <p style={{ marginTop: '1rem' }}>
+              Sebagai tempat mencetak generasi Qurani, modernisasi yang kami terapkan tidak mereduksi kemurnian nilai agama, melainkan memperkuatnya melalui pemanfaatan sistem boarding school yang adaptif, fasilitas penunjang yang representatif, serta manajemen pendidikan yang akuntabel. Kami percaya bahwa kualitas lulusan yang berakhlak Rabbani harus ditopang oleh ekosistem belajar yang relevan dengan perkembangan zaman.
+            </p>
+            <div className="timeline-image" style={{ marginTop: '3rem', marginBottom: '2rem', borderRadius: '16px', overflow: 'hidden', width: '100%', height: 'auto', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+              <img src="/Dokumentasi%20Alumni%20Studi%20Timur%20Tengah%20226.png" alt="Dokumentasi Alumni Studi Timur Tengah" style={{ width: '100%', height: 'auto', display: 'block' }} />
+            </div>
+            <p>
+              Dengan kemandirian lembaga yang kokoh, penguatan metode Talaqqi & Tahsin Azhari, serta jaringan kemitraan yang terus meluas, Pondok Pesantren Al-Azhar Purwakarta siap melangkah lebih jauh. Kami memastikan setiap santri tidak hanya matang secara spiritual dan hafalan Al-Qur'an, tetapi juga memiliki daya saing global untuk menjadi pelopor kebaikan di universitas-universitas terbaik dunia.
             </p>
           </div>
         </div>
@@ -225,6 +252,9 @@ export default function SejarahPage() {
           margin-top: 6rem;
           padding-top: 4rem;
           border-top: 1px solid #e2e8f0;
+          max-width: 900px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         .history-timeline h3 {
