@@ -9,6 +9,11 @@ const customFont = localFont({
   variable: "--font-custom",
 });
 
+const bauSerif = localFont({
+  src: "../Font/bauserif.ttf",
+  variable: "--font-bauserif",
+});
+
 export const metadata: Metadata = {
   title: "Pondok Pesantren Al Azhar Purwakarta | Pusat Pendidikan Islam Terpadu",
   description: "Selamat datang di Website Resmi Pondok Pesantren Al Azhar Purwakarta. Pusat pendaftaran santri baru dan pengelolaan data akademik.",
@@ -24,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={customFont.variable}>
+    <html lang="id" className={`${customFont.variable} ${bauSerif.variable}`}>
       <body>
         <Preloader />
         <VisitorTracker />

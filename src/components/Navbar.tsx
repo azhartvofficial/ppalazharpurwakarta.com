@@ -14,7 +14,11 @@ export default function Navbar() {
 
   const [maintenanceActive, setMaintenanceActive] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
-  const [adminName, setAdminName] = useState("Admin");
+  const [adminName, setAdminName] = useState("");
+  const [adminRole, setAdminRole] = useState("Admin");
+  const [isSantriLoggedIn, setIsSantriLoggedIn] = useState(false);
+  const [santriName, setSantriName] = useState("");
+  const [santriGender, setSantriGender] = useState("");
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const navMenuRef = useRef<HTMLDivElement>(null);
@@ -68,11 +72,24 @@ export default function Navbar() {
         const sessionStr = localStorage.getItem('admin_session');
         const session = sessionStr ? JSON.parse(sessionStr) : null;
         
+        const santriSessionStr = localStorage.getItem('santri_session');
+        const santriSession = santriSessionStr ? JSON.parse(santriSessionStr) : null;
+        
         setMaintenanceActive(isMaintenance);
         setIsAdminLoggedIn(!!session);
         if (session) {
           const email = session.user?.email || session.email || "Admin";
           setAdminName(email);
+          const role = session.user?.user_metadata?.role || session.role || session.user?.role || "Admin";
+          setAdminRole(role);
+        }
+        
+        setIsSantriLoggedIn(!!santriSession);
+        if (santriSession) {
+          const name = santriSession.user?.user_metadata?.nama || santriSession.user?.email || "Santri";
+          setSantriName(name);
+          const gender = santriSession.user?.user_metadata?.jenis_kelamin || santriSession.user?.user_metadata?.gender || santriSession.gender || "Laki-laki";
+          setSantriGender(gender);
         }
       }
     };
@@ -186,23 +203,19 @@ export default function Navbar() {
             </div>
 
             <Link href="/azhar-tv" className="nav-item" onClick={() => setMenuOpen(false)}>{t('tv')}</Link>
-            <div
-              className="nav-item-dropdown"
-              onMouseEnter={() => !menuOpen && setActiveDropdown('jenjang')}
-              onMouseLeave={() => !menuOpen && setActiveDropdown(null)}
+            <Link 
+              href="/#jenjang" 
+              className="nav-item" 
+              onClick={(e) => {
+                setMenuOpen(false);
+                if (window.location.pathname === '/') {
+                  e.preventDefault();
+                  document.getElementById('jenjang')?.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
             >
-              <button
-                className="dropdown-trigger"
-                onClick={() => toggleDropdown('jenjang')}
-              >
-                {t('sekolah')} <span className="chevron">▾</span>
-              </button>
-              <div className={`dropdown-menu ${activeDropdown === 'jenjang' ? 'show' : ''}`}>
-                <Link href="/unit/sdit" onClick={() => setMenuOpen(false)}>SD Islam Terpadu</Link>
-                <Link href="/unit/smp" onClick={() => setMenuOpen(false)}>SMP Islam</Link>
-                <Link href="/unit/ma" onClick={() => setMenuOpen(false)}>Madrasah Aliyah</Link>
-              </div>
-            </div>
+              {t('sekolah')}
+            </Link>
             <Link href="/fasilitas" className="nav-item" onClick={() => setMenuOpen(false)}>{t('fasilitas')}</Link>
             <Link href="/azhar-learn" className="nav-item" onClick={() => setMenuOpen(false)}>{t('learn')}</Link>
 
@@ -385,9 +398,12 @@ export default function Navbar() {
 
             <div className="menu-toggle-wrapper">
               <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-                <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
-                <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
-                <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
+                <span className="menu-text" style={{ fontSize: '0.8rem', fontWeight: 800, color: '#002147', marginRight: '5px' }}>MENU</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
+                  <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
+                  <span className={`bar ${menuOpen ? 'active' : ''}`}></span>
+                </div>
               </button>
             </div>
           </div>
@@ -1190,71 +1206,38 @@ export default function Navbar() {
 
           .menu-toggle {
             display: flex !important;
-            position: fixed !important;
-            bottom: 25px !important;
-            left: 15px !important;
-            right: auto !important;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%) !important;
-            border: 2px solid rgba(255, 255, 255, 0.4) !important;
-            box-shadow: 0 8px 32px rgba(0, 33, 71, 0.3), 0 0 15px rgba(230, 126, 34, 0.45) !important;
-            border-radius: 50% !important;
-            width: 60px !important;
-            height: 60px !important;
+            position: relative !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            width: auto !important;
+            height: auto !important;
             z-index: 99999 !important;
             justify-content: center !important;
             align-items: center !important;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-            animation: pulse-glow-left 2s infinite alternate !important;
-            flex-direction: column;
-            gap: 5px;
+            flex-direction: row;
             padding: 0 !important;
           }
 
           .menu-toggle:hover {
-            transform: scale(1.1) !important;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%) !important;
+            transform: scale(1.05) !important;
           }
 
           .menu-toggle:active {
-            transform: scale(0.9) !important;
+            transform: scale(0.95) !important;
           }
 
           :global(.menu-helper-bubble) {
-            position: fixed !important;
-            bottom: 36px !important;
-            left: 85px !important;
-            right: auto !important;
-            background: rgba(0, 33, 71, 0.95) !important;
-            backdrop-filter: blur(10px) !important;
-            -webkit-backdrop-filter: blur(10px) !important;
-            color: white !important;
-            padding: 8px 16px !important;
-            border-radius: 50px !important;
-            font-size: 0.72rem !important;
-            font-weight: 800 !important;
-            display: flex !important;
-            flex-direction: row !important;
-            align-items: center !important;
-            gap: 8px !important;
-            z-index: 99999 !important;
-            box-shadow: 0 4px 15px rgba(0, 33, 71, 0.25) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            white-space: nowrap !important;
-            pointer-events: none !important;
+            display: none !important;
           }
 
           :global(.helper-pulse-dot) {
-            width: 8px;
-            height: 8px;
-            background: #4CAF50;
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
-            animation: dot-pulse 1.5s infinite;
+            display: none !important;
           }
 
           .bar {
-            background: white !important;
+            background: #002147 !important;
             height: 3px !important;
             width: 22px !important;
             border-radius: 4px !important;
@@ -1262,37 +1245,37 @@ export default function Navbar() {
             transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
           }
 
-          .bar.active:nth-child(1) { transform: translateY(8px) rotate(45deg) !important; }
+          .bar.active:nth-child(1) { transform: translateY(7px) rotate(45deg) !important; }
           .bar.active:nth-child(2) { opacity: 0 !important; }
-          .bar.active:nth-child(3) { transform: translateY(-8px) rotate(-45deg) !important; }
+          .bar.active:nth-child(3) { transform: translateY(-7px) rotate(-45deg) !important; }
 
           .nav-links {
-            position: fixed !important;
-            bottom: 100px !important;
-            left: 15px !important;
-            right: auto !important;
-            top: auto !important;
-            width: calc(100% - 30px) !important;
-            max-width: 360px !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            max-width: none !important;
             margin: 0 !important;
-            margin-left: 0 !important;
             height: auto !important;
-            max-height: calc(100vh - 150px) !important;
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(25px) !important;
-            -webkit-backdrop-filter: blur(25px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.5) !important;
-            border-radius: 24px !important;
+            max-height: calc(100vh - 80px) !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: none !important;
+            border-top: 1px solid #f1f5f9 !important;
+            border-bottom: 2px solid #f1f5f9 !important;
+            border-radius: 0 0 20px 20px !important;
             flex-direction: column !important;
             align-items: flex-start !important;
             padding: 1.5rem !important;
             gap: 0.6rem !important;
-            box-shadow: 0 20px 50px rgba(0, 33, 71, 0.25) !important;
-            transform: scale(0.7) translateY(50px) translateX(-50px) !important;
-            transform-origin: bottom left !important;
+            box-shadow: 0 20px 30px rgba(0, 33, 71, 0.1) !important;
+            transform: scaleY(0) !important;
+            transform-origin: top !important;
             opacity: 0 !important;
             visibility: hidden !important;
-            transition: none !important;
+            transition: all 0.3s ease !important;
             z-index: 99998 !important;
             overflow-y: auto !important;
             scrollbar-width: none;
@@ -1303,7 +1286,7 @@ export default function Navbar() {
           }
 
           .nav-links.active {
-            transform: scale(1) translateY(0) translateX(0) !important;
+            transform: scaleY(1) !important;
             opacity: 1 !important;
             visibility: visible !important;
           }
@@ -1580,8 +1563,148 @@ export default function Navbar() {
           .admin-name {
             max-width: 75px;
           }
+
+          .mobile-bottom-nav {
+            display: flex !important;
+          }
+          
+          .nav-login-premium {
+            display: none !important;
+          }
+
+          .navbar-profile-dropdown-wrapper {
+            display: none !important;
+          }
+
+        }
+
+
+        /* Mobile Bottom Nav */
+        .mobile-bottom-nav {
+          display: none;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          background: #ffffff;
+          z-index: 9999;
+          box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+          padding: 6px 5px;
+          padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+          justify-content: space-around;
+          align-items: center;
+          border-top: 1px solid #f1f5f9;
+          transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled .mobile-bottom-nav {
+          background: rgba(255, 255, 255, 0.75);
+          backdrop-filter: blur(15px);
+          -webkit-backdrop-filter: blur(15px);
+          box-shadow: 0 -4px 20px rgba(0, 33, 71, 0.1);
+          border-top: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .bottom-nav-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          gap: 2px;
+          text-decoration: none;
+          color: #64748b;
+          font-size: 0.6rem;
+          font-weight: bold;
+          transition: all 0.2s ease;
+          width: 20%;
+        }
+
+        .bottom-nav-item span {
+          display: block;
+          text-align: center;
+          width: 100%;
+        }
+
+        .bottom-nav-item:active, .bottom-nav-item:hover {
+          color: #002147;
+          transform: translateY(-2px);
+        }
+
+        .bottom-nav-icon {
+          display: block;
+          margin: 0 auto;
+          width: 20px;
+          height: 20px;
+          color: #002147;
+          stroke-width: 2.5;
+        }
+
+        /* Custom Font for Navbar Items (bauserif) */
+        .nav-item, :global(.nav-item), 
+        .dropdown-trigger, :global(.dropdown-trigger), 
+        .dropdown-menu a, :global(.dropdown-menu a), 
+        .nav-cta-special, :global(.nav-cta-special), 
+        .bottom-nav-item span, :global(.bottom-nav-item span) {
+          font-family: var(--font-bauserif), serif !important;
+          font-weight: 800 !important;
+          color: var(--primary) !important;
         }
       `}</style>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="mobile-bottom-nav">
+        <Link href="/" className="bottom-nav-item">
+          <svg className="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Home</span>
+        </Link>
+        <Link 
+          href="/#jenjang" 
+          className="bottom-nav-item"
+          onClick={(e) => {
+            if (window.location.pathname === '/') {
+              e.preventDefault();
+              document.getElementById('jenjang')?.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+        >
+          <svg className="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>Jenjang</span>
+        </Link>
+        <Link href="/pendaftaran" className="bottom-nav-item">
+          <svg className="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <span>Daftar</span>
+        </Link>
+        <Link href="/berita" className="bottom-nav-item">
+          <svg className="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+          <span>Berita</span>
+        </Link>
+        <Link href={isAdminLoggedIn ? "/admin" : (isSantriLoggedIn ? "/santri" : "/login")} className="bottom-nav-item" title={isAdminLoggedIn ? adminName : (isSantriLoggedIn ? santriName : "Login")}>
+          {isAdminLoggedIn || isSantriLoggedIn ? (
+            <div className="bottom-nav-icon" style={{ borderRadius: '50%', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', padding: '2px', border: `2px solid ${isAdminLoggedIn ? '#22c55e' : '#002147'}` }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '100%', height: '100%' }}>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+          ) : (
+            <svg className="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          )}
+          <span style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '2px', 
+            fontSize: (isSantriLoggedIn && (santriGender.toLowerCase() === 'perempuan' || santriGender.toLowerCase() === 'p')) ? '0.55rem' : undefined
+          }}>
+            {isAdminLoggedIn ? (adminRole.toLowerCase() === 'wali' ? 'Wali' : 'Admin') : (isSantriLoggedIn ? ((santriGender.toLowerCase() === 'perempuan' || santriGender.toLowerCase() === 'p') ? 'Santriwati' : 'Santri') : "Login")}
+            {(isAdminLoggedIn || isSantriLoggedIn) && (
+              <svg viewBox="0 0 24 24" fill="none" stroke={isAdminLoggedIn ? '#22c55e' : '#002147'} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" style={{ width: '10px', height: '10px' }}>
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            )}
+          </span>
+        </Link>
+      </div>
 
       {maintenanceActive && !isAdminLoggedIn && !isLoginPage && (
         <div className="maintenance-overlay">

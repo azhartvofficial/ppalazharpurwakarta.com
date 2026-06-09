@@ -82,6 +82,10 @@ export default function SejarahPage() {
                   <li>Menjadi penyatu ummat melalui pendidikan dan dakwah</li>
                 </ol>
               </div>
+              <div className="v-m-item" style={{ marginTop: '2rem' }}>
+                <h3 className={frizQuadrata.className}>Motto</h3>
+                <p>“Profesional dan sinergi menuju lembaga modern untuk mencapai berkah dan ridho ilahi”</p>
+              </div>
             </div>
           </div>
 
@@ -95,7 +99,7 @@ export default function SejarahPage() {
             <div className="video-container" ref={videoRef}>
               {isVideoVisible ? (
                 <iframe 
-                  src="https://www.youtube.com/embed/N7mmwdmUR98?autoplay=1&mute=1&loop=1&playlist=N7mmwdmUR98&rel=0&showinfo=0&modestbranding=1" 
+                  src="https://www.youtube.com/embed/UITlX4aABqg?autoplay=1&mute=1&loop=1&playlist=UITlX4aABqg&rel=0&showinfo=0&modestbranding=1" 
                   title="Video Profil Pondok Pesantren Al-Azhar Purwakarta" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                   allowFullScreen

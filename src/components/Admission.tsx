@@ -11,7 +11,22 @@ const Admission = () => {
       <div className="container">
         <div className="admission-grid">
           <motion.div 
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="admission-image-wrapper"
+          >
+            <div className="main-image-box">
+              <img 
+                src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999225/luk0g71ynw99bhtqfbe7.png" 
+                alt="Santri Al Azhar Purwakarta" 
+              />
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
@@ -28,21 +43,6 @@ const Admission = () => {
                 Informasi Jalur Beasiswa <span className="arrow">›</span>
               </div>
             </Link>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="admission-image-wrapper"
-          >
-            <div className="main-image-box">
-              <img 
-                src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999225/luk0g71ynw99bhtqfbe7.png" 
-                alt="Santri Al Azhar Purwakarta" 
-              />
-            </div>
           </motion.div>
         </div>
       </div>
@@ -152,7 +152,7 @@ const Admission = () => {
         
         @media (max-width: 992px) {
           .admission-grid { 
-            grid-template-columns: 1.2fr 0.8fr; 
+            grid-template-columns: 1fr 1fr; 
             gap: 2rem; 
             text-align: left; 
           }

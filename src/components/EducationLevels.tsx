@@ -136,6 +136,18 @@ const EducationLevels = () => {
             </motion.div>
           ))}
         </div>
+
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          style={{ display: 'flex', justifyContent: 'center', marginTop: '2.5rem' }}
+        >
+          <div className="jenjang-attention-popup">
+            Klik jenjang pendidikan di atas untuk informasi pendaftaran selanjutnya!
+          </div>
+        </motion.div>
       </div>
 
       <style jsx>{`
@@ -144,6 +156,7 @@ const EducationLevels = () => {
           background: #fafbfc;
           position: relative;
           overflow: hidden;
+          scroll-margin-top: 8vh;
         }
 
         .container {
@@ -265,12 +278,35 @@ const EducationLevels = () => {
           color: var(--unit-color);
         }
 
+        .jenjang-attention-popup {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(0, 33, 71, 0.08); /* Primary blue transparent */
+          color: var(--primary, #002147);
+          border: 1px solid rgba(0, 33, 71, 0.2);
+          padding: 8px 18px;
+          border-radius: 20px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          box-shadow: 0 4px 12px rgba(0, 33, 71, 0.08);
+          animation: gentleBounce 2s infinite ease-in-out;
+        }
+
+        @keyframes gentleBounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
+        }
+
         @media (max-width: 1024px) {
           .levels-grid { grid-template-columns: repeat(3, 1fr); }
         }
 
         @media (max-width: 768px) {
-          .education-levels { padding: 2rem 0 2rem 0; }
+          .education-levels { 
+            padding: 2rem 0 6rem 0; 
+            scroll-margin-top: 12vh;
+          }
           .section-header-premium { margin-bottom: 0.5rem; }
           .levels-grid { 
             grid-template-columns: repeat(6, 1fr); 

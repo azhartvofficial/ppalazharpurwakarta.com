@@ -155,7 +155,7 @@ export default function AzharTvPage() {
               viewport={{ once: true }}
             >
               <Image 
-                src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1780854960/plwkjrnpeqnvdv79jwd7.png" 
+                src="/Ketua%20Media%20Azhar%20Tv.png" 
                 alt="Darmawan Bahtiar, C. Sq" 
                 width={600} 
                 height={750} 
@@ -173,9 +173,17 @@ export default function AzharTvPage() {
               <h3 className="manager-role">MANAGER OF AZHAR TV MEDIA</h3>
               <h4 className="manager-name-large">Darmawan Bahtiar, C. Sq</h4>
               <div className="blue-divider-small"></div>
-              <p className="quote-text">
-                "Assalamu'alaikum Warahmatullahi Wabarakatuh. Media Azhar TV hadir sebagai jendela informasi, wadah kreativitas santri, dan media dakwah untuk menyebarkan nilai-nilai Islam ke masyarakat luas. Semoga media ini bisa memberikan manfaat dan kebaikan bagi kita semua."
-              </p>
+              <div className="quote-text">
+                <p>Assalamu’alaikum Warahmatullahi Wabarakatuh,</p>
+                <p>Selamat datang di Azhar TV, Media resmi Pondok Pesantren Al-Azhar Purwakarta.</p>
+                <p>Puji dan syukur senantiasa kita panjatkan ke hadirat Allah SWT, serta shalawat dan salam semoga selalu tercurah kepada uswatun hasanah kita, Nabi Muhammad SAW.</p>
+                <p>Di era digital yang bergerak begitu cepat ini, Pondok Pesantren Al-Azhar Purwakarta berkomitmen untuk tidak hanya mencetak generasi yang tafaqquh fiddin (paham agama), tetapi juga kreatif dan adaptif terhadap perkembangan zaman. Azhar TV hadir sebagai wadah syiar, sekaligus jembatan informasi antara pesantren, orang tua santri, alumni, dan masyarakat luas.</p>
+                <p>Melalui media ini, kami dengan bangga menyajikan <strong>Lensa Kegiatan Santri</strong>: Rekaman dokumentasi foto dan video yang menangkap momen-momen berharga para santri, mulai dari kedisiplinan mengaji, menghafal Al-Qur'an, hingga keseruan berorganisasi dan berolahraga dan menjadi <strong>Kreativitas Ruang ekspresi</strong> bagi para santri untuk menyalurkan bakat mereka di bidang multimedia, dakwah visual, dan karya seni islami.</p>
+                <p>Azhar TV hadir memberikan Dokumentasi kajian, kegiatan besar pesantren, serta nilai-nilai budi pekerti luhur yang diajarkan sehari-hari di pondok pesantren Al-Azhar. kami juga hadir sebagai mediator untuk <strong>Melihat Al-Azhar Lebih Dekat, Merasakan Kehangatan Nyata</strong>. Melalui setiap jepretan foto dan setiap detik video yang kami tayangkan, kami ingin mengajak Anda semua untuk melihat lebih dekat bagaimana karakter, kemandirian, dan akhlak mulia para santri dibentuk di sini.</p>
+                <p>Terima kasih atas dukungan, doa, dan kepercayaan yang terus mengalir untuk Pondok Pesantren Al-Azhar Purwakarta. Jangan lupa untuk terus mengikuti perkembangan, menyukai, dan membagikan setiap konten positif dari kami sebagai bagian dari syiar kebaikan.</p>
+                <p>Wassalamu’alaikum Warahmatullahi Wabarakatuh,</p>
+                <p><strong>Manajemen Azhar TV</strong></p>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -185,45 +193,45 @@ export default function AzharTvPage() {
       <section className="managed-platforms">
         <div className="container">
           <div className="section-title text-center">
-            <h2 className={frizQuadrata.className} style={{ fontSize: '2.5rem', color: '#002147', marginBottom: '1rem' }}>Managed Platform by</h2>
+            <h2 className={frizQuadrata.className} style={{ fontSize: '2.5rem', color: '#002147', marginBottom: '1rem' }}>Ikuti Akun Media Sosial Kami</h2>
             <div className="title-accent" style={{ margin: '0 auto 3rem' }}></div>
           </div>
 
           <div className="platforms-grid">
-            <motion.div className="platform-card" whileHover={{ y: -10 }}>
-              <div className="platform-icon fb-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            <motion.a href="https://www.facebook.com/ponpes.alazharpurwakarra" target="_blank" rel="noopener noreferrer" className="platform-card" whileHover={{ y: -10 }}>
+              <div className="platform-icon">
+                <Image src="/Logo/Logo%20Facebook.png" alt="Facebook" width={85} height={85} style={{ objectFit: 'contain' }} unoptimized />
               </div>
               <h4>Facebook</h4>
-            </motion.div>
+            </motion.a>
 
-            <motion.div className="platform-card" whileHover={{ y: -10 }}>
-              <div className="platform-icon ig-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            <motion.a href="https://www.instagram.com/azhar_tv_" target="_blank" rel="noopener noreferrer" className="platform-card" whileHover={{ y: -10 }}>
+              <div className="platform-icon">
+                <Image src="/Logo/Logo%20Instagram.png" alt="Instagram" width={85} height={85} style={{ objectFit: 'contain' }} unoptimized />
               </div>
               <h4>Instagram</h4>
-            </motion.div>
+            </motion.a>
 
-            <motion.div className="platform-card" whileHover={{ y: -10 }}>
-              <div className="platform-icon tt-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.23-.69 4.46-2.18 6.11-1.38 1.55-3.35 2.5-5.46 2.68-2.18.18-4.41-.35-6.15-1.68-1.55-1.18-2.61-2.91-2.92-4.83-.34-2.14.05-4.38 1.32-6.14 1.25-1.74 3.2-2.82 5.26-3.13 1.95-.29 3.99.04 5.71 1.05.02-1.38.01-2.76.01-4.14-1.13-.53-2.39-.73-3.64-.67-1.44.07-2.88.47-4.08 1.24-1.33.85-2.28 2.19-2.71 3.73-.42 1.54-.42 3.19-.04 4.74.37 1.51 1.18 2.87 2.34 3.86 1.25 1.05 2.86 1.54 4.49 1.55 1.63.02 3.26-.4 4.58-1.3 1.4-1.01 2.4-2.48 2.76-4.15.22-1.02.26-2.07.25-3.11-.02-5.71-.01-11.42-.01-17.13h-4.03z"/></svg>
+            <motion.a href="https://www.tiktok.com/@azhar.gallery" target="_blank" rel="noopener noreferrer" className="platform-card" whileHover={{ y: -10 }}>
+              <div className="platform-icon">
+                <Image src="/Logo/Logo%20Tiktok.png" alt="TikTok" width={85} height={85} style={{ objectFit: 'contain' }} unoptimized />
               </div>
               <h4>TikTok</h4>
-            </motion.div>
+            </motion.a>
 
-            <motion.div className="platform-card" whileHover={{ y: -10 }}>
-              <div className="platform-icon yt-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.376.55 9.376.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            <motion.a href="https://www.youtube.com/@Tvazhar" target="_blank" rel="noopener noreferrer" className="platform-card" whileHover={{ y: -10 }}>
+              <div className="platform-icon">
+                <Image src="/Logo/Logo%20Youtube.png" alt="YouTube" width={85} height={85} style={{ objectFit: 'contain' }} unoptimized />
               </div>
               <h4>YouTube</h4>
-            </motion.div>
+            </motion.a>
 
-            <motion.div className="platform-card" whileHover={{ y: -10 }}>
-              <div className="platform-icon web-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <motion.a href="/" className="platform-card" whileHover={{ y: -10 }}>
+              <div className="platform-icon">
+                <Image src="/Logo/Logo%20Website.png" alt="Website" width={85} height={85} style={{ objectFit: 'contain' }} unoptimized />
               </div>
               <h4>Website</h4>
-            </motion.div>
+            </motion.a>
           </div>
         </div>
       </section>
@@ -232,7 +240,7 @@ export default function AzharTvPage() {
       <section className="youtube-center">
         <div className="container">
           <div className="section-title">
-            <h2 className={frizQuadrata.className}>Azhar YouTube Channel</h2>
+            <h2 className={frizQuadrata.className}>Azhar Tv Channel</h2>
             <div className="title-accent"></div>
           </div>
 
@@ -428,7 +436,7 @@ export default function AzharTvPage() {
 
         /* Welcome Bar */
         .welcome-tv {
-          padding: 6rem 0 4rem;
+          padding: 6rem 0 2rem;
           text-align: center;
           background-color: #f8fafc;
           background-image: 
@@ -503,30 +511,31 @@ export default function AzharTvPage() {
 
         /* Sambutan Manager */
         .manager-greeting {
-          padding: 8rem 0;
+          padding: 3rem 0 3rem;
           background-color: #ffffff;
         }
 
         .manager-content {
           display: flex;
-          align-items: center;
-          gap: 6rem;
+          align-items: flex-start;
+          gap: 3rem;
           position: relative;
           z-index: 10;
         }
 
         .manager-image {
-          flex: 0 0 500px;
+          flex-shrink: 0;
+          width: 400px;
           position: relative;
         }
 
         .manager-img {
           width: 100%;
+          height: auto;
           aspect-ratio: 4 / 5;
           object-fit: contain;
           position: relative;
           z-index: 2;
-          transform: scale(1.05);
         }
 
         .manager-text {
@@ -559,16 +568,24 @@ export default function AzharTvPage() {
         }
 
         .quote-text {
-          font-size: 1.25rem;
+          font-size: 0.95rem;
           line-height: 1.8;
           color: #475569;
-          font-style: italic;
           position: relative;
+          text-align: justify;
+        }
+
+        .quote-text p {
+          margin-bottom: 1rem;
+        }
+
+        .quote-text p:last-child {
+          margin-bottom: 0;
         }
 
         /* Managed Platforms */
         .managed-platforms {
-          padding: 6rem 0;
+          padding: 2rem 0 2rem;
           background: #ffffff;
         }
 
@@ -588,6 +605,9 @@ export default function AzharTvPage() {
           border: 1px solid #f1f5f9;
           transition: all 0.3s ease;
           cursor: pointer;
+          text-decoration: none;
+          color: inherit;
+          display: block;
         }
 
         .platform-card:hover {
@@ -596,8 +616,8 @@ export default function AzharTvPage() {
         }
 
         .platform-icon {
-          width: 70px;
-          height: 70px;
+          width: 90px;
+          height: 90px;
           margin: 0 auto 1.5rem;
           display: flex;
           align-items: center;
@@ -606,11 +626,7 @@ export default function AzharTvPage() {
           color: white;
         }
 
-        .fb-icon { background: #1877F2; }
-        .ig-icon { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-        .tt-icon { background: #000000; }
-        .yt-icon { background: #FF0000; }
-        .web-icon { background: #002147; }
+        /* Icons are now images, backgrounds removed */
 
         .platform-card h4 {
           color: #002147;
@@ -620,7 +636,7 @@ export default function AzharTvPage() {
 
         /* YouTube Center */
         .youtube-center {
-          padding: 8rem 0;
+          padding: 2rem 0 8rem;
         }
 
         .section-title {
@@ -867,23 +883,47 @@ export default function AzharTvPage() {
             min-height: auto;
           }
           .manager-content {
+            display: flex;
             flex-direction: column;
-            gap: 3rem;
+            gap: 2rem;
             text-align: center;
           }
           .manager-image {
-            flex: 0 0 350px;
-            width: 350px;
+            width: 280px;
             margin: 0 auto;
           }
           .manager-img {
             aspect-ratio: 4 / 5;
+            border-radius: 15px;
           }
           .blue-divider-small {
-            margin: 0 auto 2rem;
+            margin: 0 auto 1.5rem auto;
           }
           .manager-name-large {
-            font-size: 2.2rem;
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+          }
+          .quote-text {
+            font-size: 0.95rem;
+            text-align: justify;
+          }
+          .platforms-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+          }
+          .platform-card {
+            width: calc(50% - 0.5rem);
+            padding: 1.5rem 0.5rem;
+          }
+          .platform-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+          }
+          .platform-card h4 {
+            font-size: 0.9rem;
           }
         }
       `}</style>
