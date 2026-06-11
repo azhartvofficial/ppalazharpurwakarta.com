@@ -326,75 +326,7 @@ export default function Navbar() {
                   )}
                 </AnimatePresence>
               </div>
-            ) : (
-              <Link href="/login" className="nav-login-premium" onClick={() => setMenuOpen(false)}>
-                <div className="login-switch-container">
-                  <AnimatePresence mode="wait">
-                    {isLogoActive ? (
-                      <motion.img
-                        key="logo"
-                        src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999181/gn0jliybqazmk5nelrwf.png"
-                        alt="Login"
-                        className="nav-login-img"
-                        initial={{ opacity: 0, scale: 0.98, filter: "blur(12px)" }}
-                        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                        exit={{ opacity: 0, scale: 0.98, filter: "blur(12px)" }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.98 }}
-                        transition={{ 
-                          duration: 3.5,
-                          ease: [0.22, 1, 0.36, 1] /* Quintic ease out for ultra smoothness */
-                        }}
-                      />
-                    ) : (
-                      <motion.div
-                        key="text"
-                        className="login-graphic"
-                        style={{ 
-                          display: 'flex', 
-                          flexDirection: 'row', 
-                          alignItems: 'center', 
-                          justifyContent: 'center',
-                          gap: '8px',
-                          background: 'rgba(230, 126, 34, 0.1)',
-                          border: '2px solid var(--secondary)',
-                          padding: '6px 16px',
-                          borderRadius: '50px',
-                          color: 'var(--primary)',
-                          fontWeight: 800,
-                          fontSize: '0.8rem',
-                          whiteSpace: 'nowrap',
-                          cursor: 'pointer'
-                        }}
-                        initial={{ opacity: 0, scale: 0.98 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.98 }}
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.98 }}
-                        transition={{ 
-                          duration: 3.5,
-                          ease: [0.22, 1, 0.36, 1]
-                        }}
-                      >
-                        <svg 
-                          viewBox="0 0 24 24" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          strokeWidth="2.5" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          style={{ width: '16px', height: '16px', flexShrink: 0, color: 'var(--primary)' }}
-                        >
-                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                          <circle cx="12" cy="7" r="4" />
-                        </svg>
-                        <span>{t('login')}</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </Link>
-            )}
+            ) : null}
 
             <div className="menu-toggle-wrapper">
               <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
