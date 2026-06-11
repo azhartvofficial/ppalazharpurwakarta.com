@@ -236,6 +236,28 @@ export default function AzharTvPage() {
         </div>
       </section>
 
+      {/* Tim Media Azhar Tv Section */}
+      <section className="media-team-poster" style={{ padding: '2rem 0 4rem', background: '#ffffff' }}>
+        <div className="container">
+          <motion.div 
+            className="poster-container" 
+            style={{ display: 'flex', justifyContent: 'center' }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Image 
+              src="/azhar%20tv%20poster.jpeg" 
+              alt="Poster Azhar Tv" 
+              width={800} 
+              height={1131} 
+              style={{ objectFit: 'contain', width: '100%', maxWidth: '800px', height: 'auto', borderRadius: '20px', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }} 
+              unoptimized 
+            />
+          </motion.div>
+        </div>
+      </section>
+
       {/* YouTube Section */}
       <section className="youtube-center">
         <div className="container">
