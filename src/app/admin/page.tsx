@@ -276,6 +276,9 @@ export default function AdminDashboardPage() {
   const [selectedAccountForEdit, setSelectedAccountForEdit] = useState<UserAccount | null>(null);
   const [showAddAccountModal, setShowAddAccountModal] = useState(false);
 
+  const [accountSearchQuery, setAccountSearchQuery] = useState("");
+  const [accountRoleFilter, setAccountRoleFilter] = useState("Semua");
+
   // New Account form state
   const [newAccName, setNewAccName] = useState("");
   const [newAccEmail, setNewAccEmail] = useState("");
@@ -1688,6 +1691,41 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                               </button>
                             </div>
 
+                            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                              <input 
+                                type="text" 
+                                placeholder="Cari nama atau email..." 
+                                value={accountSearchQuery}
+                                onChange={(e) => setAccountSearchQuery(e.target.value)}
+                                style={{
+                                  flex: 1,
+                                  minWidth: '200px',
+                                  padding: '8px 12px',
+                                  borderRadius: '8px',
+                                  border: '1px solid #cbd5e1',
+                                  fontSize: '0.8rem',
+                                  outline: 'none'
+                                }}
+                              />
+                              <select
+                                value={accountRoleFilter}
+                                onChange={(e) => setAccountRoleFilter(e.target.value)}
+                                style={{
+                                  padding: '8px 12px',
+                                  borderRadius: '8px',
+                                  border: '1px solid #cbd5e1',
+                                  fontSize: '0.8rem',
+                                  outline: 'none',
+                                  background: 'white'
+                                }}
+                              >
+                                <option value="Semua">Semua Peran</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Wali">Wali Santri</option>
+                                <option value="Super Admin">Super Admin</option>
+                              </select>
+                            </div>
+
                             <div className="table-responsive">
                               <table className="main-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
@@ -1699,7 +1737,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {userAccounts.map((acc) => (
+                                  {userAccounts
+                                    .filter(acc => (accountRoleFilter === "Semua" || acc.role === accountRoleFilter))
+                                    .filter(acc => acc.name.toLowerCase().includes(accountSearchQuery.toLowerCase()) || acc.email.toLowerCase().includes(accountSearchQuery.toLowerCase()))
+                                    .map((acc) => (
                                     <tr key={acc.id} style={{ borderBottom: '1px solid #f8fafc' }}>
                                       <td style={{ padding: '12px 8px' }}>
                                         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
@@ -4132,21 +4173,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 textAlign: 'center'
               }}
             >
-              <div style={{
-                width: '64px',
-                height: '64px',
-                background: 'rgba(239, 68, 68, 0.1)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 1.5rem auto'
-              }}>
-                <span style={{ fontSize: '2rem' }}>🔒</span>
-              </div>
               <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0f172a', margin: '0 0 0.5rem 0' }}>Verifikasi Keamanan</h3>
-              <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '2rem', lineHeight: 1.5 }}>
-                Tindakan ini memerlukan tingkat akses tertinggi. Masukkan <strong>Master Password</strong> untuk melanjutkan.
+              <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '2rem', lineHeight: 1.5 }}>
+                Masukkan Pasword Admin
               </p>
 
               <form onSubmit={executePendingAction} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
