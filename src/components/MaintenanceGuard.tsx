@@ -13,7 +13,7 @@ export default function MaintenanceGuard({ children }: { children: React.ReactNo
     if (sessionData) {
       try {
         const user = JSON.parse(sessionData);
-        if (user?.email === 'admin.alazharpwk@gmail.com') {
+        if (user?.email === 'admin.alazharpwk@gmail.com' || user?.user_metadata?.role === 'Super Admin') {
           setIsSuperAdmin(true);
         }
       } catch (e) {
