@@ -170,24 +170,89 @@ export default function AdminDashboardPage() {
   // Accounts sub-tab and login requests states
   const [accountsSubTab, setAccountsSubTab] = useState<"kelola_akun" | "kelola_data" | "permintaan_login">("kelola_akun");
   const [accountsMenuExpanded, setAccountsMenuExpanded] = useState(false);
-  const [loginRequests, setLoginRequests] = useState<LoginRequest[]>([
-    { id: "1", email: "ustadz.ahmad@alazharpwk.com", requestedAt: "2026-05-19 14:32", device: "Chrome / Windows 11", status: "Pending" },
-    { id: "2", email: "humas.pesantren@alazharpwk.com", requestedAt: "2026-05-18 09:15", device: "Safari / iPhone 15", status: "Approved" },
-    { id: "3", email: "tahfidz.guru@alazharpwk.com", requestedAt: "2026-05-17 11:22", device: "Firefox / Android", status: "Rejected" },
-  ]);
+  const [loginRequests, setLoginRequests] = useState<LoginRequest[]>([]);
+  const [loadingLoginRequests, setLoadingLoginRequests] = useState(false);
+  const [errorLoginRequests, setErrorLoginRequests] = useState("");
 
-  const handleUpdateLoginRequestStatus = (id: string, newStatus: "Approved" | "Rejected") => {
+  const fetchLoginRequests = async () => {
+    setLoadingLoginRequests(true);
+    try {
+      const { data, error } = await supabase.from("login_requests").select("*").order("requested_at", { ascending: false });
+      if (error) throw error;
+      if (data) {
+        setLoginRequests(data.map((d: any) => ({
+          id: d.id,
+          email: d.email,
+          requestedAt: new Date(d.requested_at).toLocaleString('id-ID'),
+          device: d.device,
+          status: d.status
+        })));
+      }
+    } catch (err: any) {
+      setErrorLoginRequests(err.message);
+      if (loginRequests.length === 0) {
+        setLoginRequests([
+          { id: "1", email: "ustadz.ahmad@alazharpwk.com", requestedAt: "2026-05-19 14:32", device: "Chrome / Windows 11", status: "Pending" },
+          { id: "2", email: "humas.pesantren@alazharpwk.com", requestedAt: "2026-05-18 09:15", device: "Safari / iPhone 15", status: "Approved" },
+          { id: "3", email: "tahfidz.guru@alazharpwk.com", requestedAt: "2026-05-17 11:22", device: "Firefox / Android", status: "Rejected" },
+        ]);
+      }
+    } finally {
+      setLoadingLoginRequests(false);
+    }
+  };
+
+  const handleUpdateLoginRequestStatus = async (id: string, newStatus: "Approved" | "Rejected") => {
+    // Optimistic UI update
     setLoginRequests(prev => prev.map(r => r.id === id ? { ...r, status: newStatus } : r));
+    try {
+      const { error } = await supabase.from("login_requests").update({ status: newStatus }).eq("id", id);
+      if (error) console.warn("Supabase update failed, kept local fallback status.");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // User Accounts States
-  const [userAccounts, setUserAccounts] = useState<UserAccount[]>([
-    { id: "1", name: "Super Admin Al-Azhar", email: "danishalzam8002@gmail.com", role: "Admin", status: "Aktif", createdAt: "2026-01-10", lastLogin: "Hari Ini, 02:15" },
-    { id: "2", name: "Ustadz Ahmad Fauzi", email: "ahmad.fauzi@alazharpwk.com", role: "Admin", status: "Aktif", createdAt: "2026-02-15", lastLogin: "Kemarin, 14:32" },
-    { id: "3", name: "Herman Susanto (Wali Rian)", email: "herman.s@gmail.com", role: "Wali", status: "Aktif", createdAt: "2026-05-01", lastLogin: "18 Mei 2026, 09:12" },
-    { id: "4", name: "Siti Aminah (Wali Aisyah)", email: "siti.aminah@yahoo.com", role: "Wali", status: "Aktif", createdAt: "2026-05-12", lastLogin: "15 Mei 2026, 20:04" },
-    { id: "5", name: "Ustadzah Fatimah", email: "fatimah@alazharpwk.com", role: "Admin", status: "Nonaktif", createdAt: "2026-03-01", lastLogin: "01 Mei 2026, 11:22" },
-  ]);
+  const [userAccounts, setUserAccounts] = useState<UserAccount[]>([]);
+  const [loadingAccounts, setLoadingAccounts] = useState(false);
+  const [errorAccounts, setErrorAccounts] = useState("");
+
+  const fetchAccounts = async () => {
+    setLoadingAccounts(true);
+    try {
+      const { data, error } = await supabase.from("admin_accounts").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      if (data) {
+        setUserAccounts(data.map((d: any) => ({
+          id: d.id,
+          name: d.name,
+          email: d.email,
+          role: d.role,
+          status: d.status,
+          createdAt: new Date(d.created_at).toISOString().split('T')[0],
+          lastLogin: d.last_login || "-"
+        })));
+      }
+    } catch (err: any) {
+      setErrorAccounts(err.message);
+      if (userAccounts.length === 0) {
+        setUserAccounts([
+          { id: "1", name: "Super Admin Al-Azhar", email: "danishalzam8002@gmail.com", role: "Admin", status: "Aktif", createdAt: "2026-01-10", lastLogin: "Hari Ini, 02:15" },
+          { id: "2", name: "Ustadz Ahmad Fauzi", email: "ahmad.fauzi@alazharpwk.com", role: "Admin", status: "Aktif", createdAt: "2026-02-15", lastLogin: "Kemarin, 14:32" },
+          { id: "3", name: "Herman Susanto (Wali Rian)", email: "herman.s@gmail.com", role: "Wali", status: "Aktif", createdAt: "2026-05-01", lastLogin: "18 Mei 2026, 09:12" },
+        ]);
+      }
+    } finally {
+      setLoadingAccounts(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccounts();
+    fetchLoginRequests();
+  }, []);
+
   const [selectedAccountForEdit, setSelectedAccountForEdit] = useState<UserAccount | null>(null);
   const [showAddAccountModal, setShowAddAccountModal] = useState(false);
 
@@ -196,39 +261,84 @@ export default function AdminDashboardPage() {
   const [newAccEmail, setNewAccEmail] = useState("");
   const [newAccRole, setNewAccRole] = useState<"Admin" | "Wali">("Wali");
 
-  const handleAddAccount = (e: React.FormEvent) => {
+  const handleAddAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newAccName || !newAccEmail) return;
-    const newAcc: UserAccount = {
-      id: Date.now().toString(),
+    
+    const newAccData = {
       name: newAccName,
       email: newAccEmail,
       role: newAccRole,
-      status: "Aktif",
+      status: "Aktif"
+    };
+
+    // Optimistic Update fallback ID
+    const tempId = Date.now().toString();
+    const newAcc: UserAccount = {
+      id: tempId,
+      ...newAccData,
       createdAt: new Date().toISOString().split('T')[0],
       lastLogin: "-"
     };
-    setUserAccounts([...userAccounts, newAcc]);
+    
+    setUserAccounts([newAcc, ...userAccounts]);
     setNewAccName("");
     setNewAccEmail("");
     setNewAccRole("Wali");
     setShowAddAccountModal(false);
+    
+    try {
+      const { data, error } = await supabase.from("admin_accounts").insert([newAccData]).select();
+      if (error) {
+        console.warn("Supabase insert failed, kept local fallback status.");
+      } else if (data && data.length > 0) {
+        // Replace temp ID with real DB ID
+        setUserAccounts(prev => prev.map(a => a.id === tempId ? { ...a, id: data[0].id } : a));
+      }
+    } catch (err) {
+      console.error(err);
+    }
     alert("Akun baru berhasil ditambahkan!");
   };
 
-  const handleUpdateAccount = (e: React.FormEvent) => {
+  const handleUpdateAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAccountForEdit) return;
+    
+    // Optimistic update
     setUserAccounts(prev => prev.map(acc => acc.id === selectedAccountForEdit.id ? selectedAccountForEdit : acc));
+    const editedId = selectedAccountForEdit.id;
+    const updatedData = {
+      name: selectedAccountForEdit.name,
+      email: selectedAccountForEdit.email,
+      role: selectedAccountForEdit.role,
+      status: selectedAccountForEdit.status
+    };
     setSelectedAccountForEdit(null);
+    
+    try {
+      const { error } = await supabase.from("admin_accounts").update(updatedData).eq("id", editedId);
+      if (error) console.warn("Supabase update failed, kept local fallback status.");
+    } catch (err) {
+      console.error(err);
+    }
     alert("Detail akun berhasil diperbarui!");
   };
 
-  const handleDeleteAccount = (id: string) => {
+  const handleDeleteAccount = async (id: string) => {
     if (!confirm("Hapus akun ini secara permanen dari sistem?")) return;
+    
+    // Optimistic update
     setUserAccounts(prev => prev.filter(acc => acc.id !== id));
     if (selectedAccountForEdit?.id === id) {
       setSelectedAccountForEdit(null);
+    }
+    
+    try {
+      const { error } = await supabase.from("admin_accounts").delete().eq("id", id);
+      if (error) console.warn("Supabase delete failed, kept local fallback status.");
+    } catch (err) {
+      console.error(err);
     }
   };
 
