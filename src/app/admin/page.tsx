@@ -49,7 +49,7 @@ interface UserAccount {
   id: string;
   name: string;
   email: string;
-  role: "Admin" | "Wali";
+  role: "Admin" | "Wali" | "Super Admin";
   status: "Aktif" | "Nonaktif";
   createdAt: string;
   lastLogin: string;
