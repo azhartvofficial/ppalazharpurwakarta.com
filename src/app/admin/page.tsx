@@ -81,6 +81,25 @@ export default function AdminDashboardPage() {
     }
   }, []);
 
+  // Master Password State
+  const [showMasterPasswordPrompt, setShowMasterPasswordPrompt] = useState(false);
+  const [masterPasswordInput, setMasterPasswordInput] = useState("");
+  const [pendingSuperAdminAction, setPendingSuperAdminAction] = useState<(() => void) | null>(null);
+
+  const executePendingAction = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (masterPasswordInput === "azhar123") {
+      if (pendingSuperAdminAction) {
+        pendingSuperAdminAction();
+      }
+      setShowMasterPasswordPrompt(false);
+      setMasterPasswordInput("");
+      setPendingSuperAdminAction(null);
+    } else {
+      alert("Password Super Admin Salah!");
+    }
+  };
+
   const toggleMaintenanceMode = async () => {
     const nextState = !maintenanceMode;
     
@@ -93,21 +112,22 @@ export default function AdminDashboardPage() {
       if (!confirmDeactivate) return;
     }
     
-    try {
-      await fetch('/api/settings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ maintenanceMode: nextState }),
-      });
-      
-      // Refresh halaman untuk memastikan state terbaru dan Guard terpicu
-      window.location.reload();
-    } catch (error) {
-      console.error("Error saving maintenance state:", error);
-      alert("Gagal menyimpan status maintenance.");
-    }
+    setPendingSuperAdminAction(() => async () => {
+      try {
+        await fetch('/api/settings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ maintenanceMode: nextState }),
+        });
+        window.location.reload();
+      } catch (error) {
+        console.error("Error saving maintenance state:", error);
+        alert("Gagal menyimpan status maintenance.");
+      }
+    });
+    setShowMasterPasswordPrompt(true);
   };
 
   const [topPages, setTopPages] = useState<any[]>([
@@ -260,7 +280,7 @@ export default function AdminDashboardPage() {
   const [newAccName, setNewAccName] = useState("");
   const [newAccEmail, setNewAccEmail] = useState("");
   const [newAccPassword, setNewAccPassword] = useState("");
-  const [newAccRole, setNewAccRole] = useState<"Admin" | "Wali">("Wali");
+  const [newAccRole, setNewAccRole] = useState<"Admin" | "Wali" | "Super Admin">("Wali");
 
   const handleAddAccount = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -269,101 +289,130 @@ export default function AdminDashboardPage() {
       return;
     }
     
-    const newAccData = {
-      name: newAccName,
-      email: newAccEmail,
-      password: newAccPassword,
-      role: newAccRole,
-      status: "Aktif" as const
+    const action = async () => {
+      const newAccData = {
+        name: newAccName,
+        email: newAccEmail,
+        password: newAccPassword,
+        role: newAccRole,
+        status: "Aktif" as const
+      };
+
+      const tempId = Date.now().toString();
+      const newAcc: UserAccount = {
+        id: tempId,
+        name: newAccName,
+        email: newAccEmail,
+        role: newAccRole,
+        status: "Aktif",
+        createdAt: new Date().toISOString().split('T')[0],
+        lastLogin: "-"
+      };
+      
+      setUserAccounts(prev => [newAcc, ...prev]);
+      setNewAccName("");
+      setNewAccEmail("");
+      setNewAccPassword("");
+      setNewAccRole("Wali");
+      setShowAddAccountModal(false);
+      
+      try {
+        const response = await fetch('/api/admin/accounts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newAccData)
+        });
+        const result = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(result.error || "Gagal sinkronisasi ke Supabase Auth");
+        }
+        
+        if (result.data) {
+          setUserAccounts(prev => prev.map(a => a.id === tempId ? { ...a, id: result.data.id } : a));
+        }
+      } catch (err: any) {
+        console.error(err);
+        alert("Error: " + err.message);
+      }
+      alert("Akun baru berhasil ditambahkan dan disinkronisasi dengan Auth!");
     };
 
-    // Optimistic Update fallback ID
-    const tempId = Date.now().toString();
-    const newAcc: UserAccount = {
-      id: tempId,
-      name: newAccName,
-      email: newAccEmail,
-      role: newAccRole,
-      status: "Aktif",
-      createdAt: new Date().toISOString().split('T')[0],
-      lastLogin: "-"
-    };
-    
-    setUserAccounts([newAcc, ...userAccounts]);
-    setNewAccName("");
-    setNewAccEmail("");
-    setNewAccPassword("");
-    setNewAccRole("Wali");
-    setShowAddAccountModal(false);
-    
-    try {
-      const response = await fetch('/api/admin/accounts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newAccData)
-      });
-      const result = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.error || "Gagal sinkronisasi ke Supabase Auth");
-      }
-      
-      if (result.data) {
-        // Replace temp ID with real DB ID
-        setUserAccounts(prev => prev.map(a => a.id === tempId ? { ...a, id: result.data.id } : a));
-      }
-    } catch (err: any) {
-      console.error(err);
-      alert("Error: " + err.message);
+    if (newAccRole === "Super Admin") {
+      setPendingSuperAdminAction(() => action);
+      setShowMasterPasswordPrompt(true);
+    } else {
+      action();
     }
-    alert("Akun baru berhasil ditambahkan dan disinkronisasi dengan Auth!");
   };
 
   const handleUpdateAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAccountForEdit) return;
     
-    // Optimistic update
-    setUserAccounts(prev => prev.map(acc => acc.id === selectedAccountForEdit.id ? selectedAccountForEdit : acc));
-    const editedId = selectedAccountForEdit.id;
-    const updatedData = {
-      name: selectedAccountForEdit.name,
-      email: selectedAccountForEdit.email,
-      role: selectedAccountForEdit.role,
-      status: selectedAccountForEdit.status
+    const currentAccount = userAccounts.find(a => a.id === selectedAccountForEdit.id);
+    const isSuperAdminAction = currentAccount?.role === "Super Admin" || selectedAccountForEdit.role === "Super Admin";
+
+    const action = async () => {
+      setUserAccounts(prev => prev.map(acc => acc.id === selectedAccountForEdit.id ? selectedAccountForEdit : acc));
+      const editedId = selectedAccountForEdit.id;
+      const updatedData = {
+        name: selectedAccountForEdit.name,
+        email: selectedAccountForEdit.email,
+        role: selectedAccountForEdit.role,
+        status: selectedAccountForEdit.status
+      };
+      setSelectedAccountForEdit(null);
+      
+      try {
+        const { error } = await supabase.from("admin_accounts").update(updatedData).eq("id", editedId);
+        if (error) console.warn("Supabase update failed, kept local fallback status.");
+      } catch (err) {
+        console.error(err);
+      }
+      alert("Detail akun berhasil diperbarui!");
     };
-    setSelectedAccountForEdit(null);
-    
-    try {
-      const { error } = await supabase.from("admin_accounts").update(updatedData).eq("id", editedId);
-      if (error) console.warn("Supabase update failed, kept local fallback status.");
-    } catch (err) {
-      console.error(err);
+
+    if (isSuperAdminAction) {
+      setPendingSuperAdminAction(() => action);
+      setShowMasterPasswordPrompt(true);
+    } else {
+      action();
     }
-    alert("Detail akun berhasil diperbarui!");
   };
 
   const handleDeleteAccount = async (id: string) => {
     if (!confirm("Hapus akun ini secara permanen dari sistem beserta data autentikasinya?")) return;
     
-    // Optimistic update
-    setUserAccounts(prev => prev.filter(acc => acc.id !== id));
-    if (selectedAccountForEdit?.id === id) {
-      setSelectedAccountForEdit(null);
-    }
-    
-    try {
-      const response = await fetch(`/api/admin/accounts?id=${id}`, {
-        method: 'DELETE'
-      });
-      const result = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.error || "Gagal menghapus dari Supabase Auth");
+    const currentAccount = userAccounts.find(a => a.id === id);
+    const isSuperAdminAction = currentAccount?.role === "Super Admin";
+
+    const action = async () => {
+      setUserAccounts(prev => prev.filter(acc => acc.id !== id));
+      if (selectedAccountForEdit?.id === id) {
+        setSelectedAccountForEdit(null);
       }
-    } catch (err: any) {
-      console.error(err);
-      alert("Error menghapus akun: " + err.message);
+      
+      try {
+        const response = await fetch(`/api/admin/accounts?id=${id}`, {
+          method: 'DELETE'
+        });
+        const result = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(result.error || "Gagal menghapus dari Supabase Auth");
+        }
+      } catch (err: any) {
+        console.error(err);
+        alert("Error menghapus akun: " + err.message);
+      }
+    };
+
+    if (isSuperAdminAction) {
+      setPendingSuperAdminAction(() => action);
+      setShowMasterPasswordPrompt(true);
+    } else {
+      action();
     }
   };
 
@@ -1805,6 +1854,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                           >
                                             <option value="Admin">Admin</option>
                                             <option value="Wali">Wali Santri</option>
+                                            <option value="Super Admin">Super Admin</option>
                                           </select>
                                         </div>
                                         <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
@@ -1875,6 +1925,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                           >
                                             <option value="Admin">Admin</option>
                                             <option value="Wali">Wali Santri</option>
+                                            <option value="Super Admin">Super Admin</option>
                                           </select>
                                         </div>
                                         <button type="submit" className="btn-submit-config" style={{ padding: '0.8rem', background: '#002147', color: 'white', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '0.9rem', marginTop: '0.5rem' }}>Tambah Akun</button>
@@ -4047,6 +4098,128 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           background: var(--secondary) !important;
         }
       `}</style>
+
+      {/* Master Password Prompt Modal */}
+      <AnimatePresence>
+        {showMasterPasswordPrompt && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0, left: 0, right: 0, bottom: 0,
+              background: 'rgba(15, 23, 42, 0.7)',
+              backdropFilter: 'blur(8px)',
+              zIndex: 999999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem'
+            }}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              style={{
+                background: '#ffffff',
+                borderRadius: '20px',
+                padding: '2.5rem',
+                width: '100%',
+                maxWidth: '400px',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                textAlign: 'center'
+              }}
+            >
+              <div style={{
+                width: '64px',
+                height: '64px',
+                background: 'rgba(239, 68, 68, 0.1)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1.5rem auto'
+              }}>
+                <span style={{ fontSize: '2rem' }}>🔒</span>
+              </div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0f172a', margin: '0 0 0.5rem 0' }}>Verifikasi Keamanan</h3>
+              <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '2rem', lineHeight: 1.5 }}>
+                Tindakan ini memerlukan tingkat akses tertinggi. Masukkan <strong>Master Password</strong> untuk melanjutkan.
+              </p>
+
+              <form onSubmit={executePendingAction} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <input 
+                  type="password"
+                  placeholder="Masukkan Master Password..."
+                  value={masterPasswordInput}
+                  onChange={(e) => setMasterPasswordInput(e.target.value)}
+                  autoFocus
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    background: '#f8fafc',
+                    border: '2px solid #e2e8f0',
+                    borderRadius: '12px',
+                    fontSize: '1rem',
+                    color: '#0f172a',
+                    textAlign: 'center',
+                    letterSpacing: '2px',
+                    fontWeight: 700,
+                    outline: 'none',
+                    transition: 'border-color 0.2s'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                  onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                  required
+                />
+                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setShowMasterPasswordPrompt(false);
+                      setMasterPasswordInput("");
+                      setPendingSuperAdminAction(null);
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: '0.875rem',
+                      background: '#f1f5f9',
+                      color: '#475569',
+                      border: 'none',
+                      borderRadius: '10px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Batal
+                  </button>
+                  <button 
+                    type="submit"
+                    style={{
+                      flex: 1,
+                      padding: '0.875rem',
+                      background: '#ef4444',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '10px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      boxShadow: '0 4px 12px rgba(239, 68, 68, 0.2)'
+                    }}
+                  >
+                    Lanjutkan
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </main>
     </>
   );
