@@ -259,15 +259,20 @@ export default function AdminDashboardPage() {
   // New Account form state
   const [newAccName, setNewAccName] = useState("");
   const [newAccEmail, setNewAccEmail] = useState("");
+  const [newAccPassword, setNewAccPassword] = useState("");
   const [newAccRole, setNewAccRole] = useState<"Admin" | "Wali">("Wali");
 
   const handleAddAccount = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newAccName || !newAccEmail) return;
+    if (!newAccName || !newAccEmail || !newAccPassword) {
+      alert("Mohon lengkapi semua data, termasuk password!");
+      return;
+    }
     
     const newAccData = {
       name: newAccName,
       email: newAccEmail,
+      password: newAccPassword,
       role: newAccRole,
       status: "Aktif" as const
     };
@@ -276,7 +281,10 @@ export default function AdminDashboardPage() {
     const tempId = Date.now().toString();
     const newAcc: UserAccount = {
       id: tempId,
-      ...newAccData,
+      name: newAccName,
+      email: newAccEmail,
+      role: newAccRole,
+      status: "Aktif",
       createdAt: new Date().toISOString().split('T')[0],
       lastLogin: "-"
     };
@@ -284,21 +292,31 @@ export default function AdminDashboardPage() {
     setUserAccounts([newAcc, ...userAccounts]);
     setNewAccName("");
     setNewAccEmail("");
+    setNewAccPassword("");
     setNewAccRole("Wali");
     setShowAddAccountModal(false);
     
     try {
-      const { data, error } = await supabase.from("admin_accounts").insert([newAccData]).select();
-      if (error) {
-        console.warn("Supabase insert failed, kept local fallback status.");
-      } else if (data && data.length > 0) {
-        // Replace temp ID with real DB ID
-        setUserAccounts(prev => prev.map(a => a.id === tempId ? { ...a, id: data[0].id } : a));
+      const response = await fetch('/api/admin/accounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newAccData)
+      });
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.error || "Gagal sinkronisasi ke Supabase Auth");
       }
-    } catch (err) {
+      
+      if (result.data) {
+        // Replace temp ID with real DB ID
+        setUserAccounts(prev => prev.map(a => a.id === tempId ? { ...a, id: result.data.id } : a));
+      }
+    } catch (err: any) {
       console.error(err);
+      alert("Error: " + err.message);
     }
-    alert("Akun baru berhasil ditambahkan!");
+    alert("Akun baru berhasil ditambahkan dan disinkronisasi dengan Auth!");
   };
 
   const handleUpdateAccount = async (e: React.FormEvent) => {
@@ -326,7 +344,7 @@ export default function AdminDashboardPage() {
   };
 
   const handleDeleteAccount = async (id: string) => {
-    if (!confirm("Hapus akun ini secara permanen dari sistem?")) return;
+    if (!confirm("Hapus akun ini secara permanen dari sistem beserta data autentikasinya?")) return;
     
     // Optimistic update
     setUserAccounts(prev => prev.filter(acc => acc.id !== id));
@@ -335,10 +353,17 @@ export default function AdminDashboardPage() {
     }
     
     try {
-      const { error } = await supabase.from("admin_accounts").delete().eq("id", id);
-      if (error) console.warn("Supabase delete failed, kept local fallback status.");
-    } catch (err) {
+      const response = await fetch(`/api/admin/accounts?id=${id}`, {
+        method: 'DELETE'
+      });
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.error || "Gagal menghapus dari Supabase Auth");
+      }
+    } catch (err: any) {
       console.error(err);
+      alert("Error menghapus akun: " + err.message);
     }
   };
 
@@ -1766,6 +1791,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                       placeholder="Contoh: budi@gmail.com"
                                       value={newAccEmail} 
                                       onChange={(e) => setNewAccEmail(e.target.value)}
+                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
+                                      required
+                                    />
+                                  </div>
+                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
+                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Password Login</label>
+                                    <input 
+                                      type="password" 
+                                      placeholder="Minimal 6 karakter"
+                                      value={newAccPassword} 
+                                      onChange={(e) => setNewAccPassword(e.target.value)}
                                       style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
                                       required
                                     />
