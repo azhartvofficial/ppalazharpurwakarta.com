@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function MaintenanceGuard({ children }: { children: React.ReactNode }) {
   const [isMaintenance, setIsMaintenance] = useState<boolean | null>(null);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check if user is Super Admin
@@ -51,6 +53,28 @@ export default function MaintenanceGuard({ children }: { children: React.ReactNo
 
   // If maintenance is on and user is NOT Super Admin, show maintenance screen
   if (isMaintenance && !isSuperAdmin) {
+    if (pathname === "/") {
+      return (
+        <>
+          <div style={{
+            backgroundColor: '#ef4444',
+            color: 'white',
+            textAlign: 'center',
+            padding: '12px 20px',
+            fontWeight: 800,
+            fontSize: '0.9rem',
+            position: 'sticky',
+            top: 0,
+            zIndex: 99999,
+            boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
+          }}>
+            ⚠️ WEBSITE SEDANG DALAM MAINTENANCE
+          </div>
+          {children}
+        </>
+      );
+    }
+
     return (
       <div style={{
         height: '100vh',
