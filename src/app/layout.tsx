@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 
 import { LanguageProvider } from "@/context/LanguageContext";
 import Preloader from "@/components/Preloader";
+import MaintenanceGuard from "@/components/MaintenanceGuard";
 
 export default function RootLayout({
   children,
@@ -34,7 +35,9 @@ export default function RootLayout({
         <Preloader />
         <VisitorTracker />
         <LanguageProvider>
-          {children}
+          <MaintenanceGuard>
+            {children}
+          </MaintenanceGuard>
         </LanguageProvider>
         <Analytics />
       </body>

@@ -74,17 +74,40 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedMaintenance = localStorage.getItem('web_maintenance_mode') === 'true';
-      setMaintenanceMode(savedMaintenance);
+      fetch('/api/settings')
+        .then(res => res.json())
+        .then(data => setMaintenanceMode(data.maintenanceMode))
+        .catch(err => console.error("Error fetching maintenance settings:", err));
     }
   }, []);
 
-  const toggleMaintenanceMode = () => {
+  const toggleMaintenanceMode = async () => {
     const nextState = !maintenanceMode;
-    setMaintenanceMode(nextState);
-    localStorage.setItem('web_maintenance_mode', String(nextState));
-    window.dispatchEvent(new Event('storage'));
-    window.dispatchEvent(new Event('maintenanceChange'));
+    
+    // Konfirmasi
+    if (nextState) {
+      const confirmActivate = window.confirm("Apakah Anda yakin ingin mengaktifkan Maintenance Mode? Seluruh akses pengunjung dan akun lain akan diputus seketika.");
+      if (!confirmActivate) return;
+    } else {
+      const confirmDeactivate = window.confirm("Apakah Anda yakin ingin mematikan Maintenance Mode? Akses website akan kembali normal.");
+      if (!confirmDeactivate) return;
+    }
+    
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ maintenanceMode: nextState }),
+      });
+      
+      // Refresh halaman untuk memastikan state terbaru dan Guard terpicu
+      window.location.reload();
+    } catch (error) {
+      console.error("Error saving maintenance state:", error);
+      alert("Gagal menyimpan status maintenance.");
+    }
   };
 
   const [topPages, setTopPages] = useState<any[]>([
@@ -539,99 +562,62 @@ export default function AdminDashboardPage() {
             <button 
               className={`nav-item ${activeTab === "overview" ? "active" : ""}`}
               onClick={() => { setActiveTab("overview"); setSidebarOpen(false); }}
+              style={{ color: 'white' }}
             >
-              <span className="nav-icon"></span> <span>Data Aktivitas Web</span>
+              <span className="nav-icon"></span> <span>Aktivitas Web</span>
             </button>
             
-            <div className="sidebar-accordion-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <button 
-                className={`nav-item ${activeTab === "accounts" ? "active" : ""}`}
-                onClick={() => { 
-                  setActiveTab("accounts"); 
-                  setSidebarOpen(false);
-                  setAccountsMenuExpanded(!accountsMenuExpanded);
-                }}
-                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span className="nav-icon"></span> <span>Kelola Data & Akun</span>
-                </div>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '10px', height: '10px', transition: 'transform 0.2s', transform: accountsMenuExpanded || activeTab === "accounts" ? 'rotate(180deg)' : 'none', color: activeTab === "accounts" ? 'var(--primary)' : '#64748b' }}>
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-
-              {(accountsMenuExpanded || activeTab === "accounts") && (
-                <div className="sidebar-submenu" style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingLeft: '1.25rem', borderLeft: '2px solid rgba(0, 33, 71, 0.08)', marginLeft: '1rem', marginTop: '2px', marginBottom: '4px' }}>
-                  <button 
-                    onClick={() => { setActiveTab("accounts"); setAccountsSubTab("kelola_akun"); setSidebarOpen(false); }}
-                    className={`nav-item sub-nav-item ${activeTab === "accounts" && accountsSubTab === "kelola_akun" ? "active" : ""}`}
-                    style={{ fontSize: '0.78rem', padding: '6px 12px', background: activeTab === "accounts" && accountsSubTab === "kelola_akun" ? 'rgba(0, 33, 71, 0.05)' : 'transparent', border: 'none', textAlign: 'left', cursor: 'pointer', color: activeTab === "accounts" && accountsSubTab === "kelola_akun" ? 'var(--primary)' : '#475569', fontWeight: activeTab === "accounts" && accountsSubTab === "kelola_akun" ? 800 : 600 }}
-                  >
-                    Kelola Akun
-                  </button>
-                  <button 
-                    onClick={() => { setActiveTab("accounts"); setAccountsSubTab("kelola_data"); setSidebarOpen(false); }}
-                    className={`nav-item sub-nav-item ${activeTab === "accounts" && accountsSubTab === "kelola_data" ? "active" : ""}`}
-                    style={{ fontSize: '0.78rem', padding: '6px 12px', background: activeTab === "accounts" && accountsSubTab === "kelola_data" ? 'rgba(0, 33, 71, 0.05)' : 'transparent', border: 'none', textAlign: 'left', cursor: 'pointer', color: activeTab === "accounts" && accountsSubTab === "kelola_data" ? 'var(--primary)' : '#475569', fontWeight: activeTab === "accounts" && accountsSubTab === "kelola_data" ? 800 : 600 }}
-                  >
-                    Kelola Data
-                  </button>
-                  <button 
-                    onClick={() => { setActiveTab("accounts"); setAccountsSubTab("permintaan_login"); setSidebarOpen(false); }}
-                    className={`nav-item sub-nav-item ${activeTab === "accounts" && accountsSubTab === "permintaan_login" ? "active" : ""}`}
-                    style={{ fontSize: '0.78rem', padding: '6px 12px', background: activeTab === "accounts" && accountsSubTab === "permintaan_login" ? 'rgba(0, 33, 71, 0.05)' : 'transparent', border: 'none', textAlign: 'left', cursor: 'pointer', color: activeTab === "accounts" && accountsSubTab === "permintaan_login" ? 'var(--primary)' : '#475569', fontWeight: activeTab === "accounts" && accountsSubTab === "permintaan_login" ? 800 : 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: 'auto' }}
-                  >
-                    <span>Permintaan Login</span>
-                    {loginRequests.filter(r => r.status === "Pending").length > 0 && (
-                      <span className="nav-badge" style={{ background: '#ef4444', color: 'white', fontSize: '0.65rem', padding: '1px 5px', borderRadius: '10px', marginLeft: '6px' }}>
-                        {loginRequests.filter(r => r.status === "Pending").length}
-                      </span>
-                    )}
-                  </button>
-                </div>
-              )}
-            </div>
+            <button 
+              className={`nav-item ${activeTab === "accounts" ? "active" : ""}`}
+              onClick={() => { setActiveTab("accounts"); setSidebarOpen(false); }}
+              style={{ color: 'white' }}
+            >
+              <span className="nav-icon"></span> <span>Manajemen Data</span>
+            </button>
             
             <button 
               className={`nav-item ${activeTab === "news" ? "active" : ""}`}
               onClick={() => { setActiveTab("news"); setSidebarOpen(false); }}
+              style={{ color: 'white' }}
             >
-              <span className="nav-icon"></span> <span>Kelola Berita</span>
+              <span className="nav-icon"></span> <span>Laman Berita</span>
             </button>
             
             <button 
               className={`nav-item ${activeTab === "docs" ? "active" : ""}`}
               onClick={() => { setActiveTab("docs"); setSidebarOpen(false); }}
+              style={{ color: 'white' }}
             >
-              <span className="nav-icon"></span> <span>Kelola Galeri</span>
+              <span className="nav-icon"></span> <span>Galeri Publikasi</span>
             </button>
 
             <button 
               className={`nav-item ${activeTab === "settings" ? "active" : ""}`}
               onClick={() => { setActiveTab("settings"); setSidebarOpen(false); }}
+              style={{ color: 'white' }}
             >
-              <span className="nav-icon"></span> <span>Konfigurasi</span>
+              <span className="nav-icon"></span> <span>Konfigurasi Informasi</span>
+            </button>
+
+            <button 
+              className={`nav-item ${activeTab === "ppdb" ? "active" : ""}`}
+              onClick={() => { setActiveTab("ppdb"); setSidebarOpen(false); }}
+              style={{ color: 'white' }}
+            >
+              <span className="nav-icon"></span> <span>Azhar Library</span>
+              {pendaftaran.filter(p => p.status === "Pending").length > 0 && (
+                <span className="nav-badge">{pendaftaran.filter(p => p.status === "Pending").length}</span>
+              )}
             </button>
 
             <Link 
               href="/antigravity"
               className="nav-item"
               onClick={() => setSidebarOpen(false)}
-              style={{ color: '#ff8c00', border: '1px solid rgba(255, 140, 0, 0.25)', background: 'rgba(255, 140, 0, 0.05)', display: 'flex', alignItems: 'center' }}
+              style={{ color: 'white', border: '1px solid rgba(255, 140, 0, 0.25)', background: 'rgba(255, 140, 0, 0.05)', display: 'flex', alignItems: 'center' }}
             >
               <span className="nav-icon">⚡</span> <span>Antigravity IDE</span>
             </Link>
-
-            <button 
-              className={`nav-item ${activeTab === "ppdb" ? "active" : ""}`}
-              onClick={() => { setActiveTab("ppdb"); setSidebarOpen(false); }}
-            >
-              <span className="nav-icon"></span> <span>Pendaftaran PPDB</span>
-              {pendaftaran.filter(p => p.status === "Pending").length > 0 && (
-                <span className="nav-badge">{pendaftaran.filter(p => p.status === "Pending").length}</span>
-              )}
-            </button>
           </nav>
           <div className="sidebar-decor-glow" style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', height: '150px', background: 'linear-gradient(to top, rgba(255,140,0,0.03), transparent)', pointerEvents: 'none' }} />
         </aside>
@@ -659,7 +645,7 @@ export default function AdminDashboardPage() {
                 {activeTab === "overview" ? "Dashboard Admin" : `Dashboard Admin / ${activeTab.toUpperCase()}`}
               </span>
               <h2 className={`${frizQuadrata.className} header-title`}>
-                {activeTab === "overview" && "Data Aktivitas Web"}
+                {activeTab === "overview" && "Aktivitas Web"}
                 {activeTab === "ppdb" && "Manajemen Pendaftaran Santri Baru (PPDB)"}
                 {activeTab === "news" && "Pusat Pengelolaan Berita & Pengumuman"}
                 {activeTab === "docs" && "Pengelolaan Dokumentasi & Galeri Alumni"}
@@ -692,6 +678,23 @@ export default function AdminDashboardPage() {
                       <span className="card-trend" style={{ color: maintenanceMode ? '#ef4444' : '#10b981', fontWeight: 700 }}>
                         {maintenanceMode ? "Akses Pengunjung Dibatasi" : "Diakses Secara Publik"}
                       </span>
+                      <button 
+                        onClick={toggleMaintenanceMode}
+                        style={{
+                          marginTop: '1rem',
+                          padding: '0.5rem 1rem',
+                          backgroundColor: maintenanceMode ? '#fef2f2' : '#f0fdf4',
+                          color: maintenanceMode ? '#ef4444' : '#10b981',
+                          border: `1px solid ${maintenanceMode ? '#fca5a5' : '#86efac'}`,
+                          borderRadius: '8px',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          width: '100%',
+                          transition: 'all 0.2s'
+                        }}
+                      >
+                        {maintenanceMode ? "Matikan Maintenance Mode" : "Aktifkan Maintenance Mode"}
+                      </button>
                     </div>
 
                     <div className="summary-card navy">
@@ -710,13 +713,16 @@ export default function AdminDashboardPage() {
                       </div>
                       <span className="card-value">{formatNumber(todayVisitors)}</span>
                       <span className="card-trend">Terdeteksi Live (Hari Ini)</span>
+                      <div style={{ fontSize: '0.7rem', color: '#ff8c00', marginTop: '4px', fontWeight: 600, opacity: 0.8 }}>
+                        Update: {new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                      </div>
                     </div>
                   </div>
 
                   {/* Vercel Analytics Visualizer Section */}
                   <div className="analytics-visualizer-card" style={{ marginBottom: '2rem' }}>
                     <div className="visualizer-header">
-                      <h3>Laporan & Analisis Pengunjung (Vercel Web Analytics)</h3>
+                      <h3>Grafik Pengunjung Web</h3>
                       <span className="live-badge" style={{ backgroundColor: supabaseSyncActive ? 'rgba(76, 175, 80, 0.15)' : 'rgba(255, 140, 0, 0.15)', color: supabaseSyncActive ? '#4CAF50' : '#ff8c00' }}>
                         ● {supabaseSyncActive ? 'SUPABASE SYNCED' : 'DEMO MODE ACTIVE'}
                       </span>
@@ -903,44 +909,6 @@ export default function AdminDashboardPage() {
                             </div>
                           </div>
 
-                        </div>
-                      </div>
-
-                      <div className="metric-box">
-                        <span className="metric-box-label">Sumber Lalu Lintas (Traffic Sources)</span>
-                        <div className="progress-list">
-                          {trafficSources.map((src, idx) => (
-                            <div key={idx} className="progress-item">
-                              <div className="progress-labels">
-                                <span>{src.source}</span>
-                                <span>{src.pct}%</span>
-                              </div>
-                              <div className="progress-bar-bg">
-                                <div className="progress-bar-fill" style={{ width: `${src.pct}%`, backgroundColor: idx === 0 ? '#002147' : idx === 1 ? '#ff8c00' : '#4CAF50' }}></div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="metric-box device-box">
-                        <span className="metric-box-label">Perangkat Pengunjung</span>
-                        <div className="device-stats">
-                          <div className="device-stat">
-                            <span className="device-stat-icon">📱</span>
-                            <span className="device-stat-val">{deviceStats.mobile}%</span>
-                            <span className="device-stat-name">Mobile</span>
-                          </div>
-                          <div className="device-stat">
-                            <span className="device-stat-icon">💻</span>
-                            <span className="device-stat-val">{deviceStats.desktop}%</span>
-                            <span className="device-stat-name">Desktop</span>
-                          </div>
-                          <div className="device-stat">
-                            <span className="device-stat-icon">📟</span>
-                            <span className="device-stat-val">{deviceStats.tablet}%</span>
-                            <span className="device-stat-name">Tablet</span>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -2231,7 +2199,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           padding: 0.9rem 1.2rem;
           background: transparent;
           border: none;
-          color: #cbd5e1;
+          color: white;
           border-radius: 12px;
           font-size: 0.9rem;
           font-weight: 600;
@@ -2248,7 +2216,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
         .nav-item.active {
           background: rgba(255, 140, 0, 0.15);
-          color: #ff8c00;
+          color: white !important;
+        }
+
+        .nav-item span {
+          color: white !important;
         }
 
         .nav-icon {
@@ -3375,7 +3347,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
         .analytics-metrics-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr 0.8fr;
+          grid-template-columns: 1fr;
           gap: 1.5rem;
           margin-bottom: 1.5rem;
         }
