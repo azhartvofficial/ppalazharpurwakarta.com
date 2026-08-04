@@ -328,6 +328,21 @@ export default function Navbar() {
               </div>
             ) : null}
 
+            {!isAdminLoggedIn && !isSantriLoggedIn && (
+              <Link href="/login" className="nav-login-premium" onMouseEnter={() => setLoginHover(true)} onMouseLeave={() => setLoginHover(false)}>
+                <div className="login-switch-container">
+                  <div className="login-graphic">
+                    <svg className="login-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                      <polyline points="10 17 15 12 10 7"></polyline>
+                      <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    <span>LOGIN</span>
+                  </div>
+                </div>
+              </Link>
+            )}
+
             <div className="menu-toggle-wrapper">
               <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
                 <span className="menu-text" style={{ fontSize: '0.8rem', fontWeight: 800, color: '#002147', marginRight: '5px' }}>MENU</span>
