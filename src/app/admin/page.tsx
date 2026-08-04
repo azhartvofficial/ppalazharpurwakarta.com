@@ -1587,9 +1587,35 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <div className="accounts-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.8fr) minmax(0, 1.2fr)', gap: '1.5rem', alignItems: 'start' }}>
+                        {/* Stats Row */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                          <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.25rem', border: '1.5px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+                            <div style={{ background: 'rgba(0, 33, 71, 0.05)', padding: '0.8rem', borderRadius: '12px', minWidth: '60px', textAlign: 'center' }}>
+                              <span style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', display: 'block', lineHeight: 1 }}>
+                                {userAccounts.filter(acc => acc.role === "Admin").length}
+                              </span>
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 800, display: 'block' }}>Total Admin</span>
+                              <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Akses Penuh</span>
+                            </div>
+                          </div>
+                          <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.25rem', border: '1.5px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+                            <div style={{ background: 'rgba(255, 140, 0, 0.05)', padding: '0.8rem', borderRadius: '12px', minWidth: '60px', textAlign: 'center' }}>
+                              <span style={{ fontSize: '1.5rem', fontWeight: 900, color: '#ff8c00', display: 'block', lineHeight: 1 }}>
+                                {userAccounts.filter(acc => acc.role === "Wali").length}
+                              </span>
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 800, display: 'block' }}>Total Wali Santri</span>
+                              <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Akses Terbatas</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="accounts-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', alignItems: 'start' }}>
                           
-                          {/* Left Column: Daftar Akun */}
+                          {/* Daftar Akun */}
                           <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>
                               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002147', margin: 0 }}>Daftar Akun Pengguna</h3>
@@ -1700,151 +1726,165 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             </div>
                           </div>
 
-                          {/* Right Column: Edit or Summary / Add Form */}
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            {selectedAccountForEdit ? (
-                              <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>
-                                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#002147', margin: 0 }}>Edit Akun</h3>
-                                  <button 
-                                    onClick={() => setSelectedAccountForEdit(null)}
-                                    style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 700 }}
-                                  >
-                                    Batal
-                                  </button>
-                                </div>
-
-                                <form className="config-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} onSubmit={handleUpdateAccount}>
-                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Nama Lengkap</label>
-                                    <input 
-                                      type="text" 
-                                      value={selectedAccountForEdit.name} 
-                                      onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, name: e.target.value })}
-                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
-                                      required
-                                    />
-                                  </div>
-                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>E-Mail</label>
-                                    <input 
-                                      type="email" 
-                                      value={selectedAccountForEdit.email} 
-                                      onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, email: e.target.value })}
-                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
-                                      required
-                                    />
-                                  </div>
-                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Tipe Akses (Role)</label>
-                                    <select 
-                                      value={selectedAccountForEdit.role} 
-                                      onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, role: e.target.value as "Admin" | "Wali" })}
-                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}
-                                    >
-                                      <option value="Admin">Admin</option>
-                                      <option value="Wali">Wali Santri</option>
-                                    </select>
-                                  </div>
-                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Status Akun</label>
-                                    <select 
-                                      value={selectedAccountForEdit.status} 
-                                      onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, status: e.target.value as "Aktif" | "Nonaktif" })}
-                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}
-                                    >
-                                      <option value="Aktif">Aktif</option>
-                                      <option value="Nonaktif">Nonaktif</option>
-                                    </select>
-                                  </div>
-                                  <button type="submit" className="btn-submit-config" style={{ padding: '0.7rem', background: '#002147', color: 'white', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem' }}>Simpan Perubahan</button>
-                                </form>
-                              </div>
-                            ) : showAddAccountModal ? (
-                              <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>
-                                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#002147', margin: 0 }}>Tambah Akun Baru</h3>
-                                  <button 
-                                    onClick={() => setShowAddAccountModal(false)}
-                                    style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 700 }}
-                                  >
-                                    Batal
-                                  </button>
-                                </div>
-
-                                <form className="config-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} onSubmit={handleAddAccount}>
-                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Nama Lengkap</label>
-                                    <input 
-                                      type="text" 
-                                      placeholder="Contoh: Budi Santoso"
-                                      value={newAccName} 
-                                      onChange={(e) => setNewAccName(e.target.value)}
-                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
-                                      required
-                                    />
-                                  </div>
-                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>E-Mail</label>
-                                    <input 
-                                      type="email" 
-                                      placeholder="Contoh: budi@gmail.com"
-                                      value={newAccEmail} 
-                                      onChange={(e) => setNewAccEmail(e.target.value)}
-                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
-                                      required
-                                    />
-                                  </div>
-                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Password Login</label>
-                                    <input 
-                                      type="password" 
-                                      placeholder="Minimal 6 karakter"
-                                      value={newAccPassword} 
-                                      onChange={(e) => setNewAccPassword(e.target.value)}
-                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#334155' }} 
-                                      required
-                                    />
-                                  </div>
-                                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', textAlign: 'left' }}>
-                                    <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569' }}>Tipe Akses (Role)</label>
-                                    <select 
-                                      value={newAccRole} 
-                                      onChange={(e) => setNewAccRole(e.target.value as "Admin" | "Wali")}
-                                      style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}
-                                    >
-                                      <option value="Admin">Admin</option>
-                                      <option value="Wali">Wali Santri</option>
-                                    </select>
-                                  </div>
-                                  <button type="submit" className="btn-submit-config" style={{ padding: '0.7rem', background: '#002147', color: 'white', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem' }}>Tambah Akun</button>
-                                </form>
-                              </div>
-                            ) : (
-                              <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', textAlign: 'center' }}>
-                                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#002147', marginBottom: '1rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>Statistik Akses Akun</h3>
-                                
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
-                                  <div style={{ background: 'rgba(0, 33, 71, 0.03)', padding: '1rem', borderRadius: '10px' }}>
-                                    <span style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', display: 'block' }}>
-                                      {userAccounts.filter(acc => acc.role === "Admin").length}
-                                    </span>
-                                    <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 700 }}>Total Admin</span>
-                                  </div>
-                                  <div style={{ background: 'rgba(255, 140, 0, 0.03)', padding: '1rem', borderRadius: '10px' }}>
-                                    <span style={{ fontSize: '1.5rem', fontWeight: 900, color: '#ff8c00', display: 'block' }}>
-                                      {userAccounts.filter(acc => acc.role === "Wali").length}
-                                    </span>
-                                    <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 700 }}>Total Wali Santri</span>
-                                  </div>
-                                </div>
-
-                                <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '8px', fontSize: '0.75rem', color: '#64748b', marginBottom: '1.25rem', border: '1px dashed #cbd5e1' }}>
-                                  Pilih salah satu akun di samping untuk melakukan pengeditan atau hapus akun, atau klik tombol tambah di atas untuk membuat pengguna baru.
-                                </div>
-                              </div>
+                          <AnimatePresence>
+                            {(showAddAccountModal || selectedAccountForEdit) && (
+                              <motion.div 
+                                initial={{ opacity: 0 }} 
+                                animate={{ opacity: 1 }} 
+                                exit={{ opacity: 0 }}
+                                style={{
+                                  position: 'fixed',
+                                  top: 0, left: 0, right: 0, bottom: 0,
+                                  background: 'rgba(15, 23, 42, 0.6)',
+                                  backdropFilter: 'blur(8px)',
+                                  zIndex: 99999,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  padding: '1rem'
+                                }}
+                                onClick={() => {
+                                  setShowAddAccountModal(false);
+                                  setSelectedAccountForEdit(null);
+                                }}
+                              >
+                                <motion.div 
+                                  initial={{ scale: 0.95, y: 20 }}
+                                  animate={{ scale: 1, y: 0 }}
+                                  exit={{ scale: 0.95, y: 20 }}
+                                  onClick={(e) => e.stopPropagation()}
+                                  style={{
+                                    background: '#ffffff',
+                                    borderRadius: '20px',
+                                    padding: '2rem',
+                                    width: '100%',
+                                    maxWidth: '480px',
+                                    boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
+                                    maxHeight: '90vh',
+                                    overflowY: 'auto'
+                                  }}
+                                >
+                                  {selectedAccountForEdit ? (
+                                    <>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <h3 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#002147', margin: 0 }}>Edit Akun</h3>
+                                        <button 
+                                          onClick={() => setSelectedAccountForEdit(null)}
+                                          style={{ background: 'rgba(241, 245, 249, 1)', border: 'none', color: '#64748b', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+                                        >
+                                          ✕
+                                        </button>
+                                      </div>
+                                      <form className="config-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} onSubmit={handleUpdateAccount}>
+                                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                          <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Nama Lengkap</label>
+                                          <input 
+                                            type="text" 
+                                            value={selectedAccountForEdit.name} 
+                                            onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, name: e.target.value })}
+                                            style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155', transition: 'border-color 0.2s' }} 
+                                            required
+                                          />
+                                        </div>
+                                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                          <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>E-Mail</label>
+                                          <input 
+                                            type="email" 
+                                            value={selectedAccountForEdit.email} 
+                                            onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, email: e.target.value })}
+                                            style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }} 
+                                            required
+                                          />
+                                        </div>
+                                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                          <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Tipe Akses (Role)</label>
+                                          <select 
+                                            value={selectedAccountForEdit.role} 
+                                            onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, role: e.target.value as "Admin" | "Wali" })}
+                                            style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}
+                                          >
+                                            <option value="Admin">Admin</option>
+                                            <option value="Wali">Wali Santri</option>
+                                          </select>
+                                        </div>
+                                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                          <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Status Akun</label>
+                                          <select 
+                                            value={selectedAccountForEdit.status} 
+                                            onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, status: e.target.value as "Aktif" | "Nonaktif" })}
+                                            style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}
+                                          >
+                                            <option value="Aktif">Aktif</option>
+                                            <option value="Nonaktif">Nonaktif</option>
+                                          </select>
+                                        </div>
+                                        <button type="submit" className="btn-submit-config" style={{ padding: '0.8rem', background: '#002147', color: 'white', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '0.9rem', marginTop: '0.5rem' }}>Simpan Perubahan</button>
+                                      </form>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <h3 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#002147', margin: 0 }}>Tambah Akun Baru</h3>
+                                        <button 
+                                          onClick={() => setShowAddAccountModal(false)}
+                                          style={{ background: 'rgba(241, 245, 249, 1)', border: 'none', color: '#64748b', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+                                        >
+                                          ✕
+                                        </button>
+                                      </div>
+                                      <form className="config-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} onSubmit={handleAddAccount}>
+                                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                          <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Nama Lengkap</label>
+                                          <input 
+                                            type="text" 
+                                            placeholder="Contoh: Budi Santoso"
+                                            value={newAccName} 
+                                            onChange={(e) => setNewAccName(e.target.value)}
+                                            style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }} 
+                                            required
+                                          />
+                                        </div>
+                                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                          <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>E-Mail</label>
+                                          <input 
+                                            type="email" 
+                                            placeholder="Contoh: budi@gmail.com"
+                                            value={newAccEmail} 
+                                            onChange={(e) => setNewAccEmail(e.target.value)}
+                                            style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }} 
+                                            required
+                                          />
+                                        </div>
+                                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                          <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Password Login</label>
+                                          <input 
+                                            type="password" 
+                                            placeholder="Minimal 6 karakter"
+                                            value={newAccPassword} 
+                                            onChange={(e) => setNewAccPassword(e.target.value)}
+                                            style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }} 
+                                            required
+                                          />
+                                        </div>
+                                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                          <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Tipe Akses (Role)</label>
+                                          <select 
+                                            value={newAccRole} 
+                                            onChange={(e) => setNewAccRole(e.target.value as "Admin" | "Wali")}
+                                            style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, color: '#334155' }}
+                                          >
+                                            <option value="Admin">Admin</option>
+                                            <option value="Wali">Wali Santri</option>
+                                          </select>
+                                        </div>
+                                        <button type="submit" className="btn-submit-config" style={{ padding: '0.8rem', background: '#002147', color: 'white', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '0.9rem', marginTop: '0.5rem' }}>Tambah Akun</button>
+                                      </form>
+                                    </>
+                                  )}
+                                </motion.div>
+                              </motion.div>
                             )}
-                          </div>
+                          </AnimatePresence>
 
                         </div>
                       </motion.div>
