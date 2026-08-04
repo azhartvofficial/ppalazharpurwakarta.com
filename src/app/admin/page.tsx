@@ -269,7 +269,7 @@ export default function AdminDashboardPage() {
       name: newAccName,
       email: newAccEmail,
       role: newAccRole,
-      status: "Aktif"
+      status: "Aktif" as const
     };
 
     // Optimistic Update fallback ID
