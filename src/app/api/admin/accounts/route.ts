@@ -1,24 +1,20 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-
-// Create a Supabase client with the Service Role Key to bypass RLS and manage Auth users
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-});
-
 export async function POST(request: Request) {
   try {
-    const { name, email, password, role, status } = await request.json();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    if (!supabaseServiceKey) {
-      return NextResponse.json({ error: "Server tidak dikonfigurasi dengan SUPABASE_SERVICE_ROLE_KEY. Tambahkan key tersebut ke .env.local Anda." }, { status: 500 });
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return NextResponse.json({ error: "Server tidak dikonfigurasi dengan SUPABASE_URL atau SUPABASE_SERVICE_ROLE_KEY." }, { status: 500 });
     }
+
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    });
+
+    const { name, email, password, role, status } = await request.json();
 
     // 1. Create user in Supabase Authentication
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
@@ -56,12 +52,19 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return NextResponse.json({ error: "Server tidak dikonfigurasi dengan SUPABASE_URL atau SUPABASE_SERVICE_ROLE_KEY." }, { status: 500 });
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    });
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-
-    if (!supabaseServiceKey) {
-      return NextResponse.json({ error: "Server tidak dikonfigurasi dengan SUPABASE_SERVICE_ROLE_KEY." }, { status: 500 });
-    }
 
     if (!id) {
       return NextResponse.json({ error: "ID Pengguna tidak ditemukan." }, { status: 400 });
