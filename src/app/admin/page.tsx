@@ -39,7 +39,14 @@ interface DocPhoto {
 
 interface LoginRequest {
   id: string;
+  name: string;
   email: string;
+  role: string;
+  kepengurusan?: string;
+  nama_santri?: string;
+  jenjang_pendidikan?: string;
+  pilihan_kelas?: string;
+  program_pendidikan?: string;
   requestedAt: string;
   device: string;
   status: "Pending" | "Approved" | "Rejected";
@@ -207,21 +214,22 @@ export default function AdminDashboardPage() {
       if (data) {
         setLoginRequests(data.map((d: any) => ({
           id: d.id,
+          name: d.name,
           email: d.email,
+          role: d.role,
+          kepengurusan: d.kepengurusan,
+          nama_santri: d.nama_santri,
+          jenjang_pendidikan: d.jenjang_pendidikan,
+          pilihan_kelas: d.pilihan_kelas,
+          program_pendidikan: d.program_pendidikan,
           requestedAt: new Date(d.requested_at).toLocaleString('id-ID'),
           device: d.device,
-          status: d.status
+          status: d.status,
+          password: d.password
         })));
       }
     } catch (err: any) {
       setErrorLoginRequests(err.message);
-      if (loginRequests.length === 0) {
-        setLoginRequests([
-          { id: "1", email: "ustadz.ahmad@alazharpwk.com", requestedAt: "2026-05-19 14:32", device: "Chrome / Windows 11", status: "Pending" },
-          { id: "2", email: "humas.pesantren@alazharpwk.com", requestedAt: "2026-05-18 09:15", device: "Safari / iPhone 15", status: "Approved" },
-          { id: "3", email: "tahfidz.guru@alazharpwk.com", requestedAt: "2026-05-17 11:22", device: "Firefox / Android", status: "Rejected" },
-        ]);
-      }
     } finally {
       setLoadingLoginRequests(false);
     }
@@ -231,10 +239,21 @@ export default function AdminDashboardPage() {
     // Optimistic UI update
     setLoginRequests(prev => prev.map(r => r.id === id ? { ...r, status: newStatus } : r));
     try {
-      const { error } = await supabase.from("login_requests").update({ status: newStatus }).eq("id", id);
-      if (error) console.warn("Supabase update failed, kept local fallback status.");
-    } catch (err) {
-      console.error(err);
+      const res = await fetch('/api/admin/accounts/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal memperbarui status permintaan login.");
+      
+      if (newStatus === "Approved") {
+        fetchAccounts(); // Refresh list to show the new account
+      }
+    } catch (err: any) {
+      console.warn("Update failed:", err.message);
+      setLoginRequests(prev => prev.map(r => r.id === id ? { ...r, status: "Pending" } : r)); // Revert
+      alert("Gagal memproses: " + err.message);
     }
   };
 
@@ -2096,9 +2115,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <table className="main-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                               <thead>
                                 <tr>
-                                  <th style={{ textAlign: 'left', padding: '12px' }}>Alamat E-mail</th>
+                                  <th style={{ textAlign: 'left', padding: '12px' }}>Pemohon</th>
+                                  <th style={{ textAlign: 'left', padding: '12px' }}>Detail Akses</th>
                                   <th style={{ textAlign: 'left', padding: '12px' }}>Waktu Pengajuan</th>
-                                  <th style={{ textAlign: 'left', padding: '12px' }}>Perangkat / Browser</th>
                                   <th style={{ textAlign: 'left', padding: '12px' }}>Status</th>
                                   <th style={{ textAlign: 'left', padding: '12px' }}>Tindakan Otorisasi</th>
                                 </tr>
@@ -2106,9 +2125,29 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                               <tbody>
                                 {loginRequests.map((req, idx) => (
                                   <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                    <td style={{ fontWeight: 800, color: 'var(--primary)', padding: '12px' }}>{req.email}</td>
+                                    <td style={{ fontWeight: 800, color: 'var(--primary)', padding: '12px' }}>
+                                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <span>{req.name}</span>
+                                        <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>{req.email}</span>
+                                      </div>
+                                    </td>
+                                    <td style={{ padding: '12px' }}>
+                                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                        <span style={{ fontSize: '0.7rem', fontWeight: 800, padding: '2px 8px', background: req.role === 'Admin' ? 'rgba(0,33,71,0.08)' : 'rgba(255,140,0,0.08)', color: req.role === 'Admin' ? '#002147' : '#ff8c00', borderRadius: '6px', width: 'fit-content' }}>
+                                          {req.role}
+                                        </span>
+                                        {req.role === 'Admin' && req.kepengurusan && (
+                                          <span style={{ fontSize: '0.7rem', color: '#64748b' }}>{req.kepengurusan}</span>
+                                        )}
+                                        {req.role === 'Wali' && req.nama_santri && (
+                                          <span style={{ fontSize: '0.7rem', color: '#64748b' }}>
+                                            Santri: <strong>{req.nama_santri}</strong><br/>
+                                            {req.jenjang_pendidikan} - {req.pilihan_kelas} ({req.program_pendidikan})
+                                          </span>
+                                        )}
+                                      </div>
+                                    </td>
                                     <td style={{ padding: '12px' }}>{req.requestedAt}</td>
-                                    <td style={{ padding: '12px' }}><span style={{ fontSize: '0.75rem', color: '#64748b' }}>{req.device}</span></td>
                                     <td style={{ padding: '12px' }}>
                                       <span className={`status-pill ${req.status.toLowerCase()}`}>
                                         {req.status === 'Pending' ? 'Menunggu' : req.status === 'Approved' ? 'Disetujui' : 'Ditolak'}

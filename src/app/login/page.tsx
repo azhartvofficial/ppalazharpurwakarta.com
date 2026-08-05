@@ -106,16 +106,16 @@ export default function LoginPage() {
         program_pendidikan: regRole === "Wali" ? regProgram : null,
       };
 
-      const res = await fetch('/api/admin/accounts', {
+      const res = await fetch('/api/auth/register-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error || "Gagal membuat akun");
+      if (!res.ok) throw new Error(result.error || "Gagal membuat permintaan pendaftaran");
 
-      alert("Akun berhasil dibuat! Silakan login.");
+      alert("Permintaan pembuatan akun berhasil dikirim! Harap tunggu persetujuan dari Admin.");
       setShowRegisterModal(false);
       // reset form
       setRegName(""); setRegEmail(""); setRegPassword(""); setRegConfirmPassword(""); setRegNamaSantri("");
