@@ -23,11 +23,18 @@ interface Pendaftar {
 
 interface NewsItem {
   id: string;
-  title: string;
-  category: string;
-  date: string;
-  author: string;
+  kategori: string;
+  judul_utama: string;
+  sumber_gambar: string;
+  sumber_gambar_manual?: string;
+  gambar_judul_url?: string;
+  isi_berita: string;
+  jenis_lampiran_2?: string;
+  lampiran_2_url?: string;
+  penulis: string;
+  sumber_opsional?: string;
   status: "Published" | "Draft";
+  created_at?: string;
 }
 
 interface DocPhoto {
@@ -180,13 +187,21 @@ export default function AdminDashboardPage() {
   const [errorPpdb, setErrorPpdb] = useState("");
 
   // News states
-  const [news, setNews] = useState<NewsItem[]>([
-    { id: "1", title: "Penerimaan Santri Baru Tahun Ajaran 2026/2027 Resmi Dibuka", category: "PPDB", date: "15 Mei 2026", author: "Humas Al-Azhar", status: "Published" },
-    { id: "2", title: "Santri Al-Azhar Purwakarta Menyabet Juara 1 Lomba Tahfidz Tingkat Provinsi", category: "Prestasi", date: "10 Mei 2026", author: "Ustadz Mansur", status: "Published" },
-    { id: "3", title: "Kunjungan Studi Banding dari Pondok Pesantren Gontor Putra", category: "Kegiatan", date: "02 Mei 2026", author: "Humas Al-Azhar", status: "Draft" },
-  ]);
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loadingNews, setLoadingNews] = useState(false);
+  const [errorNews, setErrorNews] = useState("");
+
+  // Form states
+  const [newNewsCategory, setNewNewsCategory] = useState("Papan Pengumuman");
   const [newNewsTitle, setNewNewsTitle] = useState("");
-  const [newNewsCategory, setNewNewsCategory] = useState("Kegiatan");
+  const [newNewsImageSource, setNewNewsImageSource] = useState<"Internal" | "Manual">("Internal");
+  const [newNewsImageManualSource, setNewNewsImageManualSource] = useState("");
+  const [newNewsImageUrl, setNewNewsImageUrl] = useState("");
+  const [newNewsContent, setNewNewsContent] = useState("");
+  const [newNewsAttachmentType, setNewNewsAttachmentType] = useState<"" | "PDF" | "Gambar" | "Video Youtube" | "Link Lainnya">("");
+  const [newNewsAttachmentUrl, setNewNewsAttachmentUrl] = useState("");
+  const [newNewsAuthor, setNewNewsAuthor] = useState("");
+  const [newNewsOptionalSources, setNewNewsOptionalSources] = useState("");
   const [newNewsStatus, setNewNewsStatus] = useState<"Published" | "Draft">("Published");
   const [showAddNewsModal, setShowAddNewsModal] = useState(false);
 
@@ -519,6 +534,25 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const fetchNewsData = async () => {
+    setLoadingNews(true);
+    try {
+      const { data, error } = await supabase
+        .from('news_articles')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      if (data) {
+        setNews(data);
+      }
+    } catch (err: any) {
+      console.error("Failed to fetch news:", err);
+      setErrorNews(err.message || "Failed to fetch news data");
+    } finally {
+      setLoadingNews(false);
+    }
+  };
+
   const fetchVisitorStats = async () => {
     setLoadingVisitors(true);
     try {
@@ -660,6 +694,7 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     fetchPpdbData();
     fetchVisitorStats();
+    fetchNewsData();
   }, []);
 
   // Handle status changes in Supabase
@@ -698,36 +733,73 @@ export default function AdminDashboardPage() {
   };
 
   // News Actions
-  const handleAddNews = (e: React.FormEvent) => {
+  const handleAddNews = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newNewsTitle) return;
+    if (!newNewsTitle || !newNewsContent || !newNewsAuthor) {
+      alert("Mohon lengkapi data wajib (Judul, Isi, Penulis)!");
+      return;
+    }
 
-    const newItem: NewsItem = {
-      id: Date.now().toString(),
-      title: newNewsTitle,
-      category: newNewsCategory,
-      date: "Hari Ini",
-      author: user?.user_metadata?.nama_lengkap || "Pengurus Azwa",
-      status: newNewsStatus
-    };
+    try {
+      const { error } = await supabase
+        .from('news_articles')
+        .insert([{
+          kategori: newNewsCategory,
+          judul_utama: newNewsTitle,
+          sumber_gambar: newNewsImageSource,
+          sumber_gambar_manual: newNewsImageSource === 'Manual' ? newNewsImageManualSource : null,
+          gambar_judul_url: newNewsImageUrl || null,
+          isi_berita: newNewsContent,
+          jenis_lampiran_2: newNewsAttachmentType || null,
+          lampiran_2_url: newNewsAttachmentUrl || null,
+          penulis: newNewsAuthor,
+          sumber_opsional: newNewsOptionalSources || null,
+          status: newNewsStatus
+        }]);
 
-    setNews([newItem, ...news]);
-    setNewNewsTitle("");
-    setShowAddNewsModal(false);
+      if (error) throw error;
+      
+      alert("Berita berhasil ditambahkan!");
+      fetchNewsData(); // refresh data
+      
+      // Reset forms
+      setNewNewsTitle("");
+      setNewNewsContent("");
+      setNewNewsImageUrl("");
+      setNewNewsAttachmentType("");
+      setNewNewsAttachmentUrl("");
+      setNewNewsAuthor("");
+      setNewNewsOptionalSources("");
+      setNewNewsImageManualSource("");
+      setShowAddNewsModal(false);
+    } catch (err: any) {
+      console.error(err);
+      alert("Gagal menambahkan berita: " + (err.message || "Unknown error"));
+    }
   };
 
-  const handleDeleteNews = (id: string) => {
+  const handleDeleteNews = async (id: string) => {
     if (!confirm("Hapus artikel berita ini?")) return;
-    setNews(prev => prev.filter(item => item.id !== id));
+    try {
+      const { error } = await supabase.from('news_articles').delete().eq('id', id);
+      if (error) throw error;
+      fetchNewsData();
+    } catch (err) {
+      console.error("Gagal menghapus berita:", err);
+      alert("Terjadi kesalahan saat menghapus berita.");
+    }
   };
 
-  const handleToggleNewsStatus = (id: string) => {
-    setNews(prev => prev.map(item => {
-      if (item.id === id) {
-        return { ...item, status: item.status === "Published" ? "Draft" : "Published" };
-      }
-      return item;
-    }));
+  const handleToggleNewsStatus = async (id: string, currentStatus: string) => {
+    try {
+      const newStatus = currentStatus === "Published" ? "Draft" : "Published";
+      const { error } = await supabase.from('news_articles').update({ status: newStatus }).eq('id', id);
+      if (error) throw error;
+      fetchNewsData();
+    } catch (err) {
+      console.error("Gagal mengubah status berita:", err);
+      alert("Terjadi kesalahan saat mengubah status.");
+    }
   };
 
   // Photo Actions
@@ -1434,13 +1506,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         <tbody>
                           {news.map((item, idx) => (
                             <tr key={idx}>
-                              <td><strong>{item.title}</strong></td>
-                              <td><span className="category-pill">{item.category}</span></td>
-                              <td>{item.date}</td>
-                              <td>{item.author}</td>
+                              <td><strong>{item.judul_utama}</strong></td>
+                              <td><span className="category-pill">{item.kategori}</span></td>
+                              <td>{item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}</td>
+                              <td>{item.penulis}</td>
                               <td>
                                 <button 
-                                  onClick={() => handleToggleNewsStatus(item.id)}
+                                  onClick={() => handleToggleNewsStatus(item.id, item.status)}
                                   className={`status-toggle ${item.status.toLowerCase()}`}
                                   title="Klik untuk mengubah status rilis"
                                 >
@@ -1450,7 +1522,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                               <td>
                                 <div className="action-buttons">
                                   <button 
-                                    onClick={() => handleToggleNewsStatus(item.id)} 
+                                    onClick={() => handleToggleNewsStatus(item.id, item.status)} 
                                     className="btn-approve"
                                   >
                                     {item.status === "Published" ? "Drafkan" : "Terbitkan"}
@@ -2243,39 +2315,136 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             className="modal-box"
           >
             <h3>Tulis Artikel Berita Baru</h3>
-            <form onSubmit={handleAddNews} className="modal-form">
+            <form onSubmit={handleAddNews} className="modal-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '70vh', overflowY: 'auto', padding: '0 10px' }}>
               <div className="input-group">
-                <label>Judul Artikel Berita</label>
+                <label>Kategori Berita</label>
+                <select value={newNewsCategory} onChange={(e) => setNewNewsCategory(e.target.value)} required>
+                  <option value="Papan Pengumuman">Papan Pengumuman</option>
+                  <option value="Artikel Berita">Artikel Berita</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label>Judul Utama</label>
                 <input 
                   type="text" 
                   required 
-                  placeholder="Contoh: Pembukaan Ekstrakurikuler Baru"
+                  placeholder="Contoh: Pendaftaran Santri Baru Dibuka"
                   value={newNewsTitle}
                   onChange={(e) => setNewNewsTitle(e.target.value)}
                 />
               </div>
 
-              <div className="input-row">
-                <div className="input-group">
-                  <label>Kategori Berita</label>
-                  <select value={newNewsCategory} onChange={(e) => setNewNewsCategory(e.target.value)}>
-                    <option value="PPDB">PPDB</option>
-                    <option value="Prestasi">Prestasi</option>
-                    <option value="Kegiatan">Kegiatan</option>
-                    <option value="Pengumuman">Pengumuman</option>
-                  </select>
-                </div>
+              {newNewsCategory === "Artikel Berita" && (
+                <>
+                  <div className="input-group">
+                    <label>Sumber Gambar (Cover)</label>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'normal', color: '#334155' }}>
+                        <input type="radio" name="imageSource" value="Internal" checked={newNewsImageSource === "Internal"} onChange={(e) => setNewNewsImageSource(e.target.value as "Internal")} />
+                        Internal (Otomatis: Tim Media Azhar TV)
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'normal', color: '#334155' }}>
+                        <input type="radio" name="imageSource" value="Manual" checked={newNewsImageSource === "Manual"} onChange={(e) => setNewNewsImageSource(e.target.value as "Manual")} />
+                        Manual
+                      </label>
+                    </div>
+                  </div>
 
-                <div className="input-group">
-                  <label>Status Publikasi</label>
-                  <select value={newNewsStatus} onChange={(e) => setNewNewsStatus(e.target.value as any)}>
-                    <option value="Published">Published (Langsung Terbit)</option>
-                    <option value="Draft">Draft (Simpan Draf)</option>
-                  </select>
-                </div>
+                  {newNewsImageSource === "Manual" && (
+                    <div className="input-group">
+                      <label>Keterangan Sumber Manual</label>
+                      <input 
+                        type="text" 
+                        placeholder="Contoh: Dokumen Pribadi Ust. Ahmad"
+                        value={newNewsImageManualSource}
+                        onChange={(e) => setNewNewsImageManualSource(e.target.value)}
+                      />
+                    </div>
+                  )}
+
+                  <div className="input-group">
+                    <label>URL Gambar Judul (Cover)</label>
+                    <input 
+                      type="url" 
+                      placeholder="https://... (Cloudinary / Unsplash)"
+                      value={newNewsImageUrl}
+                      onChange={(e) => setNewNewsImageUrl(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="input-group">
+                    <label>Isi / Topik Berita</label>
+                    <textarea 
+                      required 
+                      rows={5}
+                      placeholder="Tulis isi berita di sini..."
+                      value={newNewsContent}
+                      onChange={(e) => setNewNewsContent(e.target.value)}
+                    ></textarea>
+                  </div>
+
+                  <div className="input-group">
+                    <label>Lampiran Ke-2 (Opsional)</label>
+                    <select value={newNewsAttachmentType} onChange={(e) => setNewNewsAttachmentType(e.target.value as any)}>
+                      <option value="">-- Tidak Ada --</option>
+                      <option value="PDF">Opsi PDF</option>
+                      <option value="Gambar">Opsi Gambar</option>
+                      <option value="Video Youtube">Opsi Video Youtube</option>
+                      <option value="Link Lainnya">Link Lainnya</option>
+                    </select>
+                  </div>
+
+                  {newNewsAttachmentType && (
+                    <div className="input-group">
+                      <label>
+                        URL Lampiran 
+                        {newNewsAttachmentType === 'Gambar' && <span style={{ color: '#ef4444', marginLeft: '5px', fontSize: '0.8rem' }}>(Template: Width: 392, Height: 221)</span>}
+                      </label>
+                      <input 
+                        type="url" 
+                        required 
+                        placeholder={newNewsAttachmentType === 'Video Youtube' ? 'https://youtube.com/watch?...' : 'https://...'}
+                        value={newNewsAttachmentUrl}
+                        onChange={(e) => setNewNewsAttachmentUrl(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+
+              <div className="input-group">
+                <label>Penulis</label>
+                <input 
+                  type="text" 
+                  required 
+                  placeholder="Nama Penulis"
+                  value={newNewsAuthor}
+                  onChange={(e) => setNewNewsAuthor(e.target.value)}
+                />
               </div>
 
-              <div className="modal-actions">
+              {newNewsCategory === "Artikel Berita" && (
+                <div className="input-group">
+                  <label>Sumber (Opsional)</label>
+                  <input 
+                    type="text" 
+                    placeholder="Sumber tambahan jika ada"
+                    value={newNewsOptionalSources}
+                    onChange={(e) => setNewNewsOptionalSources(e.target.value)}
+                  />
+                </div>
+              )}
+
+              <div className="input-group">
+                <label>Status Publikasi</label>
+                <select value={newNewsStatus} onChange={(e) => setNewNewsStatus(e.target.value as any)}>
+                  <option value="Published">Published (Langsung Terbit)</option>
+                  <option value="Draft">Draft (Simpan Draf)</option>
+                </select>
+              </div>
+
+              <div className="modal-actions" style={{ marginTop: '1rem' }}>
                 <button type="submit" className="btn-modal-save">Simpan Artikel</button>
                 <button type="button" onClick={() => setShowAddNewsModal(false)} className="btn-modal-cancel">Batal</button>
               </div>

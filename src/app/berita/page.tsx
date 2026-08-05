@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { supabase } from "@/lib/supabase";
 const sliderData = [
   {
     id: 1,
@@ -126,11 +126,36 @@ const announcements = [
 export default function BeritaPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [dbNews, setDbNews] = useState<any[]>([]);
+  const [dbAnnouncements, setDbAnnouncements] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      const { data, error } = await supabase
+        .from('news_articles')
+        .select('*')
+        .eq('status', 'Published')
+        .order('created_at', { ascending: false });
+
+      if (data && !error) {
+        setDbNews(data.filter(item => item.kategori === 'Artikel Berita'));
+        setDbAnnouncements(data.filter(item => item.kategori === 'Papan Pengumuman'));
+      }
+      setLoading(false);
+    };
+    fetchNews();
+  }, []);
+
+  // Use the fetched news or fallback to static if empty for demo
+  const finalNews = dbNews.length > 0 ? dbNews : latestNews;
+  const finalSliderData = dbNews.length > 0 ? dbNews.slice(0, 3) : sliderData;
+  const finalAnnouncements = dbAnnouncements.length > 0 ? dbAnnouncements : announcements;
 
   // Implement Max 24 limit logic
-  const limitedNews = latestNews.slice(0, 24);
+  const limitedNews = finalNews.slice(0, 24);
   const itemsPerPage = 8;
-  const totalPages = Math.ceil(limitedNews.length / itemsPerPage);
+  const totalPages = Math.ceil(limitedNews.length / itemsPerPage) || 1;
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = limitedNews.slice(startIndex, startIndex + itemsPerPage);
@@ -140,10 +165,11 @@ export default function BeritaPage() {
   while (displayItems.length < itemsPerPage) {
     displayItems.push({
       id: `placeholder-${displayItems.length}` as any,
+      judul_utama: "Segera Hadir",
       title: "Segera Hadir",
-      category: "INFO",
-      date: "-",
-      image: "",
+      kategori: "INFO",
+      created_at: null,
+      gambar_judul_url: "",
       link: "#",
       isPlaceholder: true
     } as any);
@@ -151,10 +177,10 @@ export default function BeritaPage() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % sliderData.length);
+      setCurrentSlide((prev) => (prev + 1) % finalSliderData.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [finalSliderData.length]);
 
   return (
     <main className="berita-page">
@@ -174,15 +200,15 @@ export default function BeritaPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6 }}
               className="slide-item"
-              style={{ backgroundImage: `url(${sliderData[currentSlide].image})` }}
+              style={{ backgroundImage: `url(${finalSliderData[currentSlide]?.gambar_judul_url || finalSliderData[currentSlide]?.image || 'https://images.unsplash.com/photo-1577985043696-8bd54d9f093f?q=80&w=1200&auto=format&fit=crop'})` }}
             >
               <div className="slide-overlay">
                 <div className="slide-content container">
-                  <h1 className="slide-title">{sliderData[currentSlide].title}</h1>
+                  <h1 className="slide-title">{finalSliderData[currentSlide]?.judul_utama || finalSliderData[currentSlide]?.title}</h1>
                   <div className="slide-meta">
-                    <span className="slide-date">🗓 {sliderData[currentSlide].date}</span>
+                    <span className="slide-date">🗓 {finalSliderData[currentSlide]?.created_at ? new Date(finalSliderData[currentSlide].created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : finalSliderData[currentSlide]?.date}</span>
                   </div>
-                  <Link href={sliderData[currentSlide].link} className="slide-btn">
+                  <Link href={finalSliderData[currentSlide]?.link || '#'} className="slide-btn">
                     Baca Berita
                   </Link>
                 </div>
@@ -192,7 +218,7 @@ export default function BeritaPage() {
 
           {/* Slider Controls */}
           <div className="slider-controls">
-            {sliderData.map((_, index) => (
+            {finalSliderData.map((_, index) => (
               <button 
                 key={index} 
                 className={`slider-dot ${index === currentSlide ? 'active' : ''}`}
@@ -230,14 +256,23 @@ export default function BeritaPage() {
 
                 return (
                   <article key={news.id} className={`news-grid-item ${isTopRow ? 'top-row' : 'bottom-row'}`}>
-                    <Image src={news.image} alt={news.title} fill style={{ objectFit: 'cover' }} />
+                    <Image src={news.gambar_judul_url || news.image || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=400&auto=format&fit=crop'} alt={news.judul_utama || news.title || 'News'} fill style={{ objectFit: 'cover' }} />
                     <div className="news-grid-overlay">
                       <h3 className="news-title">
-                        <Link href={news.link}>{news.title}</Link>
+                        <Link href={news.link || '#'}>{news.judul_utama || news.title}</Link>
                       </h3>
                       <div className="news-meta">
-                        <span>Humas - {news.date}</span>
+                        <span>{news.penulis || 'Humas'} - {news.created_at ? new Date(news.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : news.date}</span>
                       </div>
+                      
+                      {/* Opsi Lampiran di Daftar Berita (jika ada) */}
+                      {news.jenis_lampiran_2 && (
+                         <div style={{ marginTop: '8px', pointerEvents: 'auto' }}>
+                           <a href={news.lampiran_2_url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.7rem', padding: '4px 10px', background: 'rgba(255,255,255,0.2)', borderRadius: '4px', color: 'white', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.4)', transition: 'all 0.2s ease' }} onMouseOver={e => e.currentTarget.style.background = 'var(--primary)'} onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}>
+                              🔗 Lihat {news.jenis_lampiran_2}
+                           </a>
+                         </div>
+                      )}
                     </div>
                   </article>
                 );
@@ -272,11 +307,11 @@ export default function BeritaPage() {
               </div>
               <div className="widget-content">
                 <ul className="announcement-list">
-                  {announcements.map((item) => (
+                  {finalAnnouncements.map((item) => (
                     <li key={item.id}>
                       <Link href="#">
-                        <div className="ann-date">{item.date}</div>
-                        <div className="ann-title">{item.title}</div>
+                        <div className="ann-date">{item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : item.date}</div>
+                        <div className="ann-title">{item.judul_utama || item.title}</div>
                       </Link>
                     </li>
                   ))}
