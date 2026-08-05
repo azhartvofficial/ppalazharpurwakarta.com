@@ -281,9 +281,18 @@ export default function BeritaPage() {
                       {/* Opsi Lampiran di Daftar Berita (jika ada) */}
                       {news.jenis_lampiran_2 && (
                          <div style={{ marginTop: '8px', pointerEvents: 'auto' }}>
-                           <a href={news.lampiran_2_url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.7rem', padding: '4px 10px', background: 'rgba(255,255,255,0.2)', borderRadius: '4px', color: 'white', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.4)', transition: 'all 0.2s ease' }} onMouseOver={e => e.currentTarget.style.background = 'var(--primary)'} onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}>
-                              🔗 Lihat {news.jenis_lampiran_2}
-                           </a>
+                           <span 
+                             onClick={(e) => {
+                               e.preventDefault();
+                               e.stopPropagation();
+                               window.open(news.lampiran_2_url.split('|||')[0], '_blank', 'noopener,noreferrer');
+                             }}
+                             style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.7rem', padding: '4px 10px', background: 'rgba(255,255,255,0.2)', borderRadius: '4px', color: 'white', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.4)', transition: 'all 0.2s ease' }} 
+                             onMouseOver={e => e.currentTarget.style.background = 'var(--primary)'} 
+                             onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                           >
+                               🔗 Lihat {news.jenis_lampiran_2}
+                           </span>
                          </div>
                       )}
                       </div>
