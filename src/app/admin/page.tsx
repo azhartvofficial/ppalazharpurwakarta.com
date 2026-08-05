@@ -222,6 +222,9 @@ export default function AdminDashboardPage() {
   });
   const [completedCrop, setCompletedCrop] = useState<PixelCrop | null>(null);
   const [isCompressing, setIsCompressing] = useState(false);
+  const [compressProgress, setCompressProgress] = useState(0);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showAddNewsModal, setShowAddNewsModal] = useState(false);
 
   // Docs states
@@ -760,6 +763,13 @@ export default function AdminDashboardPage() {
     }
 
     setIsUploadingNews(true);
+    setUploadProgress(0);
+    setUploadSuccess(false);
+
+    const progressInterval = setInterval(() => {
+      setUploadProgress(prev => prev >= 90 ? prev : prev + Math.floor(Math.random() * 15) + 5);
+    }, 300);
+
     let finalImageUrl = null;
 
     try {
@@ -822,25 +832,34 @@ export default function AdminDashboardPage() {
 
       if (error) throw error;
       
-      alert("Berita berhasil ditambahkan!");
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      setUploadSuccess(true);
       fetchNewsData(); // refresh data
       
-      // Reset forms
-      setNewNewsTitle("");
-      setNewNewsContent("");
-      setNewNewsImageFile(null);
-      setNewNewsAttachmentType("");
-      setNewNewsAttachmentUrl("");
-      setNewNewsAttachmentFile(null);
-      setNewNewsAuthor("");
-      setNewNewsOptionalSources("");
-      setNewNewsImageManualSource("");
-      setShowAddNewsModal(false);
+      // Delay before closing to show success animation
+      setTimeout(() => {
+        // Reset forms
+        setNewNewsTitle("");
+        setNewNewsContent("");
+        setNewNewsImageFile(null);
+        setNewNewsAttachmentType("");
+        setNewNewsAttachmentUrl("");
+        setNewNewsAttachmentFile(null);
+        setNewNewsAuthor("");
+        setNewNewsOptionalSources("");
+        setNewNewsImageManualSource("");
+        setShowAddNewsModal(false);
+        setIsUploadingNews(false);
+        setUploadSuccess(false);
+        setUploadProgress(0);
+      }, 1500);
     } catch (err: any) {
+      clearInterval(progressInterval);
+      setIsUploadingNews(false);
+      setUploadProgress(0);
       console.error(err);
       alert("Gagal menambahkan berita: " + (err.message || "Unknown error"));
-    } finally {
-      setIsUploadingNews(false);
     }
   };
 
@@ -2548,12 +2567,43 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 </select>
               </div>
 
-              <div className="modal-actions" style={{ marginTop: '1rem' }}>
-                <button type="submit" className="btn-modal-save" disabled={isUploadingNews}>
-                  {isUploadingNews ? "Mengunggah..." : "Simpan Artikel"}
-                </button>
-                <button type="button" onClick={() => setShowAddNewsModal(false)} className="btn-modal-cancel" disabled={isUploadingNews}>Batal</button>
-              </div>
+              {/* Upload Progress Animation */}
+              {isUploadingNews && (
+                <div style={{ marginTop: '1.5rem', background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold', color: uploadSuccess ? '#16a34a' : '#002147' }}>
+                    <span>{uploadSuccess ? 'Berhasil Diunggah!' : 'Sedang Mengunggah...'}</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                    <motion.div 
+                      initial={{ width: 0 }} 
+                      animate={{ width: `${uploadProgress}%` }} 
+                      transition={{ duration: 0.2 }}
+                      style={{ height: '100%', background: uploadSuccess ? '#16a34a' : '#ff8c00' }}
+                    />
+                  </div>
+                  {uploadSuccess && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      style={{ textAlign: 'center', color: '#16a34a', marginTop: '0.8rem', fontWeight: 'bold' }}
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: '5px' }}>
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                      </svg>
+                      Tersimpan ke Database!
+                    </motion.div>
+                  )}
+                </div>
+              )}
+
+              {!isUploadingNews && (
+                <div className="modal-actions" style={{ marginTop: '1.5rem' }}>
+                  <button type="submit" className="btn-modal-save">Simpan Artikel</button>
+                  <button type="button" onClick={() => setShowAddNewsModal(false)} className="btn-modal-cancel">Batal</button>
+                </div>
+              )}
             </form>
           </motion.div>
         </div>
@@ -2603,7 +2653,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       const compressedFile = await imageCompression(croppedFile, {
                         maxSizeMB: 0.5,
                         maxWidthOrHeight: 800,
-                        useWebWorker: true
+                        useWebWorker: true,
+                        onProgress: (progress) => setCompressProgress(progress)
                       });
                       const finalFile = new File([compressedFile], `cover-${Date.now()}.jpg`, { type: 'image/jpeg' });
                       setNewNewsImageFile(finalFile);
@@ -2618,12 +2669,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   }
                 }}
               >
-                {isCompressing ? 'Memproses...' : 'Terapkan (Crop & Compress)'}
+                {isCompressing ? `Memproses... ${compressProgress}%` : 'Terapkan (Crop & Compress)'}
               </button>
               <button 
                 className="btn-modal-cancel" 
                 disabled={isCompressing}
-                onClick={() => { setShowCropModal(false); setImgSrc(''); }}
+                onClick={() => { setShowCropModal(false); setImgSrc(''); setCompressProgress(0); }}
               >
                 Batal
               </button>
