@@ -205,6 +205,7 @@ export default function AdminDashboardPage() {
   const [newNewsContent, setNewNewsContent] = useState("");
   const [newNewsAttachmentType, setNewNewsAttachmentType] = useState<"" | "PDF" | "Gambar" | "Video Youtube" | "Link Lainnya">("");
   const [newNewsAttachmentUrl, setNewNewsAttachmentUrl] = useState("");
+  const [newNewsAttachmentTitle, setNewNewsAttachmentTitle] = useState("");
   const [newNewsAttachmentFile, setNewNewsAttachmentFile] = useState<File | null>(null);
   const [newNewsAuthor, setNewNewsAuthor] = useState("");
   const [newNewsOptionalSources, setNewNewsOptionalSources] = useState("");
@@ -814,7 +815,7 @@ export default function AdminDashboardPage() {
           gambar_judul_url: finalImageUrl,
           isi_berita: newNewsContent,
           jenis_lampiran_2: newNewsAttachmentType || null,
-          lampiran_2_url: finalAttachmentUrl || null,
+          lampiran_2_url: newNewsAttachmentType === 'Video Youtube' && newNewsAttachmentTitle ? `${finalAttachmentUrl}|||${newNewsAttachmentTitle}` : finalAttachmentUrl || null,
           penulis: newNewsAuthor,
           sumber_opsional: newNewsOptionalSources || null,
           status: newNewsStatus
@@ -2542,6 +2543,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           onChange={(e) => setNewNewsAttachmentUrl(e.target.value)}
                         />
                       )}
+                    </div>
+                  )}
+                  {newNewsAttachmentType === 'Video Youtube' && (
+                    <div className="input-group">
+                      <label>Judul Video Youtube (Opsional)</label>
+                      <input 
+                        type="text" 
+                        placeholder="Masukkan judul video untuk ditampilkan"
+                        value={newNewsAttachmentTitle}
+                        onChange={(e) => setNewNewsAttachmentTitle(e.target.value)}
+                      />
                     </div>
                   )}
                 </>

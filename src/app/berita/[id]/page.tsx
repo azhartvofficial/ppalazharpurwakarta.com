@@ -115,10 +115,15 @@ export default function BeritaDetailPage() {
             
             {article.jenis_lampiran_2 === 'Video Youtube' ? (
               <div className="video-container">
+                {article.lampiran_2_url.includes("|||") && (
+                  <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
+                    {article.lampiran_2_url.split("|||")[1]}
+                  </h4>
+                )}
                 <iframe 
                   width="100%" 
                   height="400" 
-                  src={getYouTubeEmbedUrl(article.lampiran_2_url)} 
+                  src={getYouTubeEmbedUrl(article.lampiran_2_url.split("|||")[0])} 
                   title="YouTube video player" 
                   frameBorder="0" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
