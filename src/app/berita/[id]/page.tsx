@@ -58,6 +58,15 @@ export default function BeritaDetailPage() {
     return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
   };
 
+  let finalContent = article.isi_berita || "";
+  let revisionDate = null;
+  const revMatch = finalContent.match(/---REVISION_TIMESTAMP:(\d+)---/);
+  if (revMatch) {
+    revisionDate = parseInt(revMatch[1]);
+    finalContent = finalContent.replace(/\n\n---REVISION_TIMESTAMP:\d+---/g, '');
+    finalContent = finalContent.replace(/---REVISION_TIMESTAMP:\d+---/g, '');
+  }
+
   return (
     <main className="berita-detail-page">
       <Navbar />
@@ -77,6 +86,11 @@ export default function BeritaDetailPage() {
             </div>
             <div className="article-date">
               {new Date(article.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
+              {revisionDate && (
+                <div style={{ marginTop: '4px', fontSize: '0.85rem', color: '#64748b', fontStyle: 'italic' }}>
+                  Revisi: {new Date(revisionDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
+                </div>
+              )}
             </div>
           </div>
         </header>
@@ -103,7 +117,7 @@ export default function BeritaDetailPage() {
 
         {/* Content */}
         <div className="article-body">
-          {article.isi_berita.split('\n').map((paragraph: string, idx: number) => (
+          {finalContent.split('\n').map((paragraph: string, idx: number) => (
             <p key={idx}>{paragraph}</p>
           ))}
         </div>

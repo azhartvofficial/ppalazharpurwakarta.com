@@ -196,6 +196,7 @@ export default function AdminDashboardPage() {
   const [errorNews, setErrorNews] = useState("");
 
   // Form states
+  const [editingNewsId, setEditingNewsId] = useState<string | null>(null);
   const [newNewsCategory, setNewNewsCategory] = useState("Papan Pengumuman");
   const [newNewsTitle, setNewNewsTitle] = useState("");
   const [newNewsImageSource, setNewNewsImageSource] = useState<"Internal" | "Manual">("Internal");
@@ -746,7 +747,29 @@ export default function AdminDashboardPage() {
   };
 
   // News Actions
-  const handleAddNews = async (e: React.FormEvent) => {
+  const handleEditNews = (news: NewsArticle) => {
+    setEditingNewsId(news.id);
+    setNewNewsCategory(news.kategori);
+    setNewNewsTitle(news.judul_utama);
+    setNewNewsImageSource(news.sumber_gambar as any);
+    setNewNewsImageManualSource(news.sumber_gambar_manual || "");
+    setNewNewsContent(news.isi_berita);
+    setNewNewsAttachmentType((news.jenis_lampiran_2 as any) || "");
+    if (news.jenis_lampiran_2 === 'Video Youtube' && news.lampiran_2_url?.includes("|||")) {
+      const parts = news.lampiran_2_url.split("|||");
+      setNewNewsAttachmentUrl(parts[0]);
+      setNewNewsAttachmentTitle(parts[1]);
+    } else {
+      setNewNewsAttachmentUrl(news.lampiran_2_url || "");
+      setNewNewsAttachmentTitle("");
+    }
+    setNewNewsAuthor(news.penulis);
+    setNewNewsOptionalSources(news.sumber_opsional || "");
+    setNewNewsStatus(news.status as any);
+    setShowAddNewsModal(true);
+  };
+
+  const handleSubmitNews = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newNewsTitle || !newNewsContent || !newNewsAuthor) {
       alert("Mohon lengkapi data wajib (Judul, Isi, Penulis)!");
@@ -805,23 +828,38 @@ export default function AdminDashboardPage() {
         finalAttachmentUrl = publicUrlData.publicUrl;
       }
 
-      const { error } = await supabase
-        .from('news_articles')
-        .insert([{
-          kategori: newNewsCategory,
-          judul_utama: newNewsTitle,
-          sumber_gambar: newNewsImageSource,
-          sumber_gambar_manual: newNewsImageSource === 'Manual' ? newNewsImageManualSource : null,
-          gambar_judul_url: finalImageUrl,
-          isi_berita: newNewsContent,
-          jenis_lampiran_2: newNewsAttachmentType || null,
-          lampiran_2_url: newNewsAttachmentType === 'Video Youtube' && newNewsAttachmentTitle ? `${finalAttachmentUrl}|||${newNewsAttachmentTitle}` : finalAttachmentUrl || null,
-          penulis: newNewsAuthor,
-          sumber_opsional: newNewsOptionalSources || null,
-          status: newNewsStatus
-        }]);
+      let finalContent = newNewsContent;
+      if (editingNewsId) {
+        // Hapus penanda revisi sebelumnya jika ada
+        finalContent = finalContent.replace(/\n\n---REVISION_TIMESTAMP:\d+---/g, '');
+        // Tambahkan penanda revisi baru
+        finalContent += `\n\n---REVISION_TIMESTAMP:${Date.now()}---`;
+      }
 
-      if (error) throw error;
+      const newsData = {
+        kategori: newNewsCategory,
+        judul_utama: newNewsTitle,
+        sumber_gambar: newNewsImageSource,
+        sumber_gambar_manual: newNewsImageSource === 'Manual' ? newNewsImageManualSource : null,
+        ...(finalImageUrl && { gambar_judul_url: finalImageUrl }), // Only update if new image uploaded
+        isi_berita: finalContent,
+        jenis_lampiran_2: newNewsAttachmentType || null,
+        ...(finalAttachmentUrl && { lampiran_2_url: newNewsAttachmentType === 'Video Youtube' && newNewsAttachmentTitle ? `${finalAttachmentUrl}|||${newNewsAttachmentTitle}` : finalAttachmentUrl || null }),
+        // If type is not empty but URL is empty, it means user didn't upload new attachment but wants to keep old.
+        // Wait, if finalAttachmentUrl is set, we update it. If not, we don't overwrite unless they cleared the type.
+        ...(newNewsAttachmentType === "" && { lampiran_2_url: null }),
+        penulis: newNewsAuthor,
+        sumber_opsional: newNewsOptionalSources || null,
+        status: newNewsStatus
+      };
+
+      if (editingNewsId) {
+        const { error } = await supabase.from('news_articles').update(newsData).eq('id', editingNewsId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('news_articles').insert([newsData]);
+        if (error) throw error;
+      }
       
       clearInterval(progressInterval);
       setUploadProgress(100);
@@ -840,6 +878,8 @@ export default function AdminDashboardPage() {
         setNewNewsAuthor("");
         setNewNewsOptionalSources("");
         setNewNewsImageManualSource("");
+        setNewNewsAttachmentTitle("");
+        setEditingNewsId(null);
         setShowAddNewsModal(false);
         setIsUploadingNews(false);
         setUploadSuccess(false);
@@ -1562,7 +1602,21 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   <div className="data-card">
                     <div className="card-header-flex">
                       <h3>Kelola Konten Berita & Pengumuman</h3>
-                      <button onClick={() => setShowAddNewsModal(true)} className="btn-add-item">
+                      <button onClick={() => {
+                        setEditingNewsId(null);
+                        setNewNewsTitle("");
+                        setNewNewsContent("");
+                        setNewNewsCategory("Papan Pengumuman");
+                        setNewNewsImageFile(null);
+                        setNewNewsAttachmentType("");
+                        setNewNewsAttachmentUrl("");
+                        setNewNewsAttachmentTitle("");
+                        setNewNewsAttachmentFile(null);
+                        setNewNewsAuthor("");
+                        setNewNewsOptionalSources("");
+                        setNewNewsImageManualSource("");
+                        setShowAddNewsModal(true);
+                      }} className="btn-add-item">
                         Tulis Artikel Baru
                       </button>
                     </div>
@@ -1597,6 +1651,22 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                               </td>
                               <td>
                                 <div className="action-buttons">
+                                  <button 
+                                    className="btn-edit" 
+                                    onClick={() => handleEditNews(item)}
+                                    style={{
+                                      padding: '0.4rem 0.8rem',
+                                      backgroundColor: '#f1f5f9',
+                                      color: '#475569',
+                                      border: '1px solid #e2e8f0',
+                                      borderRadius: '6px',
+                                      cursor: 'pointer',
+                                      fontWeight: '600',
+                                      marginRight: '0.5rem'
+                                    }}
+                                  >
+                                    Edit
+                                  </button>
                                   <button 
                                     onClick={() => handleToggleNewsStatus(item.id, item.status)} 
                                     className="btn-approve"
@@ -2400,8 +2470,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               color: '#002147'
             }}
           >
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '1.5rem', color: '#002147' }}>Tulis Artikel Berita Baru</h3>
-            <form onSubmit={handleAddNews} className="modal-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '70vh', overflowY: 'auto', padding: '0 10px' }}>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '1.5rem', color: '#002147' }}>
+              {editingNewsId ? 'Edit Artikel Berita' : 'Tulis Artikel Berita Baru'}
+            </h3>
+            <form onSubmit={handleSubmitNews} className="modal-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '70vh', overflowY: 'auto', padding: '0 10px' }}>
               <div className="input-group">
                 <label>Kategori Berita</label>
                 <select value={newNewsCategory} onChange={(e) => setNewNewsCategory(e.target.value)} required>
