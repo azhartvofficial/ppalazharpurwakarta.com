@@ -3714,7 +3714,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           left: 0;
           width: 100vw;
           height: 100vh;
-          background: rgba(0, 33, 71, 0.4);
+          background: rgba(15, 23, 42, 0.7);
           backdrop-filter: blur(5px);
           display: flex;
           justify-content: center;
