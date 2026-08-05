@@ -2312,9 +2312,19 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           <motion.div 
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="modal-box"
+            style={{
+              background: '#ffffff',
+              borderRadius: '20px',
+              padding: '2rem',
+              width: '100%',
+              maxWidth: '600px',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              color: '#002147'
+            }}
           >
-            <h3>Tulis Artikel Berita Baru</h3>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '1.5rem', color: '#002147' }}>Tulis Artikel Berita Baru</h3>
             <form onSubmit={handleAddNews} className="modal-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '70vh', overflowY: 'auto', padding: '0 10px' }}>
               <div className="input-group">
                 <label>Kategori Berita</label>
@@ -2459,9 +2469,19 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           <motion.div 
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="modal-box"
+            style={{
+              background: '#ffffff',
+              borderRadius: '20px',
+              padding: '2rem',
+              width: '100%',
+              maxWidth: '500px',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              color: '#002147'
+            }}
           >
-            <h3>Upload / Hubungkan Foto Baru</h3>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '1.5rem', color: '#002147' }}>Upload / Hubungkan Foto Baru</h3>
             <form onSubmit={handleAddPhoto} className="modal-form">
               <div className="input-group">
                 <label>Tautan URL Gambar (Cloudinary CDN URL)</label>
@@ -3747,17 +3767,20 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         }
 
         .modal-form input,
-        .modal-form select {
+        .modal-form select,
+        .modal-form textarea {
           background: #f8fafc;
           border: 1.5px solid #cbd5e1;
           padding: 0.8rem;
           border-radius: 8px;
           color: #0f172a;
           outline: none;
+          font-family: inherit;
         }
 
         .modal-form input:focus,
-        .modal-form select:focus {
+        .modal-form select:focus,
+        .modal-form textarea:focus {
           border-color: #ff8c00;
           background: white;
         }
