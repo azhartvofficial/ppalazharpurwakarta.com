@@ -72,12 +72,10 @@ export default function BeritaDetailPage() {
         <div className="article-cover-container">
           {article.gambar_judul_url ? (
             <div className="image-wrapper">
-              <Image 
+              <img 
                 src={article.gambar_judul_url} 
                 alt={article.judul_utama} 
-                fill 
-                style={{ objectFit: 'cover' }} 
-                priority
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
               />
             </div>
           ) : (

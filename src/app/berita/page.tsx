@@ -265,7 +265,11 @@ export default function BeritaPage() {
                 return (
                   <article key={news.id} className={`news-grid-item ${isTopRow ? 'top-row' : 'bottom-row'}`}>
                     <Link href={`/berita/${news.id}`} style={{ display: 'block', width: '100%', height: '100%', textDecoration: 'none', color: 'inherit' }}>
-                      <Image src={news.gambar_judul_url || news.image || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=400&auto=format&fit=crop'} alt={news.judul_utama || news.title || 'News'} fill style={{ objectFit: 'cover' }} />
+                      <img 
+                        src={news.gambar_judul_url || news.image || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=400&auto=format&fit=crop'} 
+                        alt={news.judul_utama || news.title || 'News'} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      />
                       <div className="news-grid-overlay">
                         <h3 className="news-title">
                           {news.judul_utama || news.title}
