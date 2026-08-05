@@ -201,6 +201,7 @@ export default function AdminDashboardPage() {
   const [newNewsContent, setNewNewsContent] = useState("");
   const [newNewsAttachmentType, setNewNewsAttachmentType] = useState<"" | "PDF" | "Gambar" | "Video Youtube" | "Link Lainnya">("");
   const [newNewsAttachmentUrl, setNewNewsAttachmentUrl] = useState("");
+  const [newNewsAttachmentFile, setNewNewsAttachmentFile] = useState<File | null>(null);
   const [newNewsAuthor, setNewNewsAuthor] = useState("");
   const [newNewsOptionalSources, setNewNewsOptionalSources] = useState("");
   const [newNewsStatus, setNewNewsStatus] = useState<"Published" | "Draft">("Published");
@@ -755,7 +756,7 @@ export default function AdminDashboardPage() {
           .upload(filePath, newNewsImageFile);
 
         if (uploadError) {
-          throw new Error('Gagal mengunggah gambar ke Supabase Storage (pastikan bucket "berita-images" sudah dibuat dan public): ' + uploadError.message);
+          throw new Error('Gagal mengunggah gambar cover: ' + uploadError.message);
         }
 
         const { data: publicUrlData } = supabase.storage
@@ -763,6 +764,27 @@ export default function AdminDashboardPage() {
           .getPublicUrl(filePath);
 
         finalImageUrl = publicUrlData.publicUrl;
+      }
+
+      let finalAttachmentUrl = newNewsAttachmentUrl;
+      if (newNewsAttachmentType === 'Gambar' && newNewsAttachmentFile) {
+        const fileExt = newNewsAttachmentFile.name.split('.').pop();
+        const fileName = `attachment-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('berita-images')
+          .upload(filePath, newNewsAttachmentFile);
+
+        if (uploadError) {
+          throw new Error('Gagal mengunggah gambar lampiran: ' + uploadError.message);
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from('berita-images')
+          .getPublicUrl(filePath);
+
+        finalAttachmentUrl = publicUrlData.publicUrl;
       }
 
       const { error } = await supabase
@@ -775,7 +797,7 @@ export default function AdminDashboardPage() {
           gambar_judul_url: finalImageUrl,
           isi_berita: newNewsContent,
           jenis_lampiran_2: newNewsAttachmentType || null,
-          lampiran_2_url: newNewsAttachmentUrl || null,
+          lampiran_2_url: finalAttachmentUrl || null,
           penulis: newNewsAuthor,
           sumber_opsional: newNewsOptionalSources || null,
           status: newNewsStatus
@@ -792,6 +814,7 @@ export default function AdminDashboardPage() {
       setNewNewsImageFile(null);
       setNewNewsAttachmentType("");
       setNewNewsAttachmentUrl("");
+      setNewNewsAttachmentFile(null);
       setNewNewsAuthor("");
       setNewNewsOptionalSources("");
       setNewNewsImageManualSource("");
@@ -2438,16 +2461,32 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   {newNewsAttachmentType && (
                     <div className="input-group">
                       <label>
-                        URL Lampiran 
-                        {newNewsAttachmentType === 'Gambar' && <span style={{ color: '#ef4444', marginLeft: '5px', fontSize: '0.8rem' }}>(Template: Width: 392, Height: 221)</span>}
+                        {newNewsAttachmentType === 'Gambar' ? 'Upload Gambar Lampiran' : 'URL Lampiran'}
+                        {newNewsAttachmentType === 'Gambar' && <span style={{ color: '#ef4444', marginLeft: '5px', fontSize: '0.8rem' }}>(Pilih gambar)</span>}
                       </label>
-                      <input 
-                        type="url" 
-                        required 
-                        placeholder={newNewsAttachmentType === 'Video Youtube' ? 'https://youtube.com/watch?...' : 'https://...'}
-                        value={newNewsAttachmentUrl}
-                        onChange={(e) => setNewNewsAttachmentUrl(e.target.value)}
-                      />
+                      {newNewsAttachmentType === 'Gambar' ? (
+                        <>
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            onChange={(e) => {
+                              if (e.target.files && e.target.files.length > 0) {
+                                setNewNewsAttachmentFile(e.target.files[0]);
+                              }
+                            }}
+                            required
+                          />
+                          {newNewsAttachmentFile && <span style={{ fontSize: '0.8rem', color: '#16a34a' }}>File dipilih: {newNewsAttachmentFile.name}</span>}
+                        </>
+                      ) : (
+                        <input 
+                          type="url" 
+                          required 
+                          placeholder={newNewsAttachmentType === 'Video Youtube' ? 'https://youtube.com/watch?...' : 'https://...'}
+                          value={newNewsAttachmentUrl}
+                          onChange={(e) => setNewNewsAttachmentUrl(e.target.value)}
+                        />
+                      )}
                     </div>
                   )}
                 </>

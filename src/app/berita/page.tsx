@@ -225,7 +225,7 @@ export default function BeritaPage() {
                   <div className="slide-meta">
                     <span className="slide-date">🗓 {finalSliderData[currentSlide]?.created_at ? new Date(finalSliderData[currentSlide].created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : finalSliderData[currentSlide]?.date}</span>
                   </div>
-                  <Link href={finalSliderData[currentSlide]?.link || '#'} className="slide-btn">
+                  <Link href={`/berita/${finalSliderData[currentSlide]?.id}`} className="slide-btn">
                     Baca Berita
                   </Link>
                 </div>
@@ -276,7 +276,7 @@ export default function BeritaPage() {
                     <Image src={news.gambar_judul_url || news.image || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=400&auto=format&fit=crop'} alt={news.judul_utama || news.title || 'News'} fill style={{ objectFit: 'cover' }} />
                     <div className="news-grid-overlay">
                       <h3 className="news-title">
-                        <Link href={news.link || '#'}>{news.judul_utama || news.title}</Link>
+                        <Link href={`/berita/${news.id}`}>{news.judul_utama || news.title}</Link>
                       </h3>
                       <div className="news-meta">
                         <span>{news.penulis || 'Humas'} - {news.created_at ? new Date(news.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : news.date}</span>
@@ -326,7 +326,7 @@ export default function BeritaPage() {
                 <ul className="announcement-list">
                   {finalAnnouncements.map((item) => (
                     <li key={item.id}>
-                      <Link href="#">
+                      <Link href={`/berita/${item.id}`}>
                         <div className="ann-date">{item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : item.date}</div>
                         <div className="ann-title">{item.judul_utama || item.title}</div>
                       </Link>
