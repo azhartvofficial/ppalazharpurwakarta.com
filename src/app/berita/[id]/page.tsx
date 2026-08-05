@@ -125,7 +125,9 @@ export default function BeritaDetailPage() {
         {/* Attachments */}
         {article.jenis_lampiran_2 && article.lampiran_2_url && (
           <div className="article-attachment-box">
-            <h3>Lampiran Tambahan ({article.jenis_lampiran_2})</h3>
+            {article.jenis_lampiran_2 !== 'Video Youtube' && (
+              <h3>Lampiran Tambahan ({article.jenis_lampiran_2})</h3>
+            )}
             
             {article.jenis_lampiran_2 === 'Video Youtube' ? (
               <div className="video-container">
