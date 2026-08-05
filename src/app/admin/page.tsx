@@ -210,18 +210,7 @@ export default function AdminDashboardPage() {
   const [newNewsOptionalSources, setNewNewsOptionalSources] = useState("");
   const [newNewsStatus, setNewNewsStatus] = useState<"Published" | "Draft">("Published");
   
-  // States for Image Cropping
-  const [showCropModal, setShowCropModal] = useState(false);
-  const [imgSrc, setImgSrc] = useState('');
-  const imgRef = React.useRef<HTMLImageElement>(null);
-  const [crop, setCrop] = useState<Crop>({
-    unit: '%',
-    width: 100,
-    height: (100 / (392/221)),
-    x: 0,
-    y: 0
-  });
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop | null>(null);
+  // States for Image Compress & Upload
   const [isCompressing, setIsCompressing] = useState(false);
   const [compressProgress, setCompressProgress] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -2460,25 +2449,41 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   )}
 
                   <div className="input-group">
-                    <label>Upload Gambar Judul (Cover) <span style={{ color: '#ef4444', fontSize: '0.8rem' }}>(Otomatis di-crop ke rasio 392x221)</span></label>
+                    <label>Upload Gambar Judul (Cover) <span style={{ color: '#ef4444', fontSize: '0.8rem' }}>(Otomatis di-compress ukurannya)</span></label>
                     <input 
                       type="file" 
                       accept="image/*"
-                      onChange={(e) => {
+                      disabled={isCompressing}
+                      onChange={async (e) => {
                         if (e.target.files && e.target.files.length > 0) {
                           const file = e.target.files[0];
-                          const reader = new FileReader();
-                          reader.addEventListener('load', () => {
-                            setImgSrc(reader.result?.toString() || '');
-                            setShowCropModal(true);
-                          });
-                          reader.readAsDataURL(file);
-                          // Reset input value so same file can be selected again
-                          e.target.value = '';
+                          setIsCompressing(true);
+                          setCompressProgress(0);
+                          try {
+                            const compressedFile = await imageCompression(file, {
+                              maxSizeMB: 0.5,
+                              maxWidthOrHeight: 800,
+                              useWebWorker: true,
+                              onProgress: (progress) => setCompressProgress(progress)
+                            });
+                            const finalFile = new File([compressedFile], `cover-${Date.now()}.jpg`, { type: 'image/jpeg' });
+                            setNewNewsImageFile(finalFile);
+                          } catch (err) {
+                            console.error("Compression error:", err);
+                            alert("Gagal mengkompres gambar.");
+                          } finally {
+                            setIsCompressing(false);
+                            e.target.value = ''; // reset input
+                          }
                         }
                       }}
                     />
-                    {newNewsImageFile && (
+                    {isCompressing && (
+                      <span style={{ fontSize: '0.8rem', color: '#f59e0b', display: 'block', marginTop: '0.5rem' }}>
+                        Memproses kompresi otomatis... {compressProgress}%
+                      </span>
+                    )}
+                    {newNewsImageFile && !isCompressing && (
                       <div style={{ marginTop: '0.5rem' }}>
                         <span style={{ fontSize: '0.8rem', color: '#16a34a', display: 'block', marginBottom: '0.5rem' }}>File siap diupload: {newNewsImageFile.name}</span>
                         <img src={URL.createObjectURL(newNewsImageFile)} alt="Preview Cover" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
@@ -2615,89 +2620,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         </div>
       )}
 
-      {/* Crop Modal Overlay */}
-      {showCropModal && (
-        <div className="modal-overlay" style={{ zIndex: 10001 }}>
-          <motion.div 
-            className="modal-box" 
-            style={{ 
-              maxWidth: '600px', 
-              background: '#ffffff', 
-              borderRadius: '20px', 
-              padding: '2rem',
-              color: '#002147',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
-              maxHeight: '90vh',
-              overflowY: 'auto'
-            }}
-          >
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '1.5rem', color: '#002147' }}>Sesuaikan Ukuran Gambar (Cover)</h3>
-            <div style={{ maxHeight: '60vh', overflow: 'auto', background: '#e2e8f0', borderRadius: '12px', display: 'flex', justifyContent: 'center' }}>
-              <ReactCrop
-                crop={crop}
-                onChange={(_, percentCrop) => setCrop(percentCrop)}
-                onComplete={(c) => setCompletedCrop(c)}
-                aspect={392 / 221}
-              >
-                <img ref={imgRef} src={imgSrc} alt="Crop me" style={{ maxWidth: '100%', maxHeight: '500px' }} />
-              </ReactCrop>
-            </div>
-            <div className="modal-actions" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-              <button 
-                className="btn-modal-save" 
-                disabled={isCompressing}
-                onClick={async () => {
-                  if (!completedCrop || !completedCrop.width || !completedCrop.height || !imgRef.current) {
-                     alert("Silakan atur pemotongan gambar (crop) terlebih dahulu.");
-                     return;
-                  }
-                  setIsCompressing(true);
-                  try {
-                    const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
-                    const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
-
-                    const actualCrop = {
-                      x: completedCrop.x * scaleX,
-                      y: completedCrop.y * scaleY,
-                      width: completedCrop.width * scaleX,
-                      height: completedCrop.height * scaleY,
-                    };
-
-                    const croppedFile = await getCroppedImg(imgSrc, actualCrop, 392, 221);
-                    if (croppedFile) {
-                      // Compress the file
-                      const compressedFile = await imageCompression(croppedFile, {
-                        maxSizeMB: 0.5,
-                        maxWidthOrHeight: 800,
-                        useWebWorker: true,
-                        onProgress: (progress) => setCompressProgress(progress)
-                      });
-                      const finalFile = new File([compressedFile], `cover-${Date.now()}.jpg`, { type: 'image/jpeg' });
-                      setNewNewsImageFile(finalFile);
-                      setShowCropModal(false);
-                      setImgSrc('');
-                    }
-                  } catch (e) {
-                    console.error(e);
-                    alert("Terjadi kesalahan saat memproses gambar.");
-                  } finally {
-                    setIsCompressing(false);
-                  }
-                }}
-              >
-                {isCompressing ? `Memproses... ${compressProgress}%` : 'Terapkan (Crop & Compress)'}
-              </button>
-              <button 
-                className="btn-modal-cancel" 
-                disabled={isCompressing}
-                onClick={() => { setShowCropModal(false); setImgSrc(''); setCompressProgress(0); }}
-              >
-                Batal
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
 
       {/* MODAL 2: ADD PHOTO */}
       {showAddPhotoModal && (
