@@ -24,6 +24,7 @@ export default function PendaftaranPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -171,15 +172,25 @@ export default function PendaftaranPage() {
 
                 <div className="input-group">
                   <label htmlFor="password">Password Akun Baru</label>
-                  <input 
-                    type="password" 
-                    id="password" 
-                    placeholder="Minimal 6 karakter" 
-                    required 
-                    minLength={6}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
+                  <div style={{ position: 'relative', width: '100%' }}>
+                    <input 
+                      type={showPassword ? "text" : "password"}
+                      id="password" 
+                      placeholder="Minimal 6 karakter" 
+                      required 
+                      minLength={6}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      style={{ width: '100%', paddingRight: '40px', boxSizing: 'border-box' }}
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      {showPassword ? '👁️‍🗨️' : '👁️'}
+                    </button>
+                  </div>
                   <span className="helper-text">Digunakan untuk login ke halaman Dashboard Santri nanti.</span>
                 </div>
 

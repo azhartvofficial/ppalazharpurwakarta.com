@@ -96,6 +96,7 @@ export default function AdminDashboardPage() {
   // Master Password State
   const [showMasterPasswordPrompt, setShowMasterPasswordPrompt] = useState(false);
   const [masterPasswordInput, setMasterPasswordInput] = useState("");
+  const [showMasterPassword, setShowMasterPassword] = useState(false);
   const [pendingSuperAdminAction, setPendingSuperAdminAction] = useState<(() => void) | null>(null);
 
   const executePendingAction = (e: React.FormEvent) => {
@@ -203,6 +204,7 @@ export default function AdminDashboardPage() {
   const [accountsSubTab, setAccountsSubTab] = useState<"kelola_akun" | "kelola_data" | "permintaan_login">("kelola_akun");
   const [accountsMenuExpanded, setAccountsMenuExpanded] = useState(false);
   const [loginRequests, setLoginRequests] = useState<LoginRequest[]>([]);
+  const [selectedLoginRequest, setSelectedLoginRequest] = useState<LoginRequest | null>(null);
   const [loadingLoginRequests, setLoadingLoginRequests] = useState(false);
   const [errorLoginRequests, setErrorLoginRequests] = useState("");
 
@@ -312,6 +314,7 @@ export default function AdminDashboardPage() {
   const [newAccName, setNewAccName] = useState("");
   const [newAccEmail, setNewAccEmail] = useState("");
   const [newAccPassword, setNewAccPassword] = useState("");
+  const [showNewAccPassword, setShowNewAccPassword] = useState(false);
   const [newAccRole, setNewAccRole] = useState<"Admin" | "Wali" | "Super Admin">("Wali");
 
   const handleAddAccount = async (e: React.FormEvent) => {
@@ -1991,14 +1994,23 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         </div>
                                         <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
                                           <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Password Login</label>
-                                          <input 
-                                            type="password" 
-                                            placeholder="Minimal 6 karakter"
-                                            value={newAccPassword} 
-                                            onChange={(e) => setNewAccPassword(e.target.value)}
-                                            style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }} 
-                                            required
-                                          />
+                                          <div style={{ position: 'relative', width: '100%' }}>
+                                            <input 
+                                              type={showNewAccPassword ? "text" : "password"}
+                                              placeholder="Minimal 6 karakter"
+                                              value={newAccPassword} 
+                                              onChange={(e) => setNewAccPassword(e.target.value)}
+                                              style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', paddingRight: '40px', borderRadius: '10px', fontSize: '0.9rem', color: '#334155', boxSizing: 'border-box' }} 
+                                              required
+                                            />
+                                            <button 
+                                              type="button" 
+                                              onClick={() => setShowNewAccPassword(!showNewAccPassword)}
+                                              style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                            >
+                                              {showNewAccPassword ? '👁️‍🗨️' : '👁️'}
+                                            </button>
+                                          </div>
                                         </div>
                                         <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
                                           <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Tipe Akses (Role)</label>
@@ -2155,6 +2167,21 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                     </td>
                                     <td style={{ padding: '12px' }}>
                                       <div className="action-buttons" style={{ display: 'flex', gap: '8px' }}>
+                                        <button
+                                          onClick={() => setSelectedLoginRequest(req)}
+                                          style={{
+                                            padding: '4px 10px',
+                                            borderRadius: '6px',
+                                            border: 'none',
+                                            background: '#3b82f6',
+                                            fontWeight: 700,
+                                            fontSize: '0.75rem',
+                                            cursor: 'pointer',
+                                            color: '#fff'
+                                          }}
+                                        >
+                                          Preview
+                                        </button>
                                         <button
                                           onClick={() => handleUpdateLoginRequestStatus(req.id, "Approved")}
                                           className="btn-approve"
@@ -4242,30 +4269,41 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               </p>
 
               <form onSubmit={executePendingAction} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <input 
-                  type="password"
-                  placeholder="Masukkan Master Password..."
-                  value={masterPasswordInput}
-                  onChange={(e) => setMasterPasswordInput(e.target.value)}
-                  autoFocus
-                  style={{
-                    width: '100%',
-                    padding: '1rem',
-                    background: '#f8fafc',
-                    border: '2px solid #e2e8f0',
-                    borderRadius: '12px',
-                    fontSize: '1rem',
-                    color: '#0f172a',
-                    textAlign: 'center',
-                    letterSpacing: '2px',
-                    fontWeight: 700,
-                    outline: 'none',
-                    transition: 'border-color 0.2s'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
-                  onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
-                  required
-                />
+                <div style={{ position: 'relative', width: '100%' }}>
+                  <input 
+                    type={showMasterPassword ? "text" : "password"}
+                    placeholder="Masukkan Master Password..."
+                    value={masterPasswordInput}
+                    onChange={(e) => setMasterPasswordInput(e.target.value)}
+                    autoFocus
+                    style={{
+                      width: '100%',
+                      padding: '1rem',
+                      paddingRight: '3rem',
+                      background: '#f8fafc',
+                      border: '2px solid #e2e8f0',
+                      borderRadius: '12px',
+                      fontSize: '1rem',
+                      color: '#0f172a',
+                      textAlign: 'center',
+                      letterSpacing: '2px',
+                      fontWeight: 700,
+                      outline: 'none',
+                      transition: 'border-color 0.2s',
+                      boxSizing: 'border-box'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                    onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                    required
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => setShowMasterPassword(!showMasterPassword)}
+                    style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    {showMasterPassword ? '👁️‍🗨️' : '👁️'}
+                  </button>
+                </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
                   <button 
                     type="button"
@@ -4309,6 +4347,92 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               </form>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* LOGIN REQUEST PREVIEW MODAL */}
+      <AnimatePresence>
+        {selectedLoginRequest && (
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '400px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}
+            >
+              <h3 style={{ margin: '0 0 1.5rem 0', color: '#002147', fontWeight: 800 }}>Preview Permintaan Login</h3>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+                <div>
+                  <label style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>Nama Pemohon</label>
+                  <div style={{ fontSize: '1rem', fontWeight: 600, color: '#333' }}>{selectedLoginRequest.name}</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>Alamat E-Mail</label>
+                  <div style={{ fontSize: '1rem', fontWeight: 600, color: '#333' }}>{selectedLoginRequest.email}</div>
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>Role Akses</label>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 600, color: selectedLoginRequest.role === 'Admin' ? '#002147' : '#ff8c00' }}>{selectedLoginRequest.role}</div>
+                </div>
+                
+                {selectedLoginRequest.role === 'Admin' && selectedLoginRequest.kepengurusan && (
+                  <div>
+                    <label style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>Kepengurusan</label>
+                    <div style={{ fontSize: '1rem', fontWeight: 500, color: '#333' }}>{selectedLoginRequest.kepengurusan}</div>
+                  </div>
+                )}
+                
+                {selectedLoginRequest.role === 'Wali' && (
+                  <>
+                    <div>
+                      <label style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>Nama Santri</label>
+                      <div style={{ fontSize: '1rem', fontWeight: 500, color: '#333' }}>{selectedLoginRequest.nama_santri}</div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>Jenjang</label>
+                        <div style={{ fontSize: '1rem', fontWeight: 500, color: '#333' }}>{selectedLoginRequest.jenjang_pendidikan}</div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>Kelas</label>
+                        <div style={{ fontSize: '1rem', fontWeight: 500, color: '#333' }}>{selectedLoginRequest.pilihan_kelas}</div>
+                      </div>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>Program</label>
+                      <div style={{ fontSize: '1rem', fontWeight: 500, color: '#333' }}>{selectedLoginRequest.program_pendidikan}</div>
+                    </div>
+                  </>
+                )}
+                
+                <div>
+                  <label style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700 }}>Waktu Pengajuan</label>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 500, color: '#64748b' }}>{selectedLoginRequest.requestedAt}</div>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <button
+                  onClick={() => setSelectedLoginRequest(null)}
+                  style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', background: '#e2e8f0', color: '#475569', fontWeight: 700, border: 'none', cursor: 'pointer' }}
+                >
+                  Tutup
+                </button>
+                {selectedLoginRequest.status === 'Pending' && (
+                  <button
+                    onClick={() => {
+                      handleUpdateLoginRequestStatus(selectedLoginRequest.id, 'Approved');
+                      setSelectedLoginRequest(null);
+                    }}
+                    style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', background: '#10b981', color: 'white', fontWeight: 700, border: 'none', cursor: 'pointer' }}
+                  >
+                    Setujui Langsung
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 

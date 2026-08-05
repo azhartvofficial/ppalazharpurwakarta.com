@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
 
   // Modal State
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -31,6 +32,8 @@ export default function LoginPage() {
   const [regConfirmPassword, setRegConfirmPassword] = useState("");
   const [regLoading, setRegLoading] = useState(false);
   const [regError, setRegError] = useState("");
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
 
   // Update regKelas based on regJenjang dynamically
   useEffect(() => {
@@ -170,15 +173,25 @@ export default function LoginPage() {
               disabled={isLoading || loginSuccess}
             />
             
-            <input 
-              type="password" 
-              className="form-input" 
-              placeholder="Password" 
-              required 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading || loginSuccess}
-            />
+            <div style={{ position: 'relative', width: '100%' }}>
+              <input 
+                type={showLoginPassword ? "text" : "password"}
+                className="form-input" 
+                placeholder="Password" 
+                required 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading || loginSuccess}
+                style={{ paddingRight: '40px' }}
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowLoginPassword(!showLoginPassword)}
+                style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                {showLoginPassword ? '👁️‍🗨️' : '👁️'}
+              </button>
+            </div>
             
             <button type="submit" className="btn-login" disabled={isLoading || loginSuccess}>
               {isLoading ? "Memproses..." : "Log In"}
@@ -304,24 +317,44 @@ export default function LoginPage() {
                 </>
               )}
 
-              <input 
-                type="password" 
-                className="form-input" 
-                placeholder="Password" 
-                required 
-                minLength={6}
-                value={regPassword}
-                onChange={(e) => setRegPassword(e.target.value)}
-              />
-              <input 
-                type="password" 
-                className="form-input" 
-                placeholder="Konfirmasi Password" 
-                required 
-                minLength={6}
-                value={regConfirmPassword}
-                onChange={(e) => setRegConfirmPassword(e.target.value)}
-              />
+              <div style={{ position: 'relative', width: '100%' }}>
+                <input 
+                  type={showRegPassword ? "text" : "password"}
+                  className="form-input" 
+                  placeholder="Password" 
+                  required 
+                  minLength={6}
+                  value={regPassword}
+                  onChange={(e) => setRegPassword(e.target.value)}
+                  style={{ paddingRight: '40px' }}
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowRegPassword(!showRegPassword)}
+                  style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  {showRegPassword ? '👁️‍🗨️' : '👁️'}
+                </button>
+              </div>
+              <div style={{ position: 'relative', width: '100%' }}>
+                <input 
+                  type={showRegConfirmPassword ? "text" : "password"}
+                  className="form-input" 
+                  placeholder="Konfirmasi Password" 
+                  required 
+                  minLength={6}
+                  value={regConfirmPassword}
+                  onChange={(e) => setRegConfirmPassword(e.target.value)}
+                  style={{ paddingRight: '40px' }}
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowRegConfirmPassword(!showRegConfirmPassword)}
+                  style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  {showRegConfirmPassword ? '👁️‍🗨️' : '👁️'}
+                </button>
+              </div>
 
               <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
                 <button 

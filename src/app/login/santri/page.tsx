@@ -11,6 +11,7 @@ export default function SantriLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,15 +84,25 @@ export default function SantriLoginPage() {
               disabled={isLoading || loginSuccess}
             />
             
-            <input 
-              type="password" 
-              className="form-input" 
-              placeholder="Password" 
-              required 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading || loginSuccess}
-            />
+            <div style={{ position: 'relative', width: '100%' }}>
+              <input 
+                type={showPassword ? "text" : "password"}
+                className="form-input" 
+                placeholder="Password" 
+                required 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading || loginSuccess}
+                style={{ paddingRight: '40px' }}
+              />
+              <button 
+                type="button" 
+                onClick={() => setShowPassword(!showPassword)}
+                style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                {showPassword ? '👁️‍🗨️' : '👁️'}
+              </button>
+            </div>
             
             <button type="submit" className="btn-login" disabled={isLoading || loginSuccess}>
               {isLoading ? "Memproses..." : "Log In Santri"}
