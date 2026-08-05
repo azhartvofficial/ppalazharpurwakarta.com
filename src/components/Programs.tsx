@@ -2,6 +2,7 @@
 import React, { useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { supabase } from "@/lib/supabase";
 
 export default function Programs() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -61,6 +62,32 @@ export default function Programs() {
     }
   ];
 
+  const [displayNews, setDisplayNews] = React.useState(news);
+
+  useEffect(() => {
+    const fetchLatestNews = async () => {
+      const { data, error } = await supabase
+        .from('news_articles')
+        .select('*')
+        .eq('kategori', 'Artikel Berita')
+        .eq('status', 'Published')
+        .order('created_at', { ascending: false })
+        .limit(6);
+      
+      if (data && !error && data.length > 0) {
+        setDisplayNews(data.map(item => ({
+          id: item.id,
+          title: item.judul_utama,
+          date: item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : '',
+          category: item.kategori,
+          image: item.gambar_judul_url || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2070&auto=format&fit=crop',
+          excerpt: item.isi_berita ? item.isi_berita.substring(0, 100) + '...' : ''
+        })));
+      }
+    };
+    fetchLatestNews();
+  }, []);
+
   return (
     <section id="berita" className="news-section">
       <div className="container">
@@ -77,9 +104,9 @@ export default function Programs() {
           </button>
           
           <div className="news-slider" ref={scrollRef}>
-            {news.map((item, index) => (
+            {displayNews.map((item: any, index) => (
               <motion.div 
-                key={index} 
+                key={item.id || index} 
                 className="news-card"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -93,7 +120,7 @@ export default function Programs() {
                   <span className="news-date">{item.date}</span>
                   <h3 className="news-title">{item.title}</h3>
                   <p className="news-excerpt">{item.excerpt}</p>
-                  <Link href="/berita" className="read-more">Baca Selengkapnya &rarr;</Link>
+                  <Link href={item.id ? `/berita/${item.id}` : "/berita"} className="read-more">Baca Selengkapnya &rarr;</Link>
                 </div>
               </motion.div>
             ))}

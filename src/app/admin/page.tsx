@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import localFont from "next/font/local";
 import Navbar from "@/components/Navbar";
+import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import imageCompression from 'browser-image-compression';
+import getCroppedImg from '@/lib/cropImage';
 
 const frizQuadrata = localFont({
   src: "../../Font/friz-quadrata-std-medium-5870338ec7ef8.otf",
@@ -205,6 +209,19 @@ export default function AdminDashboardPage() {
   const [newNewsAuthor, setNewNewsAuthor] = useState("");
   const [newNewsOptionalSources, setNewNewsOptionalSources] = useState("");
   const [newNewsStatus, setNewNewsStatus] = useState<"Published" | "Draft">("Published");
+  
+  // States for Image Cropping
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [imgSrc, setImgSrc] = useState('');
+  const [crop, setCrop] = useState<Crop>({
+    unit: '%',
+    width: 100,
+    height: (100 / (392/221)),
+    x: 0,
+    y: 0
+  });
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop | null>(null);
+  const [isCompressing, setIsCompressing] = useState(false);
   const [showAddNewsModal, setShowAddNewsModal] = useState(false);
 
   // Docs states
@@ -2423,17 +2440,25 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   )}
 
                   <div className="input-group">
-                    <label>Upload Gambar Judul (Cover)</label>
+                    <label>Upload Gambar Judul (Cover) <span style={{ color: '#ef4444', fontSize: '0.8rem' }}>(Otomatis di-crop ke rasio 392x221)</span></label>
                     <input 
                       type="file" 
                       accept="image/*"
                       onChange={(e) => {
                         if (e.target.files && e.target.files.length > 0) {
-                          setNewNewsImageFile(e.target.files[0]);
+                          const file = e.target.files[0];
+                          const reader = new FileReader();
+                          reader.addEventListener('load', () => {
+                            setImgSrc(reader.result?.toString() || '');
+                            setShowCropModal(true);
+                          });
+                          reader.readAsDataURL(file);
+                          // Reset input value so same file can be selected again
+                          e.target.value = '';
                         }
                       }}
                     />
-                    {newNewsImageFile && <span style={{ fontSize: '0.8rem', color: '#16a34a' }}>File dipilih: {newNewsImageFile.name}</span>}
+                    {newNewsImageFile && <span style={{ fontSize: '0.8rem', color: '#16a34a', marginTop: '0.5rem', display: 'block' }}>File siap diupload: {newNewsImageFile.name}</span>}
                   </div>
 
                   <div className="input-group">
@@ -2530,6 +2555,79 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <button type="button" onClick={() => setShowAddNewsModal(false)} className="btn-modal-cancel" disabled={isUploadingNews}>Batal</button>
               </div>
             </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Crop Modal Overlay */}
+      {showCropModal && (
+        <div className="modal-overlay" style={{ zIndex: 10001 }}>
+          <motion.div 
+            className="modal-box" 
+            style={{ 
+              maxWidth: '600px', 
+              background: '#ffffff', 
+              borderRadius: '20px', 
+              padding: '2rem',
+              color: '#002147',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
+              maxHeight: '90vh',
+              overflowY: 'auto'
+            }}
+          >
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '1.5rem', color: '#002147' }}>Sesuaikan Ukuran Gambar (Cover)</h3>
+            <div style={{ maxHeight: '60vh', overflow: 'auto', background: '#e2e8f0', borderRadius: '12px', display: 'flex', justifyContent: 'center' }}>
+              <ReactCrop
+                crop={crop}
+                onChange={(_, percentCrop) => setCrop(percentCrop)}
+                onComplete={(c) => setCompletedCrop(c)}
+                aspect={392 / 221}
+              >
+                <img src={imgSrc} alt="Crop me" style={{ maxWidth: '100%', maxHeight: '500px' }} />
+              </ReactCrop>
+            </div>
+            <div className="modal-actions" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+              <button 
+                className="btn-modal-save" 
+                disabled={isCompressing}
+                onClick={async () => {
+                  if (!completedCrop || !completedCrop.width || !completedCrop.height) {
+                     alert("Silakan atur pemotongan gambar (crop) terlebih dahulu.");
+                     return;
+                  }
+                  setIsCompressing(true);
+                  try {
+                    const croppedFile = await getCroppedImg(imgSrc, completedCrop, 392, 221);
+                    if (croppedFile) {
+                      // Compress the file
+                      const compressedFile = await imageCompression(croppedFile, {
+                        maxSizeMB: 0.5,
+                        maxWidthOrHeight: 800,
+                        useWebWorker: true
+                      });
+                      const finalFile = new File([compressedFile], `cover-${Date.now()}.jpg`, { type: 'image/jpeg' });
+                      setNewNewsImageFile(finalFile);
+                      setShowCropModal(false);
+                      setImgSrc('');
+                    }
+                  } catch (e) {
+                    console.error(e);
+                    alert("Terjadi kesalahan saat memproses gambar.");
+                  } finally {
+                    setIsCompressing(false);
+                  }
+                }}
+              >
+                {isCompressing ? 'Memproses...' : 'Terapkan (Crop & Compress)'}
+              </button>
+              <button 
+                className="btn-modal-cancel" 
+                disabled={isCompressing}
+                onClick={() => { setShowCropModal(false); setImgSrc(''); }}
+              >
+                Batal
+              </button>
+            </div>
           </motion.div>
         </div>
       )}

@@ -150,16 +150,7 @@ export default function BeritaPage() {
   // Hapus fallback mock data, jika kosong ya benar-benar kosong
   const finalNews = dbNews;
   
-  // Slider butuh minimal 1 array item agar tidak error NaN saat modulo 0 di setInterval
-  const finalSliderData = dbNews.length > 0 ? dbNews.slice(0, 3) : [{
-    id: 'empty-slider',
-    judul_utama: "Berita Belum Tersedia",
-    title: "Berita Belum Tersedia",
-    kategori: "INFO",
-    created_at: null,
-    gambar_judul_url: "",
-    link: "#"
-  }];
+  const finalSliderData = sliderData as any[];
   
   const finalAnnouncements = dbAnnouncements.length > 0 ? dbAnnouncements : [{
     id: 'empty-announcement',
@@ -273,11 +264,12 @@ export default function BeritaPage() {
 
                 return (
                   <article key={news.id} className={`news-grid-item ${isTopRow ? 'top-row' : 'bottom-row'}`}>
-                    <Image src={news.gambar_judul_url || news.image || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=400&auto=format&fit=crop'} alt={news.judul_utama || news.title || 'News'} fill style={{ objectFit: 'cover' }} />
-                    <div className="news-grid-overlay">
-                      <h3 className="news-title">
-                        <Link href={`/berita/${news.id}`}>{news.judul_utama || news.title}</Link>
-                      </h3>
+                    <Link href={`/berita/${news.id}`} style={{ display: 'block', width: '100%', height: '100%', textDecoration: 'none', color: 'inherit' }}>
+                      <Image src={news.gambar_judul_url || news.image || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=400&auto=format&fit=crop'} alt={news.judul_utama || news.title || 'News'} fill style={{ objectFit: 'cover' }} />
+                      <div className="news-grid-overlay">
+                        <h3 className="news-title">
+                          {news.judul_utama || news.title}
+                        </h3>
                       <div className="news-meta">
                         <span>{news.penulis || 'Humas'} - {news.created_at ? new Date(news.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : news.date}</span>
                       </div>
@@ -290,7 +282,8 @@ export default function BeritaPage() {
                            </a>
                          </div>
                       )}
-                    </div>
+                      </div>
+                    </Link>
                   </article>
                 );
               })}
