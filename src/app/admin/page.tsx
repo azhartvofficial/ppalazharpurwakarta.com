@@ -213,6 +213,7 @@ export default function AdminDashboardPage() {
   // States for Image Cropping
   const [showCropModal, setShowCropModal] = useState(false);
   const [imgSrc, setImgSrc] = useState('');
+  const imgRef = React.useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>({
     unit: '%',
     width: 100,
@@ -2638,7 +2639,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 onComplete={(c) => setCompletedCrop(c)}
                 aspect={392 / 221}
               >
-                <img src={imgSrc} alt="Crop me" style={{ maxWidth: '100%', maxHeight: '500px' }} />
+                <img ref={imgRef} src={imgSrc} alt="Crop me" style={{ maxWidth: '100%', maxHeight: '500px' }} />
               </ReactCrop>
             </div>
             <div className="modal-actions" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
@@ -2646,13 +2647,23 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 className="btn-modal-save" 
                 disabled={isCompressing}
                 onClick={async () => {
-                  if (!completedCrop || !completedCrop.width || !completedCrop.height) {
+                  if (!completedCrop || !completedCrop.width || !completedCrop.height || !imgRef.current) {
                      alert("Silakan atur pemotongan gambar (crop) terlebih dahulu.");
                      return;
                   }
                   setIsCompressing(true);
                   try {
-                    const croppedFile = await getCroppedImg(imgSrc, completedCrop, 392, 221);
+                    const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
+                    const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
+
+                    const actualCrop = {
+                      x: completedCrop.x * scaleX,
+                      y: completedCrop.y * scaleY,
+                      width: completedCrop.width * scaleX,
+                      height: completedCrop.height * scaleY,
+                    };
+
+                    const croppedFile = await getCroppedImg(imgSrc, actualCrop, 392, 221);
                     if (croppedFile) {
                       // Compress the file
                       const compressedFile = await imageCompression(croppedFile, {
