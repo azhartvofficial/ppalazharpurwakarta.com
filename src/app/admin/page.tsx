@@ -747,7 +747,7 @@ export default function AdminDashboardPage() {
   };
 
   // News Actions
-  const handleEditNews = (news: NewsArticle) => {
+  const handleEditNews = (news: any) => {
     setEditingNewsId(news.id);
     setNewNewsCategory(news.kategori);
     setNewNewsTitle(news.judul_utama);
