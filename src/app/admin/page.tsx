@@ -2449,7 +2449,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   )}
 
                   <div className="input-group">
-                    <label>Upload Gambar Judul (Cover) <span style={{ color: '#ef4444', fontSize: '0.8rem' }}>(Otomatis di-compress ukurannya)</span></label>
+                    <label>Upload Gambar Judul (Cover) <span style={{ color: '#ef4444', fontSize: '0.8rem' }}>(Gunakan gambar berukuran persis atau rasio 392x221 px)</span></label>
                     <input 
                       type="file" 
                       accept="image/*"

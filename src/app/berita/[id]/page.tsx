@@ -45,6 +45,19 @@ export default function BeritaDetailPage() {
 
   if (!article) return null;
 
+  const getYouTubeEmbedUrl = (url: string) => {
+    if (!url) return "";
+    let videoId = "";
+    if (url.includes("youtu.be/")) {
+      videoId = url.split("youtu.be/")[1]?.split("?")[0];
+    } else if (url.includes("youtube.com/watch?v=")) {
+      videoId = url.split("v=")[1]?.split("&")[0];
+    } else if (url.includes("youtube.com/embed/")) {
+      return url;
+    }
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+  };
+
   return (
     <main className="berita-detail-page">
       <Navbar />
@@ -105,7 +118,7 @@ export default function BeritaDetailPage() {
                 <iframe 
                   width="100%" 
                   height="400" 
-                  src={article.lampiran_2_url.replace("watch?v=", "embed/")} 
+                  src={getYouTubeEmbedUrl(article.lampiran_2_url)} 
                   title="YouTube video player" 
                   frameBorder="0" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
