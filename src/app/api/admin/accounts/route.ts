@@ -14,7 +14,10 @@ export async function POST(request: Request) {
       auth: { autoRefreshToken: false, persistSession: false }
     });
 
-    const { name, email, password, role, status } = await request.json();
+    const { 
+      name, email, password, role, status,
+      kepengurusan, nama_santri, jenjang_pendidikan, pilihan_kelas, program_pendidikan 
+    } = await request.json();
 
     // 1. Create user in Supabase Authentication
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
@@ -34,7 +37,18 @@ export async function POST(request: Request) {
     const { data: dbData, error: dbError } = await supabaseAdmin
       .from('admin_accounts')
       .insert([
-        { id: userId, name, email, role, status }
+        { 
+          id: userId, 
+          name, 
+          email, 
+          role, 
+          status: status || "Aktif",
+          kepengurusan,
+          nama_santri,
+          jenjang_pendidikan,
+          pilihan_kelas,
+          program_pendidikan
+        }
       ])
       .select();
 

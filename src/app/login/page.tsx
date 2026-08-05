@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
@@ -11,6 +11,33 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [loginSuccess, setLoginSuccess] = useState(false);
+
+  // Modal State
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [regName, setRegName] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regRole, setRegRole] = useState<"Admin" | "Wali">("Admin");
+  
+  // Admin specific
+  const [regKepengurusan, setRegKepengurusan] = useState("Pondok Pesantren");
+
+  // Wali Santri specific
+  const [regNamaSantri, setRegNamaSantri] = useState("");
+  const [regJenjang, setRegJenjang] = useState("MA Unggulan Al-Azhar");
+  const [regKelas, setRegKelas] = useState("10");
+  const [regProgram, setRegProgram] = useState("Mondok");
+
+  const [regPassword, setRegPassword] = useState("");
+  const [regConfirmPassword, setRegConfirmPassword] = useState("");
+  const [regLoading, setRegLoading] = useState(false);
+  const [regError, setRegError] = useState("");
+
+  // Update regKelas based on regJenjang dynamically
+  useEffect(() => {
+    if (regJenjang === "MA Unggulan Al-Azhar") setRegKelas("10");
+    else if (regJenjang === "SMP Islam Al-Azhar") setRegKelas("7");
+    else if (regJenjang === "SDIT Al-Azhar") setRegKelas("1");
+  }, [regJenjang]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +79,50 @@ export default function LoginPage() {
       setErrorMsg(error.message || "Email atau password salah.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (regPassword !== regConfirmPassword) {
+      setRegError("Password dan Konfirmasi Password tidak cocok!");
+      return;
+    }
+    
+    setRegLoading(true);
+    setRegError("");
+
+    try {
+      const payload = {
+        name: regName,
+        email: regEmail,
+        password: regPassword,
+        role: regRole,
+        status: "Aktif",
+        kepengurusan: regRole === "Admin" ? regKepengurusan : null,
+        nama_santri: regRole === "Wali" ? regNamaSantri : null,
+        jenjang_pendidikan: regRole === "Wali" ? regJenjang : null,
+        pilihan_kelas: regRole === "Wali" ? regKelas : null,
+        program_pendidikan: regRole === "Wali" ? regProgram : null,
+      };
+
+      const res = await fetch('/api/admin/accounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Gagal membuat akun");
+
+      alert("Akun berhasil dibuat! Silakan login.");
+      setShowRegisterModal(false);
+      // reset form
+      setRegName(""); setRegEmail(""); setRegPassword(""); setRegConfirmPassword(""); setRegNamaSantri("");
+    } catch (err: any) {
+      setRegError(err.message);
+    } finally {
+      setRegLoading(false);
     }
   };
 
@@ -118,11 +189,166 @@ export default function LoginPage() {
             <Link href="/login/santri" className="switch-link">Switch to Santri Login</Link>
             <Link href="#" className="forgot-link">Lupa Password?</Link>
             <p className="register-text">
-              Belum punya akun ? <Link href="/pendaftaran" className="register-link">Buat Akun.</Link>
+              Belum punya akun ? <span onClick={() => setShowRegisterModal(true)} className="register-link" style={{ cursor: 'pointer', fontWeight: 900 }}>Buat Akun.</span>
             </p>
           </div>
         </div>
       </div>
+
+      {/* REGISTRATION MODAL */}
+      {showRegisterModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3 style={{ margin: '0 0 1rem 0', textAlign: 'center', color: '#002147', fontWeight: 800 }}>Buat Akun Baru</h3>
+            
+            {regError && (
+              <div className="login-alert error" style={{ marginBottom: '1rem' }}>
+                ⚠️ {regError}
+              </div>
+            )}
+
+            <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+              <input 
+                type="text" 
+                className="form-input" 
+                placeholder="Nama Pengguna" 
+                required 
+                value={regName}
+                onChange={(e) => setRegName(e.target.value)}
+              />
+              <input 
+                type="email" 
+                className="form-input" 
+                placeholder="Email" 
+                required 
+                value={regEmail}
+                onChange={(e) => setRegEmail(e.target.value)}
+              />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#333' }}>Login Sebagai</label>
+                <select className="form-input" value={regRole} onChange={(e) => setRegRole(e.target.value as "Admin" | "Wali")}>
+                  <option value="Admin">Admin</option>
+                  <option value="Wali">Wali Santri</option>
+                </select>
+              </div>
+
+              {regRole === "Admin" && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#333' }}>Kepengurusan</label>
+                  <select className="form-input" value={regKepengurusan} onChange={(e) => setRegKepengurusan(e.target.value)}>
+                    <option value="Pondok Pesantren">Pondok Pesantren</option>
+                    <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
+                    <option value="SMP Islam Al-Azhar">SMP Islam Al-Azhar</option>
+                    <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
+                  </select>
+                </div>
+              )}
+
+              {regRole === "Wali" && (
+                <>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="Nama Santri" 
+                    required 
+                    value={regNamaSantri}
+                    onChange={(e) => setRegNamaSantri(e.target.value)}
+                  />
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#333' }}>Jenjang</label>
+                      <select className="form-input" value={regJenjang} onChange={(e) => setRegJenjang(e.target.value)}>
+                        <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
+                        <option value="SMP Islam Al-Azhar">SMP Islam Al-Azhar</option>
+                        <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
+                      </select>
+                    </div>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#333' }}>Kelas</label>
+                      <select className="form-input" value={regKelas} onChange={(e) => setRegKelas(e.target.value)}>
+                        {regJenjang === "MA Unggulan Al-Azhar" && (
+                          <>
+                            <option value="10">Kelas 10</option>
+                            <option value="11">Kelas 11</option>
+                            <option value="12">Kelas 12</option>
+                          </>
+                        )}
+                        {regJenjang === "SMP Islam Al-Azhar" && (
+                          <>
+                            <option value="7">Kelas 7</option>
+                            <option value="8">Kelas 8</option>
+                            <option value="9">Kelas 9</option>
+                          </>
+                        )}
+                        {regJenjang === "SDIT Al-Azhar" && (
+                          <>
+                            <option value="1">Kelas 1</option>
+                            <option value="2">Kelas 2</option>
+                            <option value="3">Kelas 3</option>
+                            <option value="4">Kelas 4</option>
+                            <option value="5">Kelas 5</option>
+                            <option value="6">Kelas 6</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#333' }}>Program Pendidikan</label>
+                    <select className="form-input" value={regProgram} onChange={(e) => setRegProgram(e.target.value)}>
+                      <option value="Mondok">Mondok</option>
+                      <option value="Non Mondok">Non Mondok</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              <input 
+                type="password" 
+                className="form-input" 
+                placeholder="Password" 
+                required 
+                minLength={6}
+                value={regPassword}
+                onChange={(e) => setRegPassword(e.target.value)}
+              />
+              <input 
+                type="password" 
+                className="form-input" 
+                placeholder="Konfirmasi Password" 
+                required 
+                minLength={6}
+                value={regConfirmPassword}
+                onChange={(e) => setRegConfirmPassword(e.target.value)}
+              />
+
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                <button 
+                  type="button" 
+                  onClick={() => setShowRegisterModal(false)}
+                  style={{
+                    flex: 1, padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1', 
+                    background: 'white', color: '#475569', fontWeight: 700, cursor: 'pointer'
+                  }}
+                >
+                  Batal
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={regLoading}
+                  style={{
+                    flex: 1, padding: '10px', borderRadius: '6px', border: 'none', 
+                    background: '#4CAF50', color: 'white', fontWeight: 700, cursor: 'pointer'
+                  }}
+                >
+                  {regLoading ? "Memproses..." : "Daftar"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         .login-layout {
@@ -305,6 +531,27 @@ export default function LoginPage() {
           background-color: #f0fdf4;
           border: 1px solid #bbf7d0;
           color: #166534;
+        }
+
+        .modal-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.6);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+          backdrop-filter: blur(4px);
+        }
+        .modal-content {
+          background: white;
+          padding: 2rem;
+          border-radius: 12px;
+          width: 90%;
+          max-width: 450px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+          max-height: 90vh;
+          overflow-y: auto;
         }
       `}</style>
     </main>

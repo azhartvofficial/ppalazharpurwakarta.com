@@ -53,6 +53,11 @@ interface UserAccount {
   status: "Aktif" | "Nonaktif";
   createdAt: string;
   lastLogin: string;
+  kepengurusan?: string;
+  nama_santri?: string;
+  jenjang_pendidikan?: string;
+  pilihan_kelas?: string;
+  program_pendidikan?: string;
 }
 
 function formatNumber(num: number): string {
@@ -251,7 +256,12 @@ export default function AdminDashboardPage() {
           role: d.role,
           status: d.status,
           createdAt: new Date(d.created_at).toISOString().split('T')[0],
-          lastLogin: d.last_login || "-"
+          lastLogin: d.last_login || "-",
+          kepengurusan: d.kepengurusan,
+          nama_santri: d.nama_santri,
+          jenjang_pendidikan: d.jenjang_pendidikan,
+          pilihan_kelas: d.pilihan_kelas,
+          program_pendidikan: d.program_pendidikan
         })));
       }
     } catch (err: any) {
@@ -1749,16 +1759,30 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         </div>
                                       </td>
                                       <td style={{ padding: '12px 8px' }}>
-                                        <span style={{
-                                          fontSize: '0.7rem',
-                                          fontWeight: 800,
-                                          padding: '2px 8px',
-                                          borderRadius: '6px',
-                                          background: acc.role === "Admin" ? 'rgba(0, 33, 71, 0.08)' : 'rgba(255, 140, 0, 0.08)',
-                                          color: acc.role === "Admin" ? '#002147' : '#ff8c00'
-                                        }}>
-                                          {acc.role}
-                                        </span>
+                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.3rem' }}>
+                                          <span style={{
+                                            fontSize: '0.7rem',
+                                            fontWeight: 800,
+                                            padding: '2px 8px',
+                                            borderRadius: '6px',
+                                            background: acc.role === "Admin" ? 'rgba(0, 33, 71, 0.08)' : 'rgba(255, 140, 0, 0.08)',
+                                            color: acc.role === "Admin" ? '#002147' : '#ff8c00'
+                                          }}>
+                                            {acc.role}
+                                          </span>
+                                          {acc.role === "Admin" && acc.kepengurusan && (
+                                            <span style={{ fontSize: '0.65rem', color: '#64748b' }}>
+                                              {acc.kepengurusan}
+                                            </span>
+                                          )}
+                                          {acc.role === "Wali" && acc.nama_santri && (
+                                            <span style={{ fontSize: '0.65rem', color: '#64748b', lineHeight: 1.3 }}>
+                                              Santri: <strong>{acc.nama_santri}</strong><br/>
+                                              {acc.jenjang_pendidikan} - {acc.pilihan_kelas}<br/>
+                                              ({acc.program_pendidikan})
+                                            </span>
+                                          )}
+                                        </div>
                                       </td>
                                       <td style={{ padding: '12px 8px' }}>
                                         <span style={{
