@@ -1054,7 +1054,36 @@ export default function AdminDashboardPage() {
               <h2 className={`${frizQuadrata.className} header-title`}>
                 {activeTab === "overview" && "Aktivitas Web"}
                 {activeTab === "ppdb" && "Manajemen Pendaftaran Santri Baru (PPDB)"}
-                {activeTab === "news" && "Pusat Pengelolaan Berita & Pengumuman"}
+                {activeTab === "news" && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    Pusat Pengelolaan Berita & Pengumuman
+                    <a 
+                      href="/berita" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      title="Buka halaman publik berita"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        color: '#3b82f6',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.2)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.1)'}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                    </a>
+                  </div>
+                )}
                 {activeTab === "docs" && "Pengelolaan Dokumentasi & Galeri Alumni"}
                 {activeTab === "settings" && "Konfigurasi Desain & Informasi Umum"}
                 {activeTab === "accounts" && "Manajemen Data & Hak Akses Pengurus"}
