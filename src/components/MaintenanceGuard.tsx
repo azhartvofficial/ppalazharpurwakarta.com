@@ -64,8 +64,10 @@ export default function MaintenanceGuard({ children }: { children: React.ReactNo
             fontWeight: 800,
             fontSize: '0.9rem',
             position: 'sticky',
-            top: 0,
-            zIndex: 99999,
+            top: '85px',
+            marginTop: '85px',
+            width: '100%',
+            zIndex: 99990,
             boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
           }}>
             ⚠️ WEBSITE SEDANG DALAM MAINTENANCE
