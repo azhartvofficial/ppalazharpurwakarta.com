@@ -196,7 +196,8 @@ export default function AdminDashboardPage() {
   const [newNewsTitle, setNewNewsTitle] = useState("");
   const [newNewsImageSource, setNewNewsImageSource] = useState<"Internal" | "Manual">("Internal");
   const [newNewsImageManualSource, setNewNewsImageManualSource] = useState("");
-  const [newNewsImageUrl, setNewNewsImageUrl] = useState("");
+  const [newNewsImageFile, setNewNewsImageFile] = useState<File | null>(null);
+  const [isUploadingNews, setIsUploadingNews] = useState(false);
   const [newNewsContent, setNewNewsContent] = useState("");
   const [newNewsAttachmentType, setNewNewsAttachmentType] = useState<"" | "PDF" | "Gambar" | "Video Youtube" | "Link Lainnya">("");
   const [newNewsAttachmentUrl, setNewNewsAttachmentUrl] = useState("");
@@ -740,7 +741,30 @@ export default function AdminDashboardPage() {
       return;
     }
 
+    setIsUploadingNews(true);
+    let finalImageUrl = null;
+
     try {
+      if (newNewsImageFile) {
+        const fileExt = newNewsImageFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('berita-images')
+          .upload(filePath, newNewsImageFile);
+
+        if (uploadError) {
+          throw new Error('Gagal mengunggah gambar ke Supabase Storage (pastikan bucket "berita-images" sudah dibuat dan public): ' + uploadError.message);
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from('berita-images')
+          .getPublicUrl(filePath);
+
+        finalImageUrl = publicUrlData.publicUrl;
+      }
+
       const { error } = await supabase
         .from('news_articles')
         .insert([{
@@ -748,7 +772,7 @@ export default function AdminDashboardPage() {
           judul_utama: newNewsTitle,
           sumber_gambar: newNewsImageSource,
           sumber_gambar_manual: newNewsImageSource === 'Manual' ? newNewsImageManualSource : null,
-          gambar_judul_url: newNewsImageUrl || null,
+          gambar_judul_url: finalImageUrl,
           isi_berita: newNewsContent,
           jenis_lampiran_2: newNewsAttachmentType || null,
           lampiran_2_url: newNewsAttachmentUrl || null,
@@ -765,7 +789,7 @@ export default function AdminDashboardPage() {
       // Reset forms
       setNewNewsTitle("");
       setNewNewsContent("");
-      setNewNewsImageUrl("");
+      setNewNewsImageFile(null);
       setNewNewsAttachmentType("");
       setNewNewsAttachmentUrl("");
       setNewNewsAuthor("");
@@ -775,6 +799,8 @@ export default function AdminDashboardPage() {
     } catch (err: any) {
       console.error(err);
       alert("Gagal menambahkan berita: " + (err.message || "Unknown error"));
+    } finally {
+      setIsUploadingNews(false);
     }
   };
 
@@ -2374,13 +2400,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   )}
 
                   <div className="input-group">
-                    <label>URL Gambar Judul (Cover)</label>
+                    <label>Upload Gambar Judul (Cover)</label>
                     <input 
-                      type="url" 
-                      placeholder="https://... (Cloudinary / Unsplash)"
-                      value={newNewsImageUrl}
-                      onChange={(e) => setNewNewsImageUrl(e.target.value)}
+                      type="file" 
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          setNewNewsImageFile(e.target.files[0]);
+                        }
+                      }}
                     />
+                    {newNewsImageFile && <span style={{ fontSize: '0.8rem', color: '#16a34a' }}>File dipilih: {newNewsImageFile.name}</span>}
                   </div>
 
                   <div className="input-group">
@@ -2455,8 +2485,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               </div>
 
               <div className="modal-actions" style={{ marginTop: '1rem' }}>
-                <button type="submit" className="btn-modal-save">Simpan Artikel</button>
-                <button type="button" onClick={() => setShowAddNewsModal(false)} className="btn-modal-cancel">Batal</button>
+                <button type="submit" className="btn-modal-save" disabled={isUploadingNews}>
+                  {isUploadingNews ? "Mengunggah..." : "Simpan Artikel"}
+                </button>
+                <button type="button" onClick={() => setShowAddNewsModal(false)} className="btn-modal-cancel" disabled={isUploadingNews}>Batal</button>
               </div>
             </form>
           </motion.div>
