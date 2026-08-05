@@ -2477,7 +2477,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         }
                       }}
                     />
-                    {newNewsImageFile && <span style={{ fontSize: '0.8rem', color: '#16a34a', marginTop: '0.5rem', display: 'block' }}>File siap diupload: {newNewsImageFile.name}</span>}
+                    {newNewsImageFile && (
+                      <div style={{ marginTop: '0.5rem' }}>
+                        <span style={{ fontSize: '0.8rem', color: '#16a34a', display: 'block', marginBottom: '0.5rem' }}>File siap diupload: {newNewsImageFile.name}</span>
+                        <img src={URL.createObjectURL(newNewsImageFile)} alt="Preview Cover" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+                      </div>
+                    )}
                   </div>
 
                   <div className="input-group">
