@@ -147,10 +147,27 @@ export default function BeritaPage() {
     fetchNews();
   }, []);
 
-  // Use the fetched news or fallback to static if empty for demo
-  const finalNews = dbNews.length > 0 ? dbNews : latestNews;
-  const finalSliderData = dbNews.length > 0 ? dbNews.slice(0, 3) : sliderData;
-  const finalAnnouncements = dbAnnouncements.length > 0 ? dbAnnouncements : announcements;
+  // Hapus fallback mock data, jika kosong ya benar-benar kosong
+  const finalNews = dbNews;
+  
+  // Slider butuh minimal 1 array item agar tidak error NaN saat modulo 0 di setInterval
+  const finalSliderData = dbNews.length > 0 ? dbNews.slice(0, 3) : [{
+    id: 'empty-slider',
+    judul_utama: "Berita Belum Tersedia",
+    title: "Berita Belum Tersedia",
+    kategori: "INFO",
+    created_at: null,
+    gambar_judul_url: "",
+    link: "#"
+  }];
+  
+  const finalAnnouncements = dbAnnouncements.length > 0 ? dbAnnouncements : [{
+    id: 'empty-announcement',
+    judul_utama: "Belum Ada Pengumuman",
+    title: "Belum Ada Pengumuman",
+    created_at: null,
+    date: "-"
+  }];
 
   // Implement Max 24 limit logic
   const limitedNews = finalNews.slice(0, 24);
