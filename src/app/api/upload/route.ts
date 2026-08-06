@@ -37,21 +37,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
-    const privateKey = process.env.GOOGLE_PRIVATE_KEY_BASE64 ? Buffer.from(process.env.GOOGLE_PRIVATE_KEY_BASE64, 'base64').toString('utf8') : null;
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
     let rootFolderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
-    if (!clientEmail || !privateKey || !rootFolderId) {
-      return NextResponse.json({ error: 'Server misconfiguration (Google Drive credentials missing)' }, { status: 500 });
+    if (!clientId || !clientSecret || !refreshToken || !rootFolderId) {
+      return NextResponse.json({ error: 'Server misconfiguration (Google Drive OAuth credentials missing)' }, { status: 500 });
     }
 
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: clientEmail,
-        private_key: privateKey,
-      },
-      scopes: ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive'],
-    });
+    const auth = new google.auth.OAuth2(clientId, clientSecret, 'https://developers.google.com/oauthplayground');
+    auth.setCredentials({ refresh_token: refreshToken });
 
     const drive = google.drive({ version: 'v3', auth });
 
