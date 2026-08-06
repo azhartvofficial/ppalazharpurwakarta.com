@@ -2230,14 +2230,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', margin: 0 }}>Data Identitas Santri</h3>
                       <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Kelola rekam jejak identitas dan dokumen vital santri</span>
                     </div>
-                    {pusatDataSubTab === "data_siswa" && (
-                      <button 
-                        onClick={() => setShowAddPusatDataModal(true)}
-                        style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                      >
-                        <span>+ Tambah Data Siswa</span>
-                      </button>
-                    )}
                   </div>
 
                   {/* Glassmorphic Sub-Navbar for Pusat Data */}
@@ -2392,6 +2384,14 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.2 }}
                         >
+                          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+                            <button 
+                              onClick={() => setShowAddPusatDataModal(true)}
+                              style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                            >
+                              <span>+ Tambah Data Siswa</span>
+                            </button>
+                          </div>
                           {filteredDataSiswa.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
                               <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>🗃️</span>
@@ -2571,10 +2571,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                     <h5 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: wave.is_open ? '#047857' : '#334155' }}>{wave.wave_name}</h5>
                                     <button 
                                       onClick={() => handleDeleteWave(wave.id, wave.wave_name)}
-                                      style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', color: '#ef4444' }}
+                                      style={{ background: '#ef4444', color: '#fff', border: 'none', cursor: 'pointer', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 800 }}
                                       title="Hapus Gelombang"
                                     >
-                                      🗑️
+                                      🗑️ Hapus
                                     </button>
                                   </div>
                                   <span style={{ padding: '4px 8px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, background: wave.is_open ? '#dcfce7' : '#e2e8f0', color: wave.is_open ? '#166534' : '#475569' }}>
