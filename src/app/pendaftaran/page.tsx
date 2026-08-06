@@ -16,64 +16,25 @@ export default function PendaftaranPage() {
     <main className="pendaftaran-layout">
       <Navbar />
 
-      <div className="ppdb-hero">
-        <div className="hero-content">
-          <motion.span 
-            initial={{ opacity: 0, y: 20 }}
+      {/* Hero Header matching Sistem Pendidikan style */}
+      <section className="hero-header">
+        <div className="container">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="hero-badge"
+            transition={{ duration: 0.8 }}
           >
-            PPDB ONLINE 2026/2027
-          </motion.span>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className={`${frizQuadrata.className} hero-title`}
-          >
-            Penerimaan Santri Baru
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="hero-desc"
-          >
-            Mari bergabung bersama keluarga besar Pondok Pesantren Al-Azhar Purwakarta. Wujudkan generasi Rabbani yang berakhlak mulia dan berwawasan global.
-          </motion.p>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            style={{ marginTop: '2rem' }}
-          >
-            <a href="https://alazharpwk.cazh.id/ppdb/ponpes-al-azhar-purwakarta" target="_blank" rel="noopener noreferrer" className="btn-daftar-utama">
-              📝 Masuk ke Portal Pendaftaran (PPDB)
-            </a>
+            <span className="pre-title">PPDB ONLINE 2026/2027</span>
+            <h1 className={frizQuadrata.className}>Penerimaan Santri Baru</h1>
+            <p className="school-name">Pondok Pesantren Al-Azhar Purwakarta</p>
+            <p className="hero-desc">Mari bergabung bersama keluarga besar Pondok Pesantren Al-Azhar Purwakarta. Wujudkan generasi Rabbani yang berakhlak mulia dan berwawasan global.</p>
           </motion.div>
         </div>
-      </div>
+      </section>
 
       <div className="pendaftaran-container">
         
-        {/* PUSDA CTA Section */}
-        <div className="pusda-cta-section">
-          <div className="pusda-content">
-            <div className="pusda-badge">PORTAL PUSDA AZHAR</div>
-            <h2>Sudah Mendaftar PPDB?</h2>
-            <p>Bagi wali santri yang sudah melakukan pendaftaran dan memiliki akun, silakan lengkapi biodata serta dokumen persyaratan administrasi melalui Portal Pusat Data Santri (PUSDA).</p>
-            <Link href="/pusda" className="btn-pusda">
-              <span>Lengkapi Berkas di PUSDA AZHAR</span>
-              <span className="arrow">→</span>
-            </Link>
-          </div>
-          <div className="pusda-image">
-            <span style={{ fontSize: '6rem' }}>📂</span>
-          </div>
-        </div>
-
-        {/* Alur Pendaftaran Section */}
+        {/* Alur Pendaftaran Section (Moved to Top) */}
         <div className="alur-section">
           <div className="section-header">
             <h2 className={`${frizQuadrata.className}`}>Alur Pendaftaran</h2>
@@ -104,6 +65,39 @@ export default function PendaftaranPage() {
             ))}
           </div>
         </div>
+
+        {/* Call to action for PPDB Link */}
+        <div className="ppdb-cta-section text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="ppdb-box"
+          >
+            <span style={{ fontSize: '4rem', display: 'block', marginBottom: '1rem' }}>🎓</span>
+            <h2 style={{ fontSize: '2rem', color: '#002147', fontWeight: 900, marginBottom: '1rem' }}>Siap Mendaftar?</h2>
+            <p style={{ color: '#64748b', marginBottom: '2rem', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 2rem' }}>Klik tombol di bawah ini untuk mengakses sistem PPDB resmi dan memulai proses pendaftaran putra/putri Anda.</p>
+            <a href="https://alazharpwk.cazh.id/ppdb/ponpes-al-azhar-purwakarta" target="_blank" rel="noopener noreferrer" className="btn-daftar-utama">
+              📝 Masuk ke Portal Pendaftaran (PPDB)
+            </a>
+          </motion.div>
+        </div>
+
+        {/* PUSDA CTA Section */}
+        <div className="pusda-cta-section">
+          <div className="pusda-content">
+            <div className="pusda-badge">PORTAL PUSDA AZHAR</div>
+            <h2>Sudah Mendaftar PPDB?</h2>
+            <p>Bagi wali santri yang sudah melakukan pendaftaran dan memiliki akun, silakan lengkapi biodata serta dokumen persyaratan administrasi melalui Portal Pusat Data Santri (PUSDA).</p>
+            <Link href="/pusda" className="btn-pusda">
+              <span>Lengkapi Berkas di PUSDA AZHAR</span>
+              <span className="arrow">→</span>
+            </Link>
+          </div>
+          <div className="pusda-image">
+            <span style={{ fontSize: '6rem' }}>📂</span>
+          </div>
+        </div>
       </div>
 
       <Footer />
@@ -115,49 +109,163 @@ export default function PendaftaranPage() {
           font-family: 'Inter', sans-serif;
         }
 
-        .ppdb-hero {
-          background: url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999215/vdc4p1otuifswwdjx7zt.jpg') center/cover no-repeat;
-          padding: 8rem 2rem 6rem;
+        .hero-header {
+          padding: 12rem 0 6rem;
+          background: linear-gradient(rgba(0, 33, 71, 0.9), rgba(0, 33, 71, 0.8)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999165/qyvcomndxiwejcvzmfsl.png');
+          background-size: cover;
+          background-position: center;
+          background-attachment: fixed;
+          color: white;
           text-align: center;
-          position: relative;
         }
 
-        .ppdb-hero::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background: linear-gradient(180deg, rgba(0,33,71,0.9) 0%, rgba(0,33,71,0.7) 100%);
-        }
-
-        .hero-content {
-          position: relative;
-          z-index: 10;
-          max-width: 800px;
+        .container {
+          max-width: 1200px;
           margin: 0 auto;
+          padding: 0 1.5rem;
         }
 
-        .hero-badge {
-          display: inline-block;
-          background: #ff8c00;
-          color: white;
-          padding: 6px 16px;
-          border-radius: 20px;
-          font-size: 0.8rem;
+        .pre-title {
+          color: var(--secondary, #ff8c00);
+          text-transform: uppercase;
           font-weight: 800;
-          letter-spacing: 1px;
-          margin-bottom: 1.5rem;
-        }
-
-        .hero-title {
-          font-size: 3rem;
-          color: white;
+          letter-spacing: 3px;
+          font-size: 0.9rem;
+          display: block;
           margin-bottom: 1rem;
         }
 
+        .hero-header h1 {
+          font-size: 4rem;
+          font-weight: 900;
+          margin-bottom: 0;
+          line-height: 1.1;
+        }
+
+        .school-name {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: var(--secondary, #ff8c00);
+          margin-top: 1rem;
+          margin-bottom: 2rem;
+          text-transform: uppercase;
+          letter-spacing: 5px;
+          opacity: 0.9;
+        }
+
         .hero-desc {
-          color: #e2e8f0;
-          font-size: 1.1rem;
+          font-size: 1.25rem;
+          max-width: 700px;
+          margin: 0 auto;
+          opacity: 0.8;
           line-height: 1.6;
+        }
+
+        .pendaftaran-container {
+          max-width: 1200px;
+          margin: -3rem auto 5rem;
+          padding: 0 1.5rem;
+          position: relative;
+          z-index: 20;
+        }
+
+        /* Alur Pendaftaran Style */
+        .alur-section {
+          background: white;
+          padding: 4rem;
+          border-radius: 24px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+          margin-bottom: 4rem;
+        }
+
+        .section-header {
+          text-align: center;
+          margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+          font-size: 2.5rem;
+          color: #002147;
+          margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+          color: #64748b;
+          font-size: 1.1rem;
+        }
+
+        .alur-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 2rem;
+          position: relative;
+        }
+
+        .alur-card {
+          background: #f8fafc;
+          padding: 2.5rem 1.5rem;
+          border-radius: 20px;
+          text-align: center;
+          border: 1px solid #e2e8f0;
+          position: relative;
+          transition: transform 0.3s;
+        }
+
+        .alur-card:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+          border-color: #cbd5e1;
+        }
+
+        .step-num {
+          position: absolute;
+          top: -20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #002147;
+          color: white;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          font-weight: 900;
+          font-size: 1.2rem;
+          box-shadow: 0 10px 20px rgba(0,33,71,0.2);
+          border: 4px solid white;
+        }
+
+        .step-icon {
+          font-size: 3rem;
+          margin: 1rem 0;
+        }
+
+        .alur-card h3 {
+          font-size: 1.1rem;
+          color: #0f172a;
+          font-weight: 800;
+          margin-bottom: 0.5rem;
+        }
+
+        .alur-card p {
+          color: #64748b;
+          font-size: 0.85rem;
+          line-height: 1.6;
+        }
+
+        /* PPDB CTA Section */
+        .ppdb-cta-section {
+          margin-bottom: 4rem;
+        }
+
+        .ppdb-box {
+          background: white;
+          padding: 4rem 2rem;
+          border-radius: 24px;
+          border: 2px dashed #cbd5e1;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+          text-align: center;
         }
 
         .btn-daftar-utama {
@@ -181,14 +289,7 @@ export default function PendaftaranPage() {
           border-color: rgba(255,255,255,0.2);
         }
 
-        .pendaftaran-container {
-          max-width: 1200px;
-          margin: -3rem auto 5rem;
-          padding: 0 1.5rem;
-          position: relative;
-          z-index: 20;
-        }
-
+        /* PUSDA CTA Section */
         .pusda-cta-section {
           background: linear-gradient(135deg, #002147 0%, #00122e 100%);
           border-radius: 24px;
@@ -261,87 +362,30 @@ export default function PendaftaranPage() {
           border: 2px dashed rgba(255,255,255,0.1);
         }
 
-        .alur-section {
-          padding-top: 2rem;
+        @media (max-width: 992px) {
+          .hero-header { padding: 10rem 0 5rem; }
+          .hero-header h1 { font-size: 2.8rem; }
         }
 
-        .section-header {
-          text-align: center;
-          margin-bottom: 4rem;
-        }
-
-        .section-header h2 {
-          font-size: 2.5rem;
-          color: #002147;
-          margin-bottom: 0.5rem;
-        }
-
-        .section-header p {
-          color: #64748b;
-          font-size: 1.1rem;
-        }
-
-        .alur-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 2rem;
-          position: relative;
-        }
-
-        .alur-card {
-          background: white;
-          padding: 2.5rem 1.5rem;
-          border-radius: 20px;
-          text-align: center;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-          border: 1px solid #f1f5f9;
-          position: relative;
-          transition: transform 0.3s;
-        }
-
-        .alur-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-        }
-
-        .step-num {
-          position: absolute;
-          top: -20px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: #002147;
-          color: white;
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          font-weight: 900;
-          font-size: 1.2rem;
-          box-shadow: 0 10px 20px rgba(0,33,71,0.2);
-          border: 4px solid #f8fafc;
-        }
-
-        .step-icon {
-          font-size: 3rem;
-          margin: 1rem 0;
-        }
-
-        .alur-card h3 {
-          font-size: 1.1rem;
-          color: #0f172a;
-          font-weight: 800;
-          margin-bottom: 0.5rem;
-        }
-
-        .alur-card p {
-          color: #64748b;
-          font-size: 0.85rem;
-          line-height: 1.6;
-        }
-
-        @media (max-width: 900px) {
+        @media (max-width: 768px) {
+          .hero-header h1 {
+            font-size: clamp(1.8rem, 8vw, 2.5rem);
+            white-space: normal;
+          }
+          .school-name {
+            font-size: clamp(0.65rem, 3.5vw, 1rem);
+            letter-spacing: 2px;
+            white-space: normal;
+          }
+          .hero-desc {
+            display: none;
+          }
+          .alur-section {
+            padding: 3rem 1.5rem;
+          }
+          .alur-grid {
+            grid-template-columns: 1fr;
+          }
           .pusda-cta-section {
             flex-direction: column;
             text-align: center;
@@ -349,9 +393,6 @@ export default function PendaftaranPage() {
           }
           .pusda-image {
             display: none;
-          }
-          .alur-grid {
-            grid-template-columns: 1fr;
           }
         }
       `}</style>
