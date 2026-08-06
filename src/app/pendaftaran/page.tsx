@@ -67,7 +67,7 @@ export default function PendaftaranPage() {
         </div>
 
         {/* Call to action for PPDB Link */}
-        <div className="ppdb-cta-section text-center">
+        <div className="ppdb-cta-section">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -180,7 +180,7 @@ export default function PendaftaranPage() {
 
         .section-header {
           text-align: center;
-          margin-bottom: 4rem;
+          margin-bottom: 3rem;
         }
 
         .section-header h2 {
@@ -196,8 +196,8 @@ export default function PendaftaranPage() {
 
         .alur-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 2rem;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 1.5rem;
           position: relative;
         }
 
@@ -218,10 +218,7 @@ export default function PendaftaranPage() {
         }
 
         .step-num {
-          position: absolute;
-          top: -20px;
-          left: 50%;
-          transform: translateX(-50%);
+          margin: 0 auto 1rem auto;
           background: #002147;
           color: white;
           width: 40px;
@@ -233,7 +230,6 @@ export default function PendaftaranPage() {
           font-weight: 900;
           font-size: 1.2rem;
           box-shadow: 0 10px 20px rgba(0,33,71,0.2);
-          border: 4px solid white;
         }
 
         .step-icon {
@@ -257,6 +253,8 @@ export default function PendaftaranPage() {
         /* PPDB CTA Section */
         .ppdb-cta-section {
           margin-bottom: 4rem;
+          display: flex;
+          justify-content: center;
         }
 
         .ppdb-box {
@@ -266,6 +264,8 @@ export default function PendaftaranPage() {
           border: 2px dashed #cbd5e1;
           box-shadow: 0 10px 30px rgba(0,0,0,0.03);
           text-align: center;
+          max-width: 800px;
+          width: 100%;
         }
 
         .btn-daftar-utama {
