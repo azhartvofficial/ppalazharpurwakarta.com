@@ -213,7 +213,7 @@ export default function PusdaPage() {
     }
   };
 
-  const uploadFile = async (file: File, folderType: string) => {
+  const uploadFile = async (file: File, folderType: string, targetFolderId?: string, forceEndpoint?: string) => {
     const fileExt = file.name.split('.').pop();
     const safeName = formData.nama_lengkap.replace(/\s+/g, '').toUpperCase();
     const fileName = `( ${folderType}_${safeName} ).${fileExt}`;
@@ -221,8 +221,9 @@ export default function PusdaPage() {
     const apiFormData = new FormData();
     apiFormData.append('file', file);
     apiFormData.append('filename', fileName);
+    if (targetFolderId) apiFormData.append('targetFolderId', targetFolderId);
 
-    const endpoint = folderType === 'PASFOTO' ? '/api/upload-cloudinary' : '/api/upload';
+    const endpoint = forceEndpoint ? forceEndpoint : (folderType === 'PASFOTO' ? '/api/upload-cloudinary' : '/api/upload');
     
     const res = await fetch(endpoint, {
       method: 'POST',
