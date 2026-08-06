@@ -239,10 +239,13 @@ export default function AdminDashboardPage() {
   const [loadingPusatData, setLoadingPusatData] = useState(false);
   const [selectedPusatData, setSelectedPusatData] = useState<any | null>(null);
   const [accountsMenuExpanded, setAccountsMenuExpanded] = useState(false);
-  const [loginRequests, setLoginRequests] = useState<LoginRequest[]>([]);
-  const [selectedLoginRequest, setSelectedLoginRequest] = useState<LoginRequest | null>(null);
+  const [loginRequests, setLoginRequests] = useState<any[]>([]);
+  const [selectedLoginRequest, setSelectedLoginRequest] = useState<any | null>(null);
   const [loadingLoginRequests, setLoadingLoginRequests] = useState(false);
   const [errorLoginRequests, setErrorLoginRequests] = useState("");
+  const [selectedLoginRequestIds, setSelectedLoginRequestIds] = useState<string[]>([]);
+  const [loginRequestFilterStatus, setLoginRequestFilterStatus] = useState<string>("Semua");
+  const [loginRequestFilterDate, setLoginRequestFilterDate] = useState<string>("Semua");
 
   const fetchLoginRequests = async () => {
     setLoadingLoginRequests(true);
@@ -261,6 +264,7 @@ export default function AdminDashboardPage() {
           pilihan_kelas: d.pilihan_kelas,
           program_pendidikan: d.program_pendidikan,
           requestedAt: new Date(d.requested_at).toLocaleString('id-ID'),
+          rawDate: new Date(d.requested_at),
           device: d.device,
           status: d.status,
           password: d.password
@@ -571,10 +575,29 @@ export default function AdminDashboardPage() {
         .order('created_at', { ascending: false });
       if (error) throw error;
       if (data) {
-        setNews(data);
+           } else {
+        alert("Gagal mengubah status permintaan: " + (data.error || "Unknown"));
       }
     } catch (err: any) {
-      console.error("Failed to fetch news:", err);
+      console.error(err);
+      alert("Error: " + err.message);
+    }
+  };
+
+  const handleBulkDeleteLoginRequests = async () => {
+    if (selectedLoginRequestIds.length === 0) return;
+    if (!confirm(`Hapus ${selectedLoginRequestIds.length} permintaan yang dipilih?`)) return;
+
+    setLoginRequests(prev => prev.filter(r => !selectedLoginRequestIds.includes(r.id)));
+    try {
+      const { error } = await supabase.from('login_requests').delete().in('id', selectedLoginRequestIds);
+      if (error) throw error;
+      setSelectedLoginRequestIds([]);
+    } catch (err) {
+      console.error("Gagal menghapus:", err);
+      alert("Terjadi kesalahan saat menghapus data.");
+    }
+  }; console.error("Failed to fetch news:", err);
       setErrorNews(err.message || "Failed to fetch news data");
     } finally {
       setLoadingNews(false);
@@ -2622,14 +2645,85 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         {/* Permintaan Login Section */}
                         <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
                           <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002147', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>Permintaan Log Masuk Pengurus</h3>
-                          <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 1.25rem 0', lineHeight: 1.5, textAlign: 'left' }}>
-                            Otorisasi dan tinjau berkas permintaan akses log masuk ke panel administrator dari peranti pengurus lainnya.
-                          </p>
+                          
+                          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.25rem' }}>
+                            <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0, lineHeight: 1.5, maxWidth: '500px' }}>
+                              Otorisasi dan tinjau berkas permintaan akses log masuk ke panel administrator dari peranti pengurus lainnya.
+                            </p>
+                            
+                            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                              <select 
+                                value={loginRequestFilterDate} 
+                                onChange={(e) => setLoginRequestFilterDate(e.target.value)}
+                                style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}
+                              >
+                                <option value="Semua">Semua Tanggal</option>
+                                <option value="Hari Ini">Hari Ini</option>
+                                <option value="Minggu Ini">7 Hari Terakhir</option>
+                                <option value="Bulan Ini">Bulan Ini</option>
+                              </select>
+
+                              <select 
+                                value={loginRequestFilterStatus} 
+                                onChange={(e) => setLoginRequestFilterStatus(e.target.value)}
+                                style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}
+                              >
+                                <option value="Semua">Semua Status</option>
+                                <option value="Pending">Menunggu (Pending)</option>
+                                <option value="Approved">Disetujui (Approved)</option>
+                                <option value="Rejected">Ditolak (Rejected)</option>
+                              </select>
+
+                              {selectedLoginRequestIds.length > 0 && (
+                                <button 
+                                  onClick={handleBulkDeleteLoginRequests}
+                                  style={{ padding: '6px 12px', borderRadius: '8px', border: 'none', background: '#ef4444', color: 'white', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}
+                                >
+                                  Hapus {selectedLoginRequestIds.length} Terpilih
+                                </button>
+                              )}
+                            </div>
+                          </div>
 
                           <div className="table-responsive">
                             <table className="main-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                               <thead>
                                 <tr>
+                                  <th style={{ width: '40px', padding: '12px', textAlign: 'center' }}>
+                                    <input 
+                                      type="checkbox" 
+                                      onChange={(e) => {
+                                        const filtered = loginRequests.filter(req => {
+                                          if (loginRequestFilterStatus !== "Semua" && req.status !== loginRequestFilterStatus) return false;
+                                          if (loginRequestFilterDate !== "Semua") {
+                                            const today = new Date();
+                                            if (loginRequestFilterDate === "Hari Ini" && req.rawDate.toDateString() !== today.toDateString()) return false;
+                                            if (loginRequestFilterDate === "Minggu Ini" && (today.getTime() - req.rawDate.getTime()) > 7*24*60*60*1000) return false;
+                                            if (loginRequestFilterDate === "Bulan Ini" && (req.rawDate.getMonth() !== today.getMonth() || req.rawDate.getFullYear() !== today.getFullYear())) return false;
+                                          }
+                                          return true;
+                                        });
+                                        if (e.target.checked) {
+                                          setSelectedLoginRequestIds(filtered.map(r => r.id));
+                                        } else {
+                                          setSelectedLoginRequestIds([]);
+                                        }
+                                      }}
+                                      checked={
+                                        selectedLoginRequestIds.length > 0 && 
+                                        selectedLoginRequestIds.length === loginRequests.filter(req => {
+                                          if (loginRequestFilterStatus !== "Semua" && req.status !== loginRequestFilterStatus) return false;
+                                          if (loginRequestFilterDate !== "Semua") {
+                                            const today = new Date();
+                                            if (loginRequestFilterDate === "Hari Ini" && req.rawDate.toDateString() !== today.toDateString()) return false;
+                                            if (loginRequestFilterDate === "Minggu Ini" && (today.getTime() - req.rawDate.getTime()) > 7*24*60*60*1000) return false;
+                                            if (loginRequestFilterDate === "Bulan Ini" && (req.rawDate.getMonth() !== today.getMonth() || req.rawDate.getFullYear() !== today.getFullYear())) return false;
+                                          }
+                                          return true;
+                                        }).length
+                                      }
+                                    />
+                                  </th>
                                   <th style={{ textAlign: 'left', padding: '12px' }}>Pemohon</th>
                                   <th style={{ textAlign: 'left', padding: '12px' }}>Detail Akses</th>
                                   <th style={{ textAlign: 'left', padding: '12px' }}>Waktu Pengajuan</th>
@@ -2638,8 +2732,30 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                 </tr>
                               </thead>
                               <tbody>
-                                {loginRequests.map((req, idx) => (
+                                {loginRequests.filter(req => {
+                                  if (loginRequestFilterStatus !== "Semua" && req.status !== loginRequestFilterStatus) return false;
+                                  if (loginRequestFilterDate !== "Semua") {
+                                    const today = new Date();
+                                    if (loginRequestFilterDate === "Hari Ini" && req.rawDate.toDateString() !== today.toDateString()) return false;
+                                    if (loginRequestFilterDate === "Minggu Ini" && (today.getTime() - req.rawDate.getTime()) > 7*24*60*60*1000) return false;
+                                    if (loginRequestFilterDate === "Bulan Ini" && (req.rawDate.getMonth() !== today.getMonth() || req.rawDate.getFullYear() !== today.getFullYear())) return false;
+                                  }
+                                  return true;
+                                }).map((req, idx) => (
                                   <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                    <td style={{ textAlign: 'center', padding: '12px' }}>
+                                      <input 
+                                        type="checkbox" 
+                                        checked={selectedLoginRequestIds.includes(req.id)}
+                                        onChange={(e) => {
+                                          if (e.target.checked) {
+                                            setSelectedLoginRequestIds([...selectedLoginRequestIds, req.id]);
+                                          } else {
+                                            setSelectedLoginRequestIds(selectedLoginRequestIds.filter(id => id !== req.id));
+                                          }
+                                        }}
+                                      />
+                                    </td>
                                     <td style={{ fontWeight: 800, color: 'var(--primary)', padding: '12px' }}>
                                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <span>{req.name}</span>
