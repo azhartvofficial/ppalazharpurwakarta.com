@@ -901,22 +901,28 @@ export default function AdminDashboardPage() {
     return code;
   };
 
-  const handleUpdateRegistrationStatus = async (id: number, currentIsOpen: boolean) => {
-    const newIsOpen = !currentIsOpen;
-    const updatePayload: any = { is_open: newIsOpen };
+  const handleUpdateRegistrationStatus = async (wave: any) => {
+    const newIsOpen = !wave.is_open;
+    const actionText = newIsOpen ? `membuka pendaftaran ${wave.wave_name} dari tanggal ${wave.open_date} sampai ${wave.close_date}` : `menutup pendaftaran ${wave.wave_name}`;
     
-    // Automatically generate new access code when opening
-    if (newIsOpen) {
-      updatePayload.access_code = generateAccessCode();
-    }
+    const confirmAction = window.confirm(`Apakah Anda ingin ${actionText}?`);
+    if (!confirmAction) return;
 
-    try {
-      const { error } = await supabase.from('registration_settings').update(updatePayload).eq('id', id);
-      if (error) throw error;
-      fetchRegistrationSettings();
-    } catch (err: any) {
-      alert("Gagal memperbarui status pendaftaran: " + err.message);
-    }
+    setPendingSuperAdminAction(() => async () => {
+      const updatePayload: any = { is_open: newIsOpen };
+      if (newIsOpen) {
+        updatePayload.access_code = generateAccessCode();
+      }
+
+      try {
+        const { error } = await supabase.from('registration_settings').update(updatePayload).eq('id', wave.id);
+        if (error) throw error;
+        fetchRegistrationSettings();
+      } catch (err: any) {
+        alert("Gagal memperbarui status pendaftaran: " + err.message);
+      }
+    });
+    setShowMasterPasswordPrompt(true);
   };
 
   const handleUpdateRegistrationDates = async (id: number, open_date: string, close_date: string) => {
@@ -924,10 +930,53 @@ export default function AdminDashboardPage() {
       const { error } = await supabase.from('registration_settings').update({ open_date, close_date }).eq('id', id);
       if (error) throw error;
       fetchRegistrationSettings();
-      alert("Berhasil memperbarui tanggal pendaftaran.");
     } catch (err: any) {
       alert("Gagal memperbarui tanggal pendaftaran: " + err.message);
     }
+  };
+
+  const handleAddWave = () => {
+    const waveName = window.prompt("Masukkan nama gelombang pendaftaran baru (contoh: Gelombang 3):");
+    if (!waveName) return;
+
+    const confirmAction = window.confirm(`Apakah Anda yakin ingin menambah gelombang pendaftaran baru: ${waveName}?`);
+    if (!confirmAction) return;
+
+    setPendingSuperAdminAction(() => async () => {
+      try {
+        const newWave = {
+          wave_name: waveName,
+          is_open: false,
+          access_code: generateAccessCode(),
+          open_date: new Date().toISOString().split('T')[0],
+          close_date: new Date().toISOString().split('T')[0]
+        };
+        const { error } = await supabase.from('registration_settings').insert([newWave]);
+        if (error) throw error;
+        fetchRegistrationSettings();
+        alert("Berhasil menambah gelombang baru!");
+      } catch (err: any) {
+        alert("Gagal menambah gelombang: " + err.message);
+      }
+    });
+    setShowMasterPasswordPrompt(true);
+  };
+
+  const handleDeleteWave = (id: number, waveName: string) => {
+    const confirmAction = window.confirm(`Apakah Anda yakin ingin menghapus gelombang ${waveName}? Aksi ini tidak dapat dibatalkan!`);
+    if (!confirmAction) return;
+
+    setPendingSuperAdminAction(() => async () => {
+      try {
+        const { error } = await supabase.from('registration_settings').delete().eq('id', id);
+        if (error) throw error;
+        fetchRegistrationSettings();
+        alert("Berhasil menghapus gelombang!");
+      } catch (err: any) {
+        alert("Gagal menghapus gelombang: " + err.message);
+      }
+    });
+    setShowMasterPasswordPrompt(true);
   };
 
   useEffect(() => {
@@ -2181,12 +2230,14 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', margin: 0 }}>Data Identitas Santri</h3>
                       <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Kelola rekam jejak identitas dan dokumen vital santri</span>
                     </div>
-                    <button 
-                      onClick={() => setShowAddPusatDataModal(true)}
-                      style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                    >
-                      <span>+ Tambah Data Siswa</span>
-                    </button>
+                    {pusatDataSubTab === "data_siswa" && (
+                      <button 
+                        onClick={() => setShowAddPusatDataModal(true)}
+                        style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                      >
+                        <span>+ Tambah Data Siswa</span>
+                      </button>
+                    )}
                   </div>
 
                   {/* Glassmorphic Sub-Navbar for Pusat Data */}
@@ -2497,9 +2548,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     >
                       <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
                         <h4 style={{ margin: '0 0 1rem 0', color: '#002147', fontSize: '1.2rem', fontWeight: 800 }}>Pengaturan Gelombang Pendaftaran</h4>
-                        <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                          Atur ketersediaan pendaftaran PPDB. Saat status diubah menjadi "Tersedia", sistem akan otomatis menghasilkan kode akses baru untuk PUSDA.
-                        </p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
+                          <p style={{ color: '#64748b', fontSize: '0.9rem', maxWidth: '600px', margin: 0 }}>
+                            Atur ketersediaan pendaftaran PPDB. Saat status diubah menjadi "Tersedia", sistem akan otomatis menghasilkan kode akses baru untuk PUSDA.
+                          </p>
+                          <button
+                            onClick={handleAddWave}
+                            style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}
+                          >
+                            <span>+ Tambah Gelombang Baru</span>
+                          </button>
+                        </div>
 
                         {loadingRegistration ? (
                           <div style={{ padding: '2rem', textAlign: 'center' }}>Memuat data pendaftaran...</div>
@@ -2508,7 +2567,16 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             {registrationSettings.map((wave) => (
                               <div key={wave.id} style={{ border: '2px solid', borderColor: wave.is_open ? '#10b981' : '#cbd5e1', borderRadius: '12px', padding: '1.5rem', position: 'relative', background: wave.is_open ? '#f0fdf4' : '#f8fafc' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                  <h5 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: wave.is_open ? '#047857' : '#334155' }}>{wave.wave_name}</h5>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <h5 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: wave.is_open ? '#047857' : '#334155' }}>{wave.wave_name}</h5>
+                                    <button 
+                                      onClick={() => handleDeleteWave(wave.id, wave.wave_name)}
+                                      style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', color: '#ef4444' }}
+                                      title="Hapus Gelombang"
+                                    >
+                                      🗑️
+                                    </button>
+                                  </div>
                                   <span style={{ padding: '4px 8px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, background: wave.is_open ? '#dcfce7' : '#e2e8f0', color: wave.is_open ? '#166534' : '#475569' }}>
                                     {wave.is_open ? 'Tersedia' : 'Tidak Tersedia'}
                                   </span>
@@ -2542,7 +2610,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                 </div>
 
                                 <button
-                                  onClick={() => handleUpdateRegistrationStatus(wave.id, wave.is_open)}
+                                  onClick={() => handleUpdateRegistrationStatus(wave)}
                                   style={{
                                     width: '100%',
                                     padding: '10px',
