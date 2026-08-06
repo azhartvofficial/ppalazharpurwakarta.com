@@ -90,7 +90,7 @@ export default function PusdaPage() {
         const sorted = data.map((c: any) => c.name.common).sort();
         setCountries(sorted);
       })
-      .catch(err => console.error(err));
+      .catch(() => setCountries(["Indonesia", "Malaysia", "Singapura", "Brunei Darussalam", "Arab Saudi", "Mesir", "Turki"]));
   }, []);
 
   // Fetch Regencies when Province changes

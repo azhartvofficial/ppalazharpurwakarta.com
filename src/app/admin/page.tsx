@@ -384,7 +384,7 @@ export default function AdminDashboardPage() {
     fetch("https://restcountries.com/v3.1/all?fields=name").then(res => res.json()).then(data => {
       const sorted = data.map((c: any) => c.name.common).sort();
       setCountries(sorted);
-    }).catch(() => {});
+    }).catch(() => setCountries(["Indonesia", "Malaysia", "Singapura", "Brunei Darussalam", "Arab Saudi", "Mesir", "Turki"]));
   }, []);
 
   // Fetch Regencies when Province changes
