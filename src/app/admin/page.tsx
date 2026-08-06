@@ -984,22 +984,43 @@ export default function AdminDashboardPage() {
       () => {
         setPendingSuperAdminAction(() => async () => {
           const updatePayload: any = { is_open: newIsOpen };
-          if (newIsOpen) {
-            updatePayload.access_code = generateAccessCode();
-          }
 
           try {
             const { error } = await supabase.from('registration_settings').update(updatePayload).eq('id', wave.id);
             if (error) throw error;
             fetchRegistrationSettings();
           } catch (err: any) {
-            openAlert("Gagal memperbarui status pendaftaran: " + err.message);
+            openAlert("Gagal memperbarui status pendaftaran: " + err.message, true);
           }
         });
         setShowMasterPasswordPrompt(true);
       },
       false,
       "Ya, Ubah Status",
+      "Batal"
+    );
+  };
+
+  const handleGenerateAccessCode = async (wave: any) => {
+    openConfirm(
+      "Generate Kode Akses?",
+      `Apakah Anda yakin ingin membuat atau mereset kode akses untuk pendaftaran ${wave.wave_name}?`,
+      () => {
+        setPendingSuperAdminAction(() => async () => {
+          const newCode = generateAccessCode();
+          try {
+            const { error } = await supabase.from('registration_settings').update({ access_code: newCode }).eq('id', wave.id);
+            if (error) throw error;
+            fetchRegistrationSettings();
+            openAlert(`Kode akses baru untuk ${wave.wave_name} berhasil di-generate!`);
+          } catch (err: any) {
+            openAlert("Gagal generate kode akses: " + err.message, true);
+          }
+        });
+        setShowMasterPasswordPrompt(true);
+      },
+      false,
+      "Generate Kode",
       "Batal"
     );
   };
@@ -2690,7 +2711,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                       style={{ background: '#ef4444', color: '#fff', border: 'none', cursor: 'pointer', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 800 }}
                                       title="Hapus Gelombang"
                                     >
-                                      🗑️ Hapus
+                                      ✖ Hapus
                                     </button>
                                   </div>
                                   <span style={{ padding: '4px 8px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, background: wave.is_open ? '#dcfce7' : '#e2e8f0', color: wave.is_open ? '#166534' : '#475569' }}>
@@ -2717,6 +2738,25 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                       style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                                     />
                                   </div>
+                                  
+                                  <button
+                                    onClick={() => handleUpdateRegistrationStatus(wave)}
+                                    style={{
+                                      width: '100%',
+                                      padding: '8px',
+                                      background: wave.is_open ? '#ef4444' : '#10b981',
+                                      color: 'white',
+                                      border: 'none',
+                                      borderRadius: '8px',
+                                      fontWeight: 800,
+                                      cursor: 'pointer',
+                                      transition: 'background 0.2s',
+                                      marginTop: '0.5rem'
+                                    }}
+                                  >
+                                    {wave.is_open ? 'Tutup Pendaftaran' : 'Buka Pendaftaran'}
+                                  </button>
+
                                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginTop: '0.5rem', background: '#fff', padding: '0.75rem', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
                                     <span style={{ color: '#64748b', fontWeight: 700 }}>Kode Akses:</span>
                                     <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: '1rem', color: '#0f172a', letterSpacing: '2px' }}>
@@ -2726,11 +2766,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                 </div>
 
                                 <button
-                                  onClick={() => handleUpdateRegistrationStatus(wave)}
+                                  onClick={() => handleGenerateAccessCode(wave)}
                                   style={{
                                     width: '100%',
                                     padding: '10px',
-                                    background: wave.is_open ? '#ef4444' : '#002147',
+                                    background: '#002147',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '8px',
@@ -2739,7 +2779,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                     transition: 'background 0.2s'
                                   }}
                                 >
-                                  {wave.is_open ? 'Tutup Pendaftaran' : 'Buka Pendaftaran (Generate Kode)'}
+                                  Buka Akses untuk Pendaftaran Ini
                                 </button>
                               </div>
                             ))}
