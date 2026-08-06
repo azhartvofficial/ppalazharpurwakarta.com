@@ -361,7 +361,7 @@ export default function PusdaPage() {
         status: 'Pending'
       };
       // Prevent failure if email_santri is not in DB
-      delete (payload as any).email_santri;
+      
 
       const { error } = await supabase.from('pusat_data_siswa').insert([payload]);
       
