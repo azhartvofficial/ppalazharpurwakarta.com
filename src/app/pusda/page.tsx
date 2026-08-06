@@ -140,8 +140,31 @@ export default function PusdaPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [errorMsg, setErrorMsg] = useState("");
-
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setErrors(prev => {
+      if (Object.keys(prev).length === 0) return prev;
+      const newErrors = { ...prev };
+      if (formData.nama_lengkap) delete newErrors.nama_lengkap;
+      if (formData.tempat_tanggal_lahir) delete newErrors.tempat_tanggal_lahir;
+      if (formData.nik && formData.nik.trim().length === 16) delete newErrors.nik;
+      if (formData.nisn && formData.nisn.trim().length === 10) delete newErrors.nisn;
+      if (formData.nama_ayah) delete newErrors.nama_ayah;
+      if (formData.pekerjaan_ayah) delete newErrors.pekerjaan_ayah;
+      if (formData.nama_ibu) delete newErrors.nama_ibu;
+      if (formData.pekerjaan_ibu) delete newErrors.pekerjaan_ibu;
+      if (formData.no_hp_wali) delete newErrors.no_hp_wali;
+      if (detailAlamat) delete newErrors.detailAlamat;
+      if (pasFotoFile) delete newErrors.pasFotoFile;
+      if (selectedProvId) delete newErrors.provinsi;
+      if (selectedRegId) delete newErrors.kota;
+      if (selectedDistId) delete newErrors.kecamatan;
+      if (selectedCountryName) delete newErrors.negara;
+      if (selectedJenjang) delete newErrors.jenjang;
+      return newErrors;
+    });
+  }, [formData, detailAlamat, pasFotoFile, selectedProvId, selectedRegId, selectedDistId, selectedCountryName, selectedJenjang]);
 
   const capitalizeWords = (str: string) => {
     return str.replace(/\b\w/g, char => char.toUpperCase());

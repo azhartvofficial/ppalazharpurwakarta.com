@@ -327,7 +327,6 @@ export default function AdminDashboardPage() {
     else if (addPusatDataJenjang === "SMP Islam Al-Azhar") setAddPusatDataForm(f => ({...f, kelas: "7"}));
     else if (addPusatDataJenjang === "SDIT Al-Azhar") setAddPusatDataForm(f => ({...f, kelas: "1"}));
   }, [addPusatDataJenjang]);
-
   const getAddPusatDataKelasOptions = () => {
     if (addPusatDataJenjang === "MA Unggulan Al-Azhar") return [10, 11, 12];
     if (addPusatDataJenjang === "SMP Islam Al-Azhar") return [7, 8, 9];
@@ -356,6 +355,28 @@ export default function AdminDashboardPage() {
     ijazah: null as File | null, sktm: null as File | null
   });
   const [isSubmittingAddPusatData, setIsSubmittingAddPusatData] = useState(false);
+
+  useEffect(() => {
+    setAddPusatDataErrors(prev => {
+      if (Object.keys(prev).length === 0) return prev;
+      const newErrors = { ...prev };
+      if (addPusatDataForm.nama_lengkap) delete newErrors.nama_lengkap;
+      if (addPusatDataForm.tempat_tanggal_lahir) delete newErrors.tempat_tanggal_lahir;
+      if (addPusatDataForm.nik && addPusatDataForm.nik.trim().length === 16) delete newErrors.nik;
+      if (addPusatDataForm.nisn && addPusatDataForm.nisn.trim().length === 10) delete newErrors.nisn;
+      if (addPusatDataForm.nama_ayah) delete newErrors.nama_ayah;
+      if (addPusatDataForm.pekerjaan_ayah) delete newErrors.pekerjaan_ayah;
+      if (addPusatDataForm.nama_ibu) delete newErrors.nama_ibu;
+      if (addPusatDataForm.pekerjaan_ibu) delete newErrors.pekerjaan_ibu;
+      if (addPusatDataForm.no_hp_wali) delete newErrors.no_hp_wali;
+      if (addPusatDataDetail) delete newErrors.detailAlamat;
+      if (addPusatDataProvId) delete newErrors.provinsi;
+      if (addPusatDataRegId) delete newErrors.kota;
+      if (addPusatDataDistId) delete newErrors.kecamatan;
+      if (addPusatDataCountry) delete newErrors.negara;
+      return newErrors;
+    });
+  }, [addPusatDataForm, addPusatDataDetail, addPusatDataProvId, addPusatDataRegId, addPusatDataDistId, addPusatDataCountry]);
 
   // Fetch initial data (Provinces & Countries)
   useEffect(() => {
