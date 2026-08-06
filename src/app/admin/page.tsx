@@ -334,6 +334,7 @@ export default function AdminDashboardPage() {
     if (addPusatDataJenjang === "SDIT Al-Azhar") return [1, 2, 3, 4, 5, 6];
     return [];
   };
+  const [addPusatDataErrors, setAddPusatDataErrors] = useState<{[key: string]: string}>({});
   const [addPusatDataIsWNA, setAddPusatDataIsWNA] = useState(false);
   const [addPusatDataProvId, setAddPusatDataProvId] = useState("");
   const [addPusatDataProvName, setAddPusatDataProvName] = useState("");
@@ -389,6 +390,32 @@ export default function AdminDashboardPage() {
 
   const handleAddPusatDataSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newErrors: {[key: string]: string} = {};
+    if (!addPusatDataForm.nama_lengkap) newErrors.nama_lengkap = "Nama lengkap wajib diisi";
+    if (!addPusatDataForm.tempat_tanggal_lahir) newErrors.tempat_tanggal_lahir = "Tempat, tanggal lahir wajib diisi";
+    if (!addPusatDataForm.nik) newErrors.nik = "NIK wajib diisi";
+    if (!addPusatDataForm.nisn) newErrors.nisn = "NISN wajib diisi";
+    if (!addPusatDataForm.nama_ayah) newErrors.nama_ayah = "Nama Ayah wajib diisi";
+    if (!addPusatDataForm.pekerjaan_ayah) newErrors.pekerjaan_ayah = "Pekerjaan Ayah wajib diisi";
+    if (!addPusatDataForm.nama_ibu) newErrors.nama_ibu = "Nama Ibu wajib diisi";
+    if (!addPusatDataForm.pekerjaan_ibu) newErrors.pekerjaan_ibu = "Pekerjaan Ibu wajib diisi";
+    if (!addPusatDataForm.no_hp_wali) newErrors.no_hp_wali = "No HP Wali wajib diisi";
+    if (!addPusatDataDetail) newErrors.detailAlamat = "Detail alamat wajib diisi";
+    if (!addPusatDataIsWNA) {
+      if (!addPusatDataProvId) newErrors.provinsi = "Provinsi wajib dipilih";
+      if (!addPusatDataRegId) newErrors.kota = "Kota/Kabupaten wajib dipilih";
+      if (!addPusatDataDistId) newErrors.kecamatan = "Kecamatan wajib dipilih";
+    } else {
+      if (!addPusatDataCountry) newErrors.negara = "Negara wajib dipilih";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setAddPusatDataErrors(newErrors);
+      openAlert("Mohon lengkapi semua kolom yang wajib diisi!");
+      return;
+    }
+    setAddPusatDataErrors({});
+
     if (!addPusatDataFiles.pas_foto) { openAlert("Pas foto wajib diunggah."); return; }
     if (!addPusatDataFiles.kk) { openAlert("Kartu Keluarga (KK) wajib diunggah."); return; }
     
@@ -6094,7 +6121,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <button onClick={() => setShowAddPusatDataModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
               </div>
               
-              <form onSubmit={handleAddPusatDataSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <form onSubmit={handleAddPusatDataSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Nama Lengkap</label>
@@ -6174,6 +6201,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           <option value="">-- Pilih Provinsi --</option>
                           {provinces.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                         </select>
+                    {addPusatDataErrors.provinsi && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.provinsi}</div>}
                       </div>
                       <div>
                         <label>Kota/Kabupaten</label>
@@ -6181,6 +6209,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           <option value="">-- Pilih Kota/Kabupaten --</option>
                           {regencies.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                         </select>
+                    {addPusatDataErrors.kota && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.kota}</div>}
                       </div>
                       <div>
                         <label>Kecamatan</label>
@@ -6188,6 +6217,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           <option value="">-- Pilih Kecamatan --</option>
                           {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                         </select>
+                    {addPusatDataErrors.kecamatan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.kecamatan}</div>}
                       </div>
                       <div>
                         <label>Kode Pos</label>

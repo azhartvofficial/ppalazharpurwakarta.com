@@ -138,6 +138,7 @@ export default function PusdaPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [errorMsg, setErrorMsg] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -218,11 +219,34 @@ export default function PusdaPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pasFotoFile) {
-      setErrorMsg("Pas Foto wajib diunggah!");
+    const newErrors: {[key: string]: string} = {};
+
+    if (!formData.nama_lengkap) newErrors.nama_lengkap = "Nama lengkap wajib diisi";
+    if (!formData.tempat_tanggal_lahir) newErrors.tempat_tanggal_lahir = "Tempat, tanggal lahir wajib diisi";
+    if (!formData.nik) newErrors.nik = "NIK wajib diisi";
+    if (!formData.nisn) newErrors.nisn = "NISN wajib diisi";
+    if (!formData.nama_ayah) newErrors.nama_ayah = "Nama Ayah wajib diisi";
+    if (!formData.pekerjaan_ayah) newErrors.pekerjaan_ayah = "Pekerjaan Ayah wajib diisi";
+    if (!formData.nama_ibu) newErrors.nama_ibu = "Nama Ibu wajib diisi";
+    if (!formData.pekerjaan_ibu) newErrors.pekerjaan_ibu = "Pekerjaan Ibu wajib diisi";
+    if (!formData.no_hp_wali) newErrors.no_hp_wali = "No HP Wali wajib diisi";
+    if (!detailAlamat) newErrors.detailAlamat = "Detail alamat wajib diisi";
+    if (!pasFotoFile) newErrors.pasFotoFile = "Pas foto wajib diunggah";
+    if (!isWNA) {
+      if (!selectedProvId) newErrors.provinsi = "Provinsi wajib dipilih";
+      if (!selectedRegId) newErrors.kota = "Kota/Kabupaten wajib dipilih";
+      if (!selectedDistId) newErrors.kecamatan = "Kecamatan wajib dipilih";
+    } else {
+      if (!selectedCountryName) newErrors.negara = "Negara wajib dipilih";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setErrorMsg("Mohon lengkapi semua kolom yang wajib diisi!");
       return;
     }
-    
+    setErrors({});
+
     if (formData.nik && formData.nik.trim().length !== 16) {
       setErrorMsg("Perhatian: Nomor Induk Kependudukan (NIK) harus berjumlah tepat 16 digit angka.");
       return;
@@ -244,7 +268,7 @@ export default function PusdaPage() {
       let ijazah_url = null;
       let sktm_url = null;
 
-      pas_foto = await uploadFile(pasFotoFile, "PASFOTO");
+      pas_foto = await uploadFile(pasFotoFile!, "PASFOTO");
       if (kkFile) kk_url = await uploadFile(kkFile, "KK");
       if (akteFile) akte_url = await uploadFile(akteFile, "AKTE");
       if (ijazahFile) ijazah_url = await uploadFile(ijazahFile, "IJAZAH");
@@ -419,7 +443,7 @@ export default function PusdaPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="pusda-form">
+        <form onSubmit={handleSubmit} noValidate className="pusda-form">
           <div className="form-section">
             <h2 className="section-title"><span>1</span> Identitas Utama & Pas Foto</h2>
             
@@ -444,6 +468,7 @@ export default function PusdaPage() {
                 <button type="button" onClick={() => fileInputRef.current?.click()} className="btn-upload-foto">
                   Pilih Foto
                 </button>
+                {errors.pasFotoFile && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.pasFotoFile}</div>}
               </div>
             </div>
 
@@ -451,10 +476,12 @@ export default function PusdaPage() {
               <div className="input-group">
                 <label>Nama Lengkap Santri</label>
                 <input type="text" name="nama_lengkap" required value={formData.nama_lengkap} onChange={handleInputChange} placeholder="Sesuai Akte Kelahiran" />
+                {errors.nama_lengkap && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.nama_lengkap}</div>}
               </div>
               <div className="input-group">
                 <label>Email Peserta Didik (Opsional)</label>
                 <input type="email" name="email_santri" value={formData.email_santri} onChange={handleInputChange} placeholder="Email aktif (opsional)" />
+                {errors.email_santri && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.email_santri}</div>}
               </div>
               <div className="input-group">
                 <label>Jenjang Pendidikan</label>
@@ -463,6 +490,7 @@ export default function PusdaPage() {
                   <option value="SMP Islam Al-Azhar">SMP Islam Al-Azhar</option>
                   <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
                 </select>
+                {errors.jenjang && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.jenjang}</div>}
               </div>
               <div className="input-group">
                 <label>Kelas saat ini</label>
@@ -471,6 +499,7 @@ export default function PusdaPage() {
                     <option key={k} value={k}>Kelas {k}</option>
                   ))}
                 </select>
+                {errors.kelas && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.kelas}</div>}
               </div>
               <div className="input-group">
                 <label>Program Pendidikan</label>
@@ -478,6 +507,7 @@ export default function PusdaPage() {
                   <option value="Mondok">Mondok (Pesantren)</option>
                   <option value="Non Mondok">Non Mondok (Pulang Pergi)</option>
                 </select>
+                {errors.program_pendidikan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.program_pendidikan}</div>}
               </div>
               <div className="input-group">
                 <label>Gender / Jenis Kelamin</label>
@@ -485,18 +515,22 @@ export default function PusdaPage() {
                   <option value="Putra">Putra (Laki-laki)</option>
                   <option value="Putri">Putri (Perempuan)</option>
                 </select>
+                {errors.gender && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.gender}</div>}
               </div>
               <div className="input-group">
                 <label>Tempat, Tanggal Lahir</label>
                 <input type="text" name="tempat_tanggal_lahir" required value={formData.tempat_tanggal_lahir} onChange={handleInputChange} placeholder="Cth: Purwakarta, 17 Agustus 2010" />
+                {errors.tempat_tanggal_lahir && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.tempat_tanggal_lahir}</div>}
               </div>
               <div className="input-group">
                 <label>Nomor Induk Kependudukan (NIK)</label>
                 <input type="number" name="nik" required value={formData.nik} onChange={handleInputChange} placeholder="16 digit angka" />
+                {errors.nik && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.nik}</div>}
               </div>
               <div className="input-group">
                 <label>Nomor Induk Siswa Nasional (NISN)</label>
                 <input type="number" name="nisn" required value={formData.nisn} onChange={handleInputChange} placeholder="10 digit angka" />
+                {errors.nisn && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.nisn}</div>}
               </div>
             </div>
           </div>
@@ -507,22 +541,27 @@ export default function PusdaPage() {
               <div className="input-group">
                 <label>Nama Ayah Kandung</label>
                 <input type="text" name="nama_ayah" required value={formData.nama_ayah} onChange={handleInputChange} />
+                {errors.nama_ayah && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.nama_ayah}</div>}
               </div>
               <div className="input-group">
                 <label>Pekerjaan Ayah</label>
                 <input type="text" name="pekerjaan_ayah" required value={formData.pekerjaan_ayah} onChange={handleInputChange} />
+                {errors.pekerjaan_ayah && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.pekerjaan_ayah}</div>}
               </div>
               <div className="input-group">
                 <label>Nama Ibu Kandung</label>
                 <input type="text" name="nama_ibu" required value={formData.nama_ibu} onChange={handleInputChange} />
+                {errors.nama_ibu && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.nama_ibu}</div>}
               </div>
               <div className="input-group">
                 <label>Pekerjaan Ibu</label>
                 <input type="text" name="pekerjaan_ibu" required value={formData.pekerjaan_ibu} onChange={handleInputChange} />
+                {errors.pekerjaan_ibu && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.pekerjaan_ibu}</div>}
               </div>
               <div className="input-group">
                 <label>No HP/WhatsApp Wali (Aktif)</label>
                 <input type="tel" name="no_hp_wali" required value={formData.no_hp_wali} onChange={handleInputChange} placeholder="08..." />
+                {errors.no_hp_wali && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.no_hp_wali}</div>}
               </div>
             </div>
             <div className="input-group" style={{ marginTop: '1rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
@@ -569,6 +608,7 @@ export default function PusdaPage() {
                       <option value="">-- Pilih Provinsi --</option>
                       {provinces.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
                     </select>
+                {errors.provinsi && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.provinsi}</div>}
                   </div>
                   <div className="input-group">
                     <label>Kota / Kabupaten</label>
@@ -584,6 +624,7 @@ export default function PusdaPage() {
                       <option value="">-- Pilih Kota/Kabupaten --</option>
                       {regencies.map((r: any) => <option key={r.id} value={r.id}>{r.name}</option>)}
                     </select>
+                {errors.kota && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.kota}</div>}
                   </div>
                   <div className="input-group">
                     <label>Kecamatan</label>
@@ -599,6 +640,7 @@ export default function PusdaPage() {
                       <option value="">-- Pilih Kecamatan --</option>
                       {districts.map((d: any) => <option key={d.id} value={d.id}>{d.name}</option>)}
                     </select>
+                {errors.kecamatan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.kecamatan}</div>}
                   </div>
                   <div className="input-group">
                     <label>Kode Pos (Opsional)</label>
@@ -616,6 +658,7 @@ export default function PusdaPage() {
                   rows={2} 
                   placeholder="Contoh: Desa Margasari, Jl. Pramuka RT 01/RW 02, Gg. Kenanga No. 15"
                 ></textarea>
+                {errors.detailAlamat && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.detailAlamat}</div>}
               </div>
             </div>
           </div>
