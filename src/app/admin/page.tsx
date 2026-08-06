@@ -517,6 +517,8 @@ export default function AdminDashboardPage() {
       console.error(err);
       openAlert("Terjadi kesalahan: " + err.message);
     } finally {
+      setCompressionStatus("");
+      setCompressionProgress(0);
       setIsSubmittingAddPusatData(false);
     }
   };

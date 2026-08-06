@@ -215,21 +215,22 @@ export default function PusdaPage() {
 
   const uploadFile = async (file: File, folderType: string) => {
     const fileExt = file.name.split('.').pop();
-    const fileName = `${folderType}_${Date.now()}.${fileExt}`;
-    const folderPath = `Kelas_${formData.kelas}/${formData.gender}/${formData.nama_lengkap.replace(/\s+/g, '_')}`;
+    const safeName = formData.nama_lengkap.replace(/\s+/g, '').toUpperCase();
+    const fileName = `( ${folderType}_${safeName} ).${fileExt}`;
     
     const apiFormData = new FormData();
     apiFormData.append('file', file);
     apiFormData.append('filename', fileName);
-    apiFormData.append('folderPath', folderPath);
 
-    const res = await fetch('/api/upload', {
+    const endpoint = folderType === 'PASFOTO' ? '/api/upload-cloudinary' : '/api/upload';
+    
+    const res = await fetch(endpoint, {
       method: 'POST',
       body: apiFormData,
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Gagal mengunggah file ke Google Drive');
+    if (!res.ok) throw new Error(data.error || 'Gagal mengunggah file');
       
     return data.url;
   };
@@ -375,6 +376,8 @@ export default function PusdaPage() {
     } catch (err: any) {
       setErrorMsg(err.message || "Terjadi kesalahan saat mengunggah data.");
     } finally {
+      setCompressionStatus("");
+      setCompressionProgress(0);
       setIsSubmitting(false);
     }
   };
@@ -760,7 +763,9 @@ export default function PusdaPage() {
 
           <button type="submit" disabled={isSubmitting} className="btn-submit-pusda">
             {isSubmitting ? (
-              <span className="loading-text">Sedang Mengenkripsi & Mengunggah Data...</span>
+              <span className="loading-text">
+                {compressionStatus ? `${compressionStatus} (${compressionProgress}%)` : "Sedang Mengenkripsi & Mengunggah Data..."}
+              </span>
             ) : (
               "Kirim ke Pusat Data"
             )}
