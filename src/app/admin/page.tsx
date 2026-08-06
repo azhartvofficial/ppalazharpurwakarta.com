@@ -296,6 +296,7 @@ export default function AdminDashboardPage() {
   
   // Registration Settings states
   const [registrationSettings, setRegistrationSettings] = useState<any[]>([]);
+  const [draftDates, setDraftDates] = useState<Record<number, { open_date: string, close_date: string }>>({});
   const [loadingRegistration, setLoadingRegistration] = useState(false);
 
   // Pusat Data Filters
@@ -974,66 +975,108 @@ export default function AdminDashboardPage() {
     return code;
   };
 
-  const handleUpdateRegistrationStatus = async (wave: any) => {
-    const newIsOpen = !wave.is_open;
-    const actionText = newIsOpen ? `membuka pendaftaran ${wave.wave_name} dari tanggal ${wave.open_date} sampai ${wave.close_date}` : `menutup pendaftaran ${wave.wave_name}`;
-    
-    openConfirm(
-      "Ubah Status Pendaftaran?",
-      `Apakah Anda ingin ${actionText}?`,
-      () => {
-        setPendingSuperAdminAction(() => async () => {
-          const updatePayload: any = { is_open: newIsOpen };
+  const handleRegistrationMainAction = async (wave: any) => {
+    const isModified = draftDates[wave.id] && (draftDates[wave.id].open_date !== wave.open_date || draftDates[wave.id].close_date !== wave.close_date);
+    const draftOpen = draftDates[wave.id]?.open_date ?? wave.open_date;
+    const draftClose = draftDates[wave.id]?.close_date ?? wave.close_date;
 
-          try {
-            const { error } = await supabase.from('registration_settings').update(updatePayload).eq('id', wave.id);
-            if (error) throw error;
-            fetchRegistrationSettings();
-          } catch (err: any) {
-            openAlert("Gagal memperbarui status pendaftaran: " + err.message, true);
-          }
-        });
-        setShowMasterPasswordPrompt(true);
-      },
-      false,
-      "Ya, Ubah Status",
-      "Batal"
-    );
-  };
-
-  const handleGenerateAccessCode = async (wave: any) => {
-    openConfirm(
-      "Generate Kode Akses?",
-      `Apakah Anda yakin ingin membuat atau mereset kode akses untuk pendaftaran ${wave.wave_name}?`,
-      () => {
-        setPendingSuperAdminAction(() => async () => {
-          const newCode = generateAccessCode();
-          try {
-            const { error } = await supabase.from('registration_settings').update({ access_code: newCode }).eq('id', wave.id);
-            if (error) throw error;
-            fetchRegistrationSettings();
-            openAlert(`Kode akses baru untuk ${wave.wave_name} berhasil di-generate!`);
-          } catch (err: any) {
-            openAlert("Gagal generate kode akses: " + err.message, true);
-          }
-        });
-        setShowMasterPasswordPrompt(true);
-      },
-      false,
-      "Generate Kode",
-      "Batal"
-    );
-  };
-
-  const handleUpdateRegistrationDates = async (id: number, open_date: string, close_date: string) => {
-    try {
-      const { error } = await supabase.from('registration_settings').update({ open_date, close_date }).eq('id', id);
-      if (error) throw error;
-      fetchRegistrationSettings();
-    } catch (err: any) {
-      openAlert("Gagal memperbarui tanggal pendaftaran: " + err.message);
+    if (isModified) {
+      openConfirm(
+        "Simpan Perubahan Tanggal?",
+        `Apakah Anda yakin ingin menyimpan perubahan tanggal pendaftaran untuk ${wave.wave_name}?`,
+        () => {
+          setPendingSuperAdminAction(() => async () => {
+            try {
+              const { error } = await supabase.from('registration_settings').update({ open_date: draftOpen, close_date: draftClose }).eq('id', wave.id);
+              if (error) throw error;
+              fetchRegistrationSettings();
+              setDraftDates(prev => { const next = { ...prev }; delete next[wave.id]; return next; });
+              openAlert("Perubahan tanggal berhasil disimpan!");
+            } catch (err: any) {
+              openAlert("Gagal menyimpan tanggal: " + err.message, true);
+            }
+          });
+          setShowMasterPasswordPrompt(true);
+        },
+        false,
+        "Simpan",
+        "Batal"
+      );
+    } else {
+      const newIsOpen = !wave.is_open;
+      const actionText = newIsOpen ? `membuka pendaftaran ${wave.wave_name} dari tanggal ${draftOpen} sampai ${draftClose}` : `menutup pendaftaran ${wave.wave_name}`;
+      
+      openConfirm(
+        "Ubah Status Pendaftaran?",
+        `Apakah Anda ingin ${actionText}?`,
+        () => {
+          setPendingSuperAdminAction(() => async () => {
+            try {
+              const { error } = await supabase.from('registration_settings').update({ is_open: newIsOpen }).eq('id', wave.id);
+              if (error) throw error;
+              fetchRegistrationSettings();
+            } catch (err: any) {
+              openAlert("Gagal memperbarui status pendaftaran: " + err.message, true);
+            }
+          });
+          setShowMasterPasswordPrompt(true);
+        },
+        false,
+        "Ya, Ubah Status",
+        "Batal"
+      );
     }
   };
+
+  const handleToggleAccessCode = async (wave: any) => {
+    const hasCode = !!wave.access_code;
+    
+    if (hasCode) {
+      openConfirm(
+        "Tutup Akses PUSDA?",
+        `Apakah Anda yakin ingin menutup akses Pusat Data untuk pendaftaran ${wave.wave_name}? Kode akses akan dihapus.`,
+        () => {
+          setPendingSuperAdminAction(() => async () => {
+            try {
+              const { error } = await supabase.from('registration_settings').update({ access_code: null }).eq('id', wave.id);
+              if (error) throw error;
+              fetchRegistrationSettings();
+              openAlert(`Akses Pusat Data untuk ${wave.wave_name} berhasil ditutup!`);
+            } catch (err: any) {
+              openAlert("Gagal menutup akses: " + err.message, true);
+            }
+          });
+          setShowMasterPasswordPrompt(true);
+        },
+        true,
+        "Ya, Tutup Akses",
+        "Batal"
+      );
+    } else {
+      openConfirm(
+        "Buka Akses PUSDA?",
+        `Apakah Anda yakin ingin membuat kode akses baru untuk membuka pendaftaran Pusat Data pada ${wave.wave_name}?`,
+        () => {
+          setPendingSuperAdminAction(() => async () => {
+            const newCode = generateAccessCode();
+            try {
+              const { error } = await supabase.from('registration_settings').update({ access_code: newCode }).eq('id', wave.id);
+              if (error) throw error;
+              fetchRegistrationSettings();
+              openAlert(`Akses Pusat Data dibuka! Kode akses untuk ${wave.wave_name} berhasil di-generate!`);
+            } catch (err: any) {
+              openAlert("Gagal generate kode akses: " + err.message, true);
+            }
+          });
+          setShowMasterPasswordPrompt(true);
+        },
+        false,
+        "Ya, Buka Akses",
+        "Batal"
+      );
+    }
+  };
+
 
   const handleAddWave = () => {
     openPrompt(
@@ -2701,7 +2744,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           <div style={{ padding: '2rem', textAlign: 'center' }}>Memuat data pendaftaran...</div>
                         ) : (
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                            {registrationSettings.map((wave) => (
+                            {registrationSettings.map((wave) => {
+                              const isModified = draftDates[wave.id] && (draftDates[wave.id].open_date !== wave.open_date || draftDates[wave.id].close_date !== wave.close_date);
+                              const draftOpen = draftDates[wave.id]?.open_date ?? wave.open_date;
+                              const draftClose = draftDates[wave.id]?.close_date ?? wave.close_date;
+                              
+                              return (
                               <div key={wave.id} style={{ border: '2px solid', borderColor: wave.is_open ? '#10b981' : '#cbd5e1', borderRadius: '12px', padding: '1.5rem', position: 'relative', background: wave.is_open ? '#f0fdf4' : '#f8fafc' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -2724,8 +2772,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                     <span style={{ color: '#64748b' }}>Tanggal Buka:</span>
                                     <input 
                                       type="date" 
-                                      value={wave.open_date || ''} 
-                                      onChange={(e) => handleUpdateRegistrationDates(wave.id, e.target.value, wave.close_date)}
+                                      value={draftOpen || ''} 
+                                      onChange={(e) => setDraftDates(prev => ({ ...prev, [wave.id]: { open_date: e.target.value, close_date: draftClose } }))}
                                       style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                                     />
                                   </div>
@@ -2733,18 +2781,18 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                     <span style={{ color: '#64748b' }}>Tanggal Tutup:</span>
                                     <input 
                                       type="date" 
-                                      value={wave.close_date || ''} 
-                                      onChange={(e) => handleUpdateRegistrationDates(wave.id, wave.open_date, e.target.value)}
+                                      value={draftClose || ''} 
+                                      onChange={(e) => setDraftDates(prev => ({ ...prev, [wave.id]: { open_date: draftOpen, close_date: e.target.value } }))}
                                       style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                                     />
                                   </div>
                                   
                                   <button
-                                    onClick={() => handleUpdateRegistrationStatus(wave)}
+                                    onClick={() => handleRegistrationMainAction(wave)}
                                     style={{
                                       width: '100%',
                                       padding: '8px',
-                                      background: wave.is_open ? '#ef4444' : '#10b981',
+                                      background: isModified ? '#f59e0b' : (wave.is_open ? '#ef4444' : '#10b981'),
                                       color: 'white',
                                       border: 'none',
                                       borderRadius: '8px',
@@ -2754,23 +2802,28 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                       marginTop: '0.5rem'
                                     }}
                                   >
-                                    {wave.is_open ? 'Tutup Pendaftaran' : 'Buka Pendaftaran'}
+                                    {isModified ? 'Simpan Perubahan' : (wave.is_open ? 'Tutup Pendaftaran' : 'Buka Pendaftaran')}
                                   </button>
 
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginTop: '0.5rem', background: '#fff', padding: '0.75rem', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
-                                    <span style={{ color: '#64748b', fontWeight: 700 }}>Kode Akses:</span>
-                                    <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: '1rem', color: '#0f172a', letterSpacing: '2px' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', marginTop: '0.5rem', background: '#fff', padding: '0.75rem', borderRadius: '8px', border: wave.access_code ? '1px solid #10b981' : '1px dashed #cbd5e1' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                      <span style={{ color: '#64748b', fontWeight: 700 }}>Kode Akses:</span>
+                                      <span style={{ fontSize: '0.75rem', color: wave.access_code ? '#047857' : '#ef4444', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        {wave.access_code ? '✅ Akses Terbuka' : '🔒 Akses Tertutup'}
+                                      </span>
+                                    </div>
+                                    <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: '1.25rem', color: wave.access_code ? '#047857' : '#94a3b8', letterSpacing: '2px' }}>
                                       {wave.access_code || '-'}
                                     </span>
                                   </div>
                                 </div>
 
                                 <button
-                                  onClick={() => handleGenerateAccessCode(wave)}
+                                  onClick={() => handleToggleAccessCode(wave)}
                                   style={{
                                     width: '100%',
                                     padding: '10px',
-                                    background: '#002147',
+                                    background: wave.access_code ? '#ef4444' : '#002147',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '8px',
@@ -2779,10 +2832,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                     transition: 'background 0.2s'
                                   }}
                                 >
-                                  Buka Akses untuk Pendaftaran Ini
+                                  {wave.access_code ? 'Tutup Akses ke PUSDA' : 'Buka Akses untuk Pendaftaran Ini'}
                                 </button>
                               </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         )}
                       </div>
