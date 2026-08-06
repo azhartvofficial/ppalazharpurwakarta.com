@@ -338,7 +338,7 @@ export default function PusdaPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             kelas: `Kelas ${formData.kelas}`,
-            gender: formData.jenis_kelamin,
+            gender: formData.gender,
             nama_lengkap: formData.nama_lengkap
           })
         });
