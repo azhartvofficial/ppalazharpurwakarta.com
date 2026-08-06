@@ -1,10 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { supabase } from "@/lib/supabase";
 import localFont from "next/font/local";
 
 const frizQuadrata = localFont({
@@ -13,61 +12,6 @@ const frizQuadrata = localFont({
 });
 
 export default function PendaftaranPage() {
-  // Form states
-  const [nama, setNama] = useState("");
-  const [email, setEmail] = useState("");
-  const [noHp, setNoHp] = useState("");
-  const [jenjang, setJenjang] = useState("");
-  const [password, setPassword] = useState("");
-  
-  // UX states
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrorMsg("");
-
-    try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            nama_lengkap: nama,
-            no_hp: noHp,
-            jenjang: jenjang,
-          }
-        }
-      });
-
-      if (authError) throw new Error(authError.message);
-
-      const { error: dbError } = await supabase
-        .from("pendaftaran")
-        .insert([{
-          nama_lengkap: nama,
-          email: email.toLowerCase(),
-          no_hp: noHp,
-          jenjang: jenjang,
-          status: "Pending"
-        }]);
-
-      if (dbError) console.warn("Database insert warning:", dbError.message);
-
-      setSuccess(true);
-      window.scrollTo(0, 0);
-      setNama(""); setEmail(""); setNoHp(""); setJenjang(""); setPassword("");
-    } catch (error: any) {
-      setErrorMsg(error.message || "Terjadi kesalahan saat pendaftaran.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <main className="pendaftaran-layout">
       <Navbar />
@@ -97,143 +41,67 @@ export default function PendaftaranPage() {
           >
             Mari bergabung bersama keluarga besar Pondok Pesantren Al-Azhar Purwakarta. Wujudkan generasi Rabbani yang berakhlak mulia dan berwawasan global.
           </motion.p>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            style={{ marginTop: '2rem' }}
+          >
+            <a href="https://alazharpwk.cazh.id/ppdb/ponpes-al-azhar-purwakarta" target="_blank" rel="noopener noreferrer" className="btn-daftar-utama">
+              📝 Masuk ke Portal Pendaftaran (PPDB)
+            </a>
+          </motion.div>
         </div>
       </div>
 
       <div className="pendaftaran-container">
-        <div className="pendaftaran-grid">
-          
-          {/* Left Column: Information & PUSDA Block */}
-          <div className="info-column">
-            <div className="info-card welcome-card">
-              <h3>Kenapa Memilih Al-Azhar?</h3>
-              <ul>
-                <li><span className="icon">🕌</span> Pendidikan Karakter Islami yang Kuat</li>
-                <li><span className="icon">📚</span> Kurikulum Terpadu Nasional & Pesantren</li>
-                <li><span className="icon">🎯</span> Fasilitas Belajar Mengajar yang Modern</li>
-                <li><span className="icon">🏆</span> Tenaga Pengajar Profesional & Berpengalaman</li>
-              </ul>
-            </div>
-
-            <div className="info-card pusda-card">
-              <div className="pusda-badge">PORTAL PUSDA AZHAR</div>
-              <h3>Sudah Mendaftar?</h3>
-              <p>Bagi wali santri yang sudah memiliki akun dan mendaftarkan putra/putrinya, silakan lengkapi biodata dan dokumen persyaratan melalui Portal Pusat Data Santri (PUSDA).</p>
-              <Link href="/pusda" className="btn-pusda">
-                <span>Lengkapi Berkas di PUSDA AZHAR</span>
-                <span className="arrow">→</span>
-              </Link>
-            </div>
+        
+        {/* PUSDA CTA Section */}
+        <div className="pusda-cta-section">
+          <div className="pusda-content">
+            <div className="pusda-badge">PORTAL PUSDA AZHAR</div>
+            <h2>Sudah Mendaftar PPDB?</h2>
+            <p>Bagi wali santri yang sudah melakukan pendaftaran dan memiliki akun, silakan lengkapi biodata serta dokumen persyaratan administrasi melalui Portal Pusat Data Santri (PUSDA).</p>
+            <Link href="/pusda" className="btn-pusda">
+              <span>Lengkapi Berkas di PUSDA AZHAR</span>
+              <span className="arrow">→</span>
+            </Link>
           </div>
+          <div className="pusda-image">
+            <span style={{ fontSize: '6rem' }}>📂</span>
+          </div>
+        </div>
 
-          {/* Right Column: Registration Form */}
-          <div className="form-column">
-            <AnimatePresence mode="wait">
-              {!success ? (
-                <motion.div 
-                  key="form-card"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="pendaftaran-card"
-                >
-                  <div className="card-header">
-                    <h2>Buat Akun Pendaftaran</h2>
-                    <p>Isi formulir di bawah ini untuk memulai langkah pendaftaran.</p>
-                  </div>
-
-                  {errorMsg && (
-                    <motion.div 
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      className="error-alert"
-                    >
-                      ⚠️ {errorMsg}
-                    </motion.div>
-                  )}
-
-                  <form onSubmit={handleSubmit} className="pendaftaran-form">
-                    <div className="input-group">
-                      <label htmlFor="nama">Nama Lengkap Calon Santri</label>
-                      <input type="text" id="nama" placeholder="Contoh: Muhammad Akhyar" required value={nama} onChange={(e) => setNama(e.target.value)} />
-                    </div>
-
-                    <div className="input-group">
-                      <label htmlFor="email">Alamat E-Mail Aktif</label>
-                      <input type="email" id="email" placeholder="Contoh: santri@alazharpwk.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
-                    </div>
-
-                    <div className="input-row">
-                      <div className="input-group">
-                        <label htmlFor="noHp">No WhatsApp Wali</label>
-                        <input type="tel" id="noHp" placeholder="081234567890" required value={noHp} onChange={(e) => setNoHp(e.target.value)} />
-                      </div>
-
-                      <div className="input-group">
-                        <label htmlFor="jenjang">Pilihan Jenjang</label>
-                        <select id="jenjang" required value={jenjang} onChange={(e) => setJenjang(e.target.value)}>
-                          <option value="">-- Pilih Jenjang --</option>
-                          <option value="TKIT">TKIT Al-Azhar</option>
-                          <option value="SDIT">SDIT Al-Azhar</option>
-                          <option value="SMP">SMP Al-Azhar</option>
-                          <option value="MA">Madrasah Aliyah Al-Azhar</option>
-                          <option value="Ponpes">Pondok Pesantren (Tahfidz)</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="input-group">
-                      <label htmlFor="password">Password Akun</label>
-                      <div style={{ position: 'relative', width: '100%' }}>
-                        <input 
-                          type={showPassword ? "text" : "password"}
-                          id="password" placeholder="Minimal 6 karakter" required minLength={6}
-                          value={password} onChange={(e) => setPassword(e.target.value)}
-                          style={{ paddingRight: '40px' }}
-                        />
-                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="btn-show-pwd">
-                          {showPassword ? '👁️‍🗨️' : '👁️'}
-                        </button>
-                      </div>
-                      <span className="helper-text">Digunakan untuk login ke Dashboard Pendaftaran.</span>
-                    </div>
-
-                    <button type="submit" className={`btn-submit ${isLoading ? "loading" : ""}`} disabled={isLoading}>
-                      {isLoading ? <span className="spinner"></span> : "Daftar Sekarang"}
-                    </button>
-                  </form>
-
-                  <div className="card-footer">
-                    <p>Sudah punya akun? <Link href="/login" className="login-link">Masuk di sini</Link></p>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div 
-                  key="success-card"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="pendaftaran-card success-card"
-                >
-                  <div className="success-icon">🎉</div>
-                  <h2 className={`${frizQuadrata.className} success-title`}>Pendaftaran Berhasil!</h2>
-                  <p className="success-msg">Akun calon santri Anda telah didaftarkan.</p>
-                  
-                  <div className="next-steps">
-                    <h3>Langkah Selanjutnya:</h3>
-                    <ul>
-                      <li>📧 Periksa E-Mail Anda untuk memverifikasi akun.</li>
-                      <li>📁 Buka Portal PUSDA untuk melengkapi biodata dan berkas.</li>
-                      <li>📱 Panitia PPDB akan menghubungi Anda via WhatsApp.</li>
-                    </ul>
-                  </div>
-
-                  <div className="success-actions">
-                    <Link href="/pusda" className="btn-success-main">Lengkapi Berkas (PUSDA)</Link>
-                    <Link href="/login" className="btn-success-login">Masuk Dashboard</Link>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+        {/* Alur Pendaftaran Section */}
+        <div className="alur-section">
+          <div className="section-header">
+            <h2 className={`${frizQuadrata.className}`}>Alur Pendaftaran</h2>
+            <p>Langkah demi langkah proses penerimaan santri baru Pondok Pesantren Al-Azhar Purwakarta.</p>
+          </div>
+          
+          <div className="alur-grid">
+            {[
+              { num: 1, icon: "📝", title: "Pendaftaran", desc: "Isi formulir pendaftaran di laman portal web pendaftaran PPDB dengan data lengkap dan akurat." },
+              { num: 2, icon: "💳", title: "Pembayaran", desc: "Jika ada biaya pendaftaran, lakukan pembayaran melalui layanan transfer Bank atau Minimarket." },
+              { num: 3, icon: "🔍", title: "Proses Seleksi", desc: "Lembaga pendidikan akan melakukan proses seleksi dan prosesnya dapat dipantau secara real time." },
+              { num: 4, icon: "📢", title: "Pengumuman", desc: "Hasil penerimaan peserta didik baru dapat dicek secara online dengan memasukkan nomor pendaftaran." },
+              { num: 5, icon: "🤝", title: "Daftar Ulang", desc: "Peserta yang dinyatakan Diterima wajib melakukan daftar ulang sebagai tanda konfirmasi." }
+            ].map((step, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="alur-card"
+              >
+                <div className="step-num">{step.num}</div>
+                <div className="step-icon">{step.icon}</div>
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
@@ -249,7 +117,7 @@ export default function PendaftaranPage() {
 
         .ppdb-hero {
           background: url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999215/vdc4p1otuifswwdjx7zt.jpg') center/cover no-repeat;
-          padding: 8rem 2rem 5rem;
+          padding: 8rem 2rem 6rem;
           text-align: center;
           position: relative;
         }
@@ -292,6 +160,27 @@ export default function PendaftaranPage() {
           line-height: 1.6;
         }
 
+        .btn-daftar-utama {
+          display: inline-block;
+          background: #10b981;
+          color: white;
+          padding: 1.25rem 2.5rem;
+          border-radius: 50px;
+          font-size: 1.1rem;
+          font-weight: 900;
+          text-decoration: none;
+          box-shadow: 0 15px 30px rgba(16,185,129,0.3);
+          transition: all 0.3s ease;
+          border: 2px solid transparent;
+        }
+
+        .btn-daftar-utama:hover {
+          background: #059669;
+          transform: translateY(-3px);
+          box-shadow: 0 20px 40px rgba(16,185,129,0.4);
+          border-color: rgba(255,255,255,0.2);
+        }
+
         .pendaftaran-container {
           max-width: 1200px;
           margin: -3rem auto 5rem;
@@ -300,84 +189,55 @@ export default function PendaftaranPage() {
           z-index: 20;
         }
 
-        .pendaftaran-grid {
-          display: grid;
-          grid-template-columns: 1fr 1.3fr;
-          gap: 2rem;
-          align-items: flex-start;
-        }
-
-        .info-card {
-          background: white;
-          padding: 2rem;
-          border-radius: 20px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-          margin-bottom: 1.5rem;
-          border: 1px solid #f1f5f9;
-        }
-
-        .welcome-card h3 {
-          font-size: 1.25rem;
-          color: #002147;
-          font-weight: 800;
-          margin-bottom: 1.25rem;
-        }
-
-        .welcome-card ul {
-          list-style: none;
-          padding: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .welcome-card li {
+        .pusda-cta-section {
+          background: linear-gradient(135deg, #002147 0%, #00122e 100%);
+          border-radius: 24px;
+          padding: 3rem;
           display: flex;
           align-items: center;
-          gap: 12px;
-          font-size: 0.95rem;
-          color: #475569;
-          font-weight: 500;
+          justify-content: space-between;
+          box-shadow: 0 20px 40px rgba(0,33,71,0.15);
+          margin-bottom: 5rem;
         }
 
-        .pusda-card {
-          background: linear-gradient(135deg, #002147 0%, #00122e 100%);
+        .pusda-content {
+          max-width: 600px;
           color: white;
-          border: none;
         }
 
         .pusda-badge {
           background: rgba(255,140,0,0.2);
           color: #ff8c00;
-          font-size: 0.7rem;
+          font-size: 0.75rem;
           font-weight: 800;
-          padding: 4px 10px;
+          padding: 6px 14px;
           border-radius: 12px;
           display: inline-block;
           margin-bottom: 1rem;
           border: 1px solid rgba(255,140,0,0.3);
+          letter-spacing: 1px;
         }
 
-        .pusda-card h3 {
-          font-size: 1.4rem;
-          font-weight: 800;
-          margin-bottom: 0.5rem;
+        .pusda-content h2 {
+          font-size: 2.2rem;
+          font-weight: 900;
+          margin-bottom: 1rem;
         }
 
-        .pusda-card p {
+        .pusda-content p {
           color: #cbd5e1;
-          font-size: 0.9rem;
-          line-height: 1.5;
-          margin-bottom: 1.5rem;
+          font-size: 1.05rem;
+          line-height: 1.6;
+          margin-bottom: 2rem;
         }
 
         .btn-pusda {
-          display: flex;
+          display: inline-flex;
           align-items: center;
-          justify-content: space-between;
+          gap: 1rem;
           background: #ff8c00;
           color: white;
-          padding: 1rem 1.25rem;
+          padding: 1rem 1.5rem;
           border-radius: 12px;
           text-decoration: none;
           font-weight: 800;
@@ -390,250 +250,107 @@ export default function PendaftaranPage() {
           box-shadow: 0 10px 20px rgba(255,140,0,0.2);
         }
 
-        .btn-pusda .arrow {
-          font-size: 1.2rem;
-        }
-
-        .pendaftaran-card {
-          background: white;
-          padding: 2.5rem;
-          border-radius: 20px;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-          border: 1px solid #e2e8f0;
-        }
-
-        .card-header h2 {
-          font-size: 1.6rem;
-          color: #002147;
-          font-weight: 900;
-          margin-bottom: 0.5rem;
-        }
-
-        .card-header p {
-          color: #64748b;
-          font-size: 0.95rem;
-          margin-bottom: 2rem;
-        }
-
-        .error-alert {
-          background: #fef2f2;
-          border: 1px solid #fca5a5;
-          color: #991b1b;
-          padding: 1rem;
-          border-radius: 10px;
-          font-size: 0.9rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .pendaftaran-form {
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
-        }
-
-        .input-row {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 1.25rem;
-        }
-
-        .input-group {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-
-        .input-group label {
-          font-size: 0.85rem;
-          font-weight: 700;
-          color: #334155;
-        }
-
-        .input-group input, 
-        .input-group select {
-          padding: 0.85rem 1rem;
-          border: 1px solid #cbd5e1;
-          border-radius: 10px;
-          font-size: 0.95rem;
-          background: #f8fafc;
-          transition: all 0.2s ease;
-          width: 100%;
-          box-sizing: border-box;
-        }
-
-        .input-group input:focus, 
-        .input-group select:focus {
-          outline: none;
-          border-color: #002147;
-          background: white;
-          box-shadow: 0 0 0 3px rgba(0,33,71,0.1);
-        }
-
-        .btn-show-pwd {
-          position: absolute;
-          right: 12px;
-          top: 50%;
-          transform: translateY(-50%);
-          background: none;
-          border: none;
-          cursor: pointer;
-          font-size: 1rem;
-          color: #64748b;
+        .pusda-image {
+          background: rgba(255,255,255,0.05);
+          width: 200px;
+          height: 200px;
+          border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
+          border: 2px dashed rgba(255,255,255,0.1);
         }
 
-        .helper-text {
-          font-size: 0.75rem;
-          color: #64748b;
+        .alur-section {
+          padding-top: 2rem;
         }
 
-        .btn-submit {
-          padding: 1rem;
-          background: #002147;
-          color: white;
-          border: none;
-          border-radius: 10px;
-          font-weight: 800;
-          font-size: 1rem;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          margin-top: 1rem;
-          display: flex;
-          justify-content: center;
-        }
-
-        .btn-submit:hover:not(:disabled) {
-          background: #003a7a;
-          transform: translateY(-2px);
-          box-shadow: 0 10px 20px rgba(0,33,71,0.15);
-        }
-
-        .spinner {
-          width: 20px;
-          height: 20px;
-          border: 3px solid rgba(255,255,255,0.3);
-          border-radius: 50%;
-          border-top-color: white;
-          animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .card-footer {
-          margin-top: 1.5rem;
+        .section-header {
           text-align: center;
-          font-size: 0.9rem;
-          color: #64748b;
+          margin-bottom: 4rem;
         }
 
-        .login-link {
+        .section-header h2 {
+          font-size: 2.5rem;
           color: #002147;
-          font-weight: 800;
-          text-decoration: none;
-        }
-
-        .login-link:hover {
-          color: #ff8c00;
-          text-decoration: underline;
-        }
-
-        .success-card {
-          text-align: center;
-          padding: 3rem;
-        }
-
-        .success-icon {
-          font-size: 4rem;
-          margin-bottom: 1rem;
-        }
-
-        .success-title {
-          font-size: 2rem;
-          color: #10b981;
           margin-bottom: 0.5rem;
         }
 
-        .success-msg {
+        .section-header p {
           color: #64748b;
-          margin-bottom: 2rem;
+          font-size: 1.1rem;
         }
 
-        .next-steps {
-          background: #f8fafc;
-          padding: 1.5rem;
-          border-radius: 12px;
-          text-align: left;
-          margin-bottom: 2rem;
-          border: 1px solid #e2e8f0;
+        .alur-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 2rem;
+          position: relative;
         }
 
-        .next-steps h3 {
-          font-size: 1rem;
-          color: #0f172a;
-          margin-bottom: 1rem;
+        .alur-card {
+          background: white;
+          padding: 2.5rem 1.5rem;
+          border-radius: 20px;
+          text-align: center;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+          border: 1px solid #f1f5f9;
+          position: relative;
+          transition: transform 0.3s;
         }
 
-        .next-steps ul {
-          list-style: none;
-          padding: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 0.8rem;
-          font-size: 0.9rem;
-          color: #475569;
+        .alur-card:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.06);
         }
 
-        .success-actions {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .btn-success-main {
-          background: #ff8c00;
+        .step-num {
+          position: absolute;
+          top: -20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #002147;
           color: white;
-          padding: 1rem;
-          border-radius: 10px;
-          text-decoration: none;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          font-weight: 900;
+          font-size: 1.2rem;
+          box-shadow: 0 10px 20px rgba(0,33,71,0.2);
+          border: 4px solid #f8fafc;
+        }
+
+        .step-icon {
+          font-size: 3rem;
+          margin: 1rem 0;
+        }
+
+        .alur-card h3 {
+          font-size: 1.1rem;
+          color: #0f172a;
           font-weight: 800;
-          transition: all 0.2s;
+          margin-bottom: 0.5rem;
         }
 
-        .btn-success-main:hover {
-          background: #e67e22;
-          transform: translateY(-2px);
-        }
-
-        .btn-success-login {
-          background: #f1f5f9;
-          color: #334155;
-          padding: 1rem;
-          border-radius: 10px;
-          text-decoration: none;
-          font-weight: 800;
-          border: 1px solid #e2e8f0;
-          transition: all 0.2s;
-        }
-
-        .btn-success-login:hover {
-          background: #e2e8f0;
+        .alur-card p {
+          color: #64748b;
+          font-size: 0.85rem;
+          line-height: 1.6;
         }
 
         @media (max-width: 900px) {
-          .pendaftaran-grid {
-            grid-template-columns: 1fr;
+          .pusda-cta-section {
+            flex-direction: column;
+            text-align: center;
+            gap: 2rem;
           }
-          .info-column {
-            order: 2;
+          .pusda-image {
+            display: none;
           }
-          .form-column {
-            order: 1;
-          }
-          .input-row {
+          .alur-grid {
             grid-template-columns: 1fr;
           }
         }
