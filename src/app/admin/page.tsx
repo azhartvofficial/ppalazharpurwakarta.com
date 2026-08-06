@@ -83,7 +83,7 @@ function formatNumber(num: number): string {
 }
 
 export default function AdminDashboardPage() {
-  const [activeTab, setActiveTab] = useState<"overview" | "ppdb" | "news" | "docs" | "settings" | "accounts">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "ppdb" | "news" | "docs" | "settings" | "accounts" | "pusatdata">("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activePriorityModal, setActivePriorityModal] = useState<"santri" | "pendaftaran" | "azlearn" | null>(null);
 
@@ -231,7 +231,12 @@ export default function AdminDashboardPage() {
   const [showAddPhotoModal, setShowAddPhotoModal] = useState(false);
 
   // Accounts sub-tab and login requests states
-  const [accountsSubTab, setAccountsSubTab] = useState<"kelola_akun" | "kelola_data" | "permintaan_login">("kelola_akun");
+  const [accountsSubTab, setAccountsSubTab] = useState<"kelola_akun" | "permintaan_login">("kelola_akun");
+  
+  // Pusat Data Siswa states
+  const [pusatData, setPusatData] = useState<any[]>([]);
+  const [loadingPusatData, setLoadingPusatData] = useState(false);
+  const [selectedPusatData, setSelectedPusatData] = useState<any | null>(null);
   const [accountsMenuExpanded, setAccountsMenuExpanded] = useState(false);
   const [loginRequests, setLoginRequests] = useState<LoginRequest[]>([]);
   const [selectedLoginRequest, setSelectedLoginRequest] = useState<LoginRequest | null>(null);
@@ -713,10 +718,24 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const fetchPusatData = async () => {
+    setLoadingPusatData(true);
+    try {
+      const { data, error } = await supabase.from('pusat_data_siswa').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      if (data) setPusatData(data);
+    } catch (err: any) {
+      console.warn("Table pusat_data_siswa not available yet.");
+    } finally {
+      setLoadingPusatData(false);
+    }
+  };
+
   useEffect(() => {
     fetchPpdbData();
     fetchVisitorStats();
     fetchNewsData();
+    fetchPusatData();
   }, []);
 
   // Handle status changes in Supabase
@@ -986,11 +1005,19 @@ export default function AdminDashboardPage() {
             </button>
             
             <button 
+              className={`nav-item ${activeTab === "pusatdata" ? "active" : ""}`}
+              onClick={() => { setActiveTab("pusatdata"); setSidebarOpen(false); }}
+              style={{ color: 'white' }}
+            >
+              <span className="nav-icon"></span> <span>Pusat Data Siswa</span>
+            </button>
+            
+            <button 
               className={`nav-item ${activeTab === "accounts" ? "active" : ""}`}
               onClick={() => { setActiveTab("accounts"); setSidebarOpen(false); }}
               style={{ color: 'white' }}
             >
-              <span className="nav-icon"></span> <span>Manajemen Data</span>
+              <span className="nav-icon"></span> <span>Kelola Akun</span>
             </button>
             
             <button 
@@ -1097,7 +1124,8 @@ export default function AdminDashboardPage() {
                 )}
                 {activeTab === "docs" && "Pengelolaan Dokumentasi & Galeri Alumni"}
                 {activeTab === "settings" && "Konfigurasi Desain & Informasi Umum"}
-                {activeTab === "accounts" && "Manajemen Data & Hak Akses Pengurus"}
+                {activeTab === "accounts" && "Kelola Data & Hak Akses Pengurus"}
+                {activeTab === "pusatdata" && "Pusat Data Siswa & Dokumen"}
               </h2>
             </div>
           </header>
@@ -1827,6 +1855,89 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 </motion.div>
               )}
 
+              {/* TAB: PUSAT DATA SISWA */}
+              {activeTab === "pusatdata" && (
+                <motion.div
+                  key="pusatdata"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  className="tab-content"
+                >
+                  <div className="accounts-header-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', margin: 0 }}>Data Identitas Santri</h3>
+                      <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Kelola rekam jejak identitas dan dokumen vital santri</span>
+                    </div>
+                  </div>
+
+                  {loadingPusatData ? (
+                    <div className="loader" style={{ textAlign: 'center', padding: '2rem' }}>Memuat data...</div>
+                  ) : pusatData.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                      <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>🗃️</span>
+                      <h4 style={{ color: '#002147', marginBottom: '0.5rem' }}>Belum ada data siswa</h4>
+                      <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Data siswa yang diisi melalui portal PUSDA AZHAR akan muncul di sini.</p>
+                    </div>
+                  ) : (
+                    <div className="table-responsive" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.25rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', overflowX: 'auto' }}>
+                      <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                        <thead>
+                          <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Foto</th>
+                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Nama / Kelas</th>
+                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>TTL</th>
+                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>NIK / NISN</th>
+                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Dokumen</th>
+                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', textAlign: 'center' }}>Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {pusatData.map((siswa) => {
+                            const docCount = [siswa.kk_url, siswa.akte_url, siswa.ijazah_url, siswa.sktm_url].filter(Boolean).length;
+                            return (
+                              <tr key={siswa.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' }}>
+                                <td style={{ padding: '1rem' }}>
+                                  <img src={siswa.pas_foto} alt={siswa.nama_lengkap} style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #e2e8f0' }} />
+                                </td>
+                                <td style={{ padding: '1rem' }}>
+                                  <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem' }}>{siswa.nama_lengkap}</div>
+                                  <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>{siswa.kelas} • {siswa.gender}</div>
+                                </td>
+                                <td style={{ padding: '1rem', fontSize: '0.85rem', color: '#334155' }}>
+                                  {siswa.tempat_tanggal_lahir}
+                                </td>
+                                <td style={{ padding: '1rem' }}>
+                                  <div style={{ fontSize: '0.85rem', color: '#334155' }}><span style={{ fontWeight: 700 }}>NIK:</span> {siswa.nik}</div>
+                                  <div style={{ fontSize: '0.85rem', color: '#334155' }}><span style={{ fontWeight: 700 }}>NISN:</span> {siswa.nisn}</div>
+                                </td>
+                                <td style={{ padding: '1rem' }}>
+                                  <span style={{ 
+                                    padding: '4px 8px', 
+                                    borderRadius: '20px', 
+                                    fontSize: '0.75rem', 
+                                    fontWeight: 800, 
+                                    background: docCount === 4 ? '#dcfce7' : docCount > 0 ? '#fef3c7' : '#fee2e2',
+                                    color: docCount === 4 ? '#166534' : docCount > 0 ? '#92400e' : '#991b1b'
+                                  }}>
+                                    {docCount}/4 Berkas
+                                  </span>
+                                </td>
+                                <td style={{ padding: '1rem', textAlign: 'center' }}>
+                                  <button onClick={() => setSelectedPusatData(siswa)} style={{ padding: '6px 12px', background: '#e0f2fe', color: '#0369a1', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>
+                                    Detail
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
               {/* TAB 6: ACCOUNTS & DATA OPERATIONS */}
               {activeTab === "accounts" && (
                 <motion.div
@@ -1866,24 +1977,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     >
                       Kelola Akun
                     </button>
-                    <button
-                      onClick={() => setAccountsSubTab("kelola_data")}
-                      className={`sub-nav-btn ${accountsSubTab === "kelola_data" ? "active" : ""}`}
-                      style={{
-                        padding: '8px 18px',
-                        border: 'none',
-                        background: accountsSubTab === "kelola_data" ? 'transparent' : 'transparent',
-                        backgroundColor: accountsSubTab === "kelola_data" ? 'var(--primary)' : 'transparent',
-                        color: accountsSubTab === "kelola_data" ? '#fff' : 'var(--primary)',
-                        fontWeight: 800,
-                        borderRadius: '8px',
-                        fontSize: '0.8rem',
-                        cursor: 'pointer',
-                        transition: 'all 0.25s ease'
-                      }}
-                    >
-                      Kelola Data
-                    </button>
+
                     <button
                       onClick={() => setAccountsSubTab("permintaan_login")}
                       className={`sub-nav-btn ${accountsSubTab === "permintaan_login" ? "active" : ""}`}
@@ -2287,7 +2381,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                           </div>
                                           {newAccConfirmPassword && newAccPassword !== newAccConfirmPassword && (
                                             <span style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '0.2rem', fontWeight: 600 }}>
-                                              ⚠️ Konfirmasi password tidak cocok dengan password di atas!
+                                              Konfirmasi password tidak cocok dengan password di atas!
                                             </span>
                                           )}
                                         </div>
@@ -2316,76 +2410,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       </motion.div>
                     )}
 
-                    {accountsSubTab === "kelola_data" && (
-                      <motion.div
-                        key="kelola_data"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        style={{ maxWidth: '750px' }}
-                      >
-                        {/* Database Operations & Backup Section */}
-                        <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-                          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002147', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>Operasi Tabel & Salinan Data (Backup)</h3>
-                          <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 1.25rem 0', lineHeight: 1.5, textAlign: 'left' }}>
-                            Kelola volume baris tabel database PostgreSQL di Supabase dan buat salinan cadangan instan untuk keamanan berkas data portal pesantren.
-                          </p>
 
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                            {[
-                              { name: "visitor_logs", desc: "Log aktivitas Web Analytics", count: totalVisitors || 1482, status: "Tersinkronisasi" },
-                              { name: "pendaftaran", desc: "Data formulir pendaftaran santri baru (PPDB)", count: pendaftaran.length || 8, status: "Tersinkronisasi" },
-                              { name: "berita", desc: "Artikel warta & kabar berita pesantren", count: news.length || 3, status: "Tersimpan" },
-                              { name: "galeri_dokumentasi", desc: "Galeri foto & dokumentasi dokumenter alumni", count: photos.length || 3, status: "Tersimpan" }
-                            ].map((tbl, idx) => (
-                              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '0.75rem 1rem' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0f172a', fontFamily: 'monospace' }}>{tbl.name}</span>
-                                  <span style={{ fontSize: '0.7rem', color: '#64748b' }}>{tbl.desc}</span>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <span style={{ fontSize: '0.75rem', fontWeight: 900, background: '#e0f2fe', color: '#0369a1', padding: '0.15rem 0.5rem', borderRadius: '5px' }}>{tbl.count} baris</span>
-                                  <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#10b981' }}>● {tbl.status}</span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            <button 
-                              onClick={() => {
-                                const backupData = {
-                                  timestamp: new Date().toISOString(),
-                                  visitorsCount: totalVisitors,
-                                  registrations: pendaftaran,
-                                  newsCount: news.length,
-                                  photosCount: photos.length
-                                };
-                                const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement("a");
-                                a.href = url;
-                                a.download = `backup_alazhar_${new Date().toISOString().split('T')[0]}.json`;
-                                a.click();
-                                alert("Ekspor file cadangan berhasil diunduh!");
-                              }}
-                              style={{ flex: 1, padding: '0.75rem', background: '#ff8c00', color: 'white', fontWeight: 700, border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s', textAlign: 'center' }}
-                            >
-                              Unduh Berkas Cadangan (JSON)
-                            </button>
-                            <button 
-                              onClick={() => {
-                                alert("Optimalisasi indeks tabel PostgreSQL berhasil dijalankan!");
-                              }}
-                              style={{ flex: 0.8, padding: '0.75rem', background: '#f1f5f9', border: '1px solid #cbd5e1', color: '#334155', fontWeight: 700, borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', transition: 'all 0.2s' }}
-                            >
-                              Optimalkan Indeks
-                            </button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
 
                     {accountsSubTab === "permintaan_login" && (
                       <motion.div
@@ -2512,6 +2537,90 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           </div>
         </section>
       </div>
+
+      {/* MODAL: PREVIEW PUSAT DATA SISWA */}
+      {selectedPusatData && (
+        <div className="modal-overlay">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            style={{
+              background: '#ffffff',
+              borderRadius: '20px',
+              padding: '2rem',
+              width: '90%',
+              maxWidth: '800px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', borderBottom: '2px solid #f1f5f9', paddingBottom: '1rem' }}>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', margin: 0 }}>Detail Identitas Santri</h3>
+              <button onClick={() => setSelectedPusatData(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#94a3b8' }}>✕</button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '2rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <img src={selectedPusatData.pas_foto} alt="Pas Foto" style={{ width: '150px', height: '150px', borderRadius: '16px', objectFit: 'cover', border: '3px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                <span style={{ background: '#e0f2fe', color: '#0369a1', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800 }}>{selectedPusatData.kelas}</span>
+              </div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Nama Lengkap</span>
+                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.nama_lengkap}</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Gender</span>
+                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.gender}</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Tempat, Tanggal Lahir</span>
+                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.tempat_tanggal_lahir}</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>NIK / NISN</span>
+                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.nik} / {selectedPusatData.nisn}</span>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: '2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', background: '#f8fafc', padding: '1.5rem', borderRadius: '16px' }}>
+              <div>
+                <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#002147', marginBottom: '1rem' }}>Data Orang Tua & Wali</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Nama Ayah</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.nama_ayah} ({selectedPusatData.pekerjaan_ayah})</span></div>
+                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Nama Ibu</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.nama_ibu} ({selectedPusatData.pekerjaan_ibu})</span></div>
+                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>No HP Wali</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.no_hp_wali}</span></div>
+                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Alamat Lengkap</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.alamat}</span></div>
+                </div>
+              </div>
+              <div>
+                <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#002147', marginBottom: '1rem' }}>Dokumen Pendukung</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                  {[{name: 'Kartu Keluarga', url: selectedPusatData.kk_url}, {name: 'Akte Kelahiran', url: selectedPusatData.akte_url}, {name: 'Ijazah Terakhir', url: selectedPusatData.ijazah_url}, {name: 'SKTM (Jika Ada)', url: selectedPusatData.sktm_url}].map((doc, i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>{doc.name}</span>
+                      {doc.url ? (
+                        <a href={doc.url} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', background: '#002147', color: 'white', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontWeight: 800 }}>Lihat</a>
+                      ) : (
+                        <span style={{ fontSize: '0.75rem', background: '#fef2f2', color: '#ef4444', padding: '4px 10px', borderRadius: '6px', fontWeight: 800 }}>Kosong</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+              <button onClick={() => setSelectedPusatData(null)} style={{ padding: '0.8rem 2rem', background: '#f1f5f9', color: '#334155', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer' }}>
+                Tutup Preview
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* MODAL 1: ADD NEWS */}
       {showAddNewsModal && (

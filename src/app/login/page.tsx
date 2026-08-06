@@ -363,7 +363,7 @@ export default function LoginPage() {
               </div>
               {regConfirmPassword && regPassword !== regConfirmPassword && (
                 <span style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '-0.3rem', marginBottom: '0.2rem', display: 'block', textAlign: 'left', fontWeight: 600 }}>
-                  ⚠️ Konfirmasi password tidak cocok dengan password di atas!
+                  Konfirmasi password tidak cocok dengan password di atas!
                 </span>
               )}
 
