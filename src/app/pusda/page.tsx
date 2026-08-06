@@ -604,6 +604,15 @@ export default function PusdaPage() {
             </div>
           </div>
 
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '1.5rem', marginBottom: '1.5rem', padding: '1rem', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #bbf7d0' }}>
+            <input type="checkbox" id="pusdaValidationCheck" required style={{ width: '1.25rem', height: '1.25rem', cursor: 'pointer' }} />
+            <label htmlFor="pusdaValidationCheck" style={{ color: '#166534', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer' }}>
+              Saya yakin bahwa data yang saya masukkan sudah benar
+            </label>
+          </div>
+
           <button type="submit" disabled={isSubmitting} className="btn-submit-pusda">
             {isSubmitting ? (
               <span className="loading-text">Sedang Mengenkripsi & Mengunggah Data...</span>

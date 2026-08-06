@@ -124,34 +124,73 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Confirm Modal State
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    confirmText?: string;
+    cancelText?: string;
+    isDanger?: boolean;
+  }>({
+    isOpen: false, title: "", message: "", onConfirm: () => {}, confirmText: "Ya", cancelText: "Batal", isDanger: false
+  });
+
+  const openConfirm = (title: string, message: string, onConfirm: () => void, isDanger: boolean = false, confirmText: string = "Ya", cancelText: string = "Batal") => {
+    setConfirmModal({
+      isOpen: true, title, message, onConfirm: () => { setConfirmModal(prev => ({ ...prev, isOpen: false })); onConfirm(); }, confirmText, cancelText, isDanger
+    });
+  };
+
+  // Prompt Modal State
+  const [promptModal, setPromptModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    placeholder: string;
+    onConfirm: (val: string) => void;
+    confirmText?: string;
+    cancelText?: string;
+  }>({
+    isOpen: false, title: "", message: "", placeholder: "", onConfirm: () => {}, confirmText: "Simpan", cancelText: "Batal"
+  });
+  const [promptValue, setPromptValue] = useState("");
+
+  const openPrompt = (title: string, message: string, placeholder: string, onConfirm: (val: string) => void, confirmText: string = "Simpan", cancelText: string = "Batal") => {
+    setPromptValue("");
+    setPromptModal({
+      isOpen: true, title, message, placeholder, onConfirm: (val) => { setPromptModal(prev => ({ ...prev, isOpen: false })); onConfirm(val); }, confirmText, cancelText
+    });
+  };
+
   const toggleMaintenanceMode = async () => {
     const nextState = !maintenanceMode;
     
     // Konfirmasi
-    if (nextState) {
-      const confirmActivate = window.confirm("Apakah Anda yakin ingin mengaktifkan Maintenance Mode? Seluruh akses pengunjung dan akun lain akan diputus seketika.");
-      if (!confirmActivate) return;
-    } else {
-      const confirmDeactivate = window.confirm("Apakah Anda yakin ingin mematikan Maintenance Mode? Akses website akan kembali normal.");
-      if (!confirmDeactivate) return;
-    }
-    
-    setPendingSuperAdminAction(() => async () => {
-      try {
-        await fetch('/api/settings', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    const title = nextState ? "Aktifkan Maintenance Mode?" : "Matikan Maintenance Mode?";
+    const message = nextState 
+      ? "Apakah Anda yakin ingin mengaktifkan Maintenance Mode? Seluruh akses pengunjung dan akun lain akan diputus seketika."
+      : "Apakah Anda yakin ingin mematikan Maintenance Mode? Akses website akan kembali normal.";
+
+    openConfirm(title, message, () => {
+      setPendingSuperAdminAction(() => async () => {
+        try {
+          await fetch('/api/settings', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
           body: JSON.stringify({ maintenanceMode: nextState }),
         });
         window.location.reload();
-      } catch (error) {
-        console.error("Error saving maintenance state:", error);
-        alert("Gagal menyimpan status maintenance.");
-      }
-    });
-    setShowMasterPasswordPrompt(true);
+        } catch (err) {
+          console.error("Error saving maintenance settings:", err);
+          alert("Gagal menyimpan pengaturan Maintenance Mode.");
+        }
+      });
+      setShowMasterPasswordPrompt(true);
+    }, nextState);
   };
 
   const [topPages, setTopPages] = useState<any[]>([
@@ -592,39 +631,47 @@ export default function AdminDashboardPage() {
   };
 
   const handleDeleteAccount = async (id: string) => {
-    if (!confirm("Hapus akun ini secara permanen dari sistem beserta data autentikasinya?")) return;
-    
-    const currentAccount = userAccounts.find(a => a.id === id);
-    const isSuperAdminAction = currentAccount?.role === "Super Admin";
+    openConfirm(
+      "Hapus Akun?",
+      "Hapus akun ini secara permanen dari sistem beserta data autentikasinya?",
+      () => {
+        const currentAccount = userAccounts.find(a => a.id === id);
+        const isSuperAdminAction = currentAccount?.role === "Super Admin";
 
-    const action = async () => {
-      setUserAccounts(prev => prev.filter(acc => acc.id !== id));
-      if (selectedAccountForEdit?.id === id) {
-        setSelectedAccountForEdit(null);
-      }
-      
-      try {
-        const response = await fetch(`/api/admin/accounts?id=${id}`, {
-          method: 'DELETE'
-        });
-        const result = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(result.error || "Gagal menghapus dari Supabase Auth");
+        const action = async () => {
+          setUserAccounts(prev => prev.filter(acc => acc.id !== id));
+          if (selectedAccountForEdit?.id === id) {
+            setSelectedAccountForEdit(null);
+          }
+          
+          try {
+            const response = await fetch(`/api/admin/accounts?id=${id}`, {
+              method: 'DELETE'
+            });
+            const result = await response.json();
+            
+            if (!response.ok) {
+              console.warn("API delete failed:", result.error);
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        };
+
+        if (isSuperAdminAction) {
+          setPendingSuperAdminAction(() => action);
+          setShowMasterPasswordPrompt(true);
+        } else {
+          action();
         }
-      } catch (err: any) {
-        console.error(err);
-        alert("Error menghapus akun: " + err.message);
-      }
-    };
-
-    if (isSuperAdminAction) {
-      setPendingSuperAdminAction(() => action);
-      setShowMasterPasswordPrompt(true);
-    } else {
-      action();
-    }
+      },
+      true, // isDanger
+      "Hapus Permanen",
+      "Batal"
+    );
   };
+    
+
 
   // Stats
   const totalPendaftar = pendaftaran.length || 12; // Fallback to mock values if empty
@@ -715,17 +762,24 @@ export default function AdminDashboardPage() {
 
   const handleBulkDeleteLoginRequests = async () => {
     if (selectedLoginRequestIds.length === 0) return;
-    if (!confirm(`Hapus ${selectedLoginRequestIds.length} permintaan yang dipilih?`)) return;
-
-    setLoginRequests(prev => prev.filter(r => !selectedLoginRequestIds.includes(r.id)));
-    try {
-      const { error } = await supabase.from('login_requests').delete().in('id', selectedLoginRequestIds);
-      if (error) throw error;
-      setSelectedLoginRequestIds([]);
-    } catch (err) {
-      console.error("Gagal menghapus:", err);
-      alert("Terjadi kesalahan saat menghapus data.");
-    }
+    openConfirm(
+      "Hapus Permintaan Login?",
+      `Hapus ${selectedLoginRequestIds.length} permintaan yang dipilih?`,
+      async () => {
+        setLoginRequests(prev => prev.filter(r => !selectedLoginRequestIds.includes(r.id)));
+        try {
+          const { error } = await supabase.from('login_requests').delete().in('id', selectedLoginRequestIds);
+          if (error) throw error;
+          setSelectedLoginRequestIds([]);
+        } catch (err) {
+          console.error("Gagal menghapus:", err);
+          alert("Terjadi kesalahan saat menghapus data.");
+        }
+      },
+      true,
+      "Hapus",
+      "Batal"
+    );
   };
 
   const fetchVisitorStats = async () => {
@@ -905,24 +959,30 @@ export default function AdminDashboardPage() {
     const newIsOpen = !wave.is_open;
     const actionText = newIsOpen ? `membuka pendaftaran ${wave.wave_name} dari tanggal ${wave.open_date} sampai ${wave.close_date}` : `menutup pendaftaran ${wave.wave_name}`;
     
-    const confirmAction = window.confirm(`Apakah Anda ingin ${actionText}?`);
-    if (!confirmAction) return;
+    openConfirm(
+      "Ubah Status Pendaftaran?",
+      `Apakah Anda ingin ${actionText}?`,
+      () => {
+        setPendingSuperAdminAction(() => async () => {
+          const updatePayload: any = { is_open: newIsOpen };
+          if (newIsOpen) {
+            updatePayload.access_code = generateAccessCode();
+          }
 
-    setPendingSuperAdminAction(() => async () => {
-      const updatePayload: any = { is_open: newIsOpen };
-      if (newIsOpen) {
-        updatePayload.access_code = generateAccessCode();
-      }
-
-      try {
-        const { error } = await supabase.from('registration_settings').update(updatePayload).eq('id', wave.id);
-        if (error) throw error;
-        fetchRegistrationSettings();
-      } catch (err: any) {
-        alert("Gagal memperbarui status pendaftaran: " + err.message);
-      }
-    });
-    setShowMasterPasswordPrompt(true);
+          try {
+            const { error } = await supabase.from('registration_settings').update(updatePayload).eq('id', wave.id);
+            if (error) throw error;
+            fetchRegistrationSettings();
+          } catch (err: any) {
+            alert("Gagal memperbarui status pendaftaran: " + err.message);
+          }
+        });
+        setShowMasterPasswordPrompt(true);
+      },
+      false,
+      "Ya, Ubah Status",
+      "Batal"
+    );
   };
 
   const handleUpdateRegistrationDates = async (id: number, open_date: string, close_date: string) => {
@@ -936,47 +996,62 @@ export default function AdminDashboardPage() {
   };
 
   const handleAddWave = () => {
-    const waveName = window.prompt("Masukkan nama gelombang pendaftaran baru (contoh: Gelombang 3):");
-    if (!waveName) return;
+    openPrompt(
+      "Tambah Gelombang Baru",
+      "Masukkan nama gelombang pendaftaran baru (contoh: Gelombang 3):",
+      "Nama Gelombang",
+      (waveName: string) => {
+        if (!waveName.trim()) return;
 
-    const confirmAction = window.confirm(`Apakah Anda yakin ingin menambah gelombang pendaftaran baru: ${waveName}?`);
-    if (!confirmAction) return;
-
-    setPendingSuperAdminAction(() => async () => {
-      try {
-        const newWave = {
-          wave_name: waveName,
-          is_open: false,
-          access_code: generateAccessCode(),
-          open_date: new Date().toISOString().split('T')[0],
-          close_date: new Date().toISOString().split('T')[0]
-        };
-        const { error } = await supabase.from('registration_settings').insert([newWave]);
-        if (error) throw error;
-        fetchRegistrationSettings();
-        alert("Berhasil menambah gelombang baru!");
-      } catch (err: any) {
-        alert("Gagal menambah gelombang: " + err.message);
+        openConfirm(
+          "Konfirmasi Tambah Gelombang",
+          `Apakah Anda yakin ingin menambah gelombang pendaftaran baru: ${waveName}?`,
+          () => {
+            setPendingSuperAdminAction(() => async () => {
+              try {
+                const newWave = {
+                  wave_name: waveName,
+                  is_open: false,
+                  access_code: generateAccessCode(),
+                  open_date: new Date().toISOString().split('T')[0],
+                  close_date: new Date().toISOString().split('T')[0]
+                };
+                const { error } = await supabase.from('registration_settings').insert([newWave]);
+                if (error) throw error;
+                fetchRegistrationSettings();
+                alert("Berhasil menambah gelombang baru!");
+              } catch (err: any) {
+                alert("Gagal menambah gelombang: " + err.message);
+              }
+            });
+            setShowMasterPasswordPrompt(true);
+          }
+        );
       }
-    });
-    setShowMasterPasswordPrompt(true);
+    );
   };
 
   const handleDeleteWave = (id: number, waveName: string) => {
-    const confirmAction = window.confirm(`Apakah Anda yakin ingin menghapus gelombang ${waveName}? Aksi ini tidak dapat dibatalkan!`);
-    if (!confirmAction) return;
-
-    setPendingSuperAdminAction(() => async () => {
-      try {
-        const { error } = await supabase.from('registration_settings').delete().eq('id', id);
-        if (error) throw error;
-        fetchRegistrationSettings();
-        alert("Berhasil menghapus gelombang!");
-      } catch (err: any) {
-        alert("Gagal menghapus gelombang: " + err.message);
-      }
-    });
-    setShowMasterPasswordPrompt(true);
+    openConfirm(
+      "Hapus Gelombang?",
+      `Apakah Anda yakin ingin menghapus gelombang ${waveName}? Aksi ini tidak dapat dibatalkan!`,
+      () => {
+        setPendingSuperAdminAction(() => async () => {
+          try {
+            const { error } = await supabase.from('registration_settings').delete().eq('id', id);
+            if (error) throw error;
+            fetchRegistrationSettings();
+            alert("Berhasil menghapus gelombang!");
+          } catch (err: any) {
+            alert("Gagal menghapus gelombang: " + err.message);
+          }
+        });
+        setShowMasterPasswordPrompt(true);
+      },
+      true,
+      "Ya, Hapus",
+      "Batal"
+    );
   };
 
   useEffect(() => {
@@ -1026,15 +1101,21 @@ export default function AdminDashboardPage() {
 
   // Handle delete registration
   const handleDeletePpdb = async (id: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus data pendaftaran ini?")) return;
-    
-    setPendaftaran(prev => prev.filter(p => p.id !== id));
-
-    try {
-      await supabase.from("pendaftaran").delete().eq("id", id);
-    } catch (err) {
-      console.error(err);
-    }
+    openConfirm(
+      "Hapus Data Pendaftaran?",
+      "Apakah Anda yakin ingin menghapus data pendaftaran ini?",
+      async () => {
+        setPendaftaran(prev => prev.filter(p => p.id !== id));
+        try {
+          await supabase.from("pendaftaran").delete().eq("id", id);
+        } catch (err) {
+          console.error(err);
+        }
+      },
+      true,
+      "Hapus",
+      "Batal"
+    );
   };
 
   // News Actions
@@ -1189,15 +1270,23 @@ export default function AdminDashboardPage() {
   };
 
   const handleDeleteNews = async (id: string) => {
-    if (!confirm("Hapus artikel berita ini?")) return;
-    try {
-      const { error } = await supabase.from('news_articles').delete().eq('id', id);
-      if (error) throw error;
-      fetchNewsData();
-    } catch (err) {
-      console.error("Gagal menghapus berita:", err);
-      alert("Terjadi kesalahan saat menghapus berita.");
-    }
+    openConfirm(
+      "Hapus Berita?",
+      "Hapus artikel berita ini?",
+      async () => {
+        try {
+          const { error } = await supabase.from('news_articles').delete().eq('id', id);
+          if (error) throw error;
+          fetchNewsData();
+        } catch (err) {
+          console.error("Gagal menghapus berita:", err);
+          alert("Terjadi kesalahan saat menghapus berita.");
+        }
+      },
+      true,
+      "Hapus",
+      "Batal"
+    );
   };
 
   const handleToggleNewsStatus = async (id: string, currentStatus: string) => {
@@ -1231,8 +1320,16 @@ export default function AdminDashboardPage() {
   };
 
   const handleDeletePhoto = (id: string) => {
-    if (!confirm("Hapus foto dari galeri dokumentasi?")) return;
-    setPhotos(prev => prev.filter(p => p.id !== id));
+    openConfirm(
+      "Hapus Foto?",
+      "Hapus foto dari galeri dokumentasi?",
+      () => {
+        setPhotos(prev => prev.filter(p => p.id !== id));
+      },
+      true,
+      "Hapus",
+      "Batal"
+    );
   };
 
   const strokePath = chartData.map((pt, idx) => `${idx === 0 ? 'M' : 'L'} ${pt.x},${pt.y}`).join(' ');
@@ -5973,10 +6070,58 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   </div>
                 </div>
                 
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '1rem', padding: '1rem', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #bbf7d0' }}>
+                  <input type="checkbox" id="adminDataValidation" required style={{ width: '1.2rem', height: '1.2rem', cursor: 'pointer' }} />
+                  <label htmlFor="adminDataValidation" style={{ color: '#166534', fontWeight: 700, cursor: 'pointer' }}>
+                    Saya yakin bahwa data yang saya masukkan sudah benar
+                  </label>
+                </div>
+
                 <button type="submit" disabled={isSubmittingAddPusatData} style={{ padding: '1rem', background: '#10b981', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 800, cursor: isSubmittingAddPusatData ? 'not-allowed' : 'pointer', marginTop: '1rem' }}>
                   {isSubmittingAddPusatData ? "Menyimpan Data..." : "Simpan Data Siswa"}
                 </button>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Global Confirm Modal */}
+      <AnimatePresence>
+        {confirmModal.isOpen && (
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} style={{ background: '#fff', padding: '2rem', borderRadius: '16px', maxWidth: '450px', width: '100%', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
+              <h3 style={{ margin: '0 0 1rem 0', color: confirmModal.isDanger ? '#dc2626' : '#0f172a', fontSize: '1.25rem', fontWeight: 800 }}>{confirmModal.title}</h3>
+              <p style={{ margin: '0 0 1.5rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.5 }}>{confirmModal.message}</p>
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                <button onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))} style={{ padding: '0.75rem 1.5rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
+                  {confirmModal.cancelText}
+                </button>
+                <button onClick={confirmModal.onConfirm} style={{ padding: '0.75rem 1.5rem', background: confirmModal.isDanger ? '#ef4444' : 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
+                  {confirmModal.confirmText}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Global Prompt Modal */}
+      <AnimatePresence>
+        {promptModal.isOpen && (
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} style={{ background: '#fff', padding: '2rem', borderRadius: '16px', maxWidth: '450px', width: '100%', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
+              <h3 style={{ margin: '0 0 1rem 0', color: '#0f172a', fontSize: '1.25rem', fontWeight: 800 }}>{promptModal.title}</h3>
+              <p style={{ margin: '0 0 1rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.5 }}>{promptModal.message}</p>
+              <input type="text" autoFocus value={promptValue} onChange={e => setPromptValue(e.target.value)} placeholder={promptModal.placeholder} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', marginBottom: '1.5rem', fontSize: '1rem' }} />
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                <button onClick={() => setPromptModal(prev => ({ ...prev, isOpen: false }))} style={{ padding: '0.75rem 1.5rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
+                  {promptModal.cancelText}
+                </button>
+                <button onClick={() => promptModal.onConfirm(promptValue)} style={{ padding: '0.75rem 1.5rem', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
+                  {promptModal.confirmText}
+                </button>
+              </div>
             </motion.div>
           </div>
         )}
