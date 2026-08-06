@@ -736,19 +736,19 @@ export default function PusdaPage() {
             <div className="doc-uploads">
               <div className="doc-upload-item">
                 <label>Kartu Keluarga (KK) <span>*Wajib</span></label>
-                <input type="file" accept=".pdf,image/*" required onChange={(e) => e.target.files && setKkFile(e.target.files[0])} />
+                <input type="file" accept=".pdf,image/*" required onChange={(e) => handleDocumentChange(e, setKkFile)} />
               </div>
               <div className="doc-upload-item">
                 <label>Akte Kelahiran <span>*Wajib</span></label>
-                <input type="file" accept=".pdf,image/*" required onChange={(e) => e.target.files && setAkteFile(e.target.files[0])} />
+                <input type="file" accept=".pdf,image/*" required onChange={(e) => handleDocumentChange(e, setAkteFile)} />
               </div>
               <div className="doc-upload-item">
                 <label>Ijazah Terakhir <span>*Wajib</span></label>
-                <input type="file" accept=".pdf,image/*" required onChange={(e) => e.target.files && setIjazahFile(e.target.files[0])} />
+                <input type="file" accept=".pdf,image/*" required onChange={(e) => handleDocumentChange(e, setIjazahFile)} />
               </div>
               <div className="doc-upload-item">
                 <label>Surat Keterangan Tidak Mampu (SKTM) <span>*Opsional</span></label>
-                <input type="file" accept=".pdf,image/*" onChange={(e) => e.target.files && setSktmFile(e.target.files[0])} />
+                <input type="file" accept=".pdf,image/*" onChange={(e) => handleDocumentChange(e, setSktmFile)} />
               </div>
             </div>
           </div>
