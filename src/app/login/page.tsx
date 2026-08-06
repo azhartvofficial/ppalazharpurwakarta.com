@@ -192,6 +192,9 @@ export default function LoginPage() {
                 {showLoginPassword ? '👁️‍🗨️' : '👁️'}
               </button>
             </div>
+            <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '-0.3rem', marginBottom: '0.2rem', display: 'block', textAlign: 'left' }}>
+              *Saran: Gunakan kombinasi huruf kapital, angka, dan simbol.
+            </span>
             
             <button type="submit" className="btn-login" disabled={isLoading || loginSuccess}>
               {isLoading ? "Memproses..." : "Log In"}
@@ -336,6 +339,9 @@ export default function LoginPage() {
                   {showRegPassword ? '👁️‍🗨️' : '👁️'}
                 </button>
               </div>
+              <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '-0.3rem', marginBottom: '0.2rem', display: 'block', textAlign: 'left' }}>
+                *Saran: Gunakan kombinasi huruf kapital, angka, dan simbol.
+              </span>
               <div style={{ position: 'relative', width: '100%' }}>
                 <input 
                   type={showRegConfirmPassword ? "text" : "password"}
@@ -355,6 +361,11 @@ export default function LoginPage() {
                   {showRegConfirmPassword ? '👁️‍🗨️' : '👁️'}
                 </button>
               </div>
+              {regConfirmPassword && regPassword !== regConfirmPassword && (
+                <span style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '-0.3rem', marginBottom: '0.2rem', display: 'block', textAlign: 'left', fontWeight: 600 }}>
+                  ⚠️ Konfirmasi password tidak cocok dengan password di atas!
+                </span>
+              )}
 
               <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
                 <button 

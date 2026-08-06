@@ -2269,6 +2269,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                               {showNewAccPassword ? '👁️‍🗨️' : '👁️'}
                                             </button>
                                           </div>
+                                          <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.2rem' }}>
+                                            *Saran: Gunakan kombinasi huruf kapital, angka, dan simbol untuk keamanan maksimal.
+                                          </span>
                                         </div>
                                         <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
                                           <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Konfirmasi Password Login</label>
@@ -2282,6 +2285,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                               required
                                             />
                                           </div>
+                                          {newAccConfirmPassword && newAccPassword !== newAccConfirmPassword && (
+                                            <span style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '0.2rem', fontWeight: 600 }}>
+                                              ⚠️ Konfirmasi password tidak cocok dengan password di atas!
+                                            </span>
+                                          )}
                                         </div>
                                         <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
                                           <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Tipe Akses (Role)</label>
