@@ -120,7 +120,7 @@ export default function AdminDashboardPage() {
       setMasterPasswordInput("");
       setPendingSuperAdminAction(null);
     } else {
-      alert("Password Super Admin Salah!");
+      openAlert("Password Super Admin Salah!");
     }
   };
 
@@ -164,6 +164,25 @@ export default function AdminDashboardPage() {
     });
   };
 
+  // Alert Modal State
+  const [alertModal, setAlertModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    isError: boolean;
+  }>({
+    isOpen: false, title: "", message: "", isError: false
+  });
+
+  const openAlert = (message: string, isError: boolean = false, title?: string) => {
+    setAlertModal({
+      isOpen: true,
+      title: title || (isError ? "Terjadi Kesalahan" : "Pemberitahuan"),
+      message,
+      isError
+    });
+  };
+
   const toggleMaintenanceMode = async () => {
     const nextState = !maintenanceMode;
     
@@ -186,7 +205,7 @@ export default function AdminDashboardPage() {
         window.location.reload();
         } catch (err) {
           console.error("Error saving maintenance settings:", err);
-          alert("Gagal menyimpan pengaturan Maintenance Mode.");
+          openAlert("Gagal menyimpan pengaturan Maintenance Mode.");
         }
       });
       setShowMasterPasswordPrompt(true);
@@ -350,8 +369,8 @@ export default function AdminDashboardPage() {
 
   const handleAddPusatDataSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!addPusatDataFiles.pas_foto) { alert("Pas foto wajib diunggah."); return; }
-    if (!addPusatDataFiles.kk) { alert("Kartu Keluarga (KK) wajib diunggah."); return; }
+    if (!addPusatDataFiles.pas_foto) { openAlert("Pas foto wajib diunggah."); return; }
+    if (!addPusatDataFiles.kk) { openAlert("Kartu Keluarga (KK) wajib diunggah."); return; }
     
     setIsSubmittingAddPusatData(true);
     try {
@@ -391,12 +410,12 @@ export default function AdminDashboardPage() {
       const { error } = await supabase.from('pusat_data_siswa').insert([payload]);
       if (error) throw error;
       
-      alert("Data siswa berhasil ditambahkan!");
+      openAlert("Data siswa berhasil ditambahkan!");
       setShowAddPusatDataModal(false);
       fetchPusatData();
     } catch (err: any) {
       console.error(err);
-      alert("Terjadi kesalahan: " + err.message);
+      openAlert("Terjadi kesalahan: " + err.message);
     } finally {
       setIsSubmittingAddPusatData(false);
     }
@@ -462,7 +481,7 @@ export default function AdminDashboardPage() {
     } catch (err: any) {
       console.warn("Update failed:", err.message);
       setLoginRequests(prev => prev.map(r => r.id === id ? { ...r, status: "Pending" } : r)); // Revert
-      alert("Gagal memproses: " + err.message);
+      openAlert("Gagal memproses: " + err.message);
     }
   };
 
@@ -528,12 +547,12 @@ export default function AdminDashboardPage() {
   const handleAddAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newAccName || !newAccEmail || !newAccPassword || !newAccConfirmPassword) {
-      alert("Mohon lengkapi semua data, termasuk password!");
+      openAlert("Mohon lengkapi semua data, termasuk password!");
       return;
     }
 
     if (newAccPassword !== newAccConfirmPassword) {
-      alert("Konfirmasi password tidak cocok! Pastikan Anda memasukkan password yang sama.");
+      openAlert("Konfirmasi password tidak cocok! Pastikan Anda memasukkan password yang sama.");
       return;
     }
     
@@ -582,9 +601,9 @@ export default function AdminDashboardPage() {
         }
       } catch (err: any) {
         console.error(err);
-        alert("Error: " + err.message);
+        openAlert("Error: " + err.message);
       }
-      alert("Akun baru berhasil ditambahkan dan disinkronisasi dengan Auth!");
+      openAlert("Akun baru berhasil ditambahkan dan disinkronisasi dengan Auth!");
     };
 
     if (newAccRole === "Super Admin") {
@@ -619,7 +638,7 @@ export default function AdminDashboardPage() {
       } catch (err) {
         console.error(err);
       }
-      alert("Detail akun berhasil diperbarui!");
+      openAlert("Detail akun berhasil diperbarui!");
     };
 
     if (isSuperAdminAction) {
@@ -773,7 +792,7 @@ export default function AdminDashboardPage() {
           setSelectedLoginRequestIds([]);
         } catch (err) {
           console.error("Gagal menghapus:", err);
-          alert("Terjadi kesalahan saat menghapus data.");
+          openAlert("Terjadi kesalahan saat menghapus data.");
         }
       },
       true,
@@ -974,7 +993,7 @@ export default function AdminDashboardPage() {
             if (error) throw error;
             fetchRegistrationSettings();
           } catch (err: any) {
-            alert("Gagal memperbarui status pendaftaran: " + err.message);
+            openAlert("Gagal memperbarui status pendaftaran: " + err.message);
           }
         });
         setShowMasterPasswordPrompt(true);
@@ -991,7 +1010,7 @@ export default function AdminDashboardPage() {
       if (error) throw error;
       fetchRegistrationSettings();
     } catch (err: any) {
-      alert("Gagal memperbarui tanggal pendaftaran: " + err.message);
+      openAlert("Gagal memperbarui tanggal pendaftaran: " + err.message);
     }
   };
 
@@ -1019,9 +1038,9 @@ export default function AdminDashboardPage() {
                 const { error } = await supabase.from('registration_settings').insert([newWave]);
                 if (error) throw error;
                 fetchRegistrationSettings();
-                alert("Berhasil menambah gelombang baru!");
+                openAlert("Berhasil menambah gelombang baru!");
               } catch (err: any) {
-                alert("Gagal menambah gelombang: " + err.message);
+                openAlert("Gagal menambah gelombang: " + err.message);
               }
             });
             setShowMasterPasswordPrompt(true);
@@ -1041,9 +1060,9 @@ export default function AdminDashboardPage() {
             const { error } = await supabase.from('registration_settings').delete().eq('id', id);
             if (error) throw error;
             fetchRegistrationSettings();
-            alert("Berhasil menghapus gelombang!");
+            openAlert("Berhasil menghapus gelombang!");
           } catch (err: any) {
-            alert("Gagal menghapus gelombang: " + err.message);
+            openAlert("Gagal menghapus gelombang: " + err.message);
           }
         });
         setShowMasterPasswordPrompt(true);
@@ -1145,7 +1164,7 @@ export default function AdminDashboardPage() {
   const handleSubmitNews = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newNewsTitle || !newNewsContent || !newNewsAuthor) {
-      alert("Mohon lengkapi data wajib (Judul, Isi, Penulis)!");
+      openAlert("Mohon lengkapi data wajib (Judul, Isi, Penulis)!");
       return;
     }
 
@@ -1265,7 +1284,7 @@ export default function AdminDashboardPage() {
       setIsUploadingNews(false);
       setUploadProgress(0);
       console.error(err);
-      alert("Gagal menambahkan berita: " + (err.message || "Unknown error"));
+      openAlert("Gagal menambahkan berita: " + (err.message || "Unknown error"));
     }
   };
 
@@ -1280,7 +1299,7 @@ export default function AdminDashboardPage() {
           fetchNewsData();
         } catch (err) {
           console.error("Gagal menghapus berita:", err);
-          alert("Terjadi kesalahan saat menghapus berita.");
+          openAlert("Terjadi kesalahan saat menghapus berita.");
         }
       },
       true,
@@ -1297,7 +1316,7 @@ export default function AdminDashboardPage() {
       fetchNewsData();
     } catch (err) {
       console.error("Gagal mengubah status berita:", err);
-      alert("Terjadi kesalahan saat mengubah status.");
+      openAlert("Terjadi kesalahan saat mengubah status.");
     }
   };
 
@@ -2266,7 +2285,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   <div className="config-grid">
                     <div className="data-card">
                       <h3>Informasi Kontak Lembaga</h3>
-                      <form className="config-form" onSubmit={(e) => { e.preventDefault(); alert("Pengaturan berhasil disimpan lokal!"); }}>
+                      <form className="config-form" onSubmit={(e) => { e.preventDefault(); openAlert("Pengaturan berhasil disimpan lokal!"); }}>
                         <div className="input-group">
                           <label>Nomor Telepon Kantor / Pondok</label>
                           <input type="text" defaultValue="+62 264 887123" />
@@ -2285,7 +2304,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
                     <div className="data-card">
                       <h3>Statistik Utama Website</h3>
-                      <form className="config-form" onSubmit={(e) => { e.preventDefault(); alert("Statistik berhasil diperbarui!"); }}>
+                      <form className="config-form" onSubmit={(e) => { e.preventDefault(); openAlert("Statistik berhasil diperbarui!"); }}>
                         <div className="input-row">
                           <div className="input-group">
                             <label>Jumlah Santri Aktif</label>
@@ -3600,7 +3619,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             setNewNewsImageFile(finalFile);
                           } catch (err) {
                             console.error("Compression error:", err);
-                            alert("Gagal mengkompres gambar.");
+                            openAlert("Gagal mengkompres gambar.");
                           } finally {
                             setIsCompressing(false);
                             e.target.value = ''; // reset input
@@ -6089,41 +6108,75 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
       {/* Global Confirm Modal */}
       <AnimatePresence>
         {confirmModal.isOpen && (
-          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} style={{ background: '#fff', padding: '2rem', borderRadius: '16px', maxWidth: '450px', width: '100%', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
-              <h3 style={{ margin: '0 0 1rem 0', color: confirmModal.isDanger ? '#dc2626' : '#0f172a', fontSize: '1.25rem', fontWeight: 800 }}>{confirmModal.title}</h3>
-              <p style={{ margin: '0 0 1.5rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.5 }}>{confirmModal.message}</p>
-              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                <button onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))} style={{ padding: '0.75rem 1.5rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(8px)', zIndex: 999999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
+              style={{ background: '#ffffff', borderRadius: '20px', padding: '2.5rem', width: '100%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', textAlign: 'center' }}
+            >
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: confirmModal.isDanger ? '#dc2626' : '#0f172a', margin: '0 0 0.5rem 0' }}>{confirmModal.title}</h3>
+              <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '2rem', lineHeight: 1.5 }}>{confirmModal.message}</p>
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                <button onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))} style={{ flex: 1, padding: '1rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '12px', fontWeight: 700, cursor: 'pointer' }}>
                   {confirmModal.cancelText}
                 </button>
-                <button onClick={confirmModal.onConfirm} style={{ padding: '0.75rem 1.5rem', background: confirmModal.isDanger ? '#ef4444' : 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
+                <button onClick={confirmModal.onConfirm} style={{ flex: 1, padding: '1rem', background: confirmModal.isDanger ? '#ef4444' : 'var(--primary)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 700, cursor: 'pointer', boxShadow: confirmModal.isDanger ? '0 4px 14px rgba(239, 68, 68, 0.3)' : '0 4px 14px rgba(0, 33, 71, 0.3)' }}>
                   {confirmModal.confirmText}
                 </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
       {/* Global Prompt Modal */}
       <AnimatePresence>
         {promptModal.isOpen && (
-          <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} style={{ background: '#fff', padding: '2rem', borderRadius: '16px', maxWidth: '450px', width: '100%', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
-              <h3 style={{ margin: '0 0 1rem 0', color: '#0f172a', fontSize: '1.25rem', fontWeight: 800 }}>{promptModal.title}</h3>
-              <p style={{ margin: '0 0 1rem 0', color: '#475569', fontSize: '0.95rem', lineHeight: 1.5 }}>{promptModal.message}</p>
-              <input type="text" autoFocus value={promptValue} onChange={e => setPromptValue(e.target.value)} placeholder={promptModal.placeholder} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', marginBottom: '1.5rem', fontSize: '1rem' }} />
-              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                <button onClick={() => setPromptModal(prev => ({ ...prev, isOpen: false }))} style={{ padding: '0.75rem 1.5rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(8px)', zIndex: 999999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
+              style={{ background: '#ffffff', borderRadius: '20px', padding: '2.5rem', width: '100%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', textAlign: 'center' }}
+            >
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0f172a', margin: '0 0 0.5rem 0' }}>{promptModal.title}</h3>
+              <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '1.5rem', lineHeight: 1.5 }}>{promptModal.message}</p>
+              <input type="text" autoFocus value={promptValue} onChange={e => setPromptValue(e.target.value)} placeholder={promptModal.placeholder} style={{ width: '100%', padding: '1rem', background: '#f8fafc', border: '2px solid #e2e8f0', borderRadius: '12px', fontSize: '1rem', color: '#0f172a', textAlign: 'center', fontWeight: 700, outline: 'none', marginBottom: '2rem', boxSizing: 'border-box' }} onFocus={(e) => e.target.style.borderColor = '#3b82f6'} onBlur={(e) => e.target.style.borderColor = '#e2e8f0'} />
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                <button onClick={() => setPromptModal(prev => ({ ...prev, isOpen: false }))} style={{ flex: 1, padding: '1rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '12px', fontWeight: 700, cursor: 'pointer' }}>
                   {promptModal.cancelText}
                 </button>
-                <button onClick={() => promptModal.onConfirm(promptValue)} style={{ padding: '0.75rem 1.5rem', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}>
+                <button onClick={() => promptModal.onConfirm(promptValue)} style={{ flex: 1, padding: '1rem', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 14px rgba(0, 33, 71, 0.3)' }}>
                   {promptModal.confirmText}
                 </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Global Alert Modal */}
+      <AnimatePresence>
+        {alertModal.isOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(8px)', zIndex: 999999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
+              style={{ background: '#ffffff', borderRadius: '20px', padding: '2.5rem', width: '100%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', textAlign: 'center' }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{alertModal.isError ? '⚠️' : '✅'}</div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: alertModal.isError ? '#dc2626' : '#0f172a', margin: '0 0 0.5rem 0' }}>{alertModal.title}</h3>
+              <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '2rem', lineHeight: 1.5 }}>{alertModal.message}</p>
+              <button onClick={() => setAlertModal(prev => ({ ...prev, isOpen: false }))} style={{ width: '100%', padding: '1rem', background: alertModal.isError ? '#ef4444' : 'var(--primary)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 700, cursor: 'pointer', boxShadow: alertModal.isError ? '0 4px 14px rgba(239, 68, 68, 0.3)' : '0 4px 14px rgba(0, 33, 71, 0.3)' }}>
+                Tutup
+              </button>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 
