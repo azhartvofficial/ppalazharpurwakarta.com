@@ -476,12 +476,24 @@ export default function AdminDashboardPage() {
 
       const uploadFile = async (file: File, folderType: string) => {
         const fileExt = file.name.split('.').pop();
-        const fileName = `${folderType}_${Date.now()}.${fileExt}`;
-        const filePath = `pusat_data_santri/Kelas_${addPusatDataForm.kelas}/${addPusatDataForm.gender}/${addPusatDataForm.nama_lengkap.replace(/\s+/g, '_')}/${fileName}`;
-        const { data, error } = await supabase.storage.from('berita-images').upload(filePath, file);
-        if (error) throw error;
-        const { data: { publicUrl } } = supabase.storage.from('berita-images').getPublicUrl(filePath);
-        return publicUrl;
+        const safeName = addPusatDataForm.nama_lengkap.replace(/\s+/g, '').toUpperCase();
+        const fileName = `( ${folderType}_${safeName} ).${fileExt}`;
+        
+        const apiFormData = new FormData();
+        apiFormData.append('file', file);
+        apiFormData.append('filename', fileName);
+
+        const endpoint = folderType === 'FOTO' ? '/api/upload-cloudinary' : '/api/upload';
+        
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          body: apiFormData,
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Gagal mengunggah file');
+          
+        return data.url;
       };
 
       let pas_foto = "", kk_url = "", akte_url = "", ijazah_url = "", sktm_url = "";
