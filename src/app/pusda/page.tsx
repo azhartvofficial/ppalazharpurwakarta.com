@@ -193,6 +193,19 @@ export default function PusdaPage() {
     }
   };
 
+  const handleDocumentChange = (e: React.ChangeEvent<HTMLInputElement>, setter: React.Dispatch<React.SetStateAction<File | null>>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type === 'application/pdf' && file.size > 4 * 1024 * 1024) {
+        alert('Gagal: Ukuran file PDF maksimal adalah 4 MB. Silakan kompres PDF Anda terlebih dahulu.');
+        e.target.value = '';
+        setter(null);
+        return;
+      }
+      setter(file);
+    }
+  };
+
   
   const compressImage = async (file: File, label: string) => {
     if (!file.type.startsWith('image/')) return file;
