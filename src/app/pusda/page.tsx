@@ -99,7 +99,8 @@ export default function PusdaPage() {
         kk_url,
         akte_url,
         ijazah_url,
-        sktm_url
+        sktm_url,
+        status: 'Pending'
       };
 
       const { error } = await supabase.from('pusat_data_siswa').insert([payload]);

@@ -234,6 +234,7 @@ export default function AdminDashboardPage() {
   const [accountsSubTab, setAccountsSubTab] = useState<"kelola_akun" | "permintaan_login">("kelola_akun");
   
   // Pusat Data Siswa states
+  const [pusatDataSubTab, setPusatDataSubTab] = useState<"data_siswa" | "pengajuan_data">("data_siswa");
   const [pusatData, setPusatData] = useState<any[]>([]);
   const [loadingPusatData, setLoadingPusatData] = useState(false);
   const [selectedPusatData, setSelectedPusatData] = useState<any | null>(null);
@@ -755,6 +756,21 @@ export default function AdminDashboardPage() {
       if (error) {
         console.warn("DB update failed, kept local fallback status.");
       }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUpdatePusatDataStatus = async (id: string, newStatus: string) => {
+    setPusatData(prev => 
+      prev.map(p => p.id === id ? { ...p, status: newStatus } : p)
+    );
+    try {
+      const { error } = await supabase
+        .from("pusat_data_siswa")
+        .update({ status: newStatus })
+        .eq("id", id);
+      if (error) console.warn("DB update failed for pusat data status.");
     } catch (err) {
       console.error(err);
     }
@@ -1895,69 +1911,228 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     </div>
                   </div>
 
+                  {/* Glassmorphic Sub-Navbar for Pusat Data */}
+                  <div className="accounts-sub-navbar" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'rgba(0, 33, 71, 0.03)',
+                    padding: '6px',
+                    borderRadius: '12px',
+                    border: '1.5px solid rgba(0, 33, 71, 0.05)',
+                    marginBottom: '1.75rem',
+                    width: 'fit-content',
+                    boxShadow: '0 4px 15px rgba(0, 33, 71, 0.02)'
+                  }}>
+                    <button
+                      onClick={() => setPusatDataSubTab("data_siswa")}
+                      className={`sub-nav-btn ${pusatDataSubTab === "data_siswa" ? "active" : ""}`}
+                      style={{
+                        padding: '8px 18px',
+                        border: 'none',
+                        background: pusatDataSubTab === "data_siswa" ? 'var(--primary)' : 'transparent',
+                        color: pusatDataSubTab === "data_siswa" ? '#fff' : 'var(--primary)',
+                        fontWeight: 800,
+                        borderRadius: '8px',
+                        fontSize: '0.8rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease'
+                      }}
+                    >
+                      Data Siswa
+                    </button>
+
+                    <button
+                      onClick={() => setPusatDataSubTab("pengajuan_data")}
+                      className={`sub-nav-btn ${pusatDataSubTab === "pengajuan_data" ? "active" : ""}`}
+                      style={{
+                        padding: '8px 18px',
+                        border: 'none',
+                        background: pusatDataSubTab === "pengajuan_data" ? 'transparent' : 'transparent',
+                        backgroundColor: pusatDataSubTab === "pengajuan_data" ? 'var(--primary)' : 'transparent',
+                        color: pusatDataSubTab === "pengajuan_data" ? '#fff' : 'var(--primary)',
+                        fontWeight: 800,
+                        borderRadius: '8px',
+                        fontSize: '0.8rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <span>Pengajuan Data</span>
+                      {pusatData.filter(d => d.status === "Pending").length > 0 && (
+                        <span style={{
+                          background: '#ef4444',
+                          color: '#fff',
+                          fontSize: '0.65rem',
+                          fontWeight: 900,
+                          padding: '2px 6px',
+                          borderRadius: '10px',
+                          lineHeight: 1
+                        }}>
+                          {pusatData.filter(d => d.status === "Pending").length}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+
                   {loadingPusatData ? (
                     <div className="loader" style={{ textAlign: 'center', padding: '2rem' }}>Memuat data...</div>
-                  ) : pusatData.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-                      <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>🗃️</span>
-                      <h4 style={{ color: '#002147', marginBottom: '0.5rem' }}>Belum ada data siswa</h4>
-                      <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Data siswa yang diisi melalui portal PUSDA AZHAR akan muncul di sini.</p>
-                    </div>
                   ) : (
-                    <div className="table-responsive" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.25rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', overflowX: 'auto' }}>
-                      <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                        <thead>
-                          <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
-                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Foto</th>
-                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Nama / Kelas</th>
-                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>TTL</th>
-                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>NIK / NISN</th>
-                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Dokumen</th>
-                            <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', textAlign: 'center' }}>Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {pusatData.map((siswa) => {
-                            const docCount = [siswa.kk_url, siswa.akte_url, siswa.ijazah_url, siswa.sktm_url].filter(Boolean).length;
-                            return (
-                              <tr key={siswa.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' }}>
-                                <td style={{ padding: '1rem' }}>
-                                  <img src={siswa.pas_foto} alt={siswa.nama_lengkap} style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #e2e8f0' }} />
-                                </td>
-                                <td style={{ padding: '1rem' }}>
-                                  <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem' }}>{siswa.nama_lengkap}</div>
-                                  <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>{siswa.kelas} • {siswa.gender}</div>
-                                </td>
-                                <td style={{ padding: '1rem', fontSize: '0.85rem', color: '#334155' }}>
-                                  {siswa.tempat_tanggal_lahir}
-                                </td>
-                                <td style={{ padding: '1rem' }}>
-                                  <div style={{ fontSize: '0.85rem', color: '#334155' }}><span style={{ fontWeight: 700 }}>NIK:</span> {siswa.nik}</div>
-                                  <div style={{ fontSize: '0.85rem', color: '#334155' }}><span style={{ fontWeight: 700 }}>NISN:</span> {siswa.nisn}</div>
-                                </td>
-                                <td style={{ padding: '1rem' }}>
-                                  <span style={{ 
-                                    padding: '4px 8px', 
-                                    borderRadius: '20px', 
-                                    fontSize: '0.75rem', 
-                                    fontWeight: 800, 
-                                    background: docCount === 4 ? '#dcfce7' : docCount > 0 ? '#fef3c7' : '#fee2e2',
-                                    color: docCount === 4 ? '#166534' : docCount > 0 ? '#92400e' : '#991b1b'
-                                  }}>
-                                    {docCount}/4 Berkas
-                                  </span>
-                                </td>
-                                <td style={{ padding: '1rem', textAlign: 'center' }}>
-                                  <button onClick={() => setSelectedPusatData(siswa)} style={{ padding: '6px 12px', background: '#e0f2fe', color: '#0369a1', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>
-                                    Detail
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
+                    <AnimatePresence mode="wait">
+                      {pusatDataSubTab === "data_siswa" && (
+                        <motion.div
+                          key="data_siswa"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          {pusatData.filter(d => d.status !== 'Pending').length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                              <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>🗃️</span>
+                              <h4 style={{ color: '#002147', marginBottom: '0.5rem' }}>Belum ada data siswa</h4>
+                              <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Siswa yang telah disetujui akan muncul di sini.</p>
+                            </div>
+                          ) : (
+                            <div className="table-responsive" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.25rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', overflowX: 'auto' }}>
+                              <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                <thead>
+                                  <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Foto</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Nama / Kelas</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>TTL</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>NIK / NISN</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Dokumen</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', textAlign: 'center' }}>Aksi</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {pusatData.filter(d => d.status !== 'Pending').map((siswa) => {
+                                    const docCount = [siswa.kk_url, siswa.akte_url, siswa.ijazah_url, siswa.sktm_url].filter(Boolean).length;
+                                    return (
+                                      <tr key={siswa.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' }}>
+                                        <td style={{ padding: '1rem' }}>
+                                          <img src={siswa.pas_foto} alt={siswa.nama_lengkap} style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #e2e8f0' }} />
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem' }}>{siswa.nama_lengkap}</div>
+                                          <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>{siswa.kelas} • {siswa.gender}</div>
+                                        </td>
+                                        <td style={{ padding: '1rem', fontSize: '0.85rem', color: '#334155' }}>
+                                          {siswa.tempat_tanggal_lahir}
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <div style={{ fontSize: '0.85rem', color: '#334155' }}><span style={{ fontWeight: 700 }}>NIK:</span> {siswa.nik}</div>
+                                          <div style={{ fontSize: '0.85rem', color: '#334155' }}><span style={{ fontWeight: 700 }}>NISN:</span> {siswa.nisn}</div>
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <span style={{ 
+                                            padding: '4px 8px', 
+                                            borderRadius: '20px', 
+                                            fontSize: '0.75rem', 
+                                            fontWeight: 800, 
+                                            background: docCount === 4 ? '#dcfce7' : docCount > 0 ? '#fef3c7' : '#fee2e2',
+                                            color: docCount === 4 ? '#166534' : docCount > 0 ? '#92400e' : '#991b1b'
+                                          }}>
+                                            {docCount}/4 Berkas
+                                          </span>
+                                        </td>
+                                        <td style={{ padding: '1rem', textAlign: 'center' }}>
+                                          <button onClick={() => setSelectedPusatData(siswa)} style={{ padding: '6px 12px', background: '#e0f2fe', color: '#0369a1', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>
+                                            Detail
+                                          </button>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
+
+                      {pusatDataSubTab === "pengajuan_data" && (
+                        <motion.div
+                          key="pengajuan_data"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          {pusatData.filter(d => d.status === 'Pending').length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                              <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>📬</span>
+                              <h4 style={{ color: '#002147', marginBottom: '0.5rem' }}>Tidak ada pengajuan data baru</h4>
+                              <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Semua pengajuan telah disetujui atau belum ada pengajuan masuk.</p>
+                            </div>
+                          ) : (
+                            <div className="table-responsive" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.25rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', overflowX: 'auto' }}>
+                              <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                <thead>
+                                  <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Foto</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Nama / Kelas</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>TTL</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>NIK / NISN</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Dokumen</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', textAlign: 'center' }}>Aksi</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {pusatData.filter(d => d.status === 'Pending').map((siswa) => {
+                                    const docCount = [siswa.kk_url, siswa.akte_url, siswa.ijazah_url, siswa.sktm_url].filter(Boolean).length;
+                                    return (
+                                      <tr key={siswa.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' }}>
+                                        <td style={{ padding: '1rem' }}>
+                                          <img src={siswa.pas_foto} alt={siswa.nama_lengkap} style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #e2e8f0' }} />
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem' }}>{siswa.nama_lengkap}</div>
+                                          <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>{siswa.kelas} • {siswa.gender}</div>
+                                        </td>
+                                        <td style={{ padding: '1rem', fontSize: '0.85rem', color: '#334155' }}>
+                                          {siswa.tempat_tanggal_lahir}
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <div style={{ fontSize: '0.85rem', color: '#334155' }}><span style={{ fontWeight: 700 }}>NIK:</span> {siswa.nik}</div>
+                                          <div style={{ fontSize: '0.85rem', color: '#334155' }}><span style={{ fontWeight: 700 }}>NISN:</span> {siswa.nisn}</div>
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <span style={{ 
+                                            padding: '4px 8px', 
+                                            borderRadius: '20px', 
+                                            fontSize: '0.75rem', 
+                                            fontWeight: 800, 
+                                            background: docCount === 4 ? '#dcfce7' : docCount > 0 ? '#fef3c7' : '#fee2e2',
+                                            color: docCount === 4 ? '#166534' : docCount > 0 ? '#92400e' : '#991b1b'
+                                          }}>
+                                            {docCount}/4 Berkas
+                                          </span>
+                                        </td>
+                                        <td style={{ padding: '1rem', textAlign: 'center' }}>
+                                          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                            <button onClick={() => handleUpdatePusatDataStatus(siswa.id, 'Approved')} style={{ padding: '6px 12px', background: '#dcfce7', color: '#166534', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>
+                                              Terima
+                                            </button>
+                                            <button onClick={() => setSelectedPusatData(siswa)} style={{ padding: '6px 12px', background: '#e0f2fe', color: '#0369a1', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>
+                                              Detail
+                                            </button>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   )}
                 </motion.div>
               )}
