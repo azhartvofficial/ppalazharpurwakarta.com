@@ -214,6 +214,16 @@ export default function PusdaPage() {
       setErrorMsg("Pas Foto wajib diunggah!");
       return;
     }
+    
+    if (formData.nik && formData.nik.trim().length !== 16) {
+      setErrorMsg("Perhatian: Nomor Induk Kependudukan (NIK) harus berjumlah tepat 16 digit angka.");
+      return;
+    }
+    
+    if (formData.nisn && formData.nisn.trim().length !== 10) {
+      setErrorMsg("Perhatian: Nomor Induk Siswa Nasional (NISN) harus berjumlah tepat 10 digit angka.");
+      return;
+    }
 
     setIsSubmitting(true);
     setErrorMsg("");

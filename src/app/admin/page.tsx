@@ -387,6 +387,16 @@ export default function AdminDashboardPage() {
     if (!addPusatDataFiles.pas_foto) { openAlert("Pas foto wajib diunggah."); return; }
     if (!addPusatDataFiles.kk) { openAlert("Kartu Keluarga (KK) wajib diunggah."); return; }
     
+    if (addPusatDataForm.nik && addPusatDataForm.nik.trim().length !== 16) {
+      openAlert("Perhatian: Nomor Induk Kependudukan (NIK) harus berjumlah tepat 16 digit angka.");
+      return;
+    }
+
+    if (addPusatDataForm.nisn && addPusatDataForm.nisn.trim().length !== 10) {
+      openAlert("Perhatian: Nomor Induk Siswa Nasional (NISN) harus berjumlah tepat 10 digit angka.");
+      return;
+    }
+    
     setIsSubmittingAddPusatData(true);
     try {
       const uploadFile = async (file: File, folderType: string) => {
