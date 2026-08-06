@@ -253,8 +253,7 @@ export default function PendaftaranPage() {
         /* PPDB CTA Section */
         .ppdb-cta-section {
           margin-bottom: 4rem;
-          display: flex;
-          justify-content: center;
+          text-align: center;
         }
 
         .ppdb-box {
@@ -266,6 +265,11 @@ export default function PendaftaranPage() {
           text-align: center;
           max-width: 800px;
           width: 100%;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
         }
 
         .btn-daftar-utama {
