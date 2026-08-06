@@ -1283,6 +1283,23 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleDeletePusatData = async (id: string) => {
+    openConfirm(
+      "Hapus Data Santri?",
+      "Apakah Anda yakin ingin menghapus data pengajuan santri ini secara permanen?",
+      async () => {
+        setPusatData(prev => prev.filter(p => p.id !== id));
+        try {
+          await supabase.from("pusat_data_siswa").delete().eq("id", id);
+        } catch (err) {
+          console.error(err);
+        }
+      },
+      true,
+      "Hapus"
+    );
+  };
+
   // Handle delete registration
   const handleDeletePpdb = async (id: string) => {
     openConfirm(
@@ -2797,11 +2814,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                           </span>
                                         </td>
                                         <td style={{ padding: '1rem', textAlign: 'center' }}>
-                                          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                            <button onClick={() => handleUpdatePusatDataStatus(siswa.id, 'Approved')} style={{ padding: '6px 12px', background: '#dcfce7', color: '#166534', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>
+                                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                                            <button onClick={() => handleUpdatePusatDataStatus(siswa.id, 'Approved')} style={{ padding: '6px 10px', background: '#dcfce7', color: '#166534', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}>
                                               Terima
                                             </button>
-                                            <button onClick={() => setSelectedPusatData(siswa)} style={{ padding: '6px 12px', background: '#e0f2fe', color: '#0369a1', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>
+                                            <button onClick={() => handleUpdatePusatDataStatus(siswa.id, 'Rejected')} style={{ padding: '6px 10px', background: '#fef3c7', color: '#92400e', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}>
+                                              Tolak
+                                            </button>
+                                            <button onClick={() => handleDeletePusatData(siswa.id)} style={{ padding: '6px 10px', background: '#fee2e2', color: '#991b1b', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}>
+                                              Hapus
+                                            </button>
+                                            <button onClick={() => setSelectedPusatData(siswa)} style={{ padding: '6px 10px', background: '#e0f2fe', color: '#0369a1', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}>
                                               Detail
                                             </button>
                                           </div>
@@ -3714,7 +3737,20 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               </div>
             </div>
             
-            <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+              {selectedPusatData.status === 'Pending' && (
+                <>
+                  <button onClick={() => { handleUpdatePusatDataStatus(selectedPusatData.id, 'Approved'); setSelectedPusatData(null); }} style={{ padding: '0.8rem 1.5rem', background: '#dcfce7', color: '#166534', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer' }}>
+                    Terima Data
+                  </button>
+                  <button onClick={() => { handleUpdatePusatDataStatus(selectedPusatData.id, 'Rejected'); setSelectedPusatData(null); }} style={{ padding: '0.8rem 1.5rem', background: '#fef3c7', color: '#92400e', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer' }}>
+                    Tolak Data
+                  </button>
+                </>
+              )}
+              <button onClick={() => { handleDeletePusatData(selectedPusatData.id); setSelectedPusatData(null); }} style={{ padding: '0.8rem 1.5rem', background: '#fee2e2', color: '#991b1b', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer' }}>
+                Hapus Data
+              </button>
               <button onClick={() => setSelectedPusatData(null)} style={{ padding: '0.8rem 2rem', background: '#f1f5f9', color: '#334155', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer' }}>
                 Tutup Preview
               </button>
