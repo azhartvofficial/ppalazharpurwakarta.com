@@ -235,6 +235,130 @@ export default function AdminDashboardPage() {
   
   // Pusat Data Siswa states
   const [pusatDataSubTab, setPusatDataSubTab] = useState<"data_siswa" | "pengajuan_data">("data_siswa");
+
+  // Pusat Data Filters
+  const [pusatDataSearchQuery, setPusatDataSearchQuery] = useState("");
+  const [pusatDataFilterGender, setPusatDataFilterGender] = useState("Semua");
+  const [pusatDataFilterKelas, setPusatDataFilterKelas] = useState("Semua");
+  const [pusatDataFilterJenjang, setPusatDataFilterJenjang] = useState("Semua");
+  const [pusatDataFilterProgram, setPusatDataFilterProgram] = useState("Semua");
+  const [pusatDataFilterBerkas, setPusatDataFilterBerkas] = useState("Semua");
+  const [pusatDataFilterProvinsi, setPusatDataFilterProvinsi] = useState("Semua");
+  const [pusatDataFilterTanggal, setPusatDataFilterTanggal] = useState("");
+  const [showAddPusatDataModal, setShowAddPusatDataModal] = useState(false);
+  
+  // States for Add Pusat Data Modal
+  const [addPusatDataForm, setAddPusatDataForm] = useState({
+    nama_lengkap: "", kelas: "10", program_pendidikan: "Mondok", gender: "Putra", tempat_tanggal_lahir: "", nik: "", nisn: "",
+    nama_ayah: "", pekerjaan_ayah: "", nama_ibu: "", pekerjaan_ibu: "", no_hp_wali: "", alamat: ""
+  });
+  const [addPusatDataIsWNA, setAddPusatDataIsWNA] = useState(false);
+  const [addPusatDataProvId, setAddPusatDataProvId] = useState("");
+  const [addPusatDataProvName, setAddPusatDataProvName] = useState("");
+  const [addPusatDataRegId, setAddPusatDataRegId] = useState("");
+  const [addPusatDataRegName, setAddPusatDataRegName] = useState("");
+  const [addPusatDataDistId, setAddPusatDataDistId] = useState("");
+  const [addPusatDataDistName, setAddPusatDataDistName] = useState("");
+  const [addPusatDataDetail, setAddPusatDataDetail] = useState("");
+  const [addPusatDataKodePos, setAddPusatDataKodePos] = useState("");
+  const [addPusatDataCountry, setAddPusatDataCountry] = useState("");
+  
+  const [provinces, setProvinces] = useState<any[]>([]);
+  const [regencies, setRegencies] = useState<any[]>([]);
+  const [districts, setDistricts] = useState<any[]>([]);
+  const [countries, setCountries] = useState<any[]>([]);
+
+  const [addPusatDataFiles, setAddPusatDataFiles] = useState({
+    pas_foto: null as File | null, kk: null as File | null, akte: null as File | null,
+    ijazah: null as File | null, sktm: null as File | null
+  });
+  const [isSubmittingAddPusatData, setIsSubmittingAddPusatData] = useState(false);
+
+  // Fetch initial data (Provinces & Countries)
+  useEffect(() => {
+    fetch("https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json").then(res => res.json()).then(data => setProvinces(data)).catch(() => {});
+    fetch("https://restcountries.com/v3.1/all?fields=name").then(res => res.json()).then(data => {
+      const sorted = data.map((c: any) => c.name.common).sort();
+      setCountries(sorted);
+    }).catch(() => {});
+  }, []);
+
+  // Fetch Regencies when Province changes
+  useEffect(() => {
+    if (addPusatDataProvId) {
+      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${addPusatDataProvId}.json`).then(res => res.json()).then(data => {
+        setRegencies(data); setAddPusatDataRegId(""); setAddPusatDataRegName(""); setDistricts([]); setAddPusatDataDistId(""); setAddPusatDataDistName("");
+      }).catch(() => {});
+    } else {
+      setRegencies([]); setDistricts([]);
+    }
+  }, [addPusatDataProvId]);
+
+  // Fetch Districts when Regency changes
+  useEffect(() => {
+    if (addPusatDataRegId) {
+      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${addPusatDataRegId}.json`).then(res => res.json()).then(data => {
+        setDistricts(data); setAddPusatDataDistId(""); setAddPusatDataDistName("");
+      }).catch(() => {});
+    } else {
+      setDistricts([]);
+    }
+  }, [addPusatDataRegId]);
+
+  const handleAddPusatDataSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!addPusatDataFiles.pas_foto) { alert("Pas foto wajib diunggah."); return; }
+    if (!addPusatDataFiles.kk) { alert("Kartu Keluarga (KK) wajib diunggah."); return; }
+    
+    setIsSubmittingAddPusatData(true);
+    try {
+      const uploadFile = async (file: File, folderType: string) => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${folderType}_${Date.now()}.${fileExt}`;
+        const filePath = `pusat_data_santri/Kelas_${addPusatDataForm.kelas}/${addPusatDataForm.gender}/${addPusatDataForm.nama_lengkap.replace(/\s+/g, '_')}/${fileName}`;
+        const { data, error } = await supabase.storage.from('berita-images').upload(filePath, file);
+        if (error) throw error;
+        const { data: { publicUrl } } = supabase.storage.from('berita-images').getPublicUrl(filePath);
+        return publicUrl;
+      };
+
+      let pas_foto = "", kk_url = "", akte_url = "", ijazah_url = "", sktm_url = "";
+      if (addPusatDataFiles.pas_foto) pas_foto = await uploadFile(addPusatDataFiles.pas_foto, "FOTO");
+      if (addPusatDataFiles.kk) kk_url = await uploadFile(addPusatDataFiles.kk, "KK");
+      if (addPusatDataFiles.akte) akte_url = await uploadFile(addPusatDataFiles.akte, "AKTE");
+      if (addPusatDataFiles.ijazah) ijazah_url = await uploadFile(addPusatDataFiles.ijazah, "IJAZAH");
+      if (addPusatDataFiles.sktm) sktm_url = await uploadFile(addPusatDataFiles.sktm, "SKTM");
+
+      const alamatObj = addPusatDataIsWNA ? {
+        is_wna: true, negara: addPusatDataCountry, detail: addPusatDataDetail, kode_pos: addPusatDataKodePos,
+        full_text: `${addPusatDataDetail}, ${addPusatDataCountry}${addPusatDataKodePos ? ' - ' + addPusatDataKodePos : ''} (WNA)`
+      } : {
+        is_wna: false, provinsi: addPusatDataProvName, kota: addPusatDataRegName, kecamatan: addPusatDataDistName,
+        detail: addPusatDataDetail, kode_pos: addPusatDataKodePos,
+        full_text: `${addPusatDataDetail}, Kec. ${addPusatDataDistName}, Kota/Kab. ${addPusatDataRegName}, Prov. ${addPusatDataProvName}${addPusatDataKodePos ? ' - ' + addPusatDataKodePos : ''}`
+      };
+
+      const payload = {
+        ...addPusatDataForm,
+        alamat: JSON.stringify(alamatObj),
+        pas_foto, kk_url, akte_url, ijazah_url, sktm_url,
+        status: 'Approved' // Admin bypasses pending status
+      };
+
+      const { error } = await supabase.from('pusat_data_siswa').insert([payload]);
+      if (error) throw error;
+      
+      alert("Data siswa berhasil ditambahkan!");
+      setShowAddPusatDataModal(false);
+      fetchPusatData();
+    } catch (err: any) {
+      console.error(err);
+      alert("Terjadi kesalahan: " + err.message);
+    } finally {
+      setIsSubmittingAddPusatData(false);
+    }
+  };
+
   const [pusatData, setPusatData] = useState<any[]>([]);
   const [loadingPusatData, setLoadingPusatData] = useState(false);
   const [selectedPusatData, setSelectedPusatData] = useState<any | null>(null);
@@ -575,12 +699,13 @@ export default function AdminDashboardPage() {
         .order('created_at', { ascending: false });
       if (error) throw error;
       if (data) {
-           } else {
-        alert("Gagal mengubah status permintaan: " + (data.error || "Unknown"));
+        setNews(data);
       }
     } catch (err: any) {
-      console.error(err);
-      alert("Error: " + err.message);
+      console.error("Failed to fetch news:", err);
+      setErrorNews(err.message || "Failed to fetch news data");
+    } finally {
+      setLoadingNews(false);
     }
   };
 
@@ -596,11 +721,6 @@ export default function AdminDashboardPage() {
     } catch (err) {
       console.error("Gagal menghapus:", err);
       alert("Terjadi kesalahan saat menghapus data.");
-    }
-  }; console.error("Failed to fetch news:", err);
-      setErrorNews(err.message || "Failed to fetch news data");
-    } finally {
-      setLoadingNews(false);
     }
   };
 
@@ -1012,6 +1132,79 @@ export default function AdminDashboardPage() {
 
   const strokePath = chartData.map((pt, idx) => `${idx === 0 ? 'M' : 'L'} ${pt.x},${pt.y}`).join(' ');
   const areaPath = chartData.length > 0 ? `${strokePath} L ${chartData[chartData.length - 1].x},190 L ${chartData[0].x},190 Z` : '';
+
+  // --- PUSAT DATA FILTER LOGIC ---
+  const getFilteredPusatData = (isPending: boolean) => {
+    return pusatData.filter(d => {
+      if (isPending && d.status !== 'Pending') return false;
+      if (!isPending && d.status === 'Pending') return false;
+      
+      // Text Search
+      if (pusatDataSearchQuery) {
+        const q = pusatDataSearchQuery.toLowerCase();
+        if (!d.nama_lengkap.toLowerCase().includes(q) && !d.nik.includes(q) && !d.nisn.includes(q)) return false;
+      }
+
+      // Gender
+      if (pusatDataFilterGender !== 'Semua' && d.gender !== pusatDataFilterGender) return false;
+
+      // Kelas
+      if (pusatDataFilterKelas !== 'Semua' && d.kelas !== pusatDataFilterKelas) return false;
+
+      // Jenjang
+      if (pusatDataFilterJenjang !== 'Semua') {
+        const k = parseInt(d.kelas);
+        let jenjang = "";
+        if (k >= 1 && k <= 6) jenjang = "SDIT";
+        else if (k >= 7 && k <= 9) jenjang = "SMP";
+        else if (k >= 10 && k <= 12) jenjang = "MA";
+        
+        if (jenjang !== pusatDataFilterJenjang) return false;
+      }
+
+      // Program Pendidikan
+      if (pusatDataFilterProgram !== 'Semua' && d.program_pendidikan !== pusatDataFilterProgram) return false;
+
+      // Kelengkapan Berkas
+      if (pusatDataFilterBerkas !== 'Semua') {
+        const docCount = [d.kk_url, d.akte_url, d.ijazah_url, d.sktm_url].filter(Boolean).length;
+        if (pusatDataFilterBerkas === 'Lengkap' && docCount < 4) return false;
+        if (pusatDataFilterBerkas === 'Belum Lengkap' && docCount === 4) return false;
+      }
+
+      // Tanggal Masuk
+      if (pusatDataFilterTanggal) {
+        const dDate = new Date(d.created_at || new Date());
+        const filterDate = new Date(pusatDataFilterTanggal);
+        if (dDate.toDateString() !== filterDate.toDateString()) return false;
+      }
+
+      // Provinsi & WNA
+      if (pusatDataFilterProvinsi !== 'Semua') {
+        let isWNA = false;
+        let prov = "";
+        try {
+          const alamatObj = JSON.parse(d.alamat);
+          isWNA = alamatObj.is_wna;
+          prov = alamatObj.provinsi || "";
+        } catch(e) {
+          // not JSON, fallback if needed, but for now skip
+        }
+        
+        if (pusatDataFilterProvinsi === 'WNA') {
+          if (!isWNA) return false;
+        } else {
+          if (isWNA) return false;
+          if (prov !== pusatDataFilterProvinsi) return false;
+        }
+      }
+
+      return true;
+    });
+  };
+
+  const filteredDataSiswa = getFilteredPusatData(false);
+  const filteredPengajuanData = getFilteredPusatData(true);
 
   return (
     <>
@@ -1927,11 +2120,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   exit={{ opacity: 0, y: -15 }}
                   className="tab-content"
                 >
-                  <div className="accounts-header-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                  <div className="accounts-header-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', margin: 0 }}>Data Identitas Santri</h3>
                       <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Kelola rekam jejak identitas dan dokumen vital santri</span>
                     </div>
+                    <button 
+                      onClick={() => setShowAddPusatDataModal(true)}
+                      style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                      <span>+ Tambah Data Siswa</span>
+                    </button>
                   </div>
 
                   {/* Glassmorphic Sub-Navbar for Pusat Data */}
@@ -1985,7 +2184,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       }}
                     >
                       <span>Pengajuan Data</span>
-                      {pusatData.filter(d => d.status === "Pending").length > 0 && (
+                      {filteredPengajuanData.length > 0 && (
                         <span style={{
                           background: '#ef4444',
                           color: '#fff',
@@ -1995,10 +2194,64 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           borderRadius: '10px',
                           lineHeight: 1
                         }}>
-                          {pusatData.filter(d => d.status === "Pending").length}
+                          {filteredPengajuanData.length}
                         </span>
                       )}
                     </button>
+                  </div>
+
+                  {/* Advanced Filters (Shared for both tabs) */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '1.5rem', background: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+                    <input 
+                      type="text" 
+                      placeholder="Cari Nama, NIK, atau NISN..." 
+                      value={pusatDataSearchQuery}
+                      onChange={(e) => setPusatDataSearchQuery(e.target.value)}
+                      style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', minWidth: '150px', flexGrow: 1 }}
+                    />
+                    <select value={pusatDataFilterGender} onChange={(e) => setPusatDataFilterGender(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
+                      <option value="Semua">Semua Gender</option>
+                      <option value="Putra">Putra</option>
+                      <option value="Putri">Putri</option>
+                    </select>
+                    <select value={pusatDataFilterKelas} onChange={(e) => setPusatDataFilterKelas(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
+                      <option value="Semua">Semua Kelas</option>
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(k => <option key={k} value={k}>Kelas {k}</option>)}
+                    </select>
+                    <select value={pusatDataFilterJenjang} onChange={(e) => setPusatDataFilterJenjang(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
+                      <option value="Semua">Semua Jenjang</option>
+                      <option value="SDIT">SDIT (1-6)</option>
+                      <option value="SMP">SMP (7-9)</option>
+                      <option value="MA">Madrasah Aliyah (10-12)</option>
+                    </select>
+                    <select value={pusatDataFilterProgram} onChange={(e) => setPusatDataFilterProgram(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
+                      <option value="Semua">Semua Program</option>
+                      <option value="Mondok">Mondok</option>
+                      <option value="Non Mondok">Non Mondok</option>
+                    </select>
+                    <select value={pusatDataFilterProvinsi} onChange={(e) => setPusatDataFilterProvinsi(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
+                      <option value="Semua">Semua Domisili</option>
+                      <option value="WNA">WNA (Asing)</option>
+                      <option value="Jawa Barat">Jawa Barat</option>
+                      <option value="DKI Jakarta">DKI Jakarta</option>
+                      <option value="Banten">Banten</option>
+                      <option value="Jawa Tengah">Jawa Tengah</option>
+                      <option value="Lainnya">Provinsi Lainnya</option>
+                    </select>
+                    <select value={pusatDataFilterBerkas} onChange={(e) => setPusatDataFilterBerkas(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
+                      <option value="Semua">Semua Status Berkas</option>
+                      <option value="Lengkap">Lengkap (4/4)</option>
+                      <option value="Belum Lengkap">Belum Lengkap</option>
+                    </select>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 8px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                      <label style={{ fontSize: '0.8rem', color: '#64748b' }}>Waktu Masuk:</label>
+                      <input 
+                        type="date" 
+                        value={pusatDataFilterTanggal} 
+                        onChange={(e) => setPusatDataFilterTanggal(e.target.value)} 
+                        style={{ border: 'none', background: 'transparent', fontSize: '0.8rem', color: '#334155', outline: 'none' }}
+                      />
+                    </div>
                   </div>
 
                   {loadingPusatData ? (
@@ -2013,11 +2266,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.2 }}
                         >
-                          {pusatData.filter(d => d.status !== 'Pending').length === 0 ? (
+                          {filteredDataSiswa.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
                               <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>🗃️</span>
                               <h4 style={{ color: '#002147', marginBottom: '0.5rem' }}>Belum ada data siswa</h4>
-                              <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Siswa yang telah disetujui akan muncul di sini.</p>
+                              <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Tidak ada data yang sesuai dengan filter.</p>
                             </div>
                           ) : (
                             <div className="table-responsive" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.25rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', overflowX: 'auto' }}>
@@ -2033,7 +2286,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {pusatData.filter(d => d.status !== 'Pending').map((siswa) => {
+                                  {filteredDataSiswa.map((siswa) => {
                                     const docCount = [siswa.kk_url, siswa.akte_url, siswa.ijazah_url, siswa.sktm_url].filter(Boolean).length;
                                     return (
                                       <tr key={siswa.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' }}>
@@ -2086,11 +2339,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.2 }}
                         >
-                          {pusatData.filter(d => d.status === 'Pending').length === 0 ? (
+                          {filteredPengajuanData.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
                               <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>📬</span>
                               <h4 style={{ color: '#002147', marginBottom: '0.5rem' }}>Tidak ada pengajuan data baru</h4>
-                              <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Semua pengajuan telah disetujui atau belum ada pengajuan masuk.</p>
+                              <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Semua pengajuan telah disetujui atau belum ada pengajuan masuk yang sesuai filter.</p>
                             </div>
                           ) : (
                             <div className="table-responsive" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.25rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', overflowX: 'auto' }}>
@@ -2106,7 +2359,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {pusatData.filter(d => d.status === 'Pending').map((siswa) => {
+                                  {filteredPengajuanData.map((siswa) => {
                                     const docCount = [siswa.kk_url, siswa.akte_url, siswa.ijazah_url, siswa.sktm_url].filter(Boolean).length;
                                     return (
                                       <tr key={siswa.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background 0.2s' }}>
@@ -5360,6 +5613,144 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   </button>
                 )}
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ADD PUSAT DATA MODAL */}
+      <AnimatePresence>
+        {showAddPusatDataModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, overflowY: 'auto', padding: '2rem' }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '800px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
+                <h3 style={{ margin: 0, color: '#002147', fontWeight: 900 }}>Tambah Data Siswa Baru (Admin)</h3>
+                <button onClick={() => setShowAddPusatDataModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
+              </div>
+              
+              <form onSubmit={handleAddPusatDataSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="input-group">
+                    <label>Nama Lengkap Santri</label>
+                    <input type="text" required value={addPusatDataForm.nama_lengkap} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_lengkap: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                  </div>
+                  <div className="input-group">
+                    <label>Tempat, Tanggal Lahir</label>
+                    <input type="text" required value={addPusatDataForm.tempat_tanggal_lahir} onChange={e => setAddPusatDataForm({...addPusatDataForm, tempat_tanggal_lahir: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                  </div>
+                  <div className="input-group">
+                    <label>NIK</label>
+                    <input type="number" required value={addPusatDataForm.nik} onChange={e => setAddPusatDataForm({...addPusatDataForm, nik: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                  </div>
+                  <div className="input-group">
+                    <label>NISN</label>
+                    <input type="number" required value={addPusatDataForm.nisn} onChange={e => setAddPusatDataForm({...addPusatDataForm, nisn: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                  </div>
+                  <div className="input-group">
+                    <label>Kelas</label>
+                    <select value={addPusatDataForm.kelas} onChange={e => setAddPusatDataForm({...addPusatDataForm, kelas: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(k => <option key={k} value={k}>Kelas {k}</option>)}
+                    </select>
+                  </div>
+                  <div className="input-group">
+                    <label>Program Pendidikan</label>
+                    <select value={addPusatDataForm.program_pendidikan} onChange={e => setAddPusatDataForm({...addPusatDataForm, program_pendidikan: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                      <option value="Mondok">Mondok (Pesantren)</option>
+                      <option value="Non Mondok">Non Mondok (Pulang Pergi)</option>
+                    </select>
+                  </div>
+                  <div className="input-group">
+                    <label>Gender</label>
+                    <select value={addPusatDataForm.gender} onChange={e => setAddPusatDataForm({...addPusatDataForm, gender: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                      <option value="Putra">Putra</option><option value="Putri">Putri</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                    <strong>Alamat Lengkap Domisili</strong>
+                    <label style={{ display: 'flex', gap: '8px', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={addPusatDataIsWNA} onChange={e => setAddPusatDataIsWNA(e.target.checked)} />
+                      WNA (Warga Negara Asing)
+                    </label>
+                  </div>
+
+                  {addPusatDataIsWNA ? (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                      <div>
+                        <label>Negara</label>
+                        <input list="admin-country-list" required={addPusatDataIsWNA} value={addPusatDataCountry} onChange={e => setAddPusatDataCountry(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                        <datalist id="admin-country-list">{countries.map((c,i) => <option key={i} value={c} />)}</datalist>
+                      </div>
+                      <div>
+                        <label>Kode Pos</label>
+                        <input type="text" value={addPusatDataKodePos} onChange={e => setAddPusatDataKodePos(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                      <div>
+                        <label>Provinsi</label>
+                        <select required={!addPusatDataIsWNA} value={addPusatDataProvId} onChange={e => { setAddPusatDataProvId(e.target.value); setAddPusatDataProvName(e.target.options[e.target.selectedIndex].text); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                          <option value="">-- Pilih Provinsi --</option>
+                          {provinces.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label>Kota/Kabupaten</label>
+                        <select required={!addPusatDataIsWNA} value={addPusatDataRegId} disabled={!addPusatDataProvId} onChange={e => { setAddPusatDataRegId(e.target.value); setAddPusatDataRegName(e.target.options[e.target.selectedIndex].text); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                          <option value="">-- Pilih Kota/Kabupaten --</option>
+                          {regencies.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label>Kecamatan</label>
+                        <select required={!addPusatDataIsWNA} value={addPusatDataDistId} disabled={!addPusatDataRegId} onChange={e => { setAddPusatDataDistId(e.target.value); setAddPusatDataDistName(e.target.options[e.target.selectedIndex].text); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                          <option value="">-- Pilih Kecamatan --</option>
+                          {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label>Kode Pos</label>
+                        <input type="number" value={addPusatDataKodePos} onChange={e => setAddPusatDataKodePos(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                      </div>
+                    </div>
+                  )}
+                  <div>
+                    <label>Detail Alamat</label>
+                    <textarea required value={addPusatDataDetail} onChange={e => setAddPusatDataDetail(e.target.value)} rows={2} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}></textarea>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="input-group"><label>Nama Ayah</label><input type="text" required value={addPusatDataForm.nama_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ayah: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label>Pekerjaan Ayah</label><input type="text" required value={addPusatDataForm.pekerjaan_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label>Nama Ibu</label><input type="text" required value={addPusatDataForm.nama_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ibu: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label>Pekerjaan Ibu</label><input type="text" required value={addPusatDataForm.pekerjaan_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label>No HP/WhatsApp Wali</label><input type="text" required value={addPusatDataForm.no_hp_wali} onChange={e => setAddPusatDataForm({...addPusatDataForm, no_hp_wali: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                </div>
+
+                <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                  <strong style={{ display: 'block', marginBottom: '1rem' }}>Unggah Berkas</strong>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div><label>Pas Foto *</label><input type="file" required accept="image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, pas_foto: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
+                    <div><label>Kartu Keluarga (KK) *</label><input type="file" required accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, kk: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
+                    <div><label>Akte Kelahiran</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, akte: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
+                    <div><label>Ijazah Terakhir</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, ijazah: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
+                    <div><label>SKTM (Bila Ada)</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, sktm: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
+                  </div>
+                </div>
+                
+                <button type="submit" disabled={isSubmittingAddPusatData} style={{ padding: '1rem', background: '#10b981', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 800, cursor: isSubmittingAddPusatData ? 'not-allowed' : 'pointer', marginTop: '1rem' }}>
+                  {isSubmittingAddPusatData ? "Menyimpan Data..." : "Simpan Data Siswa"}
+                </button>
+              </form>
             </motion.div>
           </div>
         )}

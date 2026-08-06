@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -9,6 +9,7 @@ export default function PusdaPage() {
   const [formData, setFormData] = useState({
     nama_lengkap: "",
     kelas: "10",
+    program_pendidikan: "Mondok",
     gender: "Putra",
     tempat_tanggal_lahir: "",
     nik: "",
@@ -20,6 +21,76 @@ export default function PusdaPage() {
     no_hp_wali: "",
     alamat: "",
   });
+
+  // Alamat & Wilayah States
+  const [isWNA, setIsWNA] = useState(false);
+  const [provinces, setProvinces] = useState<any[]>([]);
+  const [regencies, setRegencies] = useState<any[]>([]);
+  const [districts, setDistricts] = useState<any[]>([]);
+  const [countries, setCountries] = useState<any[]>([]);
+
+  const [selectedProvId, setSelectedProvId] = useState("");
+  const [selectedProvName, setSelectedProvName] = useState("");
+  const [selectedRegId, setSelectedRegId] = useState("");
+  const [selectedRegName, setSelectedRegName] = useState("");
+  const [selectedDistId, setSelectedDistId] = useState("");
+  const [selectedDistName, setSelectedDistName] = useState("");
+  
+  const [detailAlamat, setDetailAlamat] = useState("");
+  const [kodePos, setKodePos] = useState("");
+  const [selectedCountryName, setSelectedCountryName] = useState("");
+
+  // Fetch initial data (Provinces & Countries)
+  useEffect(() => {
+    fetch("https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json")
+      .then(res => res.json())
+      .then(data => setProvinces(data))
+      .catch(err => console.error(err));
+
+    fetch("https://restcountries.com/v3.1/all?fields=name")
+      .then(res => res.json())
+      .then(data => {
+        const sorted = data.map((c: any) => c.name.common).sort();
+        setCountries(sorted);
+      })
+      .catch(err => console.error(err));
+  }, []);
+
+  // Fetch Regencies when Province changes
+  useEffect(() => {
+    if (selectedProvId) {
+      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${selectedProvId}.json`)
+        .then(res => res.json())
+        .then(data => {
+          setRegencies(data);
+          setSelectedRegId("");
+          setSelectedRegName("");
+          setDistricts([]);
+          setSelectedDistId("");
+          setSelectedDistName("");
+        })
+        .catch(err => console.error(err));
+    } else {
+      setRegencies([]);
+      setDistricts([]);
+    }
+  }, [selectedProvId]);
+
+  // Fetch Districts when Regency changes
+  useEffect(() => {
+    if (selectedRegId) {
+      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${selectedRegId}.json`)
+        .then(res => res.json())
+        .then(data => {
+          setDistricts(data);
+          setSelectedDistId("");
+          setSelectedDistName("");
+        })
+        .catch(err => console.error(err));
+    } else {
+      setDistricts([]);
+    }
+  }, [selectedRegId]);
 
   const [pasFotoFile, setPasFotoFile] = useState<File | null>(null);
   const [pasFotoPreview, setPasFotoPreview] = useState<string | null>(null);
@@ -92,9 +163,27 @@ export default function PusdaPage() {
       if (ijazahFile) ijazah_url = await uploadFile(ijazahFile, "IJAZAH");
       if (sktmFile) sktm_url = await uploadFile(sktmFile, "SKTM");
 
+      // Build JSON Alamat
+      const alamatObj = isWNA ? {
+        is_wna: true,
+        negara: selectedCountryName,
+        detail: detailAlamat,
+        kode_pos: kodePos,
+        full_text: `${detailAlamat}, ${selectedCountryName}${kodePos ? ' - ' + kodePos : ''} (WNA)`
+      } : {
+        is_wna: false,
+        provinsi: selectedProvName,
+        kota: selectedRegName,
+        kecamatan: selectedDistName,
+        detail: detailAlamat,
+        kode_pos: kodePos,
+        full_text: `${detailAlamat}, Kec. ${selectedDistName}, Kota/Kab. ${selectedRegName}, Prov. ${selectedProvName}${kodePos ? ' - ' + kodePos : ''}`
+      };
+
       // Save to database
       const payload = {
         ...formData,
+        alamat: JSON.stringify(alamatObj),
         pas_foto,
         kk_url,
         akte_url,
@@ -206,18 +295,16 @@ export default function PusdaPage() {
               <div className="input-group">
                 <label>Kelas saat ini</label>
                 <select name="kelas" required value={formData.kelas} onChange={handleInputChange}>
-                  <option value="1">Kelas 1 (SD)</option>
-                  <option value="2">Kelas 2 (SD)</option>
-                  <option value="3">Kelas 3 (SD)</option>
-                  <option value="4">Kelas 4 (SD)</option>
-                  <option value="5">Kelas 5 (SD)</option>
-                  <option value="6">Kelas 6 (SD)</option>
-                  <option value="7">Kelas 7 (SMP)</option>
-                  <option value="8">Kelas 8 (SMP)</option>
-                  <option value="9">Kelas 9 (SMP)</option>
-                  <option value="10">Kelas 10 (SMA/MA)</option>
-                  <option value="11">Kelas 11 (SMA/MA)</option>
-                  <option value="12">Kelas 12 (SMA/MA)</option>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(k => (
+                    <option key={k} value={k}>Kelas {k}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="input-group">
+                <label>Program Pendidikan</label>
+                <select name="program_pendidikan" required value={formData.program_pendidikan} onChange={handleInputChange}>
+                  <option value="Mondok">Mondok (Pesantren)</option>
+                  <option value="Non Mondok">Non Mondok (Pulang Pergi)</option>
                 </select>
               </div>
               <div className="input-group">
@@ -266,9 +353,98 @@ export default function PusdaPage() {
                 <input type="tel" name="no_hp_wali" required value={formData.no_hp_wali} onChange={handleInputChange} placeholder="08..." />
               </div>
             </div>
-            <div className="input-group" style={{ marginTop: '1rem' }}>
-              <label>Alamat Lengkap Domisili</label>
-              <textarea name="alamat" required value={formData.alamat} onChange={handleInputChange} rows={3} placeholder="Jalan, RT/RW, Desa/Kelurahan, Kecamatan..."></textarea>
+            <div className="input-group" style={{ marginTop: '1rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <label style={{ fontSize: '1rem', color: '#0f172a' }}>Alamat Lengkap Domisili</label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
+                  <input type="checkbox" checked={isWNA} onChange={(e) => setIsWNA(e.target.checked)} style={{ width: 'auto' }} />
+                  Saya merupakan WNA (Warga Negara Asing)
+                </label>
+              </div>
+
+              {isWNA ? (
+                <div className="grid-2" style={{ marginBottom: '1rem' }}>
+                  <div className="input-group">
+                    <label>Pilih Negara Asal</label>
+                    <input 
+                      list="country-list"
+                      required={isWNA}
+                      placeholder="Ketik untuk mencari negara..."
+                      value={selectedCountryName}
+                      onChange={(e) => setSelectedCountryName(e.target.value)}
+                    />
+                    <datalist id="country-list">
+                      {countries.map((c, i) => <option key={i} value={c} />)}
+                    </datalist>
+                  </div>
+                  <div className="input-group">
+                    <label>Kode Pos (Opsional)</label>
+                    <input type="text" value={kodePos} onChange={(e) => setKodePos(e.target.value)} placeholder="Kode Pos" />
+                  </div>
+                </div>
+              ) : (
+                <div className="grid-2" style={{ marginBottom: '1rem' }}>
+                  <div className="input-group">
+                    <label>Provinsi</label>
+                    <select 
+                      required={!isWNA} 
+                      value={selectedProvId} 
+                      onChange={(e) => {
+                        setSelectedProvId(e.target.value);
+                        setSelectedProvName(e.target.options[e.target.selectedIndex].text);
+                      }}
+                    >
+                      <option value="">-- Pilih Provinsi --</option>
+                      {provinces.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                    </select>
+                  </div>
+                  <div className="input-group">
+                    <label>Kota / Kabupaten</label>
+                    <select 
+                      required={!isWNA} 
+                      value={selectedRegId}
+                      disabled={!selectedProvId}
+                      onChange={(e) => {
+                        setSelectedRegId(e.target.value);
+                        setSelectedRegName(e.target.options[e.target.selectedIndex].text);
+                      }}
+                    >
+                      <option value="">-- Pilih Kota/Kabupaten --</option>
+                      {regencies.map((r: any) => <option key={r.id} value={r.id}>{r.name}</option>)}
+                    </select>
+                  </div>
+                  <div className="input-group">
+                    <label>Kecamatan</label>
+                    <select 
+                      required={!isWNA} 
+                      value={selectedDistId}
+                      disabled={!selectedRegId}
+                      onChange={(e) => {
+                        setSelectedDistId(e.target.value);
+                        setSelectedDistName(e.target.options[e.target.selectedIndex].text);
+                      }}
+                    >
+                      <option value="">-- Pilih Kecamatan --</option>
+                      {districts.map((d: any) => <option key={d.id} value={d.id}>{d.name}</option>)}
+                    </select>
+                  </div>
+                  <div className="input-group">
+                    <label>Kode Pos (Opsional)</label>
+                    <input type="number" value={kodePos} onChange={(e) => setKodePos(e.target.value)} placeholder="Contoh: 41151" />
+                  </div>
+                </div>
+              )}
+              
+              <div className="input-group">
+                <label>Detail Alamat (Desa/Kelurahan, Jalan, RT/RW, Gang)</label>
+                <textarea 
+                  required 
+                  value={detailAlamat} 
+                  onChange={(e) => setDetailAlamat(e.target.value)} 
+                  rows={2} 
+                  placeholder="Contoh: Desa Margasari, Jl. Pramuka RT 01/RW 02, Gg. Kenanga No. 15"
+                ></textarea>
+              </div>
             </div>
           </div>
 
