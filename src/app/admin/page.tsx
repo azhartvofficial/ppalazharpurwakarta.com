@@ -1004,21 +1004,45 @@ export default function AdminDashboardPage() {
               <span className="nav-icon"></span> <span>Aktivitas Web</span>
             </button>
             
-            <button 
-              className={`nav-item ${activeTab === "pusatdata" ? "active" : ""}`}
-              onClick={() => { setActiveTab("pusatdata"); setSidebarOpen(false); }}
-              style={{ color: 'white' }}
-            >
-              <span className="nav-icon"></span> <span>Pusat Data Siswa</span>
-            </button>
-            
-            <button 
-              className={`nav-item ${activeTab === "accounts" ? "active" : ""}`}
-              onClick={() => { setActiveTab("accounts"); setSidebarOpen(false); }}
-              style={{ color: 'white' }}
-            >
-              <span className="nav-icon"></span> <span>Kelola Akun</span>
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <button 
+                className={`nav-item ${activeTab === "pusatdata" || activeTab === "accounts" ? "active" : ""}`}
+                onClick={() => setAccountsMenuExpanded(!accountsMenuExpanded)}
+                style={{ color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span className="nav-icon"></span> <span>Manajemen Data</span>
+                </div>
+                <span style={{ transform: accountsMenuExpanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s', fontSize: '0.8rem' }}>▼</span>
+              </button>
+              
+              <AnimatePresence>
+                {accountsMenuExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', paddingLeft: '1.5rem', background: 'rgba(0,0,0,0.1)' }}
+                  >
+                    <button 
+                      className={`nav-item ${activeTab === "pusatdata" ? "active" : ""}`}
+                      onClick={() => { setActiveTab("pusatdata"); setSidebarOpen(false); }}
+                      style={{ color: 'white', borderLeft: activeTab === "pusatdata" ? '2px solid #ff8c00' : '2px solid transparent', paddingLeft: '1rem', margin: '0.2rem 0' }}
+                    >
+                      <span className="nav-icon" style={{ fontSize: '0.7rem' }}>●</span> <span>Pusat Data Siswa</span>
+                    </button>
+                    
+                    <button 
+                      className={`nav-item ${activeTab === "accounts" ? "active" : ""}`}
+                      onClick={() => { setActiveTab("accounts"); setSidebarOpen(false); }}
+                      style={{ color: 'white', borderLeft: activeTab === "accounts" ? '2px solid #ff8c00' : '2px solid transparent', paddingLeft: '1rem', margin: '0.2rem 0' }}
+                    >
+                      <span className="nav-icon" style={{ fontSize: '0.7rem' }}>●</span> <span>Kelola Akun</span>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             
             <button 
               className={`nav-item ${activeTab === "news" ? "active" : ""}`}
