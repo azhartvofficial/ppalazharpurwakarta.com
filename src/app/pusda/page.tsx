@@ -325,6 +325,27 @@ export default function PusdaPage() {
     setErrorMsg("");
 
     try {
+      setCompressionStatus("Memeriksa data...");
+      // Check for duplicates
+      const { data: duplicates, error: dupError } = await supabase
+        .from('pusat_data_siswa')
+        .select('id, nama_lengkap, nik, nisn, tempat_tanggal_lahir')
+        .or(`nik.eq.${formData.nik},nisn.eq.${formData.nisn},and(nama_lengkap.eq."${formData.nama_lengkap}",tempat_tanggal_lahir.eq."${formData.tempat_tanggal_lahir}")`);
+
+      if (dupError) {
+        throw new Error("Gagal memeriksa data duplikat.");
+      }
+
+      if (duplicates && duplicates.length > 0) {
+        const dup = duplicates[0];
+        let reason = "";
+        if (dup.nik === formData.nik) reason = "NIK";
+        else if (dup.nisn === formData.nisn) reason = "NISN";
+        else reason = "Nama dan TTL";
+        
+        throw new Error(`Pendaftaran ditolak: Data dengan ${reason} yang sama sudah terdaftar sebelumnya.`);
+      }
+
       // Upload files
       let pas_foto = "";
       let kk_url = null;
