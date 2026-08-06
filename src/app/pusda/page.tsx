@@ -216,19 +216,22 @@ export default function PusdaPage() {
   const uploadFile = async (file: File, folderType: string) => {
     const fileExt = file.name.split('.').pop();
     const fileName = `${folderType}_${Date.now()}.${fileExt}`;
-    const filePath = `pusat_data_santri/Kelas_${formData.kelas}/${formData.gender}/${formData.nama_lengkap.replace(/\s+/g, '_')}/${fileName}`;
+    const folderPath = `Kelas_${formData.kelas}/${formData.gender}/${formData.nama_lengkap.replace(/\s+/g, '_')}`;
     
-    const { data, error } = await supabase.storage
-      .from('berita-images')
-      .upload(filePath, file);
+    const apiFormData = new FormData();
+    apiFormData.append('file', file);
+    apiFormData.append('filename', fileName);
+    apiFormData.append('folderPath', folderPath);
 
-    if (error) throw error;
-    
-    const { data: publicUrlData } = supabase.storage
-      .from('berita-images')
-      .getPublicUrl(filePath);
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: apiFormData,
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Gagal mengunggah file ke Google Drive');
       
-    return publicUrlData.publicUrl;
+    return data.url;
   };
 
   const handleAccessCheck = (e: React.FormEvent) => {
