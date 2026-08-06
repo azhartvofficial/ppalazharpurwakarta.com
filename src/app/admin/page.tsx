@@ -355,6 +355,8 @@ export default function AdminDashboardPage() {
     ijazah: null as File | null, sktm: null as File | null
   });
   const [isSubmittingAddPusatData, setIsSubmittingAddPusatData] = useState(false);
+  const [compressionProgress, setCompressionProgress] = useState(0);
+  const [compressionStatus, setCompressionStatus] = useState("");
 
   useEffect(() => {
     setAddPusatDataErrors(prev => {
@@ -452,6 +454,26 @@ export default function AdminDashboardPage() {
     
     setIsSubmittingAddPusatData(true);
     try {
+      
+      const compressImage = async (file: File, label: string) => {
+        if (!file.type.startsWith('image/')) return file;
+        setCompressionStatus("Mengompresi " + label + "...");
+        const options = {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+          onProgress: (progress: number) => {
+            setCompressionProgress(progress);
+          }
+        };
+        try {
+          return await imageCompression(file, options);
+        } catch (error) {
+          console.error(error);
+          return file;
+        }
+      };
+
       const uploadFile = async (file: File, folderType: string) => {
         const fileExt = file.name.split('.').pop();
         const fileName = `${folderType}_${Date.now()}.${fileExt}`;

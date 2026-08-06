@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import imageCompression from "browser-image-compression";
 import Navbar from "@/components/Navbar";
 
 export default function PusdaPage() {
@@ -138,6 +139,8 @@ export default function PusdaPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [compressionProgress, setCompressionProgress] = useState(0);
+  const [compressionStatus, setCompressionStatus] = useState("");
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [errorMsg, setErrorMsg] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -187,6 +190,26 @@ export default function PusdaPage() {
       }
       setPasFotoFile(file);
       setPasFotoPreview(URL.createObjectURL(file));
+    }
+  };
+
+  
+  const compressImage = async (file: File, label: string) => {
+    if (!file.type.startsWith('image/')) return file;
+    setCompressionStatus("Mengompresi " + label + "...");
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+      onProgress: (progress: number) => {
+        setCompressionProgress(progress);
+      }
+    };
+    try {
+      return await imageCompression(file, options);
+    } catch (error) {
+      console.error(error);
+      return file;
     }
   };
 
@@ -290,12 +313,24 @@ export default function PusdaPage() {
       let akte_url = null;
       let ijazah_url = null;
       let sktm_url = null;
+      
+      setCompressionStatus("Menyiapkan file...");
+      setCompressionProgress(0);
 
-      pas_foto = await uploadFile(pasFotoFile!, "PASFOTO");
-      if (kkFile) kk_url = await uploadFile(kkFile, "KK");
-      if (akteFile) akte_url = await uploadFile(akteFile, "AKTE");
-      if (ijazahFile) ijazah_url = await uploadFile(ijazahFile, "IJAZAH");
-      if (sktmFile) sktm_url = await uploadFile(sktmFile, "SKTM");
+      const compressedPasFoto = await compressImage(pasFotoFile!, "Pas Foto");
+      const compressedKk = kkFile ? await compressImage(kkFile, "Kartu Keluarga") : null;
+      const compressedAkte = akteFile ? await compressImage(akteFile, "Akte Kelahiran") : null;
+      const compressedIjazah = ijazahFile ? await compressImage(ijazahFile, "Ijazah") : null;
+      const compressedSktm = sktmFile ? await compressImage(sktmFile, "SKTM") : null;
+
+      setCompressionStatus("Mengunggah file ke server...");
+      setCompressionProgress(100);
+
+      pas_foto = await uploadFile(compressedPasFoto, "PASFOTO");
+      if (compressedKk) kk_url = await uploadFile(compressedKk, "KK");
+      if (compressedAkte) akte_url = await uploadFile(compressedAkte, "AKTE");
+      if (compressedIjazah) ijazah_url = await uploadFile(compressedIjazah, "IJAZAH");
+      if (compressedSktm) sktm_url = await uploadFile(compressedSktm, "SKTM");
 
       // Build JSON Alamat
       const alamatObj = isWNA ? {
@@ -325,6 +360,8 @@ export default function PusdaPage() {
         sktm_url,
         status: 'Pending'
       };
+      // Prevent failure if email_santri is not in DB
+      delete (payload as any).email_santri;
 
       const { error } = await supabase.from('pusat_data_siswa').insert([payload]);
       
