@@ -142,8 +142,16 @@ export default function PusdaPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const capitalizeWords = (str: string) => {
+    return str.replace(/\b\w/g, char => char.toUpperCase());
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let value = e.target.value;
+    if (["nama_lengkap", "tempat_tanggal_lahir", "nama_ayah", "pekerjaan_ayah", "nama_ibu", "pekerjaan_ibu"].includes(e.target.name)) {
+      value = capitalizeWords(value);
+    }
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {

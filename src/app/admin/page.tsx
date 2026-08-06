@@ -81,6 +81,11 @@ interface UserAccount {
 function formatNumber(num: number): string {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+const capitalizeWords = (str: string) => {
+  return str.replace(/\b\w/g, char => char.toUpperCase());
+};
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "ppdb" | "news" | "docs" | "settings" | "accounts" | "pusatdata">("overview");
@@ -6093,7 +6098,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Nama Lengkap</label>
-                    <input type="text" required value={addPusatDataForm.nama_lengkap} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_lengkap: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                    <input type="text" required value={addPusatDataForm.nama_lengkap} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_lengkap: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Email Peserta Didik (Opsional)</label>
@@ -6101,7 +6106,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   </div>
                   <div className="input-group">
                     <label>Tempat, Tanggal Lahir</label>
-                    <input type="text" required value={addPusatDataForm.tempat_tanggal_lahir} onChange={e => setAddPusatDataForm({...addPusatDataForm, tempat_tanggal_lahir: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                    <input type="text" required value={addPusatDataForm.tempat_tanggal_lahir} onChange={e => setAddPusatDataForm({...addPusatDataForm, tempat_tanggal_lahir: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
                   </div>
                   <div className="input-group">
                     <label>NIK</label>
@@ -6197,10 +6202,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div className="input-group"><label>Nama Ayah</label><input type="text" required value={addPusatDataForm.nama_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ayah: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
-                  <div className="input-group"><label>Pekerjaan Ayah</label><input type="text" required value={addPusatDataForm.pekerjaan_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
-                  <div className="input-group"><label>Nama Ibu</label><input type="text" required value={addPusatDataForm.nama_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ibu: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
-                  <div className="input-group"><label>Pekerjaan Ibu</label><input type="text" required value={addPusatDataForm.pekerjaan_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label>Nama Ayah</label><input type="text" required value={addPusatDataForm.nama_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ayah: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label>Pekerjaan Ayah</label><input type="text" required value={addPusatDataForm.pekerjaan_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label>Nama Ibu</label><input type="text" required value={addPusatDataForm.nama_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ibu: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label>Pekerjaan Ibu</label><input type="text" required value={addPusatDataForm.pekerjaan_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
                   <div className="input-group"><label>No HP/WhatsApp Wali</label><input type="text" required value={addPusatDataForm.no_hp_wali} onChange={e => setAddPusatDataForm({...addPusatDataForm, no_hp_wali: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
                 </div>
 
