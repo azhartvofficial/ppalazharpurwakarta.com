@@ -2815,6 +2815,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         </td>
                                         <td style={{ padding: '1rem', textAlign: 'center' }}>
                                           <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                                            <button onClick={() => setSelectedPusatData(siswa)} style={{ padding: '6px 10px', background: '#e0f2fe', color: '#0369a1', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}>
+                                              Detail
+                                            </button>
                                             <button onClick={() => handleUpdatePusatDataStatus(siswa.id, 'Approved')} style={{ padding: '6px 10px', background: '#dcfce7', color: '#166534', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}>
                                               Terima
                                             </button>
@@ -2823,9 +2826,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                             </button>
                                             <button onClick={() => handleDeletePusatData(siswa.id)} style={{ padding: '6px 10px', background: '#fee2e2', color: '#991b1b', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}>
                                               Hapus
-                                            </button>
-                                            <button onClick={() => setSelectedPusatData(siswa)} style={{ padding: '6px 10px', background: '#e0f2fe', color: '#0369a1', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}>
-                                              Detail
                                             </button>
                                           </div>
                                         </td>
