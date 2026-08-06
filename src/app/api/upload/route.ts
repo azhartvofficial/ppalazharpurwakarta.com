@@ -7,6 +7,7 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const file = formData.get('file') as File;
     const filename = formData.get('filename') as string;
+    const targetFolderId = formData.get('targetFolderId') as string;
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
     const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
-    let rootFolderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+    let rootFolderId = targetFolderId || process.env.GOOGLE_DRIVE_FOLDER_ID;
 
     if (!clientId || !clientSecret || !refreshToken || !rootFolderId) {
       return NextResponse.json({ error: 'Server misconfiguration (Google Drive OAuth credentials missing)' }, { status: 500 });
