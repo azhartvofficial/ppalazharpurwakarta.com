@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import localFont from "next/font/local";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 const frizQuadrata = localFont({
   src: "../../Font/friz-quadrata-std-medium-5870338ec7ef8.otf",
@@ -12,6 +14,27 @@ const frizQuadrata = localFont({
 });
 
 export default function PendaftaranPage() {
+  const [waves, setWaves] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data, error } = await supabase.from('registration_settings').select('*').order('id', { ascending: true });
+        if (!error && data) {
+          setWaves(data);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const anyOpen = waves.some(w => w.is_open);
+
   return (
     <main className="pendaftaran-layout">
       <Navbar />
@@ -76,10 +99,40 @@ export default function PendaftaranPage() {
           >
             <span style={{ fontSize: '4rem', display: 'block', marginBottom: '1rem' }}>🎓</span>
             <h2 style={{ fontSize: '2rem', color: '#002147', fontWeight: 900, marginBottom: '1rem' }}>Siap Mendaftar?</h2>
-            <p style={{ color: '#64748b', marginBottom: '2rem', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 2rem' }}>Klik tombol di bawah ini untuk mengakses sistem PPDB resmi dan memulai proses pendaftaran putra/putri Anda.</p>
-            <a href="https://alazharpwk.cazh.id/ppdb/ponpes-al-azhar-purwakarta" target="_blank" rel="noopener noreferrer" className="btn-daftar-utama">
-              📝 Masuk ke Portal Pendaftaran (PPDB)
-            </a>
+            <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
+              Pendaftaran santri baru terbagi ke dalam beberapa gelombang. Perhatikan jadwal di bawah ini:
+            </p>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center', marginBottom: '2rem' }}>
+              {loading ? (
+                <p>Memuat jadwal pendaftaran...</p>
+              ) : (
+                waves.map((wave) => (
+                  <div key={wave.id} style={{ background: '#f8fafc', padding: '1rem 1.5rem', borderRadius: '12px', border: `2px solid ${wave.is_open ? '#10b981' : '#cbd5e1'}`, minWidth: '250px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <h4 style={{ margin: 0, color: '#0f172a', fontWeight: 800 }}>{wave.wave_name}</h4>
+                      <span style={{ fontSize: '0.8rem', padding: '4px 8px', borderRadius: '12px', fontWeight: 800, background: wave.is_open ? '#dcfce7' : '#f1f5f9', color: wave.is_open ? '#166534' : '#64748b' }}>
+                        {wave.is_open ? '✅ Tersedia' : 'Tutup'}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '0.85rem', color: '#475569', textAlign: 'left' }}>
+                      Mulai: <strong>{new Date(wave.open_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</strong><br />
+                      Sampai: <strong>{new Date(wave.close_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {anyOpen ? (
+              <a href="https://alazharpwk.cazh.id/ppdb/ponpes-al-azhar-purwakarta" target="_blank" rel="noopener noreferrer" className="btn-daftar-utama" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+                <span>📝</span> Masuk ke Portal Pendaftaran (PPDB)
+              </a>
+            ) : (
+              <button disabled className="btn-daftar-utama" style={{ background: '#94a3b8', cursor: 'not-allowed', color: '#f1f5f9' }}>
+                Pendaftaran Sedang Ditutup
+              </button>
+            )}
           </motion.div>
         </div>
 

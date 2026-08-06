@@ -234,7 +234,11 @@ export default function AdminDashboardPage() {
   const [accountsSubTab, setAccountsSubTab] = useState<"kelola_akun" | "permintaan_login">("kelola_akun");
   
   // Pusat Data Siswa states
-  const [pusatDataSubTab, setPusatDataSubTab] = useState<"data_siswa" | "pengajuan_data">("data_siswa");
+  const [pusatDataSubTab, setPusatDataSubTab] = useState<"data_siswa" | "pengajuan_data" | "status_pendaftaran">("data_siswa");
+  
+  // Registration Settings states
+  const [registrationSettings, setRegistrationSettings] = useState<any[]>([]);
+  const [loadingRegistration, setLoadingRegistration] = useState(false);
 
   // Pusat Data Filters
   const [pusatDataSearchQuery, setPusatDataSearchQuery] = useState("");
@@ -875,11 +879,63 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const fetchRegistrationSettings = async () => {
+    setLoadingRegistration(true);
+    try {
+      const { data, error } = await supabase.from('registration_settings').select('*').order('id', { ascending: true });
+      if (error) throw error;
+      if (data) setRegistrationSettings(data);
+    } catch (err: any) {
+      console.warn("Table registration_settings not available yet.", err);
+    } finally {
+      setLoadingRegistration(false);
+    }
+  };
+
+  const generateAccessCode = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  };
+
+  const handleUpdateRegistrationStatus = async (id: number, currentIsOpen: boolean) => {
+    const newIsOpen = !currentIsOpen;
+    const updatePayload: any = { is_open: newIsOpen };
+    
+    // Automatically generate new access code when opening
+    if (newIsOpen) {
+      updatePayload.access_code = generateAccessCode();
+    }
+
+    try {
+      const { error } = await supabase.from('registration_settings').update(updatePayload).eq('id', id);
+      if (error) throw error;
+      fetchRegistrationSettings();
+    } catch (err: any) {
+      alert("Gagal memperbarui status pendaftaran: " + err.message);
+    }
+  };
+
+  const handleUpdateRegistrationDates = async (id: number, open_date: string, close_date: string) => {
+    try {
+      const { error } = await supabase.from('registration_settings').update({ open_date, close_date }).eq('id', id);
+      if (error) throw error;
+      fetchRegistrationSettings();
+      alert("Berhasil memperbarui tanggal pendaftaran.");
+    } catch (err: any) {
+      alert("Gagal memperbarui tanggal pendaftaran: " + err.message);
+    }
+  };
+
   useEffect(() => {
     fetchPpdbData();
     fetchVisitorStats();
     fetchNewsData();
     fetchPusatData();
+    fetchRegistrationSettings();
   }, []);
 
   // Handle status changes in Supabase
@@ -2198,9 +2254,27 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         </span>
                       )}
                     </button>
+                    <button
+                      onClick={() => setPusatDataSubTab("status_pendaftaran")}
+                      className={`sub-nav-btn ${pusatDataSubTab === "status_pendaftaran" ? "active" : ""}`}
+                      style={{
+                        padding: '8px 18px',
+                        border: 'none',
+                        background: pusatDataSubTab === "status_pendaftaran" ? 'var(--primary)' : 'transparent',
+                        color: pusatDataSubTab === "status_pendaftaran" ? '#fff' : 'var(--primary)',
+                        fontWeight: 800,
+                        borderRadius: '8px',
+                        fontSize: '0.8rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease'
+                      }}
+                    >
+                      Status Pendaftaran
+                    </button>
                   </div>
 
                   {/* Advanced Filters (Shared for both tabs) */}
+                  {(pusatDataSubTab === "data_siswa" || pusatDataSubTab === "pengajuan_data") && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '1.5rem', background: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
                     <input 
                       type="text" 
@@ -2253,6 +2327,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       />
                     </div>
                   </div>
+                  )}
 
                   {loadingPusatData ? (
                     <div className="loader" style={{ textAlign: 'center', padding: '2rem' }}>Memuat data...</div>
@@ -2409,6 +2484,85 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         </motion.div>
                       )}
                     </AnimatePresence>
+                  )}
+
+                  {/* SUB-TAB: STATUS PENDAFTARAN */}
+                  {!loadingPusatData && pusatDataSubTab === "status_pendaftaran" && (
+                    <motion.div
+                      key="status_pendaftaran"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
+                        <h4 style={{ margin: '0 0 1rem 0', color: '#002147', fontSize: '1.2rem', fontWeight: 800 }}>Pengaturan Gelombang Pendaftaran</h4>
+                        <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                          Atur ketersediaan pendaftaran PPDB. Saat status diubah menjadi "Tersedia", sistem akan otomatis menghasilkan kode akses baru untuk PUSDA.
+                        </p>
+
+                        {loadingRegistration ? (
+                          <div style={{ padding: '2rem', textAlign: 'center' }}>Memuat data pendaftaran...</div>
+                        ) : (
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                            {registrationSettings.map((wave) => (
+                              <div key={wave.id} style={{ border: '2px solid', borderColor: wave.is_open ? '#10b981' : '#cbd5e1', borderRadius: '12px', padding: '1.5rem', position: 'relative', background: wave.is_open ? '#f0fdf4' : '#f8fafc' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                  <h5 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: wave.is_open ? '#047857' : '#334155' }}>{wave.wave_name}</h5>
+                                  <span style={{ padding: '4px 8px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, background: wave.is_open ? '#dcfce7' : '#e2e8f0', color: wave.is_open ? '#166534' : '#475569' }}>
+                                    {wave.is_open ? 'Tersedia' : 'Tidak Tersedia'}
+                                  </span>
+                                </div>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                                    <span style={{ color: '#64748b' }}>Tanggal Buka:</span>
+                                    <input 
+                                      type="date" 
+                                      value={wave.open_date || ''} 
+                                      onChange={(e) => handleUpdateRegistrationDates(wave.id, e.target.value, wave.close_date)}
+                                      style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                                    />
+                                  </div>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                                    <span style={{ color: '#64748b' }}>Tanggal Tutup:</span>
+                                    <input 
+                                      type="date" 
+                                      value={wave.close_date || ''} 
+                                      onChange={(e) => handleUpdateRegistrationDates(wave.id, wave.open_date, e.target.value)}
+                                      style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                                    />
+                                  </div>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginTop: '0.5rem', background: '#fff', padding: '0.75rem', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
+                                    <span style={{ color: '#64748b', fontWeight: 700 }}>Kode Akses:</span>
+                                    <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: '1rem', color: '#0f172a', letterSpacing: '2px' }}>
+                                      {wave.access_code || '-'}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <button
+                                  onClick={() => handleUpdateRegistrationStatus(wave.id, wave.is_open)}
+                                  style={{
+                                    width: '100%',
+                                    padding: '10px',
+                                    background: wave.is_open ? '#ef4444' : '#002147',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontWeight: 800,
+                                    cursor: 'pointer',
+                                    transition: 'background 0.2s'
+                                  }}
+                                >
+                                  {wave.is_open ? 'Tutup Pendaftaran' : 'Buka Pendaftaran (Generate Kode)'}
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
                   )}
                 </motion.div>
               )}

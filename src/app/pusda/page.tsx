@@ -40,8 +40,30 @@ export default function PusdaPage() {
   const [kodePos, setKodePos] = useState("");
   const [selectedCountryName, setSelectedCountryName] = useState("");
 
-  // Fetch initial data (Provinces & Countries)
+  // Access Code States
+  const [accessGranted, setAccessGranted] = useState(false);
+  const [accessCodeInput, setAccessCodeInput] = useState("");
+  const [accessCodeError, setAccessCodeError] = useState("");
+  const [checkingAccess, setCheckingAccess] = useState(false);
+  const [wavesSettings, setWavesSettings] = useState<any[]>([]);
+  const [loadingSettings, setLoadingSettings] = useState(true);
+
+  // Fetch initial data (Provinces & Countries & Registration Settings)
   useEffect(() => {
+    const initFetch = async () => {
+      // Fetch Registration Settings
+      try {
+        const { data, error } = await supabase.from('registration_settings').select('*');
+        if (!error && data) {
+          setWavesSettings(data);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingSettings(false);
+      }
+    };
+    initFetch();
     fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
       .then(res => res.json())
       .then(data => setProvinces(data))
@@ -139,6 +161,38 @@ export default function PusdaPage() {
     return publicUrlData.publicUrl;
   };
 
+  const handleAccessCheck = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCheckingAccess(true);
+    setAccessCodeError("");
+    
+    // Check if any wave is open
+    const openWaves = wavesSettings.filter(w => w.is_open);
+    if (openWaves.length === 0) {
+      setAccessCodeError("Saat ini tidak ada gelombang pendaftaran PPDB yang dibuka.");
+      setCheckingAccess(false);
+      return;
+    }
+
+    // Check if input matches any open wave's access code (case-insensitive)
+    const matchedWave = openWaves.find(w => w.access_code?.toLowerCase() === accessCodeInput.toLowerCase());
+    
+    if (matchedWave) {
+      setAccessGranted(true);
+    } else {
+      setAccessCodeError("Kode akses tidak valid atau salah. Silakan coba lagi.");
+    }
+    setCheckingAccess(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (!pasFotoFile) {
+      setErrorMsg("Pas Foto wajib diunggah!");
+      return;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!pasFotoFile) {
@@ -224,6 +278,76 @@ export default function PusdaPage() {
   return (
     <main className="pusda-layout">
       <Navbar />
+
+      {!accessGranted && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,33,71,0.85)', backdropFilter: 'blur(10px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999, padding: '2rem' }}>
+          <div style={{ background: '#fff', borderRadius: '24px', padding: '3rem 2rem', maxWidth: '400px', width: '100%', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '1rem', lineHeight: 1 }}>🔑</div>
+            <h2 style={{ color: '#002147', fontWeight: 900, marginBottom: '0.5rem', fontSize: '1.5rem' }}>Akses PUSDA Terkunci</h2>
+            <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.5 }}>
+              Silakan masukkan 6 digit kode akses untuk masuk ke formulir Pusat Data Santri Al-Azhar (PUSDA AZHAR).
+            </p>
+
+            <form onSubmit={handleAccessCheck} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <input
+                type="text"
+                placeholder="XXXXXX"
+                maxLength={6}
+                value={accessCodeInput}
+                onChange={(e) => setAccessCodeInput(e.target.value.toUpperCase())}
+                style={{
+                  width: '100%',
+                  padding: '1rem',
+                  fontSize: '1.5rem',
+                  textAlign: 'center',
+                  letterSpacing: '5px',
+                  fontWeight: 900,
+                  border: '2px solid #cbd5e1',
+                  borderRadius: '12px',
+                  outline: 'none',
+                  textTransform: 'uppercase'
+                }}
+              />
+              {accessCodeError && (
+                <div style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 700, padding: '0.5rem', background: '#fef2f2', borderRadius: '8px' }}>
+                  ⚠️ {accessCodeError}
+                </div>
+              )}
+              <button 
+                type="submit" 
+                disabled={accessCodeInput.length < 6 || checkingAccess || loadingSettings}
+                style={{
+                  padding: '1rem',
+                  background: 'var(--primary)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: 800,
+                  cursor: (accessCodeInput.length < 6 || checkingAccess || loadingSettings) ? 'not-allowed' : 'pointer',
+                  opacity: (accessCodeInput.length < 6 || checkingAccess || loadingSettings) ? 0.7 : 1,
+                  fontSize: '1rem',
+                  marginTop: '0.5rem'
+                }}
+              >
+                {checkingAccess ? 'Mengecek...' : 'Buka Formulir'}
+              </button>
+            </form>
+
+            <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
+              <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.5rem' }}>Belum memiliki kode akses atau ada kendala?</p>
+              <a 
+                href="https://wa.me/6283846489366" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#25D366', fontWeight: 800, fontSize: '0.9rem', textDecoration: 'none' }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                Hubungi Admin
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
       
       <div className="pusda-hero">
         <div className="hero-content">
