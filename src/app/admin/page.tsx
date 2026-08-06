@@ -3729,7 +3729,16 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Nama Ayah</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.nama_ayah} ({selectedPusatData.pekerjaan_ayah})</span></div>
                   <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Nama Ibu</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.nama_ibu} ({selectedPusatData.pekerjaan_ibu})</span></div>
                   <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>No HP Wali</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.no_hp_wali}</span></div>
-                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Alamat Lengkap</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.alamat}</span></div>
+                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Alamat Lengkap</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>
+                    {(() => {
+                      try {
+                        const parsed = JSON.parse(selectedPusatData.alamat);
+                        return parsed.full_text || selectedPusatData.alamat;
+                      } catch(e) {
+                        return selectedPusatData.alamat;
+                      }
+                    })()}
+                  </span></div>
                 </div>
               </div>
               <div>
