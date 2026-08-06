@@ -23,6 +23,20 @@ export default function PusdaPage() {
     alamat: "",
   });
 
+  const [selectedJenjang, setSelectedJenjang] = useState("MA Unggulan Al-Azhar");
+
+  useEffect(() => {
+    if (selectedJenjang === "MA Unggulan Al-Azhar") setFormData(f => ({...f, kelas: "10"}));
+    else if (selectedJenjang === "SMP Islam Al-Azhar") setFormData(f => ({...f, kelas: "7"}));
+    else if (selectedJenjang === "SDIT Al-Azhar") setFormData(f => ({...f, kelas: "1"}));
+  }, [selectedJenjang]);
+
+  const getKelasOptions = () => {
+    if (selectedJenjang === "MA Unggulan Al-Azhar") return [10, 11, 12];
+    if (selectedJenjang === "SMP Islam Al-Azhar") return [7, 8, 9];
+    if (selectedJenjang === "SDIT Al-Azhar") return [1, 2, 3, 4, 5, 6];
+    return [];
+  };
   // Alamat & Wilayah States
   const [isWNA, setIsWNA] = useState(false);
   const [provinces, setProvinces] = useState<any[]>([]);
@@ -425,9 +439,17 @@ export default function PusdaPage() {
                 <input type="email" name="email_santri" value={formData.email_santri} onChange={handleInputChange} placeholder="Email aktif (opsional)" />
               </div>
               <div className="input-group">
+                <label>Jenjang Pendidikan</label>
+                <select value={selectedJenjang} onChange={(e) => setSelectedJenjang(e.target.value)}>
+                  <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
+                  <option value="SMP Islam Al-Azhar">SMP Islam Al-Azhar</option>
+                  <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
+                </select>
+              </div>
+              <div className="input-group">
                 <label>Kelas saat ini</label>
                 <select name="kelas" required value={formData.kelas} onChange={handleInputChange}>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(k => (
+                  {getKelasOptions().map(k => (
                     <option key={k} value={k}>Kelas {k}</option>
                   ))}
                 </select>

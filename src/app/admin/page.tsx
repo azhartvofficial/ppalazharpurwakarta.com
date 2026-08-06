@@ -315,6 +315,20 @@ export default function AdminDashboardPage() {
     nama_lengkap: "", email_santri: "", kelas: "10", program_pendidikan: "Mondok", gender: "Putra", tempat_tanggal_lahir: "", nik: "", nisn: "",
     nama_ayah: "", pekerjaan_ayah: "", nama_ibu: "", pekerjaan_ibu: "", no_hp_wali: "", alamat: ""
   });
+  const [addPusatDataJenjang, setAddPusatDataJenjang] = useState("MA Unggulan Al-Azhar");
+
+  useEffect(() => {
+    if (addPusatDataJenjang === "MA Unggulan Al-Azhar") setAddPusatDataForm(f => ({...f, kelas: "10"}));
+    else if (addPusatDataJenjang === "SMP Islam Al-Azhar") setAddPusatDataForm(f => ({...f, kelas: "7"}));
+    else if (addPusatDataJenjang === "SDIT Al-Azhar") setAddPusatDataForm(f => ({...f, kelas: "1"}));
+  }, [addPusatDataJenjang]);
+
+  const getAddPusatDataKelasOptions = () => {
+    if (addPusatDataJenjang === "MA Unggulan Al-Azhar") return [10, 11, 12];
+    if (addPusatDataJenjang === "SMP Islam Al-Azhar") return [7, 8, 9];
+    if (addPusatDataJenjang === "SDIT Al-Azhar") return [1, 2, 3, 4, 5, 6];
+    return [];
+  };
   const [addPusatDataIsWNA, setAddPusatDataIsWNA] = useState(false);
   const [addPusatDataProvId, setAddPusatDataProvId] = useState("");
   const [addPusatDataProvName, setAddPusatDataProvName] = useState("");
@@ -6088,9 +6102,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     <input type="number" required value={addPusatDataForm.nisn} onChange={e => setAddPusatDataForm({...addPusatDataForm, nisn: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
                   </div>
                   <div className="input-group">
+                    <label>Jenjang Pendidikan</label>
+                    <select value={addPusatDataJenjang} onChange={e => setAddPusatDataJenjang(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                      <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
+                      <option value="SMP Islam Al-Azhar">SMP Islam Al-Azhar</option>
+                      <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
+                    </select>
+                  </div>
+                  <div className="input-group">
                     <label>Kelas</label>
                     <select value={addPusatDataForm.kelas} onChange={e => setAddPusatDataForm({...addPusatDataForm, kelas: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(k => <option key={k} value={k}>Kelas {k}</option>)}
+                      {getAddPusatDataKelasOptions().map(k => <option key={k} value={k}>Kelas {k}</option>)}
                     </select>
                   </div>
                   <div className="input-group">
