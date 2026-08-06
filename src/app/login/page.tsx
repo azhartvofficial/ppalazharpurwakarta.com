@@ -166,7 +166,7 @@ export default function LoginPage() {
             <input 
               type="text" 
               className="form-input" 
-              placeholder="Username, E-Mail, atau HP Siswa" 
+              placeholder="Nama Lengkap, Email, atau Nomer HP" 
               required 
               value={email}
               onChange={(e) => setEmail(e.target.value)}

@@ -253,7 +253,7 @@ export default function AdminDashboardPage() {
   
   // States for Add Pusat Data Modal
   const [addPusatDataForm, setAddPusatDataForm] = useState({
-    nama_lengkap: "", kelas: "10", program_pendidikan: "Mondok", gender: "Putra", tempat_tanggal_lahir: "", nik: "", nisn: "",
+    nama_lengkap: "", email_santri: "", kelas: "10", program_pendidikan: "Mondok", gender: "Putra", tempat_tanggal_lahir: "", nik: "", nisn: "",
     nama_ayah: "", pekerjaan_ayah: "", nama_ibu: "", pekerjaan_ibu: "", no_hp_wali: "", alamat: ""
   });
   const [addPusatDataIsWNA, setAddPusatDataIsWNA] = useState(false);
@@ -5857,9 +5857,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               
               <form onSubmit={handleAddPusatDataSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div className="input-group">
-                    <label>Nama Lengkap Santri</label>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Nama Lengkap</label>
                     <input type="text" required value={addPusatDataForm.nama_lengkap} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_lengkap: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Email Peserta Didik (Opsional)</label>
+                    <input type="email" value={addPusatDataForm.email_santri} onChange={e => setAddPusatDataForm({...addPusatDataForm, email_santri: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="Email aktif (opsional)"/>
                   </div>
                   <div className="input-group">
                     <label>Tempat, Tanggal Lahir</label>

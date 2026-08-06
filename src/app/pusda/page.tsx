@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 export default function PusdaPage() {
   const [formData, setFormData] = useState({
     nama_lengkap: "",
+    email_santri: "",
     kelas: "10",
     program_pendidikan: "Mondok",
     gender: "Putra",
@@ -418,6 +419,10 @@ export default function PusdaPage() {
               <div className="input-group">
                 <label>Nama Lengkap Santri</label>
                 <input type="text" name="nama_lengkap" required value={formData.nama_lengkap} onChange={handleInputChange} placeholder="Sesuai Akte Kelahiran" />
+              </div>
+              <div className="input-group">
+                <label>Email Peserta Didik (Opsional)</label>
+                <input type="email" name="email_santri" value={formData.email_santri} onChange={handleInputChange} placeholder="Email aktif (opsional)" />
               </div>
               <div className="input-group">
                 <label>Kelas saat ini</label>

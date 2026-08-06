@@ -77,7 +77,7 @@ export default function SantriLoginPage() {
             <input 
               type="text" 
               className="form-input" 
-              placeholder="Alamat E-Mail Santri" 
+              placeholder="Nama Lengkap atau Email Santri" 
               required 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
