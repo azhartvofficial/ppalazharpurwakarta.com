@@ -42,7 +42,7 @@ export default function PusdaPage() {
 
   // Fetch initial data (Provinces & Countries)
   useEffect(() => {
-    fetch("https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json")
+    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
       .then(res => res.json())
       .then(data => setProvinces(data))
       .catch(err => console.error(err));
@@ -59,7 +59,7 @@ export default function PusdaPage() {
   // Fetch Regencies when Province changes
   useEffect(() => {
     if (selectedProvId) {
-      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${selectedProvId}.json`)
+      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvId}.json`)
         .then(res => res.json())
         .then(data => {
           setRegencies(data);
@@ -79,7 +79,7 @@ export default function PusdaPage() {
   // Fetch Districts when Regency changes
   useEffect(() => {
     if (selectedRegId) {
-      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${selectedRegId}.json`)
+      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegId}.json`)
         .then(res => res.json())
         .then(data => {
           setDistricts(data);
