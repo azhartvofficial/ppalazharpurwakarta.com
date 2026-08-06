@@ -448,11 +448,55 @@ export default function PusdaPage() {
       <main className="pusda-layout">
         <Navbar />
         <div className="pusda-container" style={{ textAlign: 'center', paddingTop: '10rem' }}>
+          <style dangerouslySetInnerHTML={{__html: `
+            .checkmark-circle {
+              stroke-dasharray: 166;
+              stroke-dashoffset: 166;
+              stroke-width: 2;
+              stroke-miterlimit: 10;
+              stroke: #4CAF50;
+              fill: none;
+              animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+            }
+            .checkmark {
+              width: 100px;
+              height: 100px;
+              border-radius: 50%;
+              display: block;
+              stroke-width: 3;
+              stroke: #fff;
+              stroke-miterlimit: 10;
+              margin: 0 auto 1.5rem auto;
+              box-shadow: inset 0px 0px 0px #4CAF50;
+              animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+            }
+            .checkmark-check {
+              transform-origin: 50% 50%;
+              stroke-dasharray: 48;
+              stroke-dashoffset: 48;
+              animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+            }
+            @keyframes stroke {
+              100% { stroke-dashoffset: 0; }
+            }
+            @keyframes scale {
+              0%, 100% { transform: none; }
+              50% { transform: scale3d(1.1, 1.1, 1); }
+            }
+            @keyframes fill {
+              100% { box-shadow: inset 0px 0px 0px 50px #4CAF50; }
+            }
+          `}} />
           <div style={{ background: 'white', padding: '3rem', borderRadius: '20px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', maxWidth: '600px', margin: '0 auto' }}>
-            <span style={{ fontSize: '4rem', display: 'block', marginBottom: '1rem' }}>🎉</span>
+            <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+              <circle className="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+              <path className="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+            </svg>
             <h2 style={{ color: '#002147', fontWeight: 900, marginBottom: '1rem' }}>Data Berhasil Dikirim!</h2>
             <p style={{ color: '#64748b', marginBottom: '2rem', lineHeight: 1.6 }}>Terima kasih, data identitas santri dan dokumen pendukung telah berhasil disimpan dengan aman di Pusat Data Santri Al-Azhar (PUSDA AZHAR).</p>
-            <button onClick={() => window.location.reload()} style={{ padding: '1rem 2rem', background: '#4CAF50', color: 'white', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer' }}>Input Data Siswa Lainnya</button>
+            <button onClick={() => window.location.href = '/'} style={{ padding: '1rem 2rem', background: '#002147', color: 'white', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer', transition: 'all 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.background = '#0a3a70'} onMouseLeave={(e) => e.currentTarget.style.background = '#002147'}>
+              Kembali Halaman Beranda
+            </button>
           </div>
         </div>
       </main>

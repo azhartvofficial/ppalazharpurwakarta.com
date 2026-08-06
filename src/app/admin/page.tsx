@@ -1219,6 +1219,30 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleRegenerateAccessCode = async (wave: any) => {
+    openConfirm(
+      "Regenerate Kode Akses?",
+      `Apakah Anda yakin ingin membuat ulang (regenerate) kode akses PUSDA untuk ${wave.wave_name}? Kode lama akan hangus.`,
+      () => {
+        setPendingSuperAdminAction(() => async () => {
+          const newCode = generateAccessCode();
+          try {
+            const { error } = await supabase.from('registration_settings').update({ access_code: newCode }).eq('id', wave.id);
+            if (error) throw error;
+            fetchRegistrationSettings();
+            openAlert(`Kode akses untuk ${wave.wave_name} berhasil diperbarui!`);
+          } catch (err: any) {
+            openAlert("Gagal regenerate kode akses: " + err.message, true);
+          }
+        });
+        setShowMasterPasswordPrompt(true);
+      },
+      false,
+      "Ya, Regenerate",
+      "Batal"
+    );
+  };
+
 
   const handleAddWave = () => {
     openPrompt(
@@ -2978,9 +3002,37 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         {wave.access_code ? '✅ Akses Terbuka' : '🔒 Akses Tertutup'}
                                       </span>
                                     </div>
-                                    <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: '1.25rem', color: wave.access_code ? '#047857' : '#94a3b8', letterSpacing: '2px' }}>
-                                      {wave.access_code || '-'}
-                                    </span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: '1.25rem', color: wave.access_code ? '#047857' : '#94a3b8', letterSpacing: '2px' }}>
+                                        {wave.access_code || '-'}
+                                      </span>
+                                      {wave.access_code && (
+                                        <button
+                                          onClick={() => handleRegenerateAccessCode(wave)}
+                                          title="Generate Ulang Kode Akses"
+                                          style={{
+                                            background: '#e0f2fe',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            color: '#0369a1',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            padding: '6px',
+                                            borderRadius: '50%',
+                                            transition: 'all 0.2s',
+                                            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                                          }}
+                                          onMouseEnter={(e) => { e.currentTarget.style.background = '#bae6fd'; e.currentTarget.style.transform = 'rotate(15deg)'; }}
+                                          onMouseLeave={(e) => { e.currentTarget.style.background = '#e0f2fe'; e.currentTarget.style.transform = 'rotate(0deg)'; }}
+                                        >
+                                          <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                            <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                          </svg>
+                                        </button>
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
 
