@@ -204,6 +204,7 @@ export default function AdminDashboardPage() {
   const [newNewsImageFile, setNewNewsImageFile] = useState<File | null>(null);
   const [isUploadingNews, setIsUploadingNews] = useState(false);
   const [newNewsContent, setNewNewsContent] = useState("");
+  const [newNewsClosingParagraph, setNewNewsClosingParagraph] = useState("");
   const [newNewsAttachmentType, setNewNewsAttachmentType] = useState<"" | "PDF" | "Gambar" | "Video Youtube" | "Link Lainnya">("");
   const [newNewsAttachmentUrl, setNewNewsAttachmentUrl] = useState("");
   const [newNewsAttachmentTitle, setNewNewsAttachmentTitle] = useState("");
@@ -343,13 +344,19 @@ export default function AdminDashboardPage() {
   const [newAccName, setNewAccName] = useState("");
   const [newAccEmail, setNewAccEmail] = useState("");
   const [newAccPassword, setNewAccPassword] = useState("");
+  const [newAccConfirmPassword, setNewAccConfirmPassword] = useState("");
   const [showNewAccPassword, setShowNewAccPassword] = useState(false);
   const [newAccRole, setNewAccRole] = useState<"Admin" | "Wali" | "Super Admin">("Wali");
 
   const handleAddAccount = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newAccName || !newAccEmail || !newAccPassword) {
+    if (!newAccName || !newAccEmail || !newAccPassword || !newAccConfirmPassword) {
       alert("Mohon lengkapi semua data, termasuk password!");
+      return;
+    }
+
+    if (newAccPassword !== newAccConfirmPassword) {
+      alert("Konfirmasi password tidak cocok! Pastikan Anda memasukkan password yang sama.");
       return;
     }
     
@@ -377,6 +384,7 @@ export default function AdminDashboardPage() {
       setNewAccName("");
       setNewAccEmail("");
       setNewAccPassword("");
+      setNewAccConfirmPassword("");
       setNewAccRole("Wali");
       setShowAddAccountModal(false);
       
@@ -754,8 +762,9 @@ export default function AdminDashboardPage() {
     setNewNewsImageSource(news.sumber_gambar as any);
     setNewNewsImageManualSource(news.sumber_gambar_manual || "");
     setNewNewsContent(news.isi_berita);
+    setNewNewsClosingParagraph(news.paragraf_penutup || "");
     setNewNewsAttachmentType((news.jenis_lampiran_2 as any) || "");
-    if (news.jenis_lampiran_2 === 'Video Youtube' && news.lampiran_2_url?.includes("|||")) {
+    if (['Video Youtube', 'PDF', 'Gambar'].includes(news.jenis_lampiran_2) && news.lampiran_2_url?.includes("|||")) {
       const parts = news.lampiran_2_url.split("|||");
       setNewNewsAttachmentUrl(parts[0]);
       setNewNewsAttachmentTitle(parts[1]);
@@ -844,10 +853,11 @@ export default function AdminDashboardPage() {
         ...(finalImageUrl && { gambar_judul_url: finalImageUrl }), // Only update if new image uploaded
         isi_berita: finalContent,
         jenis_lampiran_2: newNewsAttachmentType || null,
-        ...(finalAttachmentUrl && { lampiran_2_url: newNewsAttachmentType === 'Video Youtube' && newNewsAttachmentTitle ? `${finalAttachmentUrl}|||${newNewsAttachmentTitle}` : finalAttachmentUrl || null }),
+        ...(finalAttachmentUrl && { lampiran_2_url: ['Video Youtube', 'PDF', 'Gambar'].includes(newNewsAttachmentType) && newNewsAttachmentTitle ? `${finalAttachmentUrl}|||${newNewsAttachmentTitle}` : finalAttachmentUrl || null }),
         // If type is not empty but URL is empty, it means user didn't upload new attachment but wants to keep old.
         // Wait, if finalAttachmentUrl is set, we update it. If not, we don't overwrite unless they cleared the type.
         ...(newNewsAttachmentType === "" && { lampiran_2_url: null }),
+        paragraf_penutup: newNewsClosingParagraph || null,
         penulis: newNewsAuthor,
         sumber_opsional: newNewsOptionalSources || null,
         status: newNewsStatus
@@ -871,6 +881,7 @@ export default function AdminDashboardPage() {
         // Reset forms
         setNewNewsTitle("");
         setNewNewsContent("");
+        setNewNewsClosingParagraph("");
         setNewNewsImageFile(null);
         setNewNewsAttachmentType("");
         setNewNewsAttachmentUrl("");
@@ -2260,6 +2271,19 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                           </div>
                                         </div>
                                         <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                          <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Konfirmasi Password Login</label>
+                                          <div style={{ position: 'relative', width: '100%' }}>
+                                            <input 
+                                              type={showNewAccPassword ? "text" : "password"}
+                                              placeholder="Masukkan ulang password"
+                                              value={newAccConfirmPassword} 
+                                              onChange={(e) => setNewAccConfirmPassword(e.target.value)}
+                                              style={{ width: '100%', background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', paddingRight: '40px', borderRadius: '10px', fontSize: '0.9rem', color: '#334155', boxSizing: 'border-box' }} 
+                                              required
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
                                           <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Tipe Akses (Role)</label>
                                           <select 
                                             value={newAccRole} 
@@ -2646,17 +2670,27 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       )}
                     </div>
                   )}
-                  {newNewsAttachmentType === 'Video Youtube' && (
+                  {['Video Youtube', 'PDF', 'Gambar'].includes(newNewsAttachmentType) && (
                     <div className="input-group">
-                      <label>Judul Video Youtube (Opsional)</label>
+                      <label>Judul {newNewsAttachmentType} (Opsional)</label>
                       <input 
                         type="text" 
-                        placeholder="Masukkan judul video untuk ditampilkan"
+                        placeholder={`Masukkan judul ${newNewsAttachmentType} untuk ditampilkan`}
                         value={newNewsAttachmentTitle}
                         onChange={(e) => setNewNewsAttachmentTitle(e.target.value)}
                       />
                     </div>
                   )}
+
+                  <div className="input-group" style={{ marginTop: '1rem' }}>
+                    <label>Paragraf Penutup (Opsional)</label>
+                    <textarea 
+                      rows={3}
+                      placeholder="Tulis paragraf penutup di sini (opsional)..."
+                      value={newNewsClosingParagraph}
+                      onChange={(e) => setNewNewsClosingParagraph(e.target.value)}
+                    ></textarea>
+                  </div>
                 </>
               )}
 

@@ -122,13 +122,18 @@ export default function BeritaDetailPage() {
           ))}
         </div>
 
+        {/* Closing Paragraph */}
+        {article.paragraf_penutup && (
+          <div className="article-closing" style={{ marginTop: '2rem', fontSize: '1.15rem', lineHeight: '1.8', color: '#1e293b', fontFamily: "'Georgia', serif" }}>
+            {article.paragraf_penutup.split('\n').map((paragraph: string, idx: number) => (
+              <p key={idx} style={{ marginBottom: '1.5rem' }}>{paragraph}</p>
+            ))}
+          </div>
+        )}
+
         {/* Attachments */}
         {article.jenis_lampiran_2 && article.lampiran_2_url && (
           <div className="article-attachment-box">
-            {article.jenis_lampiran_2 !== 'Video Youtube' && (
-              <h3>Lampiran Tambahan ({article.jenis_lampiran_2})</h3>
-            )}
-            
             {article.jenis_lampiran_2 === 'Video Youtube' ? (
               <div className="video-container">
                 {article.lampiran_2_url.includes("|||") && (
@@ -148,12 +153,24 @@ export default function BeritaDetailPage() {
               </div>
             ) : article.jenis_lampiran_2 === 'Gambar' ? (
               <div className="attachment-image">
-                <img src={article.lampiran_2_url} alt="Lampiran" style={{ maxWidth: '100%', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+                {article.lampiran_2_url.includes("|||") && (
+                  <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
+                    {article.lampiran_2_url.split("|||")[1]}
+                  </h4>
+                )}
+                <img src={article.lampiran_2_url.split("|||")[0]} alt="Lampiran" style={{ maxWidth: '100%', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
               </div>
             ) : (
-              <a href={article.lampiran_2_url} target="_blank" rel="noopener noreferrer" className="btn-download">
-                Lihat / Unduh {article.jenis_lampiran_2}
-              </a>
+              <div>
+                {article.lampiran_2_url.includes("|||") && (
+                  <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
+                    {article.lampiran_2_url.split("|||")[1]}
+                  </h4>
+                )}
+                <a href={article.lampiran_2_url.split("|||")[0]} target="_blank" rel="noopener noreferrer" className="btn-download">
+                  Lihat / Unduh {article.jenis_lampiran_2}
+                </a>
+              </div>
             )}
           </div>
         )}
