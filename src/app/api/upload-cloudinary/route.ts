@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: 'Pusat_Data_Santri',
-          public_id: filename.replace(/\.[^/.]+$/, ''), // Remove extension
+          public_id: filename.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, ''), // Sanitize name
           resource_type: 'auto',
         },
         (error, result) => {
