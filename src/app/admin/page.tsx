@@ -316,10 +316,20 @@ export default function AdminDashboardPage() {
   const [showAddPusatDataModal, setShowAddPusatDataModal] = useState(false);
   const [isEditingPusatData, setIsEditingPusatData] = useState(false);
   const [editPusatDataId, setEditPusatDataId] = useState<string | null>(null);
+  const [addPusatDataExistingFiles, setAddPusatDataExistingFiles] = useState({
+    pas_foto: "", kk_url: "", akte_url: "", ijazah_url: "", sktm_url: ""
+  });
 
   const handleEditPusatData = (data: any) => {
     setIsEditingPusatData(true);
     setEditPusatDataId(data.id);
+    setAddPusatDataExistingFiles({
+      pas_foto: data.pas_foto || "",
+      kk_url: data.kk_url || "",
+      akte_url: data.akte_url || "",
+      ijazah_url: data.ijazah_url || "",
+      sktm_url: data.sktm_url || ""
+    });
     setAddPusatDataForm({
       nama_lengkap: data.nama_lengkap || "",
       email_santri: data.email_santri || "",
@@ -2786,6 +2796,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                               onClick={() => {
                                 setIsEditingPusatData(false);
                                 setEditPusatDataId(null);
+                                setAddPusatDataExistingFiles({ pas_foto: "", kk_url: "", akte_url: "", ijazah_url: "", sktm_url: "" });
                                 setAddPusatDataForm({
                                   nama_lengkap: "", email_santri: "", kelas: "10", program_pendidikan: "Mondok", gender: "Putra", tempat_tanggal_lahir: "", nik: "", nisn: "",
                                   nama_ayah: "", pekerjaan_ayah: "", nama_ibu: "", pekerjaan_ibu: "", no_hp_wali: "", alamat: ""
@@ -6493,11 +6504,46 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                   <strong style={{ display: 'block', marginBottom: '1rem' }}>Unggah Berkas</strong>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div><label>Pas Foto {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept="image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, pas_foto: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
-                    <div><label>Kartu Keluarga (KK) {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, kk: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
-                    <div><label>Akte Kelahiran</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, akte: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
-                    <div><label>Ijazah Terakhir</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, ijazah: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
-                    <div><label>SKTM (Bila Ada)</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, sktm: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
+                    <div>
+    <label>Pas Foto {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept="image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, pas_foto: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    {isEditingPusatData && addPusatDataExistingFiles.pas_foto && (
+      <div style={{ marginTop: '8px' }}>
+        <a href={addPusatDataExistingFiles.pas_foto} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat Pas Foto Saat Ini</a>
+      </div>
+    )}
+  </div>
+                    <div>
+    <label>Kartu Keluarga (KK) {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, kk: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    {isEditingPusatData && addPusatDataExistingFiles.kk_url && (
+      <div style={{ marginTop: '8px' }}>
+        <a href={addPusatDataExistingFiles.kk_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat KK Saat Ini</a>
+      </div>
+    )}
+  </div>
+                    <div>
+    <label>Akte Kelahiran</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, akte: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    {isEditingPusatData && addPusatDataExistingFiles.akte_url && (
+      <div style={{ marginTop: '8px' }}>
+        <a href={addPusatDataExistingFiles.akte_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat Akte Saat Ini</a>
+      </div>
+    )}
+  </div>
+                    <div>
+    <label>Ijazah Terakhir</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, ijazah: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    {isEditingPusatData && addPusatDataExistingFiles.ijazah_url && (
+      <div style={{ marginTop: '8px' }}>
+        <a href={addPusatDataExistingFiles.ijazah_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat Ijazah Saat Ini</a>
+      </div>
+    )}
+  </div>
+                    <div>
+    <label>SKTM (Bila Ada)</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, sktm: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    {isEditingPusatData && addPusatDataExistingFiles.sktm_url && (
+      <div style={{ marginTop: '8px' }}>
+        <a href={addPusatDataExistingFiles.sktm_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat SKTM Saat Ini</a>
+      </div>
+    )}
+  </div>
                   </div>
                 </div>
                 
