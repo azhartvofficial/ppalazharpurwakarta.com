@@ -357,6 +357,15 @@ export default function AdminDashboardPage() {
       } else {
         if (alamatObj.provinsi) {
           const provId = provinces.find(p => p.name?.trim().toUpperCase() === alamatObj.provinsi?.trim().toUpperCase())?.id;
+          
+          if (!provId && provinces.length === 0) {
+            alert("Sistem belum selesai memuat daftar provinsi, silakan tunggu beberapa detik dan coba klik Edit lagi.");
+            return;
+          }
+          if (!provId) {
+            alert("Provinsi dari data (" + alamatObj.provinsi + ") tidak cocok dengan API Emsifa.");
+          }
+
           if (provId) {
             setAddPusatDataProvId(provId);
             setAddPusatDataProvName(alamatObj.provinsi);
