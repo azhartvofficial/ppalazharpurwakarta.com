@@ -109,6 +109,20 @@ export default function AdminDashboardPage() {
     }
   }, []);
 
+  // Intercept Browser Back Button
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (!window.confirm("Apakah Anda yakin ingin keluar dari halaman Admin dan kembali ke Beranda?")) {
+        window.history.pushState(null, "", window.location.href);
+      } else {
+        window.location.href = "/";
+      }
+    };
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   // Master Password State
   const [showMasterPasswordPrompt, setShowMasterPasswordPrompt] = useState(false);
   const [masterPasswordInput, setMasterPasswordInput] = useState("");
@@ -2684,7 +2698,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 >
                   <div className="accounts-header-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', margin: 0 }}>Data Identitas Santri</h3>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', margin: 0 }}>Data Identitas Santri</h3>
+                        <button onClick={() => { fetchPusatData(); openAlert("Sedang menyegarkan Pusat Data..."); }} style={{ padding: '6px 12px', background: '#002147', color: 'white', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span style={{ fontSize: '1rem' }}>??</span> Perbarui Data
+                        </button>
+                      </div>
                       <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Kelola rekam jejak identitas dan dokumen vital santri</span>
                     </div>
                   </div>
