@@ -532,8 +532,8 @@ export default function AdminDashboardPage() {
     }
     setAddPusatDataErrors({});
 
-    if (!addPusatDataFiles.pas_foto) { openAlert("Pas foto wajib diunggah."); return; }
-    if (!addPusatDataFiles.kk) { openAlert("Kartu Keluarga (KK) wajib diunggah."); return; }
+    if (!isEditingPusatData && !addPusatDataFiles.pas_foto) { openAlert("Pas foto wajib diunggah."); return; }
+    if (!isEditingPusatData && !addPusatDataFiles.kk) { openAlert("Kartu Keluarga (KK) wajib diunggah."); return; }
     
     if (addPusatDataForm.nik && addPusatDataForm.nik.trim().length !== 16) {
       openAlert("Perhatian: Nomor Induk Kependudukan (NIK) harus berjumlah tepat 16 digit angka.");
