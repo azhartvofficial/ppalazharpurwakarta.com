@@ -314,6 +314,39 @@ export default function AdminDashboardPage() {
   const [pusatDataFilterProvinsi, setPusatDataFilterProvinsi] = useState("Semua");
   const [pusatDataFilterTanggal, setPusatDataFilterTanggal] = useState("");
   const [showAddPusatDataModal, setShowAddPusatDataModal] = useState(false);
+  const [isEditingPusatData, setIsEditingPusatData] = useState(false);
+  const [editPusatDataId, setEditPusatDataId] = useState<string | null>(null);
+
+  const handleEditPusatData = (data: any) => {
+    setIsEditingPusatData(true);
+    setEditPusatDataId(data.id);
+    setAddPusatDataForm({
+      nama_lengkap: data.nama_lengkap || "",
+      email_santri: data.email_santri || "",
+      kelas: data.kelas || "",
+      program_pendidikan: data.program_pendidikan || "",
+      gender: data.gender || "",
+      tempat_tanggal_lahir: data.tempat_tanggal_lahir || "",
+      nik: data.nik || "",
+      nisn: data.nisn || "",
+      nama_ayah: data.nama_ayah || "",
+      pekerjaan_ayah: data.pekerjaan_ayah || "",
+      nama_ibu: data.nama_ibu || "",
+      pekerjaan_ibu: data.pekerjaan_ibu || "",
+      no_hp_wali: data.no_hp_wali || "",
+      alamat: ""
+    });
+    try {
+      const alamatObj = JSON.parse(data.alamat);
+      setAddPusatDataDetail(alamatObj.detail || "");
+      if (alamatObj.provinsi) setAddPusatDataProvId(alamatObj.provinsi);
+      if (alamatObj.kota) setAddPusatDataRegId(alamatObj.kota);
+      if (alamatObj.kecamatan) setAddPusatDataDistId(alamatObj.kecamatan);
+    } catch(e) {}
+    setShowAddPusatDataModal(true);
+    setSelectedPusatData(null); // Close the detail modal
+  };
+
   
   // States for Add Pusat Data Modal
   const [addPusatDataForm, setAddPusatDataForm] = useState({
@@ -2750,7 +2783,15 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         >
                           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
                             <button 
-                              onClick={() => setShowAddPusatDataModal(true)}
+                              onClick={() => {
+                                setIsEditingPusatData(false);
+                                setEditPusatDataId(null);
+                                setAddPusatDataForm({
+                                  nama_lengkap: "", email_santri: "", kelas: "10", program_pendidikan: "Mondok", gender: "Putra", tempat_tanggal_lahir: "", nik: "", nisn: "",
+                                  nama_ayah: "", pekerjaan_ayah: "", nama_ibu: "", pekerjaan_ibu: "", no_hp_wali: "", alamat: ""
+                                });
+                                setShowAddPusatDataModal(true);
+                              }}
                               style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                             >
                               <span>+ Tambah Data Siswa</span>
@@ -3807,7 +3848,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   </span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Diterima Admin</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Tanggal Penerimaan</span>
                   <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>
                     {selectedPusatData.status === 'Terima' ? ((selectedPusatData as any).accepted_at ? new Date((selectedPusatData as any).accepted_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : (selectedPusatData.created_at ? new Date(selectedPusatData.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-')) : 'Belum Diterima'}
                   </span>
@@ -6445,8 +6486,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                   <strong style={{ display: 'block', marginBottom: '1rem' }}>Unggah Berkas</strong>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div><label>Pas Foto *</label><input type="file" required accept="image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, pas_foto: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
-                    <div><label>Kartu Keluarga (KK) *</label><input type="file" required accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, kk: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
+                    <div><label>Pas Foto {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept="image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, pas_foto: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
+                    <div><label>Kartu Keluarga (KK) {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, kk: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
                     <div><label>Akte Kelahiran</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, akte: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
                     <div><label>Ijazah Terakhir</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, ijazah: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
                     <div><label>SKTM (Bila Ada)</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, sktm: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} /></div>
