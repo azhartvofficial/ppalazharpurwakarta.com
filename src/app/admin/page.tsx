@@ -1713,7 +1713,7 @@ export default function AdminDashboardPage() {
   const getFilteredPusatData = (isPending: boolean) => {
     return pusatData.filter(d => {
       if (isPending && d.status !== 'Pending') return false;
-      if (!isPending && d.status === 'Pending') return false;
+      if (!isPending && d.status !== 'Approved' && d.status !== 'Aktif' && d.status !== 'Terima') return false;
       
       // Text Search
       if (pusatDataSearchQuery) {
