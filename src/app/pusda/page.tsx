@@ -27,15 +27,30 @@ export default function PusdaPage() {
   const [selectedJenjang, setSelectedJenjang] = useState("MA Unggulan Al-Azhar");
 
   useEffect(() => {
-    if (selectedJenjang === "MA Unggulan Al-Azhar") setFormData(f => ({...f, kelas: "10"}));
-    else if (selectedJenjang === "SMP Islam Al-Azhar") setFormData(f => ({...f, kelas: "7"}));
-    else if (selectedJenjang === "SDIT Al-Azhar") setFormData(f => ({...f, kelas: "1"}));
+    if (selectedJenjang === "MA Unggulan Al-Azhar") setFormData(f => ({...f, kelas: "Kelas 10 (Sepuluh) MA"}));
+    else if (selectedJenjang === "SMP Islam Al-Azhar") setFormData(f => ({...f, kelas: "Kelas 7 (Tujuh) SMP"}));
+    else if (selectedJenjang === "SDIT Al-Azhar") setFormData(f => ({...f, kelas: "Kelas 1 (Satu) SD"}));
   }, [selectedJenjang]);
 
   const getKelasOptions = () => {
-    if (selectedJenjang === "MA Unggulan Al-Azhar") return [10, 11, 12];
-    if (selectedJenjang === "SMP Islam Al-Azhar") return [7, 8, 9];
-    if (selectedJenjang === "SDIT Al-Azhar") return [1, 2, 3, 4, 5, 6];
+    if (selectedJenjang === "MA Unggulan Al-Azhar") return [
+      { val: "10", label: "Kelas 10 (Sepuluh) MA" },
+      { val: "11", label: "Kelas 11 (Sebelas) MA" },
+      { val: "12", label: "Kelas 12 (Dua Belas) MA" }
+    ];
+    if (selectedJenjang === "SMP Islam Al-Azhar") return [
+      { val: "7", label: "Kelas 7 (Tujuh) SMP" },
+      { val: "8", label: "Kelas 8 (Delapan) SMP" },
+      { val: "9", label: "Kelas 9 (Sembilan) SMP" }
+    ];
+    if (selectedJenjang === "SDIT Al-Azhar") return [
+      { val: "1", label: "Kelas 1 (Satu) SD" },
+      { val: "2", label: "Kelas 2 (Dua) SD" },
+      { val: "3", label: "Kelas 3 (Tiga) SD" },
+      { val: "4", label: "Kelas 4 (Empat) SD" },
+      { val: "5", label: "Kelas 5 (Lima) SD" },
+      { val: "6", label: "Kelas 6 (Enam) SD" }
+    ];
     return [];
   };
   // Alamat & Wilayah States
@@ -330,7 +345,7 @@ export default function PusdaPage() {
       const { data: duplicates, error: dupError } = await supabase
         .from('pusat_data_siswa')
         .select('id, nama_lengkap, nik, nisn, tempat_tanggal_lahir')
-        .or(`nik.eq.${formData.nik},nisn.eq.${formData.nisn},and(nama_lengkap.eq."${formData.nama_lengkap}",tempat_tanggal_lahir.eq."${formData.tempat_tanggal_lahir}")`);
+        .or(`nik.eq.${formData.nik},nisn.eq.${formData.nisn},tempat_tanggal_lahir.eq."${formData.tempat_tanggal_lahir}"`);
 
       if (dupError) {
         throw new Error("Gagal memeriksa data duplikat.");
@@ -341,7 +356,7 @@ export default function PusdaPage() {
         let reason = "";
         if (dup.nik === formData.nik) reason = "NIK";
         else if (dup.nisn === formData.nisn) reason = "NISN";
-        else reason = "Nama dan TTL";
+        else reason = "TTL (Tempat, Tanggal Lahir)";
         
         throw new Error(`Pendaftaran ditolak: Data dengan ${reason} yang sama sudah terdaftar sebelumnya.`);
       }
@@ -667,7 +682,7 @@ export default function PusdaPage() {
                 <label>Kelas saat ini</label>
                 <select name="kelas" required value={formData.kelas} onChange={handleInputChange}>
                   {getKelasOptions().map(k => (
-                    <option key={k} value={k}>Kelas {k}</option>
+                    <option key={k.val} value={k.label}>{k.label}</option>
                   ))}
                 </select>
                 {errors.kelas && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.kelas}</div>}
