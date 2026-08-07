@@ -657,6 +657,7 @@ export default function AdminDashboardPage() {
       };
 
       if (isEditingPusatData && editPusatDataId) {
+        (alamatObj as any).is_revised = true;
         const updatePayload: any = {
           ...addPusatDataForm,
           alamat: JSON.stringify(alamatObj),
@@ -1467,7 +1468,7 @@ export default function AdminDashboardPage() {
       prev.map(p => p.id === id ? { ...p, status: newStatus } : p)
     );
     try {
-      const updatePayload = newStatus === 'Terima' ? { status: newStatus, accepted_at: new Date().toISOString() } : { status: newStatus };
+      const updatePayload = (newStatus === 'Terima' || newStatus === 'Approved' || newStatus === 'Aktif') ? { status: newStatus, accepted_at: new Date().toISOString() } : { status: newStatus };
       const { error } = await supabase
         .from("pusat_data_siswa")
         .update(updatePayload)
@@ -4029,9 +4030,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   </span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Tanggal Penerimaan</span>
-                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>
-                    {selectedPusatData.status === 'Terima' ? ((selectedPusatData as any).accepted_at ? new Date((selectedPusatData as any).accepted_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : (selectedPusatData.created_at ? new Date(selectedPusatData.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-')) : 'Belum Diterima'}
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Tanggal Disetujui</span>
+                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800, display: 'flex', alignItems: 'center' }}>
+                    {(selectedPusatData.status === 'Terima' || selectedPusatData.status === 'Approved' || selectedPusatData.status === 'Aktif') ? ((selectedPusatData as any).accepted_at ? new Date((selectedPusatData as any).accepted_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : (selectedPusatData.created_at ? new Date(selectedPusatData.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-')) : 'Belum Disetujui'}
+                    {(selectedPusatData.alamat && (typeof selectedPusatData.alamat === 'string' ? JSON.parse(selectedPusatData.alamat) : selectedPusatData.alamat).is_revised) && (
+                      <span style={{ fontSize: '0.65rem', color: '#ef4444', background: '#fee2e2', padding: '2px 6px', borderRadius: '4px', marginLeft: '8px' }}>(Ada Revisi)</span>
+                    )}
                   </span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
