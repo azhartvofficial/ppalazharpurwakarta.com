@@ -347,7 +347,7 @@ export default function AdminDashboardPage() {
       alamat: ""
     });
     try {
-      const alamatObj = JSON.parse(data.alamat);
+      const alamatObj = typeof data.alamat === 'string' ? JSON.parse(data.alamat) : data.alamat;
       setAddPusatDataDetail(alamatObj.detail || "");
       if (alamatObj.kode_pos) setAddPusatDataKodePos(alamatObj.kode_pos);
       if (alamatObj.is_wna !== undefined) setAddPusatDataIsWNA(alamatObj.is_wna);
