@@ -151,7 +151,7 @@ export default function Navbar() {
           <div className="top-links">
             <Link href="/login">Azwa Page</Link>
             <Link href="/login/santri">Santri Page</Link>
-            <Link href="/azhar-learn">Azhar Learn</Link>
+            <Link href="/pusda">Pusda Azhar</Link>
           </div>
           <div className="top-utils">
             <div className="lang-switcher-v2">

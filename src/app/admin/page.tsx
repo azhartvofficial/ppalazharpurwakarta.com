@@ -320,7 +320,7 @@ export default function AdminDashboardPage() {
     pas_foto: "", kk_url: "", akte_url: "", ijazah_url: "", sktm_url: ""
   });
 
-  const handleEditPusatData = (data: any) => {
+  const handleEditPusatData = async (data: any) => {
     setIsEditingPusatData(true);
     setEditPusatDataId(data.id);
     setAddPusatDataExistingFiles({
@@ -349,9 +349,42 @@ export default function AdminDashboardPage() {
     try {
       const alamatObj = JSON.parse(data.alamat);
       setAddPusatDataDetail(alamatObj.detail || "");
-      if (alamatObj.provinsi) setAddPusatDataProvId(alamatObj.provinsi);
-      if (alamatObj.kota) setAddPusatDataRegId(alamatObj.kota);
-      if (alamatObj.kecamatan) setAddPusatDataDistId(alamatObj.kecamatan);
+      if (alamatObj.kode_pos) setAddPusatDataKodePos(alamatObj.kode_pos);
+      if (alamatObj.is_wna !== undefined) setAddPusatDataIsWNA(alamatObj.is_wna);
+      
+      if (alamatObj.is_wna) {
+        setAddPusatDataCountry(alamatObj.negara || "");
+      } else {
+        if (alamatObj.provinsi) {
+          const provId = provinces.find(p => p.name === alamatObj.provinsi)?.id;
+          if (provId) {
+            setAddPusatDataProvId(provId);
+            setAddPusatDataProvName(alamatObj.provinsi);
+            try {
+              const regRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${provId}.json`);
+              const regenciesData = await regRes.json();
+              setRegencies(regenciesData);
+              const regId = regenciesData.find((r:any) => r.name === alamatObj.kota)?.id;
+              
+              if (regId) {
+                setAddPusatDataRegId(regId);
+                setAddPusatDataRegName(alamatObj.kota);
+                try {
+                  const distRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${regId}.json`);
+                  const districtsData = await distRes.json();
+                  setDistricts(districtsData);
+                  const distId = districtsData.find((d:any) => d.name === alamatObj.kecamatan)?.id;
+                  
+                  if (distId) {
+                    setAddPusatDataDistId(distId);
+                    setAddPusatDataDistName(alamatObj.kecamatan);
+                  }
+                } catch(e) {}
+              }
+            } catch(e) {}
+          }
+        }
+      }
     } catch(e) {}
     setShowAddPusatDataModal(true);
     setSelectedPusatData(null); // Close the detail modal
