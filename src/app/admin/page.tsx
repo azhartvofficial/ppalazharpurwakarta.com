@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
@@ -90,6 +90,8 @@ const capitalizeWords = (str: string) => {
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "ppdb" | "news" | "docs" | "settings" | "accounts" | "pusatdata">("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const modalStatesRef = useRef<any>({});
+  
   const [activePriorityModal, setActivePriorityModal] = useState<"santri" | "pendaftaran" | "azlearn" | null>(null);
 
   // Real-time visitor states
@@ -109,19 +111,6 @@ export default function AdminDashboardPage() {
     }
   }, []);
 
-  // Intercept Browser Back Button
-  useEffect(() => {
-    const handlePopState = (e: PopStateEvent) => {
-      if (!window.confirm("Apakah Anda yakin ingin keluar dari halaman Admin dan kembali ke Beranda?")) {
-        window.history.pushState(null, "", window.location.href);
-      } else {
-        window.location.href = "/";
-      }
-    };
-    window.history.pushState(null, "", window.location.href);
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
 
   // Master Password State
   const [showMasterPasswordPrompt, setShowMasterPasswordPrompt] = useState(false);
@@ -364,6 +353,8 @@ export default function AdminDashboardPage() {
       const alamatObj = typeof data.alamat === 'string' ? JSON.parse(data.alamat) : data.alamat;
       setAddPusatDataDetail(alamatObj.detail || "");
       if (alamatObj.kode_pos) setAddPusatDataKodePos(alamatObj.kode_pos);
+      setIsAddPekerjaanAyahLainnya(data.pekerjaan_ayah && !jobOptions.includes(data.pekerjaan_ayah));
+      setIsAddPekerjaanIbuLainnya(data.pekerjaan_ibu && !jobOptions.includes(data.pekerjaan_ibu));
       if (alamatObj.is_wna !== undefined) setAddPusatDataIsWNA(alamatObj.is_wna);
       
       if (alamatObj.is_wna) {
