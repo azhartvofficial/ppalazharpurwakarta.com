@@ -356,7 +356,7 @@ export default function AdminDashboardPage() {
         setAddPusatDataCountry(alamatObj.negara || "");
       } else {
         if (alamatObj.provinsi) {
-          const provId = provinces.find(p => p.name === alamatObj.provinsi)?.id;
+          const provId = provinces.find(p => p.name?.trim().toUpperCase() === alamatObj.provinsi?.trim().toUpperCase())?.id;
           if (provId) {
             setAddPusatDataProvId(provId);
             setAddPusatDataProvName(alamatObj.provinsi);
@@ -364,7 +364,7 @@ export default function AdminDashboardPage() {
               const regRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${provId}.json`);
               const regenciesData = await regRes.json();
               setRegencies(regenciesData);
-              const regId = regenciesData.find((r:any) => r.name === alamatObj.kota)?.id;
+              const regId = regenciesData.find((r:any) => r.name?.trim().toUpperCase() === alamatObj.kota?.trim().toUpperCase())?.id;
               
               if (regId) {
                 setAddPusatDataRegId(regId);
@@ -373,7 +373,7 @@ export default function AdminDashboardPage() {
                   const distRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${regId}.json`);
                   const districtsData = await distRes.json();
                   setDistricts(districtsData);
-                  const distId = districtsData.find((d:any) => d.name === alamatObj.kecamatan)?.id;
+                  const distId = districtsData.find((d:any) => d.name?.trim().toUpperCase() === alamatObj.kecamatan?.trim().toUpperCase())?.id;
                   
                   if (distId) {
                     setAddPusatDataDistId(distId);
