@@ -442,6 +442,24 @@ export default function AdminDashboardPage() {
   };
   const [addPusatDataErrors, setAddPusatDataErrors] = useState<{[key: string]: string}>({});
   const [addPusatDataIsWNA, setAddPusatDataIsWNA] = useState(false);
+  const [isAddPekerjaanAyahLainnya, setIsAddPekerjaanAyahLainnya] = useState(false);
+  const [isAddPekerjaanIbuLainnya, setIsAddPekerjaanIbuLainnya] = useState(false);
+  
+  const jobOptions = [
+    "Pegawai Negeri Sipil (PNS)",
+    "TNI / Polri",
+    "Karyawan BUMN / BUMD",
+    "Karyawan Swasta",
+    "Wiraswasta / Pengusaha",
+    "Petani / Peternak / Nelayan",
+    "Buruh / Pekerja Lepas",
+    "Guru / Dosen",
+    "Tenaga Medis (Dokter/Perawat/dll)",
+    "Pedagang",
+    "Pensiunan",
+    "Mengurus Rumah Tangga",
+    "Tidak Bekerja"
+  ];
   const [addPusatDataProvId, setAddPusatDataProvId] = useState("");
   const [addPusatDataProvName, setAddPusatDataProvName] = useState("");
   const [addPusatDataRegId, setAddPusatDataRegId] = useState("");
@@ -6576,9 +6594,51 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div className="input-group"><label>Nama Ayah</label><input type="text" required value={addPusatDataForm.nama_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ayah: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
-                  <div className="input-group"><label>Pekerjaan Ayah</label><input type="text" required value={addPusatDataForm.pekerjaan_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group">
+  <label>Pekerjaan Ayah</label>
+  {!isAddPekerjaanAyahLainnya ? (
+    <select required value={addPusatDataForm.pekerjaan_ayah} onChange={e => {
+      if (e.target.value === "Lainnya") {
+        setIsAddPekerjaanAyahLainnya(true);
+        setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: ""});
+      } else {
+        setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: e.target.value});
+      }
+    }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+      <option value="">Pilih Pekerjaan Ayah</option>
+      {jobOptions.map(job => <option key={job} value={job}>{job}</option>)}
+      <option value="Lainnya">Lainnya (Ketik Manual)</option>
+    </select>
+  ) : (
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <input type="text" required value={addPusatDataForm.pekerjaan_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="Ketik pekerjaan ayah..." autoFocus />
+      <button type="button" onClick={() => { setIsAddPekerjaanAyahLainnya(false); setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: ""}); }} style={{ padding: '0 16px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Batal</button>
+    </div>
+  )}
+</div>
                   <div className="input-group"><label>Nama Ibu</label><input type="text" required value={addPusatDataForm.nama_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ibu: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
-                  <div className="input-group"><label>Pekerjaan Ibu</label><input type="text" required value={addPusatDataForm.pekerjaan_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group">
+  <label>Pekerjaan Ibu</label>
+  {!isAddPekerjaanIbuLainnya ? (
+    <select required value={addPusatDataForm.pekerjaan_ibu} onChange={e => {
+      if (e.target.value === "Lainnya") {
+        setIsAddPekerjaanIbuLainnya(true);
+        setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: ""});
+      } else {
+        setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: e.target.value});
+      }
+    }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+      <option value="">Pilih Pekerjaan Ibu</option>
+      {jobOptions.map(job => <option key={job} value={job}>{job}</option>)}
+      <option value="Lainnya">Lainnya (Ketik Manual)</option>
+    </select>
+  ) : (
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <input type="text" required value={addPusatDataForm.pekerjaan_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="Ketik pekerjaan ibu..." autoFocus />
+      <button type="button" onClick={() => { setIsAddPekerjaanIbuLainnya(false); setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: ""}); }} style={{ padding: '0 16px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Batal</button>
+    </div>
+  )}
+</div>
                   <div className="input-group"><label>No HP/WhatsApp Wali</label><input type="text" required value={addPusatDataForm.no_hp_wali} onChange={e => setAddPusatDataForm({...addPusatDataForm, no_hp_wali: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
                 </div>
 
