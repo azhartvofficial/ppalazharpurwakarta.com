@@ -3974,8 +3974,32 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
       {/* MODAL: PREVIEW PUSAT DATA SISWA */}
       {selectedPusatData && (
-        <div className="modal-overlay">
+        <div className="modal-overlay" onClick={() => { setSelectedPusatData(null); window.history.pushState(null, "", window.location.href); }}>
+          <button 
+            onClick={(e) => { e.stopPropagation(); setSelectedPusatData(null); window.history.pushState(null, "", window.location.href); }}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              background: '#ef4444',
+              color: '#ffffff',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '30px',
+              fontWeight: 900,
+              fontSize: '1rem',
+              cursor: 'pointer',
+              zIndex: 10002,
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            ? Tutup
+          </button>
           <motion.div 
+            onClick={(e) => e.stopPropagation()}
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             style={{
@@ -5645,7 +5669,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           backdrop-filter: blur(5px);
           display: flex;
           justify-content: center;
-          align-items: center;
+          align-items: center; /* keep center for small modals */
+          padding: 2rem;
           z-index: 10000;
         }
 
