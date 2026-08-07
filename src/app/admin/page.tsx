@@ -3876,7 +3876,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '2rem' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
                 <img src={selectedPusatData.pas_foto} alt="Pas Foto" style={{ width: '150px', height: '150px', borderRadius: '16px', objectFit: 'cover', border: '3px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
-                <span style={{ background: '#e0f2fe', color: '#0369a1', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800 }}>Kelas {selectedPusatData.kelas}</span>
+                <span style={{ background: '#e0f2fe', color: '#0369a1', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800 }}>Kelas {selectedPusatData.kelas} ( {parseInt(selectedPusatData.kelas) >= 10 ? 'Madrasah Aliyah' : 'Madrasah Tsanawiyah'} )</span>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
                   <a href={selectedPusatData.pas_foto} download target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#e0f2fe', color: '#0369a1', padding: '6px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, textDecoration: 'none', transition: 'all 0.2s', cursor: 'pointer' }} title="Unduh Pas Foto">
                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
