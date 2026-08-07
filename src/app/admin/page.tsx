@@ -356,15 +356,16 @@ export default function AdminDashboardPage() {
         setAddPusatDataCountry(alamatObj.negara || "");
       } else {
         if (alamatObj.provinsi) {
-          const provId = provinces.find(p => p.name?.trim().toUpperCase() === alamatObj.provinsi?.trim().toUpperCase())?.id;
+          let currentProvinces = provinces;
+          if (currentProvinces.length === 0) {
+            try {
+              const res = await fetch("https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json");
+              currentProvinces = await res.json();
+              setProvinces(currentProvinces);
+            } catch(e) {}
+          }
           
-          if (!provId && provinces.length === 0) {
-            alert("Sistem belum selesai memuat daftar provinsi, silakan tunggu beberapa detik dan coba klik Edit lagi.");
-            return;
-          }
-          if (!provId) {
-            alert("Provinsi dari data (" + alamatObj.provinsi + ") tidak cocok dengan API Emsifa.");
-          }
+          const provId = currentProvinces.find(p => p.name?.trim().toUpperCase() === alamatObj.provinsi?.trim().toUpperCase())?.id;
 
           if (provId) {
             setAddPusatDataProvId(provId);
