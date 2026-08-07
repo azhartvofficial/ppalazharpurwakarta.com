@@ -365,6 +365,13 @@ export default function AdminDashboardPage() {
             } catch(e) {}
           }
           
+          setAddPusatDataProvId("OLD_PROV");
+          setAddPusatDataProvName(alamatObj.provinsi);
+          setAddPusatDataRegId("OLD_REG");
+          setAddPusatDataRegName(alamatObj.kota);
+          setAddPusatDataDistId("OLD_DIST");
+          setAddPusatDataDistName(alamatObj.kecamatan);
+          
           const provId = currentProvinces.find(p => p.name?.trim().toUpperCase() === alamatObj.provinsi?.trim().toUpperCase())?.id;
 
           if (provId) {
