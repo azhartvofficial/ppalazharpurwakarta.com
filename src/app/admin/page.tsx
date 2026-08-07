@@ -647,18 +647,31 @@ export default function AdminDashboardPage() {
         full_text: `${addPusatDataDetail}, Kec. ${addPusatDataDistName}, Kota/Kab. ${addPusatDataRegName}, Prov. ${addPusatDataProvName}${addPusatDataKodePos ? ' - ' + addPusatDataKodePos : ''}`
       };
 
-      const payload = {
-        ...addPusatDataForm,
-        alamat: JSON.stringify(alamatObj),
-        pas_foto, kk_url, akte_url, ijazah_url, sktm_url,
-        status: 'Terima', // Admin bypasses pending status
-        accepted_at: new Date().toISOString()
-      };
-
-      const { error } = await supabase.from('pusat_data_siswa').insert([payload]);
-      if (error) throw error;
-      
-      openAlert("Data siswa berhasil ditambahkan!");
+      if (isEditingPusatData && editPusatDataId) {
+        const updatePayload: any = {
+          ...addPusatDataForm,
+          alamat: JSON.stringify(alamatObj),
+          pas_foto: pas_foto || addPusatDataExistingFiles.pas_foto,
+          kk_url: kk_url || addPusatDataExistingFiles.kk_url,
+          akte_url: akte_url || addPusatDataExistingFiles.akte_url,
+          ijazah_url: ijazah_url || addPusatDataExistingFiles.ijazah_url,
+          sktm_url: sktm_url || addPusatDataExistingFiles.sktm_url,
+        };
+        const { error } = await supabase.from('pusat_data_siswa').update(updatePayload).eq('id', editPusatDataId);
+        if (error) throw error;
+        openAlert("Data siswa berhasil diperbarui!");
+      } else {
+        const payload = {
+          ...addPusatDataForm,
+          alamat: JSON.stringify(alamatObj),
+          pas_foto, kk_url, akte_url, ijazah_url, sktm_url,
+          status: 'Terima',
+          accepted_at: new Date().toISOString()
+        };
+        const { error } = await supabase.from('pusat_data_siswa').insert([payload]);
+        if (error) throw error;
+        openAlert("Data siswa berhasil ditambahkan!");
+      }
       setShowAddPusatDataModal(false);
       fetchPusatData();
     } catch (err: any) {
