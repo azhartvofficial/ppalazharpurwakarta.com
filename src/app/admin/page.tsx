@@ -6492,7 +6492,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                       <div>
                         <label>Provinsi</label>
-                        <select required={!addPusatDataIsWNA} value={addPusatDataProvId} onChange={e => { setAddPusatDataProvId(e.target.value); setAddPusatDataProvName(e.target.options[e.target.selectedIndex].text); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                        <select required={!addPusatDataIsWNA} value={addPusatDataProvId} onChange={e => { setAddPusatDataProvId(e.target.value); setAddPusatDataProvName(e.target.options[e.target.selectedIndex].text); setAddPusatDataRegId(""); setAddPusatDataRegName(""); setDistricts([]); setAddPusatDataDistId(""); setAddPusatDataDistName(""); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Provinsi --</option>
                           {provinces.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                         </select>
@@ -6500,7 +6500,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       </div>
                       <div>
                         <label>Kota/Kabupaten</label>
-                        <select required={!addPusatDataIsWNA} value={addPusatDataRegId} disabled={!addPusatDataProvId} onChange={e => { setAddPusatDataRegId(e.target.value); setAddPusatDataRegName(e.target.options[e.target.selectedIndex].text); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                        <select required={!addPusatDataIsWNA} value={addPusatDataRegId} disabled={!addPusatDataProvId} onChange={e => { setAddPusatDataRegId(e.target.value); setAddPusatDataRegName(e.target.options[e.target.selectedIndex].text); setAddPusatDataDistId(""); setAddPusatDataDistName(""); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Kota/Kabupaten --</option>
                           {regencies.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                         </select>
