@@ -3991,7 +3991,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', borderBottom: '2px solid #f1f5f9', paddingBottom: '1rem' }}>
               <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', margin: 0 }}>Detail Identitas Santri</h3>
-              <button onClick={() => setSelectedPusatData(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#94a3b8' }}>✕</button>
+              <button onClick={() => setSelectedPusatData(null)} style={{ background: '#fee2e2', border: 'none', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#991b1b', padding: '0.4rem 1rem', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>✕ Tutup</button>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '2rem' }}>
