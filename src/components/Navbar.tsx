@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { useLanguage } from "@/context/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,6 +12,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { language, setLanguage, t } = useLanguage();
+  const pathname = usePathname();
 
   const [maintenanceActive, setMaintenanceActive] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -357,6 +359,79 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Global Floating Action Button */}
+      {(() => {
+        const isDashboard = pathname === '/admin' || pathname === '/santri';
+        let buttonContent = null;
+        let onClickAction = null;
+        let btnClass = "floating-action-btn";
+
+        if (isAdminLoggedIn || isSantriLoggedIn) {
+          if (isDashboard) {
+            buttonContent = (
+              <>
+                <span className="logout-text">Logout</span>
+                <div className="logout-icon-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
+                </div>
+              </>
+            );
+            onClickAction = () => {
+              // We'll use a standard confirm modal style since we don't have the custom modal globally available
+              // Or better, just redirect to a logout route if we had one.
+              if (window.confirm("Apakah Anda yakin ingin logout dari sesi Anda?")) {
+                supabase.auth.signOut().then(() => {
+                  localStorage.removeItem('admin_session');
+                  localStorage.removeItem('santri_session');
+                  window.dispatchEvent(new Event('storage'));
+                  window.dispatchEvent(new Event('maintenanceChange'));
+                  window.location.href = '/login';
+                });
+              }
+            };
+          } else {
+            const displayName = isAdminLoggedIn ? getShortenedAdminName(adminName) : santriName;
+            buttonContent = (
+              <>
+                <span className="logout-text" style={{textTransform: 'none'}}>Ahlan {displayName} 👋</span>
+              </>
+            );
+            btnClass += " btn-blue";
+            onClickAction = () => {
+              window.location.href = isAdminLoggedIn ? '/admin' : '/santri';
+            };
+          }
+        } else {
+          buttonContent = (
+            <>
+              <span className="logout-text">Login di sini</span>
+              <div className="logout-icon-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                  <polyline points="10 17 15 12 10 7"></polyline>
+                  <line x1="15" y1="12" x2="3" y2="12"></line>
+                </svg>
+              </div>
+            </>
+          );
+          onClickAction = () => {
+            window.location.href = '/login';
+          };
+        }
+
+        return (
+          <div className="floating-action-wrapper">
+            <button className="floating-action-btn" onClick={onClickAction}>
+              {buttonContent}
+            </button>
+          </div>
+        );
+      })()}
+
       <style jsx global>{`
         .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon {
           display: none !important;
@@ -583,6 +658,90 @@ export default function Navbar() {
           font-size: 0.72rem;
           font-weight: 800;
           flex-shrink: 0;
+        }
+
+        .scroll-to-top {
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          background: #ff8c00;
+          color: white;
+          width: 45px;
+          height: 45px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+          border: none;
+          z-index: 998;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Floating Global Action Button */
+        .floating-action-wrapper {
+          position: fixed;
+          right: 0;
+          bottom: 100px;
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          animation: introSlideAndWiggleRight 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes introSlideAndWiggleRight {
+          0% { transform: translateX(100%); }
+          10% { transform: translateX(0); }
+          15% { transform: translateX(-8px); }
+          25% { transform: translateX(4px); }
+          35% { transform: translateX(-4px); }
+          45% { transform: translateX(0); }
+          100% { transform: translateX(0); }
+        }
+
+        .floating-action-btn {
+          background: rgba(220, 38, 38, 0.75); /* Glass Red */
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          color: white;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-right: none;
+          border-radius: 50px 0 0 50px;
+          padding: 0.7rem 0.5rem 0.7rem 1.2rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          box-shadow: -4px 4px 15px rgba(220, 38, 38, 0.25);
+          cursor: pointer;
+          transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background 0.2s;
+          outline: none;
+        }
+        
+        .floating-action-btn:hover {
+          background: rgba(220, 38, 38, 0.9);
+          box-shadow: -4px 4px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .floating-action-btn:active {
+          transform: scale(0.95);
+          background: rgba(185, 28, 28, 0.95);
+        }
+
+        .floating-action-btn.btn-blue {
+          background: rgba(0, 33, 71, 0.85); /* Dark Navy */
+          box-shadow: -4px 4px 15px rgba(0, 33, 71, 0.25);
+        }
+        .floating-action-btn.btn-blue:hover {
+          background: rgba(0, 33, 71, 0.95);
+          box-shadow: -4px 4px 20px rgba(0, 33, 71, 0.4);
+        }
+
+        .logout-text {
+          font-size: 0.75rem;
+          font-weight: 800;
+          letter-spacing: 1px;
+          text-transform: uppercase;
         }
 
         .navbar-profile-details {

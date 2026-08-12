@@ -2036,52 +2036,6 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Mobile Admin Floating Logout */}
-          {/* Mobile Admin Floating Logout / Login */}
-          <div className="floating-logout-wrapper">
-            <button 
-              className="floating-logout-btn" 
-              onClick={() => {
-                if (demoMode) {
-                  window.location.href = '/login';
-                  return;
-                }
-                setConfirmModal({
-                  isOpen: true,
-                  title: "Konfirmasi Logout",
-                  message: "Apakah Anda yakin ingin logout dari sesi Anda?",
-                  confirmText: "Ya, Logout",
-                  cancelText: "Batal",
-                  isDanger: true,
-                  onConfirm: async () => {
-                    await supabase.auth.signOut();
-                    localStorage.removeItem('admin_session');
-                    window.dispatchEvent(new Event('storage'));
-                    window.dispatchEvent(new Event('maintenanceChange'));
-                    window.location.href = '/login';
-                  }
-                });
-              }} 
-              title={!demoMode ? "Logout Sesi" : "Masuk ke Akun"}
-            >
-              <span className="logout-text">{!demoMode ? "Logout" : "Login di sini"}</span>
-              <div className="logout-icon-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
-                {!demoMode ? (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                    <polyline points="16 17 21 12 16 7" />
-                    <line x1="21" y1="12" x2="9" y2="12" />
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                    <polyline points="10 17 15 12 10 7"></polyline>
-                    <line x1="15" y1="12" x2="3" y2="12"></line>
-                  </svg>
-                )}
-              </div>
-            </button>
-          </div>
           
           <header className="content-header">
             <div>
