@@ -2017,20 +2017,13 @@ export default function AdminDashboardPage() {
 
         {/* Main Content Area */}
         <section className="main-content">
-          {/* Mobile Admin Header with Left Hamburger Toggle */}
-          <header className={`mobile-admin-header ${isMobileScrolled ? 'scrolled' : ''}`}>
-            <button className="mobile-sidebar-toggle" onClick={() => setSidebarOpen(true)} title="Buka Menu Pengurus">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '22px', height: '22px' }}>
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-              </svg>
-            </button>
-            <div className="mobile-header-brand">
-              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Al-Azhar" className="mobile-logo-img" />
-              <span>PANEL PENGURUS</span>
+          {/* Mobile Admin Floating Toggle */}
+          <button className="floating-admin-toggle" onClick={() => setSidebarOpen(true)} title="Buka Menu Pengurus">
+            <span className="toggle-text">Menu Admin</span>
+            <div className="toggle-logo-wrapper">
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo" className="toggle-logo" />
             </div>
-          </header>
+          </button>
           
           <header className="content-header">
             <div>
@@ -4619,6 +4612,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           color: #0f172a;
           font-family: 'Inter', sans-serif;
           overflow-x: hidden;
+          padding-top: 110px; /* Safe padding for desktop */
         }
 
         .demo-banner {
@@ -5977,7 +5971,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           font-weight: 700;
         }
 
-        .mobile-admin-header {
+        .floating-admin-toggle {
           display: none;
         }
 
@@ -6009,62 +6003,69 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         }
 
         @media (max-width: 768px) {
+          .dashboard-layout { padding-top: 61px; } /* Safe padding for mobile */
           .dashboard-grid { grid-template-columns: 1fr; }
           .gallery-admin-grid { grid-template-columns: 1fr; }
           .header-title { font-size: 1.6rem; }
           .content-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
           
-          /* Mobile Top Bar Header styling */
-          .mobile-admin-header {
-            display: flex;
-            align-items: center;
-            background: #002147; /* Dominant Navy */
-            color: white;
-            padding: 0.9rem 1.2rem;
-            position: sticky;
-            top: 55px;
+          /* Floating Admin Toggle */
+          .floating-admin-toggle {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
             z-index: 999;
-            margin: -4rem -1.5rem 1.5rem -1.5rem; /* Pulled up to eliminate layout gap */
-            box-shadow: 0 4px 15px rgba(0, 33, 71, 0.2);
-            gap: 1rem;
-            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-          }
-          
-          .mobile-admin-header.scrolled {
-            top: 0;
-            margin-top: -2rem; /* Keep it offset */
-            box-shadow: 0 10px 25px rgba(0, 33, 71, 0.35);
-          }
-          
-          .mobile-sidebar-toggle {
-            background: transparent;
-            border: none;
+            background: #002147; /* Blue */
             color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.25rem;
-            outline: none;
-          }
-          
-          .mobile-sidebar-toggle:active {
-            transform: scale(0.9);
-          }
-
-          .mobile-header-brand {
+            border: none;
+            border-radius: 0 50px 50px 0;
+            padding: 1rem 1.5rem 1rem 0.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-weight: 800;
-            font-size: 0.95rem;
-            letter-spacing: 0.8px;
-            color: #ff8c00; /* Accent Orange */
+            box-shadow: 4px 4px 15px rgba(0, 33, 71, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+            outline: none;
+          }
+          
+          .floating-admin-toggle:active {
+            transform: translateY(-50%) scale(0.95);
+            background: #003a7d;
           }
 
-          .mobile-logo-img {
-            height: 28px;
-            width: auto;
+          .toggle-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transform: rotate(180deg);
+            margin-left: 0.2rem;
+            color: #ff8c00;
+          }
+
+          .toggle-logo-wrapper {
+            position: relative;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            margin-right: -2.5rem; /* Offside! */
+            margin-left: 0.2rem;
+            border: 2.5px solid #002147;
+          }
+
+          .toggle-logo {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
           }
 
           /* Left-sliding Mobile Sidebar Drawer */
