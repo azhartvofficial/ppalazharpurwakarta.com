@@ -3252,19 +3252,15 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                     {isModified ? 'Simpan Perubahan' : (wave.is_open ? 'Tutup Pendaftaran' : 'Buka Pendaftaran')}
                                   </button>
 
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', marginTop: '0.5rem', background: '#fff', padding: '0.75rem', borderRadius: '8px', border: wave.access_code ? '1px solid #10b981' : '1px dashed #cbd5e1' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', marginTop: '0.5rem', background: '#fff', padding: '0.75rem', borderRadius: '8px', border: wave.access_code ? '1px solid #10b981' : '1px dashed #cbd5e1', flexWrap: 'wrap', gap: '8px' }}>
+                                    
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                                       <span style={{ color: '#64748b', fontWeight: 700 }}>Kode Akses:</span>
-                                      <span style={{ fontSize: '0.75rem', color: wave.access_code ? '#047857' : '#ef4444', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                        {wave.access_code ? '✅ Akses Terbuka' : '🔒 Akses Tertutup'}
-                                      </span>
-                                    </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                       <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: '1.25rem', color: wave.access_code ? '#047857' : '#94a3b8', letterSpacing: '2px' }}>
                                         {wave.access_code || '-'}
                                       </span>
                                       {wave.access_code && (
-                                        <>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                           <button
                                             onClick={() => {
                                               navigator.clipboard.writeText(wave.access_code);
@@ -3344,9 +3340,16 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                               <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
                                             </svg>
                                           </button>
-                                        </>
+                                        </div>
                                       )}
                                     </div>
+
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderLeft: '2px solid #e2e8f0', paddingLeft: '12px' }}>
+                                      <span style={{ fontSize: '0.8rem', color: wave.access_code ? '#047857' : '#ef4444', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}>
+                                        {wave.access_code ? '✅ Aktif' : '❌ Nonaktif'}
+                                      </span>
+                                    </div>
+
                                   </div>
                                 </div>
 
