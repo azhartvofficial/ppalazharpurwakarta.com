@@ -104,16 +104,7 @@ export default function AdminDashboardPage() {
   // Maintenance states
   const [maintenanceMode, setMaintenanceMode] = useState(false);
 
-  // Scroll state for mobile header effect
-  const [isMobileScrolled, setIsMobileScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsMobileScrolled(window.scrollY > 40);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -1914,15 +1905,7 @@ export default function AdminDashboardPage() {
 
   return (
     <>
-      {isMobileScrolled && (
-        <style>{`
-          @media (max-width: 768px) {
-            .navbar {
-              transform: translateY(-100%);
-            }
-          }
-        `}</style>
-      )}
+
       <Navbar />
       <main className="dashboard-layout">
       {/* Top Banner (Demo Mode Alert) */}
