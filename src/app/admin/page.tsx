@@ -4619,6 +4619,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           color: #0f172a;
           font-family: 'Inter', sans-serif;
           overflow-x: hidden;
+          padding-top: 110px; /* Offset for desktop navbar */
         }
 
         .demo-banner {
@@ -6009,6 +6010,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         }
 
         @media (max-width: 768px) {
+          .dashboard-layout { padding-top: 61px; } /* Offset for mobile navbar */
           .dashboard-grid { grid-template-columns: 1fr; }
           .gallery-admin-grid { grid-template-columns: 1fr; }
           .header-title { font-size: 1.6rem; }
@@ -6024,7 +6026,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             position: sticky;
             top: 61px;
             z-index: 999;
-            margin: -4rem -1.5rem 1.5rem -1.5rem;
+            margin: -2rem -1.5rem 1.5rem -1.5rem; /* Naturally offset the 2rem padding of main-content */
             box-shadow: 0 4px 15px rgba(0, 33, 71, 0.2);
             gap: 1rem;
             transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -6032,7 +6034,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           
           .mobile-admin-header.scrolled {
             top: 0;
-            margin-top: -2rem; /* Give it a little less pull when it is at the very top */
+            margin-top: -2rem; /* Keep it offset */
             box-shadow: 0 10px 25px rgba(0, 33, 71, 0.35);
           }
           
