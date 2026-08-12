@@ -3295,7 +3295,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
                                           <button
                                             onClick={() => {
-                                              const text = `Assalamu'alaikum Bapak/Ibu Wali Santri,\n\nBerikut adalah Kode Pendaftaran / Akses untuk melengkapi data di Pusat Data (PUSDA) Pondok Pesantren Al-Azhar Purwakarta:\n\n*${wave.access_code}*\n\nSilakan kunjungi: https://pp-alazharpwk.com/pusda dan masukkan kode tersebut untuk melanjutkan proses pendaftaran.\n\nTerima kasih.`;
+                                              const text = `Assalamu’alaikum Wr. Wb.\n\nAhlan Wa Sahlan Bapak/Ibu Wali Santri,\n\nDalam rangka pemusatan data santri dan santriwati Al Azhar, kami memohon Bapak/Ibu untuk melengkapi data melalui portal resmi berikut:\n        Portal PUSDA: https://pp-alazharpurwakartaschid.vercel.app/pusda\n        Kode Akses : *${wave.access_code}*\n(Gunakan kode akses di atas untuk masuk ke formulir demi keamanan data santri).\n\nTeknis & langkah-langkah pengisian dapat dilihat pada papan pengumuman di tautan berikut:\n📌 https://pp-alazharpurwakartaschid.vercel.app/berita\n\nJika ada kendala dalam pengisian, silakan hubungi Admin:\n📞 085846489366 (Danish)\n\nTerima kasih atas kerja samanya.\nWassalamu’alaikum Wr. Wb.`;
                                               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                                             }}
                                             title="Bagikan ke WhatsApp"
