@@ -4786,8 +4786,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
         /* Sidebar Styling - Deep Navy Dominant Color */
         .sidebar {
-          background-color: #ffffff;
-          background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23002147' fill-opacity='0.03' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+          background: linear-gradient(135deg, #002147 0%, #00122e 100%);
           border-right: 1px solid rgba(0, 0, 0, 0.05);
           display: flex;
           flex-direction: column;
@@ -4797,7 +4796,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           height: 100vh;
           box-sizing: border-box;
           z-index: 99;
-          box-shadow: 4px 0 20px rgba(0, 33, 71, 0.05);
+          box-shadow: 4px 0 20px rgba(0, 33, 71, 0.15);
         }
 
         .sidebar-header {
@@ -4833,9 +4832,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           align-items: center;
           gap: 1rem;
           padding: 0.9rem 1.2rem;
-          background: rgba(0, 33, 71, 0.03);
-          border: 1px solid rgba(0, 33, 71, 0.08);
-          color: #002147;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 140, 0, 0.35); /* clear orange frame */
+          color: white;
           border-radius: 12px;
           font-size: 0.9rem;
           font-weight: 600;
@@ -4844,26 +4843,26 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           transition: all 0.3s ease;
           position: relative;
           margin-bottom: 8px;
-          box-shadow: 0 4px 10px rgba(0, 33, 71, 0.03);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .nav-item:hover {
-          background: rgba(0, 33, 71, 0.08);
-          border-color: rgba(0, 33, 71, 0.2);
-          color: #002147;
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 140, 0, 0.75);
+          color: white;
           transform: translateX(4px);
-          box-shadow: 0 6px 15px rgba(0, 33, 71, 0.1);
+          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
         .nav-item.active {
-          background: rgba(255, 140, 0, 0.15);
-          border-color: rgba(255, 140, 0, 0.4);
-          color: #ff8c00 !important;
-          box-shadow: 0 6px 15px rgba(255, 140, 0, 0.15);
+          background: rgba(255, 140, 0, 0.2);
+          border-color: #ff8c00; /* full orange border */
+          color: white !important;
+          box-shadow: 0 6px 15px rgba(255, 140, 0, 0.25);
         }
 
         .nav-item span {
-          color: inherit !important;
+          color: white !important;
         }
 
         .nav-icon {
