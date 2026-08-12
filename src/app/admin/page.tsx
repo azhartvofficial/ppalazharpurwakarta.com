@@ -4619,7 +4619,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           color: #0f172a;
           font-family: 'Inter', sans-serif;
           overflow-x: hidden;
-          padding-top: 110px; /* Offset for desktop navbar */
         }
 
         .demo-banner {
@@ -6010,7 +6009,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         }
 
         @media (max-width: 768px) {
-          .dashboard-layout { padding-top: 61px; } /* Offset for mobile navbar */
           .dashboard-grid { grid-template-columns: 1fr; }
           .gallery-admin-grid { grid-template-columns: 1fr; }
           .header-title { font-size: 1.6rem; }
@@ -6024,9 +6022,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             color: white;
             padding: 0.9rem 1.2rem;
             position: sticky;
-            top: 61px;
+            top: 55px;
             z-index: 999;
-            margin: -2rem -1.5rem 1.5rem -1.5rem; /* Naturally offset the 2rem padding of main-content */
+            margin: -4rem -1.5rem 1.5rem -1.5rem; /* Pulled up to eliminate layout gap */
             box-shadow: 0 4px 15px rgba(0, 33, 71, 0.2);
             gap: 1rem;
             transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
