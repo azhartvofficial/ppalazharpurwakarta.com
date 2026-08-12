@@ -2018,12 +2018,17 @@ export default function AdminDashboardPage() {
         {/* Main Content Area */}
         <section className="main-content">
           {/* Mobile Admin Floating Toggle */}
-          <button className="floating-admin-toggle" onClick={() => setSidebarOpen(true)} title="Buka Menu Pengurus">
-            <span className="toggle-text">Menu Admin</span>
-            <div className="toggle-logo-wrapper">
-              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo" className="toggle-logo" />
+          <div className="floating-admin-wrapper">
+            <button className="floating-admin-toggle" onClick={() => setSidebarOpen(true)} title="Buka Menu Pengurus">
+              <span className="toggle-text">Menu Admin</span>
+              <div className="toggle-logo-wrapper">
+                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo" className="toggle-logo" />
+              </div>
+            </button>
+            <div className="floating-tooltip">
+              Klik di sini 👆
             </div>
-          </button>
+          </div>
           
           <header className="content-header">
             <div>
@@ -5971,7 +5976,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           font-weight: 700;
         }
 
-        .floating-admin-toggle {
+        .floating-admin-wrapper {
           display: none;
         }
 
@@ -6009,13 +6014,60 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           .header-title { font-size: 1.6rem; }
           .content-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
           
-          /* Floating Admin Toggle */
-          .floating-admin-toggle {
+          /* Floating Admin Toggle & Animation */
+          .floating-admin-wrapper {
             position: fixed;
             left: 0;
+            top: 75px; /* Directly under the main navbar */
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            animation: introSlideAndWiggle 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          }
+
+          @keyframes introSlideAndWiggle {
+            0% { transform: translateX(-100%); }
+            10% { transform: translateX(0); }
+            15% { transform: translateX(8px); }
+            25% { transform: translateX(-4px); }
+            35% { transform: translateX(4px); }
+            45% { transform: translateX(0); }
+            100% { transform: translateX(0); }
+          }
+
+          .floating-tooltip {
+            background: #ff8c00;
+            color: white;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-left: 0.5rem;
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+            white-space: nowrap;
+            position: relative;
+            animation: showAndFadeTooltip 3.5s forwards;
+            pointer-events: none;
+          }
+
+          .floating-tooltip::before {
+            content: '';
+            position: absolute;
+            left: -5px;
             top: 50%;
             transform: translateY(-50%);
-            z-index: 999;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-right: 5px solid #ff8c00;
+          }
+
+          @keyframes showAndFadeTooltip {
+            0%, 15% { opacity: 0; transform: translateX(-10px); visibility: visible; }
+            25%, 85% { opacity: 1; transform: translateX(0); visibility: visible; }
+            100% { opacity: 0; transform: translateX(10px); visibility: hidden; }
+          }
+
+          .floating-admin-toggle {
             background: #002147; /* Blue */
             color: white;
             border: none;
@@ -6026,12 +6078,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             gap: 0.5rem;
             box-shadow: 4px 4px 15px rgba(0, 33, 71, 0.3);
             cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background 0.2s;
             outline: none;
           }
           
           .floating-admin-toggle:active {
-            transform: translateY(-50%) scale(0.95);
+            transform: scale(0.95);
             background: #003a7d;
           }
 
