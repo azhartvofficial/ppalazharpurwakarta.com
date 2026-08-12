@@ -132,15 +132,27 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
-  const getShortenedAdminName = (name: string) => {
-    if (!name) return "Admin";
+  const getShortenedName = (name: string) => {
+    if (!name) return "User";
     let displayName = name.includes('@') ? name.split('@')[0] : name;
-    const parts = displayName.split(/[._-]/);
-    if (parts.length > 0 && parts[0].length >= 3) {
-      displayName = parts[0];
+    
+    // Split by space, dot, underscore, dash
+    const parts = displayName.split(/[\s._-]/).filter(p => p.length > 0);
+    
+    if (parts.length > 0) {
+      // If the first part is less than 3 chars (e.g. "M", "M.", "Al"), take the second part as well
+      if (parts[0].length < 3 && parts.length > 1) {
+        displayName = parts[0] + ' ' + parts[1];
+      } else {
+        displayName = parts[0];
+      }
     }
-    if (displayName.length > 8) {
-      displayName = displayName.substring(0, 7) + "..";
+    
+    // Capitalize properly
+    displayName = displayName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+
+    if (displayName.length > 14) {
+      displayName = displayName.substring(0, 12) + "..";
     }
     return displayName;
   };
@@ -258,7 +270,7 @@ export default function Navbar() {
                   </div>
                   <div className="navbar-profile-details">
                     <span className="navbar-profile-name">
-                      {getShortenedAdminName(adminName)}
+                      {getShortenedName(adminName)}
                     </span>
                     <span className="navbar-profile-role">PENGURUS</span>
                   </div>
@@ -394,10 +406,10 @@ export default function Navbar() {
               }
             };
           } else {
-            const displayName = isAdminLoggedIn ? getShortenedAdminName(adminName) : santriName;
+            const displayName = getShortenedName(isAdminLoggedIn ? adminName : santriName);
             buttonContent = (
               <>
-                <span className="logout-text" style={{textTransform: 'none'}}>Ahlan {displayName} 👋</span>
+                <span className="logout-text" style={{textTransform: 'none'}}>👋 Ahlan {displayName}</span>
               </>
             );
             btnClass += " btn-blue";
