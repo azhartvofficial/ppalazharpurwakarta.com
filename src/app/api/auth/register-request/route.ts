@@ -31,6 +31,7 @@ export async function POST(request: Request) {
         password: payload.password,
         role: payload.role,
         kepengurusan: payload.kepengurusan,
+        kampus: payload.kampus,
         nama_santri: payload.nama_santri,
         jenjang_pendidikan: payload.jenjang_pendidikan,
         pilihan_kelas: payload.pilihan_kelas,

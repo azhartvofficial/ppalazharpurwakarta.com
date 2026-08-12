@@ -56,6 +56,7 @@ export async function POST(request: Request) {
           role: requestData.role,
           status: "Aktif",
           kepengurusan: requestData.kepengurusan,
+          kampus: requestData.kampus,
           nama_santri: requestData.nama_santri,
           jenjang_pendidikan: requestData.jenjang_pendidikan,
           pilihan_kelas: requestData.pilihan_kelas,

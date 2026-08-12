@@ -22,6 +22,7 @@ export default function LoginPage() {
   
   // Admin specific
   const [regKepengurusan, setRegKepengurusan] = useState("Pondok Pesantren");
+  const [regKampus, setRegKampus] = useState("Azhar 1");
 
   // Wali Santri specific
   const [regNamaSantri, setRegNamaSantri] = useState("");
@@ -119,6 +120,7 @@ export default function LoginPage() {
         role: regRole,
         status: "Aktif",
         kepengurusan: regRole === "Admin" ? regKepengurusan : null,
+        kampus: regRole === "Admin" ? regKampus : null,
         nama_santri: regRole === "Wali" ? regNamaSantri : null,
         jenjang_pendidikan: regRole === "Wali" ? regJenjang : null,
         pilihan_kelas: regRole === "Wali" ? regKelas : null,
@@ -266,15 +268,24 @@ export default function LoginPage() {
               </div>
 
               {regRole === "Admin" && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#333' }}>Kepengurusan</label>
-                  <select className="form-input" value={regKepengurusan} onChange={(e) => setRegKepengurusan(e.target.value)}>
-                    <option value="Pondok Pesantren">Pondok Pesantren</option>
-                    <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
-                    <option value="SMP Islam Al-Azhar">SMP Islam Al-Azhar</option>
-                    <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
-                  </select>
-                </div>
+                <>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#333' }}>Kepengurusan</label>
+                    <select className="form-input" value={regKepengurusan} onChange={(e) => setRegKepengurusan(e.target.value)}>
+                      <option value="Pondok Pesantren">Pondok Pesantren</option>
+                      <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
+                      <option value="SMP Islam Al-Azhar">SMP Islam Al-Azhar</option>
+                      <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
+                    </select>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#333' }}>Kampus</label>
+                    <select className="form-input" value={regKampus} onChange={(e) => setRegKampus(e.target.value)}>
+                      <option value="Azhar 1">Azhar 1</option>
+                      <option value="Azhar 2">Azhar 2</option>
+                    </select>
+                  </div>
+                </>
               )}
 
               {regRole === "Wali" && (

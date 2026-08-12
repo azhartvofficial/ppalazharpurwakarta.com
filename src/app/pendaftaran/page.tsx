@@ -248,13 +248,17 @@ export default function PendaftaranPage() {
         }
 
         .alur-grid {
-          display: grid;
-          grid-template-columns: repeat(5, 1fr);
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
           gap: 1.5rem;
           position: relative;
         }
 
         .alur-card {
+          flex: 0 0 calc(33.333% - 1rem);
+          max-width: calc(33.333% - 1rem);
+          min-width: 250px;
           background: #f8fafc;
           padding: 2.5rem 1.5rem;
           border-radius: 20px;
