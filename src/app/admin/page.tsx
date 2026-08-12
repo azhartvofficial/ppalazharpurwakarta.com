@@ -4787,7 +4787,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           gap: 1rem;
           padding: 0.9rem 1.2rem;
           background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 140, 0, 0.35); /* clear orange frame */
+          border: 1.5px solid rgba(255, 140, 0, 0.6); /* More prominent orange frame */
           color: white;
           border-radius: 12px;
           font-size: 0.9rem;
@@ -4802,7 +4802,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
         .nav-item:hover {
           background: rgba(255, 255, 255, 0.1);
-          border-color: rgba(255, 140, 0, 0.75);
+          border-color: rgba(255, 140, 0, 0.9);
           color: white;
           transform: translateX(4px);
           box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
