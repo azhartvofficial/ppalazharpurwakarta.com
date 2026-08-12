@@ -425,7 +425,7 @@ export default function Navbar() {
 
         return (
           <div className="floating-action-wrapper">
-            <button className="floating-action-btn" onClick={onClickAction}>
+            <button className={btnClass} onClick={onClickAction}>
               {buttonContent}
             </button>
           </div>
