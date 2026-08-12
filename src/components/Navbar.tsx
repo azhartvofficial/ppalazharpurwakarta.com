@@ -21,6 +21,7 @@ export default function Navbar() {
   const [isSantriLoggedIn, setIsSantriLoggedIn] = useState(false);
   const [santriName, setSantriName] = useState("");
   const [santriGender, setSantriGender] = useState("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const navMenuRef = useRef<HTMLDivElement>(null);
@@ -413,17 +414,7 @@ export default function Navbar() {
               </>
             );
             onClickAction = () => {
-              // We'll use a standard confirm modal style since we don't have the custom modal globally available
-              // Or better, just redirect to a logout route if we had one.
-              if (window.confirm("Apakah Anda yakin ingin logout dari sesi Anda?")) {
-                supabase.auth.signOut().then(() => {
-                  localStorage.removeItem('admin_session');
-                  localStorage.removeItem('santri_session');
-                  window.dispatchEvent(new Event('storage'));
-                  window.dispatchEvent(new Event('maintenanceChange'));
-                  window.location.href = '/login';
-                });
-              }
+              setShowLogoutModal(true);
             };
           } else {
             const displayName = getShortenedName(isAdminLoggedIn ? adminName : santriName);
@@ -456,11 +447,64 @@ export default function Navbar() {
         }
 
         return (
-          <div className="floating-action-wrapper">
-            <button className={btnClass} onClick={onClickAction}>
-              {buttonContent}
-            </button>
-          </div>
+          <>
+            <div className="floating-action-wrapper">
+              <button className={btnClass} onClick={onClickAction}>
+                {buttonContent}
+              </button>
+            </div>
+
+            {/* Custom Logout Confirmation Modal */}
+            <AnimatePresence>
+              {showLogoutModal && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999999 }}
+                >
+                  <motion.div 
+                    initial={{ y: 50, opacity: 0, scale: 0.9 }}
+                    animate={{ y: 0, opacity: 1, scale: 1 }}
+                    exit={{ y: 20, opacity: 0, scale: 0.95 }}
+                    transition={{ type: "spring", bounce: 0.4, duration: 0.5 }}
+                    style={{ background: 'white', padding: '2.5rem', borderRadius: '24px', width: '90%', maxWidth: '400px', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}
+                  >
+                    <div style={{ width: '80px', height: '80px', background: '#fef2f2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '40px', height: '40px' }}>
+                        <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19 12H9"/>
+                      </svg>
+                    </div>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#dc2626', margin: '0 0 0.5rem 0' }}>Konfirmasi Logout</h3>
+                    <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '2rem', lineHeight: 1.5 }}>
+                      Apakah Anda yakin ingin logout dari sesi Anda?
+                    </p>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                      <button 
+                        onClick={() => setShowLogoutModal(false)} 
+                        style={{ flex: 1, padding: '1rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '12px', fontWeight: 700, cursor: 'pointer' }}
+                      >
+                        Batal
+                      </button>
+                      <button 
+                        onClick={async () => {
+                          await supabase.auth.signOut();
+                          localStorage.removeItem('admin_session');
+                          localStorage.removeItem('santri_session');
+                          window.dispatchEvent(new Event('storage'));
+                          window.dispatchEvent(new Event('maintenanceChange'));
+                          window.location.href = '/login';
+                        }} 
+                        style={{ flex: 1, padding: '1rem', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 14px rgba(239, 68, 68, 0.3)' }}
+                      >
+                        Ya, Logout
+                      </button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </>
         );
       })()}
 
