@@ -102,6 +102,17 @@ export default function AdminDashboardPage() {
   // Maintenance states
   const [maintenanceMode, setMaintenanceMode] = useState(false);
 
+  // Scroll state for mobile header effect
+  const [isMobileScrolled, setIsMobileScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsMobileScrolled(window.scrollY > 40);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       fetch('/api/settings')
@@ -1880,6 +1891,15 @@ export default function AdminDashboardPage() {
 
   return (
     <>
+      {isMobileScrolled && (
+        <style>{`
+          @media (max-width: 768px) {
+            .navbar {
+              transform: translateY(-100%);
+            }
+          }
+        `}</style>
+      )}
       <Navbar />
       <main className="dashboard-layout">
       {/* Top Banner (Demo Mode Alert) */}
@@ -1998,7 +2018,7 @@ export default function AdminDashboardPage() {
         {/* Main Content Area */}
         <section className="main-content">
           {/* Mobile Admin Header with Left Hamburger Toggle */}
-          <header className="mobile-admin-header">
+          <header className={`mobile-admin-header ${isMobileScrolled ? 'scrolled' : ''}`}>
             <button className="mobile-sidebar-toggle" onClick={() => setSidebarOpen(true)} title="Buka Menu Pengurus">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '22px', height: '22px' }}>
                 <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -6007,6 +6027,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             margin: -2rem -1.5rem 1.5rem -1.5rem;
             box-shadow: 0 4px 15px rgba(0, 33, 71, 0.2);
             gap: 1rem;
+            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          
+          .mobile-admin-header.scrolled {
+            top: 0;
+            box-shadow: 0 10px 25px rgba(0, 33, 71, 0.35);
           }
           
           .mobile-sidebar-toggle {

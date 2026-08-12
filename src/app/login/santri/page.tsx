@@ -22,8 +22,23 @@ export default function SantriLoginPage() {
     try {
       // In Supabase, users register with E-Mail. If they enter their email/NIS in the field,
       // we attempt to log in using that.
+      let loginEmail = email.trim().toLowerCase();
+        
+      if (!loginEmail.includes('@')) {
+        const res = await fetch('/api/auth/lookup-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier: loginEmail })
+        });
+        const result = await res.json();
+        if (!res.ok) {
+          throw new Error(result.error || "Akun tidak ditemukan berdasarkan nama/NIS yang diberikan.");
+        }
+        loginEmail = result.email;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
+        email: loginEmail,
         password,
       });
 

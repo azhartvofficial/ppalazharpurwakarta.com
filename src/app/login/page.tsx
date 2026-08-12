@@ -55,9 +55,24 @@ export default function LoginPage() {
       if (email.trim().toLowerCase() === 'admin.alazharpwk@gmail.com' && password === 'AdminAlazhar2026!') {
         loggedInUser = { email: 'admin.alazharpwk@gmail.com', user_metadata: { nama_lengkap: 'Super Admin' } };
       } else {
+        let loginEmail = email.trim().toLowerCase();
+        
+        if (!loginEmail.includes('@')) {
+          const res = await fetch('/api/auth/lookup-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ identifier: loginEmail })
+          });
+          const result = await res.json();
+          if (!res.ok) {
+            throw new Error(result.error || "Akun tidak ditemukan berdasarkan nama/username yang diberikan.");
+          }
+          loginEmail = result.email;
+        }
+
         // 2. Fallback to standard Supabase auth
         const { data, error } = await supabase.auth.signInWithPassword({
-          email: email.trim().toLowerCase(),
+          email: loginEmail,
           password,
         });
 
