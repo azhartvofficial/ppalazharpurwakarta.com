@@ -2042,7 +2042,7 @@ export default function AdminDashboardPage() {
             <button 
               className="floating-logout-btn" 
               onClick={() => {
-                if (!isAdminLoggedIn) {
+                if (demoMode) {
                   window.location.href = '/login';
                   return;
                 }
@@ -2062,15 +2062,15 @@ export default function AdminDashboardPage() {
                   }
                 });
               }} 
-              title={isAdminLoggedIn ? "Logout Sesi" : "Masuk ke Akun"}
+              title={!demoMode ? "Logout Sesi" : "Masuk ke Akun"}
               style={{
-                background: isAdminLoggedIn ? 'rgba(220, 38, 38, 0.75)' : 'rgba(0, 122, 255, 0.75)',
-                boxShadow: isAdminLoggedIn ? '-4px 4px 15px rgba(220, 38, 38, 0.25)' : '-4px 4px 15px rgba(0, 122, 255, 0.25)'
+                background: !demoMode ? 'rgba(220, 38, 38, 0.75)' : 'rgba(0, 122, 255, 0.75)',
+                boxShadow: !demoMode ? '-4px 4px 15px rgba(220, 38, 38, 0.25)' : '-4px 4px 15px rgba(0, 122, 255, 0.25)'
               }}
             >
-              <span className="logout-text">{isAdminLoggedIn ? "Logout" : "Login di sini"}</span>
+              <span className="logout-text">{!demoMode ? "Logout" : "Login di sini"}</span>
               <div className="logout-icon-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
-                {isAdminLoggedIn ? (
+                {!demoMode ? (
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                     <polyline points="16 17 21 12 16 7" />
