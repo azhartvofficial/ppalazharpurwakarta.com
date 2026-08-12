@@ -6022,16 +6022,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             color: white;
             padding: 0.9rem 1.2rem;
             position: sticky;
-            top: 58px;
+            top: 61px;
             z-index: 999;
-            margin: -2rem -1.5rem 1.5rem -1.5rem;
+            margin: -4rem -1.5rem 1.5rem -1.5rem;
             box-shadow: 0 4px 15px rgba(0, 33, 71, 0.2);
             gap: 1rem;
-            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           }
           
           .mobile-admin-header.scrolled {
             top: 0;
+            margin-top: -2rem; /* Give it a little less pull when it is at the very top */
             box-shadow: 0 10px 25px rgba(0, 33, 71, 0.35);
           }
           
