@@ -56,11 +56,11 @@ export async function POST(request: Request) {
           role: requestData.role,
           status: "Aktif",
           kepengurusan: requestData.kepengurusan,
-          kampus: requestData.kampus,
           nama_santri: requestData.nama_santri,
           jenjang_pendidikan: requestData.jenjang_pendidikan,
           pilihan_kelas: requestData.pilihan_kelas,
-          program_pendidikan: requestData.program_pendidikan
+          program_pendidikan: requestData.program_pendidikan,
+          kampus: requestData.kampus
         }]);
 
       if (dbError) {

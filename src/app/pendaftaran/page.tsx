@@ -248,17 +248,13 @@ export default function PendaftaranPage() {
         }
 
         .alur-grid {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
           gap: 1.5rem;
           position: relative;
         }
 
         .alur-card {
-          flex: 0 0 calc(33.333% - 1rem);
-          max-width: calc(33.333% - 1rem);
-          min-width: 250px;
           background: #f8fafc;
           padding: 2.5rem 1.5rem;
           border-radius: 20px;
@@ -445,7 +441,28 @@ export default function PendaftaranPage() {
             padding: 3rem 1.5rem;
           }
           .alur-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.75rem;
+          }
+          .alur-card {
+            padding: 1.5rem 0.5rem;
+          }
+          .alur-card:nth-child(-n+3) {
+            grid-column: span 2;
+          }
+          .alur-card:nth-child(n+4) {
+            grid-column: span 3;
+          }
+          .step-icon {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+          }
+          .alur-card h3 {
+            font-size: 0.8rem;
+          }
+          .alur-card p {
+            font-size: 0.7rem;
+            line-height: 1.4;
           }
           .pusda-cta-section {
             flex-direction: column;

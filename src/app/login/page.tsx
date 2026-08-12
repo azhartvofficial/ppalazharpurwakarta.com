@@ -268,8 +268,8 @@ export default function LoginPage() {
               </div>
 
               {regRole === "Admin" && (
-                <>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', flex: 1 }}>
                     <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#333' }}>Kepengurusan</label>
                     <select className="form-input" value={regKepengurusan} onChange={(e) => setRegKepengurusan(e.target.value)}>
                       <option value="Pondok Pesantren">Pondok Pesantren</option>
@@ -278,14 +278,15 @@ export default function LoginPage() {
                       <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
                     </select>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', flex: 1 }}>
                     <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#333' }}>Kampus</label>
                     <select className="form-input" value={regKampus} onChange={(e) => setRegKampus(e.target.value)}>
                       <option value="Azhar 1">Azhar 1</option>
                       <option value="Azhar 2">Azhar 2</option>
+                      <option value="Azhar 3">Azhar 3</option>
                     </select>
                   </div>
-                </>
+                </div>
               )}
 
               {regRole === "Wali" && (
