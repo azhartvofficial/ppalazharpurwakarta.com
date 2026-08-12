@@ -1522,6 +1522,14 @@ export default function Navbar() {
           .navbar-profile-dropdown-wrapper {
             display: none !important;
           }
+        }
+        @media (max-width: 1024px) {
+          .nav-login-premium {
+            display: none !important;
+          }
+          .navbar-profile-dropdown-wrapper {
+            display: none !important;
+          }
 
         }
 

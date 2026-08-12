@@ -2037,31 +2037,52 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Mobile Admin Floating Logout */}
+          {/* Mobile Admin Floating Logout / Login */}
           <div className="floating-logout-wrapper">
-            <button className="floating-logout-btn" onClick={() => {
-              setConfirmModal({
-                isOpen: true,
-                title: "Konfirmasi Logout",
-                message: "Apakah Anda yakin ingin logout dari sesi Anda?",
-                confirmText: "Ya, Logout",
-                cancelText: "Batal",
-                isDanger: true,
-                onConfirm: async () => {
-                  await supabase.auth.signOut();
-                  localStorage.removeItem('admin_session');
-                  window.dispatchEvent(new Event('storage'));
-                  window.dispatchEvent(new Event('maintenanceChange'));
+            <button 
+              className="floating-logout-btn" 
+              onClick={() => {
+                if (!isAdminLoggedIn) {
                   window.location.href = '/login';
+                  return;
                 }
-              });
-            }} title="Logout Sesi">
-              <span className="logout-text">Logout</span>
+                setConfirmModal({
+                  isOpen: true,
+                  title: "Konfirmasi Logout",
+                  message: "Apakah Anda yakin ingin logout dari sesi Anda?",
+                  confirmText: "Ya, Logout",
+                  cancelText: "Batal",
+                  isDanger: true,
+                  onConfirm: async () => {
+                    await supabase.auth.signOut();
+                    localStorage.removeItem('admin_session');
+                    window.dispatchEvent(new Event('storage'));
+                    window.dispatchEvent(new Event('maintenanceChange'));
+                    window.location.href = '/login';
+                  }
+                });
+              }} 
+              title={isAdminLoggedIn ? "Logout Sesi" : "Masuk ke Akun"}
+              style={{
+                background: isAdminLoggedIn ? 'rgba(220, 38, 38, 0.75)' : 'rgba(0, 122, 255, 0.75)',
+                boxShadow: isAdminLoggedIn ? '-4px 4px 15px rgba(220, 38, 38, 0.25)' : '-4px 4px 15px rgba(0, 122, 255, 0.25)'
+              }}
+            >
+              <span className="logout-text">{isAdminLoggedIn ? "Logout" : "Login di sini"}</span>
               <div className="logout-icon-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                  <polyline points="16 17 21 12 16 7" />
-                  <line x1="21" y1="12" x2="9" y2="12" />
-                </svg>
+                {isAdminLoggedIn ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                    <polyline points="10 17 15 12 10 7"></polyline>
+                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                  </svg>
+                )}
               </div>
             </button>
           </div>
@@ -4814,8 +4835,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           align-items: center;
           gap: 1rem;
           padding: 0.9rem 1.2rem;
-          background: transparent;
-          border: none;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           color: white;
           border-radius: 12px;
           font-size: 0.9rem;
@@ -4824,16 +4845,23 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           cursor: pointer;
           transition: all 0.3s ease;
           position: relative;
+          margin-bottom: 8px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
 
         .nav-item:hover {
-          background: rgba(255, 255, 255, 0.05);
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.25);
           color: white;
+          transform: translateX(4px);
+          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
         }
 
         .nav-item.active {
           background: rgba(255, 140, 0, 0.15);
+          border-color: rgba(255, 140, 0, 0.4);
           color: white !important;
+          box-shadow: 0 6px 15px rgba(255, 140, 0, 0.1);
         }
 
         .nav-item span {
