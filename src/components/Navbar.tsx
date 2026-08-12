@@ -80,7 +80,7 @@ export default function Navbar() {
         setMaintenanceActive(isMaintenance);
         setIsAdminLoggedIn(!!session);
         if (session) {
-          const name = session.user?.user_metadata?.full_name || session.user?.user_metadata?.name || session.full_name || session.name || session.user?.email || session.email || "Admin";
+          const name = session.user?.user_metadata?.name || session.user?.user_metadata?.nama || session.user?.user_metadata?.full_name || session.user?.email || session.email || "Admin";
           setAdminName(name);
           const role = session.user?.user_metadata?.role || session.role || session.user?.role || "Admin";
           setAdminRole(role);
