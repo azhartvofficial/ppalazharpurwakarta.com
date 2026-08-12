@@ -84,7 +84,6 @@ export default function PendaftaranPage() {
                 <div className="step-icon">{step.icon}</div>
                 <h3>{step.title}</h3>
                 <p className="desc-desktop">{step.desc}</p>
-                <p className="desc-mobile">{step.descMobile}</p>
               </motion.div>
             ))}
           </div>
@@ -304,10 +303,6 @@ export default function PendaftaranPage() {
           line-height: 1.6;
         }
 
-        .alur-card p.desc-mobile {
-          display: none;
-        }
-
         /* PPDB CTA Section */
         .ppdb-cta-section {
           margin-bottom: 4rem;
@@ -446,18 +441,15 @@ export default function PendaftaranPage() {
             padding: 3rem 1.5rem;
           }
           .alur-grid {
-            grid-template-columns: repeat(6, 1fr);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 0.75rem;
           }
           .alur-card {
+            width: calc(33.333% - 0.5rem);
             padding: 1rem 0.25rem;
             border-radius: 12px;
-          }
-          .alur-card:nth-child(-n+3) {
-            grid-column: span 2;
-          }
-          .alur-card:nth-child(n+4) {
-            grid-column: span 3;
           }
           .step-num {
             width: 24px;
@@ -471,16 +463,10 @@ export default function PendaftaranPage() {
           }
           .alur-card h3 {
             font-size: 0.7rem;
-            margin-bottom: 0.2rem;
+            margin-bottom: 0;
           }
           .alur-card p.desc-desktop {
             display: none;
-          }
-          .alur-card p.desc-mobile {
-            display: block;
-            font-size: 0.6rem;
-            line-height: 1.3;
-            color: #64748b;
           }
           .pusda-cta-section {
             flex-direction: column;
