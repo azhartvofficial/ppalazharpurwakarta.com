@@ -3046,9 +3046,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                           <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>{siswa.kelas} • {siswa.gender}</div>
                                           <div style={{ fontSize: '0.75rem', color: '#0369a1', marginTop: '0.2rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
                                             <span>{siswa.jenjang_pendidikan || (parseInt(siswa.kelas) >= 10 ? 'MA Unggulan' : parseInt(siswa.kelas) >= 7 ? 'SMP Islam' : parseInt(siswa.kelas) >= 1 ? 'SDIT' : 'Pondok Pesantren')}</span>
-                                            <span>-</span>
-                                            <span style={{ color: '#ea580c', fontWeight: 800 }}>{siswa.program_pendidikan?.includes('Non') ? 'Non Mondok' : 'Mondok'}</span>
-                                            <span>-</span>
+                                            <span>•</span>
+                                            <span>{siswa.program_pendidikan?.includes('Non') ? 'Non Mondok' : 'Mondok'}</span>
+                                            <span>•</span>
                                             <span>{siswa.kampus || 'Azhar 1'}</span>
                                           </div>
                                         </td>
@@ -3126,9 +3126,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                           <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>{siswa.kelas} • {siswa.gender}</div>
                                           <div style={{ fontSize: '0.75rem', color: '#0369a1', marginTop: '0.2rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
                                             <span>{siswa.jenjang_pendidikan || (parseInt(siswa.kelas) >= 10 ? 'MA Unggulan' : parseInt(siswa.kelas) >= 7 ? 'SMP Islam' : parseInt(siswa.kelas) >= 1 ? 'SDIT' : 'Pondok Pesantren')}</span>
-                                            <span>-</span>
-                                            <span style={{ color: '#ea580c', fontWeight: 800 }}>{siswa.program_pendidikan?.includes('Non') ? 'Non Mondok' : 'Mondok'}</span>
-                                            <span>-</span>
+                                            <span>•</span>
+                                            <span>{siswa.program_pendidikan?.includes('Non') ? 'Non Mondok' : 'Mondok'}</span>
+                                            <span>•</span>
                                             <span>{siswa.kampus || 'Azhar 1'}</span>
                                           </div>
                                         </td>
