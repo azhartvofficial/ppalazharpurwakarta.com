@@ -3044,7 +3044,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         <td style={{ padding: '1rem' }}>
                                           <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem' }}>{siswa.nama_lengkap}</div>
                                           <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>{siswa.kelas} • {siswa.gender}</div>
-                                          <div style={{ fontSize: '0.75rem', color: '#0369a1', marginTop: '0.2rem', fontWeight: 600 }}>{siswa.lembaga || 'Pondok Pesantren'} • {siswa.kampus || 'Azhar 1'}</div>
+                                          <div style={{ fontSize: '0.75rem', color: '#0369a1', marginTop: '0.2rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                                            <span>{siswa.jenjang_pendidikan || (parseInt(siswa.kelas) >= 10 ? 'MA Unggulan' : parseInt(siswa.kelas) >= 7 ? 'SMP Islam' : parseInt(siswa.kelas) >= 1 ? 'SDIT' : 'Pondok Pesantren')}</span>
+                                            <span>-</span>
+                                            <span style={{ color: '#ea580c', fontWeight: 800 }}>{siswa.program_pendidikan?.includes('Non') ? 'Non Mondok' : 'Mondok'}</span>
+                                            <span>-</span>
+                                            <span>{siswa.kampus || 'Azhar 1'}</span>
+                                          </div>
                                         </td>
                                         <td style={{ padding: '1rem', fontSize: '0.85rem', color: '#334155' }}>
                                           {siswa.tempat_tanggal_lahir}
@@ -3118,7 +3124,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         <td style={{ padding: '1rem' }}>
                                           <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem' }}>{siswa.nama_lengkap}</div>
                                           <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>{siswa.kelas} • {siswa.gender}</div>
-                                          <div style={{ fontSize: '0.75rem', color: '#0369a1', marginTop: '0.2rem', fontWeight: 600 }}>{siswa.lembaga || 'Pondok Pesantren'} • {siswa.kampus || 'Azhar 1'}</div>
+                                          <div style={{ fontSize: '0.75rem', color: '#0369a1', marginTop: '0.2rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                                            <span>{siswa.jenjang_pendidikan || (parseInt(siswa.kelas) >= 10 ? 'MA Unggulan' : parseInt(siswa.kelas) >= 7 ? 'SMP Islam' : parseInt(siswa.kelas) >= 1 ? 'SDIT' : 'Pondok Pesantren')}</span>
+                                            <span>-</span>
+                                            <span style={{ color: '#ea580c', fontWeight: 800 }}>{siswa.program_pendidikan?.includes('Non') ? 'Non Mondok' : 'Mondok'}</span>
+                                            <span>-</span>
+                                            <span>{siswa.kampus || 'Azhar 1'}</span>
+                                          </div>
                                         </td>
                                         <td style={{ padding: '1rem', fontSize: '0.85rem', color: '#334155' }}>
                                           {siswa.tempat_tanggal_lahir}
@@ -6933,15 +6945,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       <option value="Putra">Putra</option><option value="Putri">Putri</option>
                     </select>
                   </div>
-                  <div className="input-group">
-                    <label>Lembaga</label>
-                    <select value={addPusatDataForm.lembaga} onChange={e => setAddPusatDataForm({...addPusatDataForm, lembaga: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                      <option value="Pondok Pesantren">Pondok Pesantren</option>
-                      <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
-                      <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
-                      <option value="TKIT Al-Azhar">TKIT Al-Azhar</option>
-                    </select>
-                  </div>
+
                   <div className="input-group">
                     <label>Kampus</label>
                     <select value={addPusatDataForm.kampus} onChange={e => setAddPusatDataForm({...addPusatDataForm, kampus: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
