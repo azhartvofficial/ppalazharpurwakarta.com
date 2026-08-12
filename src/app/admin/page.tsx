@@ -4190,8 +4190,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 />
               </div>
 
-              {newNewsCategory === "Artikel Berita" && (
-                <>
+
                   <div className="input-group">
                     <label>Sumber Gambar (Cover)</label>
                     <div style={{ display: 'flex', gap: '1rem' }}>
@@ -4335,8 +4334,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       onChange={(e) => setNewNewsClosingParagraph(e.target.value)}
                     ></textarea>
                   </div>
-                </>
-              )}
+
 
               <div className="input-group">
                 <label>Penulis</label>
