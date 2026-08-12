@@ -3018,7 +3018,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                 setAddPusatDataExistingFiles({ pas_foto: "", kk_url: "", akte_url: "", ijazah_url: "", sktm_url: "" });
                                 setAddPusatDataForm({
                                   nama_lengkap: "", email_santri: "", kelas: "10", program_pendidikan: "Mondok", gender: "Putra", tempat_tanggal_lahir: "", nik: "", nisn: "",
-                                  nama_ayah: "", pekerjaan_ayah: "", nama_ibu: "", pekerjaan_ibu: "", no_hp_wali: "", alamat: ""
+                                  nama_ayah: "", pekerjaan_ayah: "", nama_ibu: "", pekerjaan_ibu: "", no_hp_wali: "", alamat: "", lembaga: "Pondok Pesantren", kampus: "Azhar 1"
                                 });
                                 setShowAddPusatDataModal(true);
                               }}
