@@ -444,26 +444,41 @@ export default function PendaftaranPage() {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
           }
           .alur-card {
-            width: calc(33.333% - 0.5rem);
-            padding: 1rem 0.25rem;
+            width: 31%;
+            box-sizing: border-box;
+            padding: 0.5rem 0;
             border-radius: 12px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+          }
+          .alur-card:hover {
+            transform: none;
+            box-shadow: none;
           }
           .step-num {
-            width: 24px;
-            height: 24px;
-            font-size: 0.75rem;
-            margin: 0 auto 0.5rem auto;
+            display: none;
           }
           .step-icon {
-            font-size: 1.5rem;
-            margin: 0.2rem 0;
+            font-size: 1.8rem;
+            margin: 0 auto 0.5rem auto;
+            background: white;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,33,71,0.08);
+            border: 1px solid #e2e8f0;
           }
           .alur-card h3 {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             margin-bottom: 0;
+            white-space: normal;
           }
           .alur-card p.desc-desktop {
             display: none;
