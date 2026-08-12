@@ -66,11 +66,11 @@ export default function PendaftaranPage() {
           
           <div className="alur-grid">
             {[
-              { num: 1, icon: "📝", title: "Pendaftaran", desc: "Isi formulir pendaftaran di laman portal web pendaftaran PPDB dengan data lengkap dan akurat." },
-              { num: 2, icon: "💳", title: "Pembayaran", desc: "Jika ada biaya pendaftaran, lakukan pembayaran melalui layanan transfer Bank atau Minimarket." },
-              { num: 3, icon: "🔍", title: "Proses Seleksi", desc: "Lembaga pendidikan akan melakukan proses seleksi dan prosesnya dapat dipantau secara real time." },
-              { num: 4, icon: "📢", title: "Pengumuman", desc: "Hasil penerimaan peserta didik baru dapat dicek secara online dengan memasukkan nomor pendaftaran." },
-              { num: 5, icon: "🤝", title: "Daftar Ulang", desc: "Peserta yang dinyatakan Diterima wajib melakukan daftar ulang sebagai tanda konfirmasi." }
+              { num: 1, icon: "📝", title: "Pendaftaran", desc: "Isi formulir pendaftaran di laman portal web pendaftaran PPDB dengan data lengkap dan akurat.", descMobile: "Isi formulir online" },
+              { num: 2, icon: "💳", title: "Pembayaran", desc: "Jika ada biaya pendaftaran, lakukan pembayaran melalui layanan transfer Bank atau Minimarket.", descMobile: "Bayar administrasi" },
+              { num: 3, icon: "🔍", title: "Proses Seleksi", desc: "Lembaga pendidikan akan melakukan proses seleksi dan prosesnya dapat dipantau secara real time.", descMobile: "Ikuti seleksi" },
+              { num: 4, icon: "📢", title: "Pengumuman", desc: "Hasil penerimaan peserta didik baru dapat dicek secara online dengan memasukkan nomor pendaftaran.", descMobile: "Cek kelulusan" },
+              { num: 5, icon: "🤝", title: "Daftar Ulang", desc: "Peserta yang dinyatakan Diterima wajib melakukan daftar ulang sebagai tanda konfirmasi.", descMobile: "Daftar ulang" }
             ].map((step, idx) => (
               <motion.div 
                 key={idx}
@@ -83,7 +83,8 @@ export default function PendaftaranPage() {
                 <div className="step-num">{step.num}</div>
                 <div className="step-icon">{step.icon}</div>
                 <h3>{step.title}</h3>
-                <p>{step.desc}</p>
+                <p className="desc-desktop">{step.desc}</p>
+                <p className="desc-mobile">{step.descMobile}</p>
               </motion.div>
             ))}
           </div>
@@ -297,10 +298,14 @@ export default function PendaftaranPage() {
           margin-bottom: 0.5rem;
         }
 
-        .alur-card p {
+        .alur-card p.desc-desktop {
           color: #64748b;
           font-size: 0.85rem;
           line-height: 1.6;
+        }
+
+        .alur-card p.desc-mobile {
+          display: none;
         }
 
         /* PPDB CTA Section */
@@ -445,7 +450,8 @@ export default function PendaftaranPage() {
             gap: 0.75rem;
           }
           .alur-card {
-            padding: 1.5rem 0.5rem;
+            padding: 1rem 0.25rem;
+            border-radius: 12px;
           }
           .alur-card:nth-child(-n+3) {
             grid-column: span 2;
@@ -453,16 +459,28 @@ export default function PendaftaranPage() {
           .alur-card:nth-child(n+4) {
             grid-column: span 3;
           }
+          .step-num {
+            width: 24px;
+            height: 24px;
+            font-size: 0.75rem;
+            margin: 0 auto 0.5rem auto;
+          }
           .step-icon {
-            font-size: 2rem;
-            margin: 0.5rem 0;
+            font-size: 1.5rem;
+            margin: 0.2rem 0;
           }
           .alur-card h3 {
-            font-size: 0.8rem;
-          }
-          .alur-card p {
             font-size: 0.7rem;
-            line-height: 1.4;
+            margin-bottom: 0.2rem;
+          }
+          .alur-card p.desc-desktop {
+            display: none;
+          }
+          .alur-card p.desc-mobile {
+            display: block;
+            font-size: 0.6rem;
+            line-height: 1.3;
+            color: #64748b;
           }
           .pusda-cta-section {
             flex-direction: column;
