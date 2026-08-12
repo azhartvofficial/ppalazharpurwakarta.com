@@ -3201,13 +3201,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <h5 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: wave.is_open ? '#047857' : '#334155' }}>{wave.wave_name}</h5>
-                                    <button 
-                                      onClick={() => handleDeleteWave(wave.id, wave.wave_name)}
-                                      style={{ background: '#ef4444', color: '#fff', border: 'none', cursor: 'pointer', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '4px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 800 }}
-                                      title="Hapus Gelombang"
-                                    >
-                                      ✖ Hapus
-                                    </button>
                                   </div>
                                   <span style={{ padding: '4px 8px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, background: wave.is_open ? '#dcfce7' : '#e2e8f0', color: wave.is_open ? '#166534' : '#475569' }}>
                                     {wave.is_open ? 'Tersedia' : 'Tidak Tersedia'}
@@ -3368,6 +3361,30 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                   }}
                                 >
                                   {wave.access_code ? 'Tutup Akses ke PUSDA' : 'Buka Akses untuk Pendaftaran Ini'}
+                                </button>
+                                
+                                <button
+                                  onClick={() => handleDeleteWave(wave.id, wave.wave_name)}
+                                  style={{
+                                    width: '100%',
+                                    padding: '10px',
+                                    background: 'transparent',
+                                    color: '#ef4444',
+                                    border: '2px solid #ef4444',
+                                    borderRadius: '8px',
+                                    fontWeight: 800,
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    marginTop: '0.75rem',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                  }}
+                                  onMouseEnter={(e) => { e.currentTarget.style.background = '#fef2f2'; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                                >
+                                  🗑️ Hapus Pendaftaran Ini
                                 </button>
                               </div>
                               );
