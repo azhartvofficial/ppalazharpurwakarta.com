@@ -132,8 +132,8 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
-  const getShortenedName = (name: string) => {
-    if (!name) return "User";
+  const getShortenedName = (name: any) => {
+    if (!name || typeof name !== 'string') return "User";
     let displayName = name.includes('@') ? name.split('@')[0] : name;
     
     // Split by space, dot, underscore, dash
@@ -149,7 +149,7 @@ export default function Navbar() {
     }
     
     // Capitalize properly
-    displayName = displayName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+    displayName = displayName.split(' ').map(w => w.length > 0 ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : '').join(' ');
 
     if (displayName.length > 14) {
       displayName = displayName.substring(0, 12) + "..";
