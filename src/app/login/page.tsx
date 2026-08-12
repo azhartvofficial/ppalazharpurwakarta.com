@@ -85,8 +85,24 @@ export default function LoginPage() {
       }
 
       if (loggedInUser) {
-        localStorage.setItem('admin_session', JSON.stringify(loggedInUser));
-        setWelcomeUser(loggedInUser);
+        let sessionUser: any = { ...loggedInUser };
+        // Ambil data terbaru dari database agar role/nama selalu tersinkronisasi
+        if ('id' in sessionUser && sessionUser.id) {
+          const { data: dbData } = await supabase.from('admin_accounts').select('*').eq('id', sessionUser.id).single();
+          if (dbData) {
+             sessionUser.user_metadata = {
+               ...sessionUser.user_metadata,
+               role: dbData.role,
+               name: dbData.name,
+               nama_lengkap: dbData.name,
+               lembaga: dbData.lembaga,
+               kepengurusan: dbData.kepengurusan,
+               jenjang_pendidikan: dbData.jenjang_pendidikan
+             };
+          }
+        }
+        localStorage.setItem('admin_session', JSON.stringify(sessionUser));
+        setWelcomeUser(sessionUser);
       }
 
       setLoginSuccess(true);

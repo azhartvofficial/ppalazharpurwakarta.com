@@ -1926,6 +1926,9 @@ export default function AdminDashboardPage() {
         <aside className={`sidebar ${sidebarOpen ? "mobile-open" : ""}`}>
 
           <nav className="sidebar-nav">
+            <div style={{ padding: '0 1.25rem 0.75rem', color: '#94a3b8', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+              Menu Admin
+            </div>
             <button 
               className={`nav-item ${activeTab === "overview" ? "active" : ""}`}
               onClick={() => { setActiveTab("overview"); setSidebarOpen(false); }}
