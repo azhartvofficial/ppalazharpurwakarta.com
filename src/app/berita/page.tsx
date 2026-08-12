@@ -798,6 +798,12 @@ export default function BeritaPage() {
           .portal-grid {
             grid-template-columns: 1fr;
           }
+          .main-column {
+            order: 2;
+          }
+          .sidebar-column {
+            order: 1;
+          }
           .slider-container {
             height: 450px;
           }
