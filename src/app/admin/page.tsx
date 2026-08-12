@@ -6068,9 +6068,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           }
 
           .floating-admin-toggle {
-            background: #002147; /* Blue */
+            background: rgba(0, 33, 71, 0.75); /* Glass Navy */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: white;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: none;
             border-radius: 0 50px 50px 0;
             padding: 1rem 1.5rem 1rem 0.5rem;
             display: flex;
@@ -6084,7 +6087,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           
           .floating-admin-toggle:active {
             transform: scale(0.95);
-            background: #003a7d;
+            background: rgba(0, 58, 125, 0.85);
           }
 
           .toggle-text {
