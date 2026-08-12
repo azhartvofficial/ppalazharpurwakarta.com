@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     let { data, error } = await supabaseAdmin
       .from('admin_accounts')
       .select('email')
-      .ilike('name', identifier.trim())
+      .ilike('name', `%${identifier.trim()}%`)
       .limit(1)
       .maybeSingle();
 
