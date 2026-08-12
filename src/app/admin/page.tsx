@@ -3264,30 +3264,87 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         {wave.access_code || '-'}
                                       </span>
                                       {wave.access_code && (
-                                        <button
-                                          onClick={() => handleRegenerateAccessCode(wave)}
-                                          title="Generate Ulang Kode Akses"
-                                          style={{
-                                            background: '#e0f2fe',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            color: '#0369a1',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            padding: '6px',
-                                            borderRadius: '50%',
-                                            transition: 'all 0.2s',
-                                            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-                                          }}
-                                          onMouseEnter={(e) => { e.currentTarget.style.background = '#bae6fd'; e.currentTarget.style.transform = 'rotate(15deg)'; }}
-                                          onMouseLeave={(e) => { e.currentTarget.style.background = '#e0f2fe'; e.currentTarget.style.transform = 'rotate(0deg)'; }}
-                                        >
-                                          <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                            <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-                                          </svg>
-                                        </button>
+                                        <>
+                                          <button
+                                            onClick={() => {
+                                              navigator.clipboard.writeText(wave.access_code);
+                                              openAlert("Kode akses berhasil disalin ke clipboard!");
+                                            }}
+                                            title="Salin Kode Akses"
+                                            style={{
+                                              background: '#f1f5f9',
+                                              border: 'none',
+                                              cursor: 'pointer',
+                                              color: '#475569',
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              justifyContent: 'center',
+                                              padding: '6px',
+                                              borderRadius: '50%',
+                                              transition: 'all 0.2s',
+                                              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                                            }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.background = '#e2e8f0'; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.background = '#f1f5f9'; }}
+                                          >
+                                            <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                          </button>
+
+                                          <button
+                                            onClick={() => {
+                                              const text = `Assalamu'alaikum Bapak/Ibu Wali Santri,\n\nBerikut adalah Kode Pendaftaran / Akses untuk melengkapi data di Pusat Data (PUSDA) Pondok Pesantren Al-Azhar Purwakarta:\n\n*${wave.access_code}*\n\nSilakan kunjungi: https://pp-alazharpwk.com/pusda dan masukkan kode tersebut untuk melanjutkan proses pendaftaran.\n\nTerima kasih.`;
+                                              window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                                            }}
+                                            title="Bagikan ke WhatsApp"
+                                            style={{
+                                              background: '#dcfce7',
+                                              border: 'none',
+                                              cursor: 'pointer',
+                                              color: '#16a34a',
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              justifyContent: 'center',
+                                              padding: '6px',
+                                              borderRadius: '50%',
+                                              transition: 'all 0.2s',
+                                              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                                            }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.background = '#bbf7d0'; e.currentTarget.style.transform = 'scale(1.1)'; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.background = '#dcfce7'; e.currentTarget.style.transform = 'scale(1)'; }}
+                                          >
+                                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                              <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                                            </svg>
+                                          </button>
+
+                                          <button
+                                            onClick={() => handleRegenerateAccessCode(wave)}
+                                            title="Generate Ulang Kode Akses"
+                                            style={{
+                                              background: '#e0f2fe',
+                                              border: 'none',
+                                              cursor: 'pointer',
+                                              color: '#0369a1',
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              justifyContent: 'center',
+                                              padding: '6px',
+                                              borderRadius: '50%',
+                                              transition: 'all 0.2s',
+                                              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                                            }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.background = '#bae6fd'; e.currentTarget.style.transform = 'rotate(15deg)'; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.background = '#e0f2fe'; e.currentTarget.style.transform = 'rotate(0deg)'; }}
+                                          >
+                                            <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                              <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                              <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                            </svg>
+                                          </button>
+                                        </>
                                       )}
                                     </div>
                                   </div>
