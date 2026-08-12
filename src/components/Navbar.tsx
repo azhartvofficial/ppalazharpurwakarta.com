@@ -80,8 +80,28 @@ export default function Navbar() {
         setMaintenanceActive(isMaintenance);
         setIsAdminLoggedIn(!!session);
         if (session) {
-          const name = session.user?.user_metadata?.name || session.user?.user_metadata?.nama || session.user?.user_metadata?.full_name || session.user?.email || session.email || "Admin";
-          setAdminName(name);
+          const email = session.user?.email || session.email;
+          const metadataName = session.user?.user_metadata?.name || session.user?.user_metadata?.nama || session.user?.user_metadata?.full_name;
+          
+          if (metadataName) {
+            setAdminName(metadataName);
+          } else if (email) {
+            // Set email as fallback first
+            setAdminName(email);
+            // Try fetching real name from DB
+            supabase.from('admin_accounts')
+              .select('name')
+              .eq('email', email)
+              .single()
+              .then(({ data }) => {
+                if (data && data.name) {
+                  setAdminName(data.name);
+                }
+              }, () => {});
+          } else {
+            setAdminName("Admin");
+          }
+          
           const role = session.user?.user_metadata?.role || session.role || session.user?.role || "Admin";
           setAdminRole(role);
         }
