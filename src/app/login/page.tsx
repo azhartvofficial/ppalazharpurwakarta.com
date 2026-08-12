@@ -54,7 +54,7 @@ export default function LoginPage() {
 
       // 1. Direct bypass check for the Super Admin credentials to bypass unconfirmed email limits
       if (email.trim().toLowerCase() === 'admin.alazharpwk@gmail.com' && password === 'AdminAlazhar2026!') {
-        loggedInUser = { email: 'admin.alazharpwk@gmail.com', user_metadata: { nama_lengkap: 'Super Admin' } };
+        loggedInUser = { email: 'admin.alazharpwk@gmail.com', user_metadata: { nama_lengkap: 'Super Admin', role: 'Super Admin' } };
       } else {
         let loginEmail = email.trim().toLowerCase();
         
@@ -429,6 +429,9 @@ export default function LoginPage() {
                 )}
                 {welcomeUser?.user_metadata?.role === 'Wali' && (
                    <span> • {welcomeUser?.user_metadata?.jenjang_pendidikan || 'Wali Santri Al-Azhar'}</span>
+                )}
+                {welcomeUser?.user_metadata?.role === 'Super Admin' && (
+                   <span> • System Administrator</span>
                 )}
               </p>
             </div>
