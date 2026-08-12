@@ -6237,7 +6237,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           .floating-logout-wrapper {
             position: fixed;
             right: 0;
-            top: 75px;
+            bottom: 100px;
             z-index: 999;
             display: flex;
             align-items: center;
