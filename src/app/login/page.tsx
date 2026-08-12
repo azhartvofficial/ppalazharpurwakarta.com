@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [welcomeUser, setWelcomeUser] = useState<any>(null);
 
   // Modal State
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -84,15 +85,15 @@ export default function LoginPage() {
 
       if (loggedInUser) {
         localStorage.setItem('admin_session', JSON.stringify(loggedInUser));
+        setWelcomeUser(loggedInUser);
       }
 
       setLoginSuccess(true);
-      alert(`Selamat datang kembali! Anda berhasil login.`);
       
-      // Auto redirect to admin dashboard after 1 second
+      // Auto redirect to admin dashboard after showing the popup
       setTimeout(() => {
         window.location.href = '/admin';
-      }, 1000);
+      }, 3500);
     } catch (error: any) {
       setErrorMsg(error.message || "Email atau password salah.");
     } finally {
@@ -409,6 +410,36 @@ export default function LoginPage() {
         </div>
       )}
 
+      {/* WELCOME POPUP MODAL */}
+      {welcomeUser && (
+        <div className="modal-overlay" style={{ zIndex: 9999 }}>
+          <div className="welcome-modal">
+            <div className="welcome-icon">👋</div>
+            <h2 className="welcome-title">
+              {welcomeUser?.user_metadata?.role === 'Wali' ? 'Ahlan Wasahlan Ayah Bunda' : 
+               welcomeUser?.user_metadata?.role === 'Super Admin' ? 'Ahlan Wasahlan Builders' : 
+               'Ahlan Wasahlan Asatidz/Asatidzah'}
+            </h2>
+            <div className="welcome-details">
+              <p className="welcome-name">{welcomeUser?.user_metadata?.nama_lengkap || welcomeUser?.user_metadata?.name || 'Pengurus'}</p>
+              <p className="welcome-role">
+                <span className="role-badge">{welcomeUser?.user_metadata?.role || 'Admin'}</span>
+                {welcomeUser?.user_metadata?.role === 'Admin' && (
+                   <span> • {welcomeUser?.user_metadata?.lembaga || welcomeUser?.user_metadata?.kepengurusan || 'Pondok Pesantren Al-Azhar'}</span>
+                )}
+                {welcomeUser?.user_metadata?.role === 'Wali' && (
+                   <span> • {welcomeUser?.user_metadata?.jenjang_pendidikan || 'Wali Santri Al-Azhar'}</span>
+                )}
+              </p>
+            </div>
+            <div className="welcome-loader">
+              <div className="spinner"></div>
+              <span>Mempersiapkan dasbor Anda...</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style jsx>{`
         .login-layout {
           height: 100vh;
@@ -611,6 +642,106 @@ export default function LoginPage() {
           box-shadow: 0 20px 40px rgba(0,0,0,0.2);
           max-height: 90vh;
           overflow-y: auto;
+        }
+
+        .welcome-modal {
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(15px);
+          -webkit-backdrop-filter: blur(15px);
+          padding: 2.5rem 2rem;
+          border-radius: 20px;
+          width: 90%;
+          max-width: 400px;
+          box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+          text-align: center;
+          border: 1px solid rgba(255,255,255,0.4);
+          animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes popIn {
+          0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+          100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .welcome-icon {
+          font-size: 3.5rem;
+          margin-bottom: 0.5rem;
+          animation: wave 2s infinite;
+          display: inline-block;
+          transform-origin: 70% 70%;
+        }
+
+        @keyframes wave {
+          0% { transform: rotate(0deg); }
+          10% { transform: rotate(14deg); }
+          20% { transform: rotate(-8deg); }
+          30% { transform: rotate(14deg); }
+          40% { transform: rotate(-4deg); }
+          50% { transform: rotate(10deg); }
+          60%, 100% { transform: rotate(0deg); }
+        }
+
+        .welcome-title {
+          font-size: 1.3rem;
+          color: #002147;
+          font-weight: 900;
+          margin-bottom: 1.5rem;
+          line-height: 1.3;
+        }
+
+        .welcome-details {
+          background: rgba(255, 255, 255, 0.6);
+          padding: 1rem;
+          border-radius: 12px;
+          margin-bottom: 1.5rem;
+        }
+
+        .welcome-name {
+          font-size: 1.1rem;
+          font-weight: 800;
+          color: #1e293b;
+          margin-bottom: 0.4rem;
+        }
+
+        .welcome-role {
+          font-size: 0.85rem;
+          color: #64748b;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+        }
+
+        .role-badge {
+          background: #e0f2fe;
+          color: #0369a1;
+          padding: 0.2rem 0.6rem;
+          border-radius: 20px;
+          font-size: 0.75rem;
+        }
+
+        .welcome-loader {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.8rem;
+          color: #4CAF50;
+          font-size: 0.85rem;
+          font-weight: 700;
+        }
+
+        .spinner {
+          width: 24px;
+          height: 24px;
+          border: 3px solid rgba(76, 175, 80, 0.3);
+          border-top-color: #4CAF50;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </main>

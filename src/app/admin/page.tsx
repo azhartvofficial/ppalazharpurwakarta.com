@@ -72,6 +72,8 @@ interface UserAccount {
   createdAt: string;
   lastLogin: string;
   kepengurusan?: string;
+  lembaga?: string;
+  kampus?: string;
   nama_santri?: string;
   jenjang_pendidikan?: string;
   pilihan_kelas?: string;
@@ -327,6 +329,8 @@ export default function AdminDashboardPage() {
   const [pusatDataFilterBerkas, setPusatDataFilterBerkas] = useState("Semua");
   const [pusatDataFilterProvinsi, setPusatDataFilterProvinsi] = useState("Semua");
   const [pusatDataFilterTanggal, setPusatDataFilterTanggal] = useState("");
+  const [pusatDataFilterLembaga, setPusatDataFilterLembaga] = useState("Semua");
+  const [pusatDataFilterKampus, setPusatDataFilterKampus] = useState("Semua");
   const [showAddPusatDataModal, setShowAddPusatDataModal] = useState(false);
   const [isEditingPusatData, setIsEditingPusatData] = useState(false);
   const [editPusatDataId, setEditPusatDataId] = useState<string | null>(null);
@@ -358,7 +362,9 @@ export default function AdminDashboardPage() {
       nama_ibu: data.nama_ibu || "",
       pekerjaan_ibu: data.pekerjaan_ibu || "",
       no_hp_wali: data.no_hp_wali || "",
-      alamat: ""
+      alamat: "",
+      lembaga: data.lembaga || "Pondok Pesantren",
+      kampus: data.kampus || "Azhar 1"
     });
     try {
       const alamatObj = typeof data.alamat === 'string' ? JSON.parse(data.alamat) : data.alamat;
@@ -427,7 +433,7 @@ export default function AdminDashboardPage() {
   // States for Add Pusat Data Modal
   const [addPusatDataForm, setAddPusatDataForm] = useState({
     nama_lengkap: "", email_santri: "", kelas: "10", program_pendidikan: "Mondok", gender: "Putra", tempat_tanggal_lahir: "", nik: "", nisn: "",
-    nama_ayah: "", pekerjaan_ayah: "", nama_ibu: "", pekerjaan_ibu: "", no_hp_wali: "", alamat: ""
+    nama_ayah: "", pekerjaan_ayah: "", nama_ibu: "", pekerjaan_ibu: "", no_hp_wali: "", alamat: "", lembaga: "Pondok Pesantren", kampus: "Azhar 1"
   });
   const [addPusatDataJenjang, setAddPusatDataJenjang] = useState("MA Unggulan Al-Azhar");
 
@@ -827,6 +833,8 @@ export default function AdminDashboardPage() {
   const [newAccConfirmPassword, setNewAccConfirmPassword] = useState("");
   const [showNewAccPassword, setShowNewAccPassword] = useState(false);
   const [newAccRole, setNewAccRole] = useState<"Admin" | "Wali" | "Super Admin">("Wali");
+  const [newAccLembaga, setNewAccLembaga] = useState("Pondok Pesantren");
+  const [newAccKampus, setNewAccKampus] = useState("Azhar 1");
 
   const handleAddAccount = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -846,7 +854,9 @@ export default function AdminDashboardPage() {
         email: newAccEmail,
         password: newAccPassword,
         role: newAccRole,
-        status: "Aktif" as const
+        status: "Aktif" as const,
+        lembaga: newAccRole === "Admin" ? newAccLembaga : null,
+        kampus: newAccRole === "Admin" ? newAccKampus : null
       };
 
       const tempId = Date.now().toString();
@@ -857,7 +867,9 @@ export default function AdminDashboardPage() {
         role: newAccRole,
         status: "Aktif",
         createdAt: new Date().toISOString().split('T')[0],
-        lastLogin: "-"
+        lastLogin: "-",
+        lembaga: newAccRole === "Admin" ? newAccLembaga : undefined,
+        kampus: newAccRole === "Admin" ? newAccKampus : undefined
       };
       
       setUserAccounts(prev => [newAcc, ...prev]);
@@ -866,6 +878,8 @@ export default function AdminDashboardPage() {
       setNewAccPassword("");
       setNewAccConfirmPassword("");
       setNewAccRole("Wali");
+      setNewAccLembaga("Pondok Pesantren");
+      setNewAccKampus("Azhar 1");
       setShowAddAccountModal(false);
       
       try {
@@ -908,11 +922,16 @@ export default function AdminDashboardPage() {
     const action = async () => {
       setUserAccounts(prev => prev.map(acc => acc.id === selectedAccountForEdit.id ? selectedAccountForEdit : acc));
       const editedId = selectedAccountForEdit.id;
+      
+      const roleIsAdmin = selectedAccountForEdit.role === "Admin";
+      
       const updatedData = {
         name: selectedAccountForEdit.name,
         email: selectedAccountForEdit.email,
         role: selectedAccountForEdit.role,
-        status: selectedAccountForEdit.status
+        status: selectedAccountForEdit.status,
+        lembaga: roleIsAdmin ? selectedAccountForEdit.lembaga : null,
+        kampus: roleIsAdmin ? selectedAccountForEdit.kampus : null
       };
       setSelectedAccountForEdit(null);
       
@@ -1774,6 +1793,10 @@ export default function AdminDashboardPage() {
 
       // Program Pendidikan
       if (pusatDataFilterProgram !== 'Semua' && d.program_pendidikan !== pusatDataFilterProgram) return false;
+
+      // Lembaga & Kampus
+      if (pusatDataFilterLembaga !== 'Semua' && d.lembaga !== pusatDataFilterLembaga) return false;
+      if (pusatDataFilterKampus !== 'Semua' && d.kampus !== pusatDataFilterKampus) return false;
 
       // Kelengkapan Berkas
       if (pusatDataFilterBerkas !== 'Semua') {
@@ -2935,6 +2958,20 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       <option value="Mondok">Mondok</option>
                       <option value="Non Mondok">Non Mondok</option>
                     </select>
+                    <select value={pusatDataFilterLembaga} onChange={(e) => setPusatDataFilterLembaga(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
+                      <option value="Semua">Semua Lembaga</option>
+                      <option value="Pondok Pesantren">Pondok Pesantren</option>
+                      <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
+                      <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
+                      <option value="TKIT Al-Azhar">TKIT Al-Azhar</option>
+                    </select>
+                    <select value={pusatDataFilterKampus} onChange={(e) => setPusatDataFilterKampus(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
+                      <option value="Semua">Semua Kampus</option>
+                      <option value="Azhar 1">Azhar 1</option>
+                      <option value="Azhar 2">Azhar 2</option>
+                      <option value="Azhar 3">Azhar 3</option>
+                      <option value="Azhar 4">Azhar 4</option>
+                    </select>
                     <select value={pusatDataFilterProvinsi} onChange={(e) => setPusatDataFilterProvinsi(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
                       <option value="Semua">Semua Domisili</option>
                       <option value="WNA">WNA (Asing)</option>
@@ -3002,7 +3039,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                 <thead>
                                   <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
                                     <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Foto</th>
-                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Nama / Kelas</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Nama / Info Akademik</th>
                                     <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>TTL</th>
                                     <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>NIK / NISN</th>
                                     <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Dokumen</th>
@@ -3020,6 +3057,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         <td style={{ padding: '1rem' }}>
                                           <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem' }}>{siswa.nama_lengkap}</div>
                                           <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>{siswa.kelas} • {siswa.gender}</div>
+                                          <div style={{ fontSize: '0.75rem', color: '#0369a1', marginTop: '0.2rem', fontWeight: 600 }}>{siswa.lembaga || 'Pondok Pesantren'} • {siswa.kampus || 'Azhar 1'}</div>
                                         </td>
                                         <td style={{ padding: '1rem', fontSize: '0.85rem', color: '#334155' }}>
                                           {siswa.tempat_tanggal_lahir}
@@ -3075,7 +3113,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                 <thead>
                                   <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
                                     <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Foto</th>
-                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Nama / Kelas</th>
+                                    <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Nama / Info Akademik</th>
                                     <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>TTL</th>
                                     <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>NIK / NISN</th>
                                     <th style={{ padding: '1rem', color: '#64748b', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>Dokumen</th>
@@ -3093,6 +3131,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         <td style={{ padding: '1rem' }}>
                                           <div style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.95rem' }}>{siswa.nama_lengkap}</div>
                                           <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>{siswa.kelas} • {siswa.gender}</div>
+                                          <div style={{ fontSize: '0.75rem', color: '#0369a1', marginTop: '0.2rem', fontWeight: 600 }}>{siswa.lembaga || 'Pondok Pesantren'} • {siswa.kampus || 'Azhar 1'}</div>
                                         </td>
                                         <td style={{ padding: '1rem', fontSize: '0.85rem', color: '#334155' }}>
                                           {siswa.tempat_tanggal_lahir}
@@ -3655,6 +3694,36 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                             <option value="Super Admin">Super Admin</option>
                                           </select>
                                         </div>
+                                        {selectedAccountForEdit.role === "Admin" && (
+                                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <div className="input-group" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                              <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Lembaga</label>
+                                              <select 
+                                                value={selectedAccountForEdit.lembaga || 'Pondok Pesantren'} 
+                                                onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, lembaga: e.target.value })}
+                                                style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }}
+                                              >
+                                                <option value="Pondok Pesantren">Pondok Pesantren</option>
+                                                <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
+                                                <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
+                                                <option value="TKIT Al-Azhar">TKIT Al-Azhar</option>
+                                              </select>
+                                            </div>
+                                            <div className="input-group" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                              <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Kampus</label>
+                                              <select 
+                                                value={selectedAccountForEdit.kampus || 'Azhar 1'} 
+                                                onChange={(e) => setSelectedAccountForEdit({ ...selectedAccountForEdit, kampus: e.target.value })}
+                                                style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }}
+                                              >
+                                                <option value="Azhar 1">Azhar 1</option>
+                                                <option value="Azhar 2">Azhar 2</option>
+                                                <option value="Azhar 3">Azhar 3</option>
+                                                <option value="Azhar 4">Azhar 4</option>
+                                              </select>
+                                            </div>
+                                          </div>
+                                        )}
                                         <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
                                           <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Status Akun</label>
                                           <select 
@@ -3756,6 +3825,36 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                             <option value="Super Admin">Super Admin</option>
                                           </select>
                                         </div>
+                                        {newAccRole === "Admin" && (
+                                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <div className="input-group" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                              <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Lembaga</label>
+                                              <select 
+                                                value={newAccLembaga} 
+                                                onChange={(e) => setNewAccLembaga(e.target.value)}
+                                                style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }}
+                                              >
+                                                <option value="Pondok Pesantren">Pondok Pesantren</option>
+                                                <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
+                                                <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
+                                                <option value="TKIT Al-Azhar">TKIT Al-Azhar</option>
+                                              </select>
+                                            </div>
+                                            <div className="input-group" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem', textAlign: 'left' }}>
+                                              <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569' }}>Kampus</label>
+                                              <select 
+                                                value={newAccKampus} 
+                                                onChange={(e) => setNewAccKampus(e.target.value)}
+                                                style={{ background: '#f8fafc', border: '1.5px solid #cbd5e1', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', color: '#334155' }}
+                                              >
+                                                <option value="Azhar 1">Azhar 1</option>
+                                                <option value="Azhar 2">Azhar 2</option>
+                                                <option value="Azhar 3">Azhar 3</option>
+                                                <option value="Azhar 4">Azhar 4</option>
+                                              </select>
+                                            </div>
+                                          </div>
+                                        )}
                                         <button type="submit" className="btn-submit-config" style={{ padding: '0.8rem', background: '#002147', color: 'white', fontWeight: 800, border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '0.9rem', marginTop: '0.5rem' }}>Tambah Akun</button>
                                       </form>
                                     </>
@@ -6704,6 +6803,24 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     <label>Gender</label>
                     <select value={addPusatDataForm.gender} onChange={e => setAddPusatDataForm({...addPusatDataForm, gender: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                       <option value="Putra">Putra</option><option value="Putri">Putri</option>
+                    </select>
+                  </div>
+                  <div className="input-group">
+                    <label>Lembaga</label>
+                    <select value={addPusatDataForm.lembaga} onChange={e => setAddPusatDataForm({...addPusatDataForm, lembaga: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                      <option value="Pondok Pesantren">Pondok Pesantren</option>
+                      <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
+                      <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
+                      <option value="TKIT Al-Azhar">TKIT Al-Azhar</option>
+                    </select>
+                  </div>
+                  <div className="input-group">
+                    <label>Kampus</label>
+                    <select value={addPusatDataForm.kampus} onChange={e => setAddPusatDataForm({...addPusatDataForm, kampus: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                      <option value="Azhar 1">Azhar 1</option>
+                      <option value="Azhar 2">Azhar 2</option>
+                      <option value="Azhar 3">Azhar 3</option>
+                      <option value="Azhar 4">Azhar 4</option>
                     </select>
                   </div>
                 </div>
