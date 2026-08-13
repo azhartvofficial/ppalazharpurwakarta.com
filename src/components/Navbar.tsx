@@ -17,9 +17,13 @@ export default function Navbar() {
   const [maintenanceActive, setMaintenanceActive] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [adminName, setAdminName] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminPhone, setAdminPhone] = useState("");
   const [adminRole, setAdminRole] = useState("Admin");
   const [isSantriLoggedIn, setIsSantriLoggedIn] = useState(false);
   const [santriName, setSantriName] = useState("");
+  const [santriEmail, setSantriEmail] = useState("");
+  const [santriPhone, setSantriPhone] = useState("");
   const [santriGender, setSantriGender] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -82,6 +86,10 @@ export default function Navbar() {
         setIsAdminLoggedIn(!!session);
         if (session) {
           const email = session.user?.email || session.email;
+          setAdminEmail(email || "");
+          const metadataPhone = session.user?.user_metadata?.phone || session.user?.phone || session.user?.user_metadata?.no_hp;
+          if (metadataPhone) setAdminPhone(metadataPhone);
+          
           const metadataName = session.user?.user_metadata?.name || session.user?.user_metadata?.nama || session.user?.user_metadata?.full_name;
           
           if (metadataName) {
@@ -109,10 +117,15 @@ export default function Navbar() {
         
         setIsSantriLoggedIn(!!santriSession);
         if (santriSession) {
-          const name = santriSession.user?.user_metadata?.nama || santriSession.user?.email || "Santri";
-          setSantriName(name);
-          const gender = santriSession.user?.user_metadata?.jenis_kelamin || santriSession.user?.user_metadata?.gender || santriSession.gender || "Laki-laki";
-          setSantriGender(gender);
+          const sEmail = santriSession.user?.email || santriSession.email;
+          setSantriEmail(sEmail || "");
+          const sPhone = santriSession.user?.user_metadata?.phone || santriSession.user?.phone || santriSession.user?.user_metadata?.no_hp_wali;
+          if (sPhone) setSantriPhone(sPhone);
+
+          const sName = santriSession.user?.user_metadata?.name || santriSession.user?.user_metadata?.nama_lengkap || santriSession.user?.user_metadata?.full_name || santriSession.email || "Santri";
+          setSantriName(sName);
+          const sGender = santriSession.user?.user_metadata?.gender || santriSession.user?.user_metadata?.jenis_kelamin || santriSession.gender || "Laki-laki";
+          setSantriGender(sGender);
         }
       }
     };
@@ -278,33 +291,82 @@ export default function Navbar() {
           </div>
 
           <div className="nav-desktop-actions">
-            <Link 
-              href={isAdminLoggedIn ? "/admin" : (isSantriLoggedIn ? "/santri" : "/login")} 
-              className="nav-login-premium" 
-              title={isAdminLoggedIn ? adminName : (isSantriLoggedIn ? santriName : "Masuk ke Akun Anda")}
-              onMouseEnter={() => setLoginHover(true)} 
-              onMouseLeave={() => setLoginHover(false)}
-            >
-              <div className="login-switch-container">
-                <div className="login-graphic">
-                  <img src={loginHover ? "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999182/izzlhzwa6vvmkfa95eww.png" : "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999182/izzlhzwa6vvmkfa95eww.png"} alt="Login Graphic" className="nav-login-img" />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <svg className="login-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    {isAdminLoggedIn || isSantriLoggedIn ? (
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    ) : (
-                      <>
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                        <polyline points="10 17 15 12 10 7"></polyline>
-                        <line x1="15" y1="12" x2="3" y2="12"></line>
-                      </>
-                    )}
+            {isAdminLoggedIn || isSantriLoggedIn ? (
+              <div 
+                className="nav-profile-dropdown-container" 
+                onMouseEnter={() => setProfileDropdownOpen(true)} 
+                onMouseLeave={() => setProfileDropdownOpen(false)}
+              >
+                <div 
+                  className="nav-profile-badge" 
+                  style={{ 
+                    display: 'flex', alignItems: 'center', gap: '8px', 
+                    padding: '6px 12px', borderRadius: '20px', 
+                    cursor: 'pointer',
+                    background: isAdminLoggedIn ? (adminRole?.toLowerCase() === 'wali' ? '#fef08a' : (adminRole?.toLowerCase() === 'super admin' ? '#bbf7d0' : '#bae6fd')) : '#f1f5f9',
+                    color: isAdminLoggedIn ? (adminRole?.toLowerCase() === 'wali' ? '#854d0e' : (adminRole?.toLowerCase() === 'super admin' ? '#166534' : '#0369a1')) : '#475569',
+                    border: '1px solid',
+                    borderColor: isAdminLoggedIn ? (adminRole?.toLowerCase() === 'wali' ? '#fde047' : (adminRole?.toLowerCase() === 'super admin' ? '#86efac' : '#7dd3fc')) : '#e2e8f0',
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
                   </svg>
-                  <span>{isAdminLoggedIn ? (adminRole?.toLowerCase() === 'wali' ? 'WALI' : 'ADMIN') : (isSantriLoggedIn ? ((santriGender?.toLowerCase() === 'perempuan' || santriGender?.toLowerCase() === 'p') ? 'SANTRIWATI' : 'SANTRI') : 'LOGIN')}</span>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>
+                    {isAdminLoggedIn ? (adminRole?.toLowerCase() === 'wali' ? 'WALI SANTRI' : (adminRole?.toLowerCase() === 'super admin' ? 'SUPER ADMIN' : 'ADMIN')) : (santriGender?.toLowerCase() === 'perempuan' || santriGender?.toLowerCase() === 'p' ? 'SANTRIWATI' : 'SANTRI')}
+                  </span>
+                </div>
+
+                <div 
+                  className={`profile-dropdown-menu ${profileDropdownOpen ? 'show' : ''}`}
+                >
+                  <div className="profile-dropdown-header">
+                    <div className="profile-name">{isAdminLoggedIn ? adminName : santriName}</div>
+                    <div className="profile-email">{isAdminLoggedIn ? adminEmail : santriEmail || 'Email tidak tersedia'}</div>
+                    {(isAdminLoggedIn ? adminPhone : santriPhone) && (
+                      <div className="profile-phone">{isAdminLoggedIn ? adminPhone : santriPhone}</div>
+                    )}
+                  </div>
+                  <div className="profile-dropdown-body">
+                    <Link href={isAdminLoggedIn ? "/admin" : "/santri"} className="profile-link">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                        <rect x="3" y="3" width="7" height="9"></rect>
+                        <rect x="14" y="3" width="7" height="5"></rect>
+                        <rect x="14" y="12" width="7" height="9"></rect>
+                        <rect x="3" y="16" width="7" height="5"></rect>
+                      </svg>
+                      Dashboard {isAdminLoggedIn ? 'Admin' : 'Santri'}
+                    </Link>
+                    <button onClick={() => setShowLogoutModal(true)} className="profile-logout-btn">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                      </svg>
+                      Logout
+                    </button>
+                  </div>
                 </div>
               </div>
-            </Link>
+            ) : (
+              <Link 
+                href="/login" 
+                className="nav-login-premium" 
+                title="Masuk ke Akun Anda"
+              >
+                <div className="login-switch-container">
+                  <div className="login-switch-inner">
+                    <div className="login-front">
+                      <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999182/izzlhzwa6vvmkfa95eww.png" alt="Azwa Page" className="nav-login-img" />
+                    </div>
+                    <div className="login-back">
+                      <span>LOGIN</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Utility + Toggle */}
@@ -1167,64 +1229,156 @@ export default function Navbar() {
         }
 
         .nav-login-premium {
-          display: flex;
-          align-items: center;
+          display: block;
           text-decoration: none;
         }
 
         .login-switch-container {
           position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 140px;
+          width: 100px;
           height: 38px;
+          perspective: 1000px;
+          background: transparent;
+          border-radius: 12px;
           overflow: visible;
         }
 
-        .login-graphic {
-          background: rgba(230, 126, 34, 0.1); /* Light orange tint, no white */
-          border: 2px solid var(--secondary);
-          padding: 0.4rem 1.1rem;
-          border-radius: 50px;
-          display: flex;
-          flex-direction: row !important; /* Force side-by-side */
-          flex-wrap: nowrap !important;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          font-weight: 800;
-          font-size: 0.8rem;
-          color: var(--primary) !important; /* Navy text, no white */
-          cursor: pointer;
-          white-space: nowrap;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-          transition: all 0.3s ease;
+        .login-switch-inner {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+          transform-style: preserve-3d;
         }
 
-        .login-icon-svg {
-          width: 16px;
-          height: 16px;
-          color: var(--primary) !important; /* Navy icon, no white */
-          flex-shrink: 0;
-          display: block;
+        .nav-login-premium:hover .login-switch-inner {
+          transform: rotateY(180deg);
+        }
+
+        .login-front, .login-back {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          backface-visibility: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 12px;
+        }
+
+        .login-front {
+          background: rgba(255, 255, 255, 0.5);
+          border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .login-back {
+          background: rgba(230, 126, 34, 0.1);
+          border: 1px solid rgba(230, 126, 34, 0.3);
+          color: #e67e22;
+          transform: rotateY(180deg);
+          font-size: 0.75rem;
+          font-weight: 800;
+          letter-spacing: 1px;
         }
 
         .nav-login-img {
-          max-height: 32px;
-          max-width: 115px;
+          max-height: 24px;
+          max-width: 80px;
           width: auto;
           height: auto;
           object-fit: contain;
           display: block;
         }
-
-        .nav-login-premium:hover {
-          transform: translateY(-2px);
-        }
-
+        
         .nav-login-premium:active {
           transform: scale(0.95);
+        }
+
+        .nav-profile-dropdown-container {
+          position: relative;
+        }
+
+        .profile-dropdown-menu {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          width: 240px;
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(10px);
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          z-index: 999;
+        }
+
+        .profile-dropdown-menu.show {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+        }
+
+        .profile-dropdown-header {
+          padding: 16px;
+          border-bottom: 1px solid #f1f5f9;
+        }
+
+        .profile-name {
+          font-weight: 800;
+          color: #0f172a;
+          font-size: 0.95rem;
+          margin-bottom: 4px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .profile-email, .profile-phone {
+          font-size: 0.75rem;
+          color: #64748b;
+          margin-top: 2px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .profile-dropdown-body {
+          padding: 8px;
+        }
+
+        .profile-link, .profile-logout-btn {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          width: 100%;
+          text-align: left;
+          padding: 10px 12px;
+          border: none;
+          background: transparent;
+          font-size: 0.85rem;
+          font-weight: 700;
+          border-radius: 10px;
+          cursor: pointer;
+          text-decoration: none;
+          transition: background 0.2s;
+        }
+
+        .profile-link {
+          color: #334155;
+        }
+
+        .profile-link:hover {
+          background: #f1f5f9;
+        }
+
+        .profile-logout-btn {
+          color: #ef4444;
+        }
+
+        .profile-logout-btn:hover {
+          background: #fef2f2;
         }
 
         /* Mobile Menu Toggles */
