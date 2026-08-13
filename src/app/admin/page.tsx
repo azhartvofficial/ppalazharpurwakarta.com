@@ -4795,7 +4795,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
         @media (min-width: 1024px) {
           .dashboard-layout {
-            padding-top: 85px; /* Crop distance to main navbar for laptop */
+            padding-top: 128px; /* Exact height of unscrolled Navbar (31px top + 97px main) */
           }
         }
 
@@ -4808,7 +4808,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           justify-content: space-between;
           align-items: center;
           position: sticky;
-          top: 85px; /* Matches navbar height */
+          top: 128px; /* Matches navbar height */
           z-index: 1000;
           box-shadow: 0 4px 15px rgba(255, 140, 0, 0.15);
         }
@@ -4854,9 +4854,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
         @media (min-width: 1024px) {
           .sidebar {
-            padding: 30px 1.5rem 2rem 1.5rem; /* Crop top padding for laptop */
-            top: 85px; /* Stick right below the 85px navbar */
-            height: calc(100vh - 85px);
+            padding: 24px 1.5rem 2rem 1.5rem; /* Perfect top padding for laptop */
+            top: 128px; /* Stick right below the 128px navbar */
+            height: calc(100vh - 128px);
             overflow-y: hidden; /* Ensure the menu itself does not scroll */
           }
         }
