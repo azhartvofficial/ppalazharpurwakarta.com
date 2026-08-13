@@ -1300,52 +1300,84 @@ export default function Navbar() {
 
         .profile-dropdown-menu {
           position: absolute;
-          top: calc(100% + 10px);
+          top: calc(100% + 15px);
           right: 0;
-          background: white;
-          border-radius: 16px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-          border: 1px solid rgba(0, 0, 0, 0.05);
-          width: 240px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-radius: 20px;
+          box-shadow: 0 15px 40px rgba(0, 33, 71, 0.15), 0 0 0 1px rgba(0, 33, 71, 0.05);
+          width: 270px;
           opacity: 0;
           visibility: hidden;
-          transform: translateY(10px);
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          transform: translateY(15px) scale(0.95);
+          transform-origin: top right;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
           z-index: 999;
+          overflow: hidden;
         }
 
         .profile-dropdown-menu.show {
           opacity: 1;
           visibility: visible;
-          transform: translateY(0);
+          transform: translateY(0) scale(1);
         }
 
         .profile-dropdown-header {
-          padding: 16px;
-          border-bottom: 1px solid #f1f5f9;
+          padding: 20px 16px 16px;
+          background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.8) 100%);
+          border-bottom: 1px solid rgba(0, 33, 71, 0.08);
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
         }
 
         .profile-name {
           font-weight: 800;
-          color: #0f172a;
+          color: var(--primary);
           font-size: 0.95rem;
-          margin-bottom: 4px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          background: white;
+          padding: 8px 12px;
+          border-radius: 10px;
+          border: 1px solid rgba(0, 33, 71, 0.06);
+          box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
         .profile-email, .profile-phone {
           font-size: 0.75rem;
-          color: #64748b;
-          margin-top: 2px;
+          color: #475569;
+          font-weight: 600;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          background: rgba(255, 255, 255, 0.6);
+          padding: 6px 10px;
+          border-radius: 8px;
+          border: 1px solid rgba(0, 33, 71, 0.04);
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        
+        .profile-email::before {
+          content: '✉';
+          font-size: 0.8rem;
+          color: var(--secondary);
+        }
+        
+        .profile-phone::before {
+          content: '📞';
+          font-size: 0.8rem;
+          color: var(--secondary);
         }
 
         .profile-dropdown-body {
-          padding: 8px;
+          padding: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
         }
 
         .profile-link, .profile-logout-btn {
@@ -1354,31 +1386,43 @@ export default function Navbar() {
           gap: 10px;
           width: 100%;
           text-align: left;
-          padding: 10px 12px;
-          border: none;
+          padding: 12px 14px;
+          border: 1px solid transparent;
           background: transparent;
           font-size: 0.85rem;
           font-weight: 700;
-          border-radius: 10px;
+          border-radius: 12px;
           cursor: pointer;
           text-decoration: none;
-          transition: background 0.2s;
+          transition: all 0.3s ease;
         }
 
         .profile-link {
-          color: #334155;
+          color: var(--primary);
+          background: rgba(241, 245, 249, 0.5);
+          border-color: rgba(226, 232, 240, 0.8);
         }
 
         .profile-link:hover {
-          background: #f1f5f9;
+          background: var(--primary);
+          color: white;
+          border-color: var(--primary);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 10px rgba(0, 33, 71, 0.15);
         }
 
         .profile-logout-btn {
           color: #ef4444;
+          background: rgba(254, 242, 242, 0.5);
+          border-color: rgba(254, 226, 226, 0.8);
         }
 
         .profile-logout-btn:hover {
-          background: #fef2f2;
+          background: #ef4444;
+          color: white;
+          border-color: #ef4444;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
         }
 
         /* Mobile Menu Toggles */
