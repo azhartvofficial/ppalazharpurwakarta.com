@@ -2511,11 +2511,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     )}
                   </div>
 
-                  {/* Control Panel Integrasi & Langganan */}
+                  {/* Kelola Platform dan Langganan */}
                   <div className="control-panel-card" style={{ marginBottom: '2rem' }}>
                     <div className="control-panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                        <h3>Control Panel Integrasi & Langganan Layanan</h3>
+                        <h3>Kelola Platform dan Langganan</h3>
                       </div>
                       <button 
                         onClick={refreshIntegrationStats} 
