@@ -7102,6 +7102,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         <label>Provinsi</label>
                         <select required={!addPusatDataIsWNA} value={addPusatDataProvId} onChange={e => { setAddPusatDataProvId(e.target.value); setAddPusatDataProvName(e.target.options[e.target.selectedIndex].text); setAddPusatDataRegId(""); setAddPusatDataRegName(""); setDistricts([]); setAddPusatDataDistId(""); setAddPusatDataDistName(""); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Provinsi --</option>
+                          {addPusatDataProvId === "OLD_PROV" && <option value="OLD_PROV">{addPusatDataProvName}</option>}
                           {provinces.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                         </select>
                     {addPusatDataErrors.provinsi && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.provinsi}</div>}
@@ -7110,6 +7111,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         <label>Kota/Kabupaten</label>
                         <select required={!addPusatDataIsWNA} value={addPusatDataRegId} disabled={!addPusatDataProvId} onChange={e => { setAddPusatDataRegId(e.target.value); setAddPusatDataRegName(e.target.options[e.target.selectedIndex].text); setAddPusatDataDistId(""); setAddPusatDataDistName(""); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Kota/Kabupaten --</option>
+                          {addPusatDataRegId === "OLD_REG" && <option value="OLD_REG">{addPusatDataRegName}</option>}
                           {regencies.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                         </select>
                     {addPusatDataErrors.kota && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.kota}</div>}
@@ -7118,6 +7120,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         <label>Kecamatan</label>
                         <select required={!addPusatDataIsWNA} value={addPusatDataDistId} disabled={!addPusatDataRegId} onChange={e => { setAddPusatDataDistId(e.target.value); setAddPusatDataDistName(e.target.options[e.target.selectedIndex].text); setAddPusatDataVillageId(""); setAddPusatDataVillageName(""); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Kecamatan --</option>
+                          {addPusatDataDistId === "OLD_DIST" && <option value="OLD_DIST">{addPusatDataDistName}</option>}
                           {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                         </select>
                     {addPusatDataErrors.kecamatan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.kecamatan}</div>}
@@ -7126,6 +7129,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         <label>Kelurahan/Desa</label>
                         <select required={!addPusatDataIsWNA} value={addPusatDataVillageId} disabled={!addPusatDataDistId} onChange={e => { setAddPusatDataVillageId(e.target.value); setAddPusatDataVillageName(e.target.options[e.target.selectedIndex].text); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Kelurahan/Desa --</option>
+                          {addPusatDataVillageId === "OLD_VILL" && <option value="OLD_VILL">{addPusatDataVillageName}</option>}
                           {villages.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
                         </select>
                     {addPusatDataErrors.kelurahan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.kelurahan}</div>}
