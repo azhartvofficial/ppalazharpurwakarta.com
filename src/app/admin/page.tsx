@@ -6427,7 +6427,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           .floating-admin-wrapper {
             position: fixed;
             left: 0;
-            top: 75px;
+            top: 115px;
             z-index: 999;
             display: flex;
             align-items: center;
@@ -6513,21 +6513,16 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
           .toggle-logo-wrapper {
             position: relative;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
-            margin-right: -1.5rem;
+            margin-right: -1.4rem;
             margin-left: 0.2rem;
-            border: 2px solid #002147;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
           }
 
           .toggle-logo {
-            width: 20px;
+            width: 28px;
             height: auto;
             object-fit: contain;
           }
