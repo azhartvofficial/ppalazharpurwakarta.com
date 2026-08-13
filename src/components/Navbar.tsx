@@ -277,6 +277,36 @@ export default function Navbar() {
 
           </div>
 
+          <div className="nav-desktop-actions">
+            <Link 
+              href={isAdminLoggedIn ? "/admin" : (isSantriLoggedIn ? "/santri" : "/login")} 
+              className="nav-login-premium" 
+              title={isAdminLoggedIn ? adminName : (isSantriLoggedIn ? santriName : "Masuk ke Akun Anda")}
+              onMouseEnter={() => setLoginHover(true)} 
+              onMouseLeave={() => setLoginHover(false)}
+            >
+              <div className="login-switch-container">
+                <div className="login-graphic">
+                  <img src={loginHover ? "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999182/izzlhzwa6vvmkfa95eww.png" : "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999182/izzlhzwa6vvmkfa95eww.png"} alt="Login Graphic" className="nav-login-img" />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <svg className="login-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    {isAdminLoggedIn || isSantriLoggedIn ? (
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    ) : (
+                      <>
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                      </>
+                    )}
+                  </svg>
+                  <span>{isAdminLoggedIn ? (adminRole?.toLowerCase() === 'wali' ? 'WALI' : 'ADMIN') : (isSantriLoggedIn ? ((santriGender?.toLowerCase() === 'perempuan' || santriGender?.toLowerCase() === 'p') ? 'SANTRIWATI' : 'SANTRI') : 'LOGIN')}</span>
+                </div>
+              </div>
+            </Link>
+          </div>
+
           {/* Mobile Utility + Toggle */}
           <div className="nav-mobile-actions">
 
@@ -664,7 +694,7 @@ export default function Navbar() {
           right: 0;
           bottom: 100px;
           z-index: 9999;
-          display: flex;
+          display: none;
           align-items: center;
           animation: introSlideAndWiggleRight 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
@@ -1130,6 +1160,12 @@ export default function Navbar() {
           margin-left: auto;
         }
 
+        .nav-desktop-actions {
+          display: flex;
+          align-items: center;
+          margin-left: auto;
+        }
+
         .nav-login-premium {
           display: flex;
           align-items: center;
@@ -1443,6 +1479,14 @@ export default function Navbar() {
           .nav-mobile-actions {
             margin-left: auto;
             gap: 0.5rem;
+          }
+
+          .nav-desktop-actions {
+            display: none !important;
+          }
+
+          .floating-action-wrapper {
+            display: flex !important;
           }
 
           .login-switch-container {
