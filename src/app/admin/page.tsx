@@ -2531,7 +2531,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         <div className="integration-card-header">
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span className="integration-logo-text">Supabase</span>
-                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: GitHub (danishalzam8002)</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: azhartvofficial25@gmail.com</span>
                           </div>
                           <span className="status-pill green">AKTIF</span>
                         </div>
@@ -2556,7 +2556,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         <div className="integration-card-header">
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span className="integration-logo-text">Cloudinary</span>
-                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: Google (danishalzam8002@gmail.com)</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: azhartvofficial25@gmail.com</span>
                           </div>
                           <span className="status-pill green">AKTIF</span>
                         </div>
@@ -2581,7 +2581,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         <div className="integration-card-header">
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span className="integration-logo-text">Vercel</span>
-                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: GitHub (danishalzam8002)</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: azhartvofficial25@gmail.com</span>
                           </div>
                           <span className="status-pill green">AKTIF</span>
                         </div>
@@ -2606,7 +2606,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         <div className="integration-card-header">
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span className="integration-logo-text">Google Drive</span>
-                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: Google (danishalzam8002@gmail.com)</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: azhartvofficial25@gmail.com</span>
                           </div>
                           <span className="status-pill green">AKTIF</span>
                         </div>
@@ -2631,7 +2631,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         <div className="integration-card-header">
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span className="integration-logo-text">AntiGravity</span>
-                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: Google (danishalzam8002@gmail.com)</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: azhartvofficial25@gmail.com</span>
                           </div>
                           <span className="status-pill orange-badge">HAMPIR HABIS</span>
                         </div>
