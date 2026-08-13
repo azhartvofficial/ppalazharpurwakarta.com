@@ -76,6 +76,7 @@ export default function PusdaPage() {
   const [provinces, setProvinces] = useState<any[]>([]);
   const [regencies, setRegencies] = useState<any[]>([]);
   const [districts, setDistricts] = useState<any[]>([]);
+  const [villages, setVillages] = useState<any[]>([]);
   const [countries, setCountries] = useState<any[]>([]);
 
   const [selectedProvId, setSelectedProvId] = useState("");
@@ -84,6 +85,8 @@ export default function PusdaPage() {
   const [selectedRegName, setSelectedRegName] = useState("");
   const [selectedDistId, setSelectedDistId] = useState("");
   const [selectedDistName, setSelectedDistName] = useState("");
+  const [selectedVillageId, setSelectedVillageId] = useState("");
+  const [selectedVillageName, setSelectedVillageName] = useState("");
   
   const [detailAlamat, setDetailAlamat] = useState("");
   const [kodePos, setKodePos] = useState("");
@@ -113,7 +116,7 @@ export default function PusdaPage() {
       }
     };
     initFetch();
-    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+    fetch("https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json")
       .then(res => res.json())
       .then(data => setProvinces(data))
       .catch(err => console.error(err));
@@ -130,7 +133,7 @@ export default function PusdaPage() {
   // Fetch Regencies when Province changes
   useEffect(() => {
     if (selectedProvId) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvId}.json`)
+      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${selectedProvId}.json`)
         .then(res => res.json())
         .then(data => {
           setRegencies(data);
@@ -139,29 +142,53 @@ export default function PusdaPage() {
           setDistricts([]);
           setSelectedDistId("");
           setSelectedDistName("");
+          setVillages([]);
+          setSelectedVillageId("");
+          setSelectedVillageName("");
         })
         .catch(err => console.error(err));
     } else {
       setRegencies([]);
       setDistricts([]);
+      setVillages([]);
     }
   }, [selectedProvId]);
 
   // Fetch Districts when Regency changes
   useEffect(() => {
     if (selectedRegId) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegId}.json`)
+      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${selectedRegId}.json`)
         .then(res => res.json())
         .then(data => {
           setDistricts(data);
           setSelectedDistId("");
           setSelectedDistName("");
+          setVillages([]);
+          setSelectedVillageId("");
+          setSelectedVillageName("");
         })
         .catch(err => console.error(err));
     } else {
       setDistricts([]);
+      setVillages([]);
     }
   }, [selectedRegId]);
+
+  // Fetch Villages when District changes
+  useEffect(() => {
+    if (selectedDistId) {
+      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/villages/${selectedDistId}.json`)
+        .then(res => res.json())
+        .then(data => {
+          setVillages(data);
+          setSelectedVillageId("");
+          setSelectedVillageName("");
+        })
+        .catch(err => console.error(err));
+    } else {
+      setVillages([]);
+    }
+  }, [selectedDistId]);
 
   const [pasFotoFile, setPasFotoFile] = useState<File | null>(null);
   const [pasFotoPreview, setPasFotoPreview] = useState<string | null>(null);
@@ -196,6 +223,7 @@ export default function PusdaPage() {
       if (selectedProvId) delete newErrors.provinsi;
       if (selectedRegId) delete newErrors.kota;
       if (selectedDistId) delete newErrors.kecamatan;
+      if (selectedVillageId) delete newErrors.kelurahan;
       if (selectedCountryName) delete newErrors.negara;
       if (selectedJenjang) delete newErrors.jenjang;
       return newErrors;
@@ -333,6 +361,7 @@ export default function PusdaPage() {
       if (!selectedProvId) newErrors.provinsi = "Provinsi wajib dipilih";
       if (!selectedRegId) newErrors.kota = "Kota/Kabupaten wajib dipilih";
       if (!selectedDistId) newErrors.kecamatan = "Kecamatan wajib dipilih";
+      if (!selectedVillageId) newErrors.kelurahan = "Kelurahan/Desa wajib dipilih";
     } else {
       if (!selectedCountryName) newErrors.negara = "Negara wajib dipilih";
     }
@@ -442,9 +471,10 @@ export default function PusdaPage() {
         provinsi: selectedProvName,
         kota: selectedRegName,
         kecamatan: selectedDistName,
+        kelurahan: selectedVillageName,
         detail: detailAlamat,
         kode_pos: kodePos,
-        full_text: `${detailAlamat}, Kec. ${selectedDistName}, Kota/Kab. ${selectedRegName}, Prov. ${selectedProvName}${kodePos ? ' - ' + kodePos : ''}`
+        full_text: `${detailAlamat}, Kel/Desa. ${selectedVillageName}, Kec. ${selectedDistName}, Kota/Kab. ${selectedRegName}, Prov. ${selectedProvName}${kodePos ? ' - ' + kodePos : ''}`
       };
 
       // Save to database
@@ -891,6 +921,22 @@ export default function PusdaPage() {
                       {districts.map((d: any) => <option key={d.id} value={d.id}>{d.name}</option>)}
                     </select>
                 {errors.kecamatan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.kecamatan}</div>}
+                  </div>
+                  <div className="input-group">
+                    <label>Kelurahan / Desa</label>
+                    <select 
+                      required={!isWNA} 
+                      value={selectedVillageId}
+                      disabled={!selectedDistId}
+                      onChange={(e) => {
+                        setSelectedVillageId(e.target.value);
+                        setSelectedVillageName(e.target.options[e.target.selectedIndex].text);
+                      }}
+                    >
+                      <option value="">-- Pilih Kelurahan/Desa --</option>
+                      {villages.map((v: any) => <option key={v.id} value={v.id}>{v.name}</option>)}
+                    </select>
+                {errors.kelurahan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.kelurahan}</div>}
                   </div>
                   <div className="input-group">
                     <label>Kode Pos (Opsional)</label>

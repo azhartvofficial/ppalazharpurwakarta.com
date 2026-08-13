@@ -439,6 +439,8 @@ export default function AdminDashboardPage() {
           setAddPusatDataRegName(alamatObj.kota);
           setAddPusatDataDistId("OLD_DIST");
           setAddPusatDataDistName(alamatObj.kecamatan);
+          setAddPusatDataVillageId("OLD_VILL");
+          setAddPusatDataVillageName(alamatObj.kelurahan || "");
           
           const provId = currentProvinces.find(p => p.name?.trim().toUpperCase() === alamatObj.provinsi?.trim().toUpperCase())?.id;
 
@@ -449,24 +451,30 @@ export default function AdminDashboardPage() {
               const regRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${provId}.json`);
               const regenciesData = await regRes.json();
               setRegencies(regenciesData);
-              const regId = regenciesData.find((r:any) => r.name?.trim().toUpperCase() === alamatObj.kota?.trim().toUpperCase())?.id;
-              
+              const regId = regenciesData.find((r: any) => r.name?.trim().toUpperCase() === alamatObj.kota?.trim().toUpperCase())?.id;
               if (regId) {
                 setAddPusatDataRegId(regId);
                 setAddPusatDataRegName(alamatObj.kota);
-                try {
-                  const distRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${regId}.json`);
-                  const districtsData = await distRes.json();
-                  setDistricts(districtsData);
-                  const distId = districtsData.find((d:any) => d.name?.trim().toUpperCase() === alamatObj.kecamatan?.trim().toUpperCase())?.id;
-                  
-                  if (distId) {
-                    setAddPusatDataDistId(distId);
-                    setAddPusatDataDistName(alamatObj.kecamatan);
+                const distRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${regId}.json`);
+                const districtsData = await distRes.json();
+                setDistricts(districtsData);
+                const distId = districtsData.find((d: any) => d.name?.trim().toUpperCase() === alamatObj.kecamatan?.trim().toUpperCase())?.id;
+                if (distId) {
+                  setAddPusatDataDistId(distId);
+                  setAddPusatDataDistName(alamatObj.kecamatan);
+                  const villRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/villages/${distId}.json`);
+                  const villagesData = await villRes.json();
+                  setVillages(villagesData);
+                  if (alamatObj.kelurahan) {
+                    const villId = villagesData.find((v: any) => v.name?.trim().toUpperCase() === alamatObj.kelurahan?.trim().toUpperCase())?.id;
+                    if (villId) {
+                      setAddPusatDataVillageId(villId);
+                      setAddPusatDataVillageName(alamatObj.kelurahan);
+                    }
                   }
-                } catch(e) {}
+                }
               }
-            } catch(e) {}
+            } catch (e) {}
           }
         }
       }
@@ -520,6 +528,8 @@ export default function AdminDashboardPage() {
   const [addPusatDataRegName, setAddPusatDataRegName] = useState("");
   const [addPusatDataDistId, setAddPusatDataDistId] = useState("");
   const [addPusatDataDistName, setAddPusatDataDistName] = useState("");
+  const [addPusatDataVillageId, setAddPusatDataVillageId] = useState("");
+  const [addPusatDataVillageName, setAddPusatDataVillageName] = useState("");
   const [addPusatDataDetail, setAddPusatDataDetail] = useState("");
   const [addPusatDataKodePos, setAddPusatDataKodePos] = useState("");
   const [addPusatDataCountry, setAddPusatDataCountry] = useState("");
@@ -527,6 +537,7 @@ export default function AdminDashboardPage() {
   const [provinces, setProvinces] = useState<any[]>([]);
   const [regencies, setRegencies] = useState<any[]>([]);
   const [districts, setDistricts] = useState<any[]>([]);
+  const [villages, setVillages] = useState<any[]>([]);
   const [countries, setCountries] = useState<any[]>([]);
 
   const [addPusatDataFiles, setAddPusatDataFiles] = useState({
@@ -554,10 +565,11 @@ export default function AdminDashboardPage() {
       if (addPusatDataProvId) delete newErrors.provinsi;
       if (addPusatDataRegId) delete newErrors.kota;
       if (addPusatDataDistId) delete newErrors.kecamatan;
+      if (addPusatDataVillageId) delete newErrors.kelurahan;
       if (addPusatDataCountry) delete newErrors.negara;
       return newErrors;
     });
-  }, [addPusatDataForm, addPusatDataDetail, addPusatDataProvId, addPusatDataRegId, addPusatDataDistId, addPusatDataCountry]);
+  }, [addPusatDataForm, addPusatDataDetail, addPusatDataProvId, addPusatDataRegId, addPusatDataDistId, addPusatDataVillageId, addPusatDataCountry]);
 
   // Fetch initial data (Provinces & Countries)
   useEffect(() => {
@@ -570,25 +582,36 @@ export default function AdminDashboardPage() {
 
   // Fetch Regencies when Province changes
   useEffect(() => {
-    if (addPusatDataProvId) {
+    if (addPusatDataProvId && addPusatDataProvId !== "OLD_PROV") {
       fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${addPusatDataProvId}.json`).then(res => res.json()).then(data => {
-        setRegencies(data); setAddPusatDataRegId(""); setAddPusatDataRegName(""); setDistricts([]); setAddPusatDataDistId(""); setAddPusatDataDistName("");
+        setRegencies(data); setAddPusatDataRegId(""); setAddPusatDataRegName(""); setDistricts([]); setAddPusatDataDistId(""); setAddPusatDataDistName(""); setVillages([]); setAddPusatDataVillageId(""); setAddPusatDataVillageName("");
       }).catch(() => {});
-    } else {
-      setRegencies([]); setDistricts([]);
+    } else if (!addPusatDataProvId) {
+      setRegencies([]); setDistricts([]); setVillages([]);
     }
   }, [addPusatDataProvId]);
 
   // Fetch Districts when Regency changes
   useEffect(() => {
-    if (addPusatDataRegId) {
+    if (addPusatDataRegId && addPusatDataRegId !== "OLD_REG") {
       fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${addPusatDataRegId}.json`).then(res => res.json()).then(data => {
-        setDistricts(data); setAddPusatDataDistId(""); setAddPusatDataDistName("");
+        setDistricts(data); setAddPusatDataDistId(""); setAddPusatDataDistName(""); setVillages([]); setAddPusatDataVillageId(""); setAddPusatDataVillageName("");
       }).catch(() => {});
-    } else {
-      setDistricts([]);
+    } else if (!addPusatDataRegId) {
+      setDistricts([]); setVillages([]);
     }
   }, [addPusatDataRegId]);
+
+  // Fetch Villages when District changes
+  useEffect(() => {
+    if (addPusatDataDistId && addPusatDataDistId !== "OLD_DIST") {
+      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/villages/${addPusatDataDistId}.json`).then(res => res.json()).then(data => {
+        setVillages(data); setAddPusatDataVillageId(""); setAddPusatDataVillageName("");
+      }).catch(() => {});
+    } else if (!addPusatDataDistId) {
+      setVillages([]);
+    }
+  }, [addPusatDataDistId]);
 
   const handleAddPusatDataSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -607,6 +630,7 @@ export default function AdminDashboardPage() {
       if (!addPusatDataProvId) newErrors.provinsi = "Provinsi wajib dipilih";
       if (!addPusatDataRegId) newErrors.kota = "Kota/Kabupaten wajib dipilih";
       if (!addPusatDataDistId) newErrors.kecamatan = "Kecamatan wajib dipilih";
+      if (!addPusatDataVillageId) newErrors.kelurahan = "Kelurahan/Desa wajib dipilih";
     } else {
       if (!addPusatDataCountry) newErrors.negara = "Negara wajib dipilih";
     }
@@ -710,14 +734,24 @@ export default function AdminDashboardPage() {
       if (addPusatDataFiles.ijazah) ijazah_url = await uploadFile(addPusatDataFiles.ijazah, "IJAZAH", targetFolderId);
       if (addPusatDataFiles.sktm) sktm_url = await uploadFile(addPusatDataFiles.sktm, "SKTM", targetFolderId);
 
-      const alamatObj = addPusatDataIsWNA ? {
-        is_wna: true, negara: addPusatDataCountry, detail: addPusatDataDetail, kode_pos: addPusatDataKodePos,
-        full_text: `${addPusatDataDetail}, ${addPusatDataCountry}${addPusatDataKodePos ? ' - ' + addPusatDataKodePos : ''} (WNA)`
-      } : {
-        is_wna: false, provinsi: addPusatDataProvName, kota: addPusatDataRegName, kecamatan: addPusatDataDistName,
-        detail: addPusatDataDetail, kode_pos: addPusatDataKodePos,
-        full_text: `${addPusatDataDetail}, Kec. ${addPusatDataDistName}, Kota/Kab. ${addPusatDataRegName}, Prov. ${addPusatDataProvName}${addPusatDataKodePos ? ' - ' + addPusatDataKodePos : ''}`
-      };
+      let alamatObj;
+      if (addPusatDataIsWNA) {
+        alamatObj = {
+          is_wna: true, negara: addPusatDataCountry, detail: addPusatDataDetail, kode_pos: addPusatDataKodePos,
+          full_text: `${addPusatDataDetail}, ${addPusatDataCountry}${addPusatDataKodePos ? ' - ' + addPusatDataKodePos : ''} (WNA)`
+        };
+      } else {
+        alamatObj = {
+          is_wna: false,
+          provinsi: addPusatDataProvName,
+          kota: addPusatDataRegName,
+          kecamatan: addPusatDataDistName,
+          kelurahan: addPusatDataVillageName,
+          detail: addPusatDataDetail,
+          kode_pos: addPusatDataKodePos,
+          full_text: `${addPusatDataDetail}, Kel/Desa. ${addPusatDataVillageName}, Kec. ${addPusatDataDistName}, Kota/Kab. ${addPusatDataRegName}, Prov. ${addPusatDataProvName}${addPusatDataKodePos ? ' - ' + addPusatDataKodePos : ''}`
+        };
+      }
 
       if (isEditingPusatData && editPusatDataId) {
         (alamatObj as any).is_revised = true;
@@ -7082,11 +7116,19 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       </div>
                       <div>
                         <label>Kecamatan</label>
-                        <select required={!addPusatDataIsWNA} value={addPusatDataDistId} disabled={!addPusatDataRegId} onChange={e => { setAddPusatDataDistId(e.target.value); setAddPusatDataDistName(e.target.options[e.target.selectedIndex].text); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                        <select required={!addPusatDataIsWNA} value={addPusatDataDistId} disabled={!addPusatDataRegId} onChange={e => { setAddPusatDataDistId(e.target.value); setAddPusatDataDistName(e.target.options[e.target.selectedIndex].text); setAddPusatDataVillageId(""); setAddPusatDataVillageName(""); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Kecamatan --</option>
                           {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                         </select>
                     {addPusatDataErrors.kecamatan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.kecamatan}</div>}
+                      </div>
+                      <div>
+                        <label>Kelurahan/Desa</label>
+                        <select required={!addPusatDataIsWNA} value={addPusatDataVillageId} disabled={!addPusatDataDistId} onChange={e => { setAddPusatDataVillageId(e.target.value); setAddPusatDataVillageName(e.target.options[e.target.selectedIndex].text); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                          <option value="">-- Pilih Kelurahan/Desa --</option>
+                          {villages.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
+                        </select>
+                    {addPusatDataErrors.kelurahan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.kelurahan}</div>}
                       </div>
                       <div>
                         <label>Kode Pos</label>
