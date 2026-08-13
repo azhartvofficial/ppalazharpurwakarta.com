@@ -239,15 +239,70 @@ export default function AdminDashboardPage() {
   const [loadingVisitors, setLoadingVisitors] = useState(false);
   const [hoveredChartPoint, setHoveredChartPoint] = useState<number | null>(null);
   const [chartMaxVal, setChartMaxVal] = useState<number>(800);
-  const [chartData, setChartData] = useState<any[]>([
-    { date: "11 Mei", visitors: 320, x: 50, y: 142 },
-    { date: "12 Mei", visitors: 410, x: 150, y: 123 },
-    { date: "13 Mei", visitors: 380, x: 250, y: 129 },
-    { date: "14 Mei", visitors: 490, x: 350, y: 106 },
-    { date: "15 Mei", visitors: 580, x: 450, y: 87 },
-    { date: "16 Mei", visitors: 620, x: 550, y: 78 },
-    { date: "17 Mei", visitors: 780, x: 650, y: 44 }
-  ]);
+  const [chartRange, setChartRange] = useState<"7D" | "30D">("7D");
+  const [chartData, setChartData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const today = new Date();
+    let newData: any[] = [];
+    let maxVisits = 0;
+    
+    if (chartRange === "7D") {
+      // 7 Hari Terakhir
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const seed = d.getDate() * (d.getMonth() + 1);
+        const visitors = 300 + (seed % 500); 
+        if (visitors > maxVisits) maxVisits = visitors;
+        
+        newData.push({
+          date: `${d.getDate()} ${d.toLocaleString('id-ID', { month: 'short' })}`,
+          visitors,
+          x: 0,
+          y: 0
+        });
+      }
+    } else {
+      // 30D (Dari awal bulan)
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      
+      for (let i = 1; i <= daysInMonth; i++) {
+        const d = new Date(currentYear, currentMonth, i);
+        let visitors = 0;
+        
+        if (i <= today.getDate()) {
+          const seed = i * (currentMonth + 1);
+          visitors = 300 + (seed % 600);
+        }
+        if (visitors > maxVisits) maxVisits = visitors;
+        
+        newData.push({
+          date: `${i} ${d.toLocaleString('id-ID', { month: 'short' })}`,
+          visitors,
+          x: 0,
+          y: 0
+        });
+      }
+    }
+    
+    const safeMaxVal = maxVisits > 0 ? Math.ceil(maxVisits / 100) * 100 + 100 : 800;
+    setChartMaxVal(safeMaxVal);
+    
+    const count = newData.length;
+    const spanX = 600;
+    
+    newData = newData.map((pt, idx) => {
+      const x = 50 + (count > 1 ? (idx / (count - 1)) * spanX : 0);
+      const ratio = pt.visitors / safeMaxVal;
+      const y = 190 - (ratio * 150);
+      return { ...pt, x, y };
+    });
+    
+    setChartData(newData);
+  }, [chartRange]);
   
   // Auth states
   const [user, setUser] = useState<any>(null);
@@ -2167,11 +2222,11 @@ export default function AdminDashboardPage() {
                       <div className="chart-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
                           <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Grafik Tren Lalu Lintas</span>
-                          <span style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--primary)', marginTop: '2px' }}>Statistik Kunjungan Harian (7 Hari Terakhir)</span>
+                          <span style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--primary)', marginTop: '2px' }}>Statistik Kunjungan Harian ({chartRange === '7D' ? '7 Hari Terakhir' : 'Bulan Ini'})</span>
                         </div>
                         <div style={{ display: 'flex', gap: '6px' }}>
-                          <button className="badge-chart-range active">7D</button>
-                          <button className="badge-chart-range">30D</button>
+                          <button className={`badge-chart-range ${chartRange === '7D' ? 'active' : ''}`} onClick={() => setChartRange('7D')}>7D</button>
+                          <button className={`badge-chart-range ${chartRange === '30D' ? 'active' : ''}`} onClick={() => setChartRange('30D')}>30D</button>
                         </div>
                       </div>
 
@@ -2242,9 +2297,11 @@ export default function AdminDashboardPage() {
                               />
 
                               {/* X Label */}
-                              <text x={pt.x} y="212" fill="#64748b" fontSize="10" fontWeight="800" textAnchor="middle">
-                                {pt.date}
-                              </text>
+                              {(chartRange === '7D' || idx % 3 === 0 || idx === chartData.length - 1) && (
+                                <text x={pt.x} y="212" fill="#64748b" fontSize={chartRange === '30D' ? "9" : "10"} fontWeight="800" textAnchor="middle">
+                                  {chartRange === '30D' ? pt.date.split(' ')[0] : pt.date}
+                                </text>
+                              )}
                             </g>
                           ))}
                         </svg>
