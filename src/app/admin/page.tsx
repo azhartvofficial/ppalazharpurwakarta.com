@@ -243,45 +243,7 @@ export default function AdminDashboardPage() {
   const [chartData, setChartData] = useState<any[]>([]);
   const [rawVisitorLogs, setRawVisitorLogs] = useState<any[]>([]);
 
-  const [integrationStats, setIntegrationStats] = useState({
-    supabaseUsage: "12.4 MB",
-    cloudinaryStorage: "1.4 GB",
-    cloudinaryCredits: "385",
-    vercelBandwidth: "4.2 GB",
-    isRefreshing: false
-  });
 
-  const refreshIntegrationStats = () => {
-    setIntegrationStats(prev => ({ ...prev, isRefreshing: true }));
-    setTimeout(() => {
-      const visitorCount = rawVisitorLogs.length || 1200;
-      const siswaCount = pusatData.length || 50;
-      
-      const supabaseBase = 12.0;
-      const computedSupabase = (supabaseBase + (visitorCount * 0.0002) + (siswaCount * 0.0015)).toFixed(2);
-      
-      const cloudinaryBaseMB = 1400; 
-      const computedCredits = 385 + (siswaCount * 2) + Math.floor(visitorCount / 100);
-      const computedCloudinaryGB = ((cloudinaryBaseMB + (siswaCount * 1.5)) / 1024).toFixed(2);
-      
-      const vercelBase = 4.2;
-      const computedVercel = (vercelBase + (visitorCount * 0.0005)).toFixed(2);
-      
-      setIntegrationStats({
-        supabaseUsage: `${computedSupabase} MB`,
-        cloudinaryStorage: `${computedCloudinaryGB} GB`,
-        cloudinaryCredits: `${computedCredits}`,
-        vercelBandwidth: `${computedVercel} GB`,
-        isRefreshing: false
-      });
-    }, 1200);
-  };
-
-  useEffect(() => {
-    if (supabaseSyncActive && (rawVisitorLogs.length > 0 || pusatData.length > 0)) {
-      refreshIntegrationStats();
-    }
-  }, [supabaseSyncActive, rawVisitorLogs.length, pusatData.length]);
 
   useEffect(() => {
     const today = new Date();
@@ -904,6 +866,46 @@ export default function AdminDashboardPage() {
   };
 
   const [pusatData, setPusatData] = useState<any[]>([]);
+
+  const [integrationStats, setIntegrationStats] = useState({
+    supabaseUsage: "12.4 MB",
+    cloudinaryStorage: "1.4 GB",
+    cloudinaryCredits: "385",
+    vercelBandwidth: "4.2 GB",
+    isRefreshing: false
+  });
+
+  const refreshIntegrationStats = () => {
+    setIntegrationStats(prev => ({ ...prev, isRefreshing: true }));
+    setTimeout(() => {
+      const visitorCount = rawVisitorLogs.length || 1200;
+      const siswaCount = pusatData.length || 50;
+      
+      const supabaseBase = 12.0;
+      const computedSupabase = (supabaseBase + (visitorCount * 0.0002) + (siswaCount * 0.0015)).toFixed(2);
+      
+      const cloudinaryBaseMB = 1400; 
+      const computedCredits = 385 + (siswaCount * 2) + Math.floor(visitorCount / 100);
+      const computedCloudinaryGB = ((cloudinaryBaseMB + (siswaCount * 1.5)) / 1024).toFixed(2);
+      
+      const vercelBase = 4.2;
+      const computedVercel = (vercelBase + (visitorCount * 0.0005)).toFixed(2);
+      
+      setIntegrationStats({
+        supabaseUsage: `${computedSupabase} MB`,
+        cloudinaryStorage: `${computedCloudinaryGB} GB`,
+        cloudinaryCredits: `${computedCredits}`,
+        vercelBandwidth: `${computedVercel} GB`,
+        isRefreshing: false
+      });
+    }, 1200);
+  };
+
+  useEffect(() => {
+    if (supabaseSyncActive && (rawVisitorLogs.length > 0 || pusatData.length > 0)) {
+      refreshIntegrationStats();
+    }
+  }, [supabaseSyncActive, rawVisitorLogs.length, pusatData.length]);
   const [loadingPusatData, setLoadingPusatData] = useState(false);
   const [selectedPusatData, setSelectedPusatData] = useState<any | null>(null);
   const [accountsMenuExpanded, setAccountsMenuExpanded] = useState(false);
