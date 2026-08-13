@@ -1328,6 +1328,7 @@ export default function Navbar() {
           border-bottom: 1px solid rgba(0, 33, 71, 0.08);
           display: flex;
           flex-direction: column;
+          align-items: center; /* Center the header items */
           gap: 6px;
         }
 
@@ -1343,6 +1344,8 @@ export default function Navbar() {
           border-radius: 10px;
           border: 1px solid rgba(0, 33, 71, 0.06);
           box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+          text-align: center;
+          width: 100%;
         }
 
         .profile-email, .profile-phone {
@@ -1358,7 +1361,9 @@ export default function Navbar() {
           border: 1px solid rgba(0, 33, 71, 0.04);
           display: flex;
           align-items: center;
+          justify-content: center; /* Center text and icon */
           gap: 6px;
+          width: 100%;
         }
         
         .profile-email::before {
@@ -1383,12 +1388,12 @@ export default function Navbar() {
         .profile-link, .profile-logout-btn {
           display: flex;
           align-items: center;
+          justify-content: center; /* Center the button contents */
           gap: 10px;
           width: 100%;
-          text-align: left;
+          text-align: center;
           padding: 12px 14px;
           border: 1px solid transparent;
-          background: transparent;
           font-size: 0.85rem;
           font-weight: 700;
           border-radius: 12px;
@@ -1398,31 +1403,29 @@ export default function Navbar() {
         }
 
         .profile-link {
-          color: var(--primary);
-          background: rgba(241, 245, 249, 0.5);
-          border-color: rgba(226, 232, 240, 0.8);
-        }
-
-        .profile-link:hover {
-          background: var(--primary);
           color: white;
-          border-color: var(--primary);
-          transform: translateY(-2px);
+          background: linear-gradient(135deg, var(--primary) 0%, #1e3a8a 100%);
+          border-color: transparent;
           box-shadow: 0 4px 10px rgba(0, 33, 71, 0.15);
         }
 
+        .profile-link:hover {
+          background: linear-gradient(135deg, #1e3a8a 0%, var(--primary) 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 15px rgba(0, 33, 71, 0.25);
+        }
+
         .profile-logout-btn {
-          color: #ef4444;
-          background: rgba(254, 242, 242, 0.5);
-          border-color: rgba(254, 226, 226, 0.8);
+          color: white;
+          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+          border-color: transparent;
+          box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
         }
 
         .profile-logout-btn:hover {
-          background: #ef4444;
-          color: white;
-          border-color: #ef4444;
+          background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
           transform: translateY(-2px);
-          box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
+          box-shadow: 0 6px 15px rgba(239, 68, 68, 0.25);
         }
 
         /* Mobile Menu Toggles */
