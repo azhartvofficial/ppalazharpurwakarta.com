@@ -2577,6 +2577,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <strong>Enabled (AES-256)</strong>
                           </div>
                         </div>
+                        <a href="https://supabase.com/dashboard/projects" target="_blank" rel="noopener noreferrer" className="floating-manage-btn">Kelola <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
                       </div>
 
                       {/* Card 2: Cloudinary */}
@@ -2602,6 +2603,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <strong>Secure HTTPS CDN</strong>
                           </div>
                         </div>
+                        <a href="https://cloudinary.com/console" target="_blank" rel="noopener noreferrer" className="floating-manage-btn">Kelola <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
                       </div>
 
                       {/* Card 3: Vercel */}
@@ -2627,6 +2629,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <strong>pp-alazharpwk.com</strong>
                           </div>
                         </div>
+                        <a href="https://vercel.com/dashboard" target="_blank" rel="noopener noreferrer" className="floating-manage-btn">Kelola <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
                       </div>
 
                       {/* Card 4: Google Drive */}
@@ -2652,6 +2655,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <strong>Google Workspace Security</strong>
                           </div>
                         </div>
+                        <a href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener noreferrer" className="floating-manage-btn">Kelola <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
                       </div>
 
                       {/* Card 5: AntiGravity */}
@@ -2676,39 +2680,16 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <span>Paket</span>
                             <strong>AntiGravity Builder Web</strong>
                           </div>
-                          <div style={{ marginTop: '0.8rem' }}>
-                            <a 
-                              href="https://play.google.com/store/account/subscriptions"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="btn-renew-subscription"
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '6px',
-                                width: '100%',
-                                padding: '0.55rem',
-                                borderRadius: '10px',
-                                border: '1px solid rgba(255, 140, 0, 0.3)',
-                                background: 'rgba(255, 140, 0, 0.08)',
-                                color: '#ff8c00',
-                                fontWeight: 800,
-                                fontSize: '0.7rem',
-                                cursor: 'pointer',
-                                transition: 'all 0.3s ease',
-                                textDecoration: 'none',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.5px'
-                              }}
-                            >
-                              Perpanjang Langganan
-                            </a>
-                          </div>
                         </div>
+                        <a href="https://play.google.com/store/account/subscriptions" target="_blank" rel="noopener noreferrer" className="floating-manage-btn warning">
+                          Perpanjang Langganan
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
                       </div>
                     </div>
                   </div>
+
+                  {/* Quick Actions Panel */}
 
                   {/* Activity and PPDB Preview removed by request */}
                 </motion.div>
@@ -5315,7 +5296,38 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           border: 1px solid #e2e8f0;
           border-radius: 16px;
           padding: 1.5rem;
+          padding-bottom: 4.5rem;
+          position: relative;
           transition: all 0.3s ease;
+        }
+
+        .floating-manage-btn {
+          position: absolute;
+          bottom: 1.25rem;
+          right: 1.25rem;
+          background: var(--primary);
+          color: white !important;
+          padding: 0.4rem 1rem;
+          border-radius: 50px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-decoration: none !important;
+          box-shadow: 0 4px 10px rgba(0, 0, 30, 0.15);
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .floating-manage-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 15px rgba(0, 0, 30, 0.25);
+          opacity: 0.95;
+        }
+
+        .floating-manage-btn.warning {
+          background: #f59e0b;
         }
 
         .integration-card:hover {
