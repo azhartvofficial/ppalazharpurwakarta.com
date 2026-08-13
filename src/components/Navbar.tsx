@@ -330,20 +330,9 @@ export default function Navbar() {
                   </div>
                   <div className="profile-dropdown-body">
                     <Link href={isAdminLoggedIn ? "/admin" : "/santri"} className="profile-link">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                        <rect x="3" y="3" width="7" height="9"></rect>
-                        <rect x="14" y="3" width="7" height="5"></rect>
-                        <rect x="14" y="12" width="7" height="9"></rect>
-                        <rect x="3" y="16" width="7" height="5"></rect>
-                      </svg>
                       Dashboard {isAdminLoggedIn ? 'Admin' : 'Santri'}
                     </Link>
                     <button onClick={() => setShowLogoutModal(true)} className="profile-logout-btn">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                        <polyline points="16 17 21 12 16 7"></polyline>
-                        <line x1="21" y1="12" x2="9" y2="12"></line>
-                      </svg>
                       Logout
                     </button>
                   </div>
@@ -1388,44 +1377,41 @@ export default function Navbar() {
         .profile-link, .profile-logout-btn {
           display: flex;
           align-items: center;
-          justify-content: center; /* Center the button contents */
-          gap: 10px;
+          justify-content: center;
           width: 100%;
           text-align: center;
-          padding: 12px 14px;
-          border: 1px solid transparent;
+          padding: 10px 14px;
           font-size: 0.85rem;
-          font-weight: 700;
+          font-weight: 800;
           border-radius: 12px;
           cursor: pointer;
           text-decoration: none;
           transition: all 0.3s ease;
+          background: transparent;
         }
 
         .profile-link {
-          color: white;
-          background: linear-gradient(135deg, var(--primary) 0%, #1e3a8a 100%);
-          border-color: transparent;
-          box-shadow: 0 4px 10px rgba(0, 33, 71, 0.15);
+          color: var(--primary);
+          border: 2px solid var(--primary);
         }
 
         .profile-link:hover {
-          background: linear-gradient(135deg, #1e3a8a 0%, var(--primary) 100%);
+          background: var(--primary);
+          color: white;
           transform: translateY(-2px);
-          box-shadow: 0 6px 15px rgba(0, 33, 71, 0.25);
+          box-shadow: 0 4px 10px rgba(0, 33, 71, 0.15);
         }
 
         .profile-logout-btn {
-          color: white;
-          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-          border-color: transparent;
-          box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
+          color: #ef4444;
+          border: 2px solid #ef4444;
         }
 
         .profile-logout-btn:hover {
-          background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+          background: #ef4444;
+          color: white;
           transform: translateY(-2px);
-          box-shadow: 0 6px 15px rgba(239, 68, 68, 0.25);
+          box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
         }
 
         /* Mobile Menu Toggles */
