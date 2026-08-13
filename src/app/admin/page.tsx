@@ -1926,7 +1926,7 @@ export default function AdminDashboardPage() {
         <aside className={`sidebar ${sidebarOpen ? "mobile-open" : ""}`}>
 
           <nav className="sidebar-nav">
-            <div style={{ padding: '0 1.25rem 0.75rem', color: '#94a3b8', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+            <div style={{ padding: '0 1.25rem 0.75rem', color: '#ffffff', fontSize: '0.9rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1.5px', textShadow: '0 2px 5px rgba(0,0,0,0.4)' }}>
               Menu Admin
             </div>
             <button 
@@ -5050,6 +5050,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           box-sizing: border-box;
           overflow-y: auto;
           height: 100vh;
+        }
+        
+        @media (min-width: 1024px) {
+          .main-content {
+            padding-top: 175px !important; /* Provide ample breathing room for the title under the navbar */
+          }
         }
 
         /* Control Panel CSS */

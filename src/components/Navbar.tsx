@@ -931,13 +931,13 @@ export default function Navbar() {
         .main-nav {
           background: rgba(255, 255, 255, 0.98);
           backdrop-filter: blur(10px);
-          padding: 1rem 0;
+          padding: 0.75rem 0;
           box-shadow: var(--shadow);
           transition: var(--transition);
         }
 
         .navbar.scrolled .main-nav {
-          padding: 0.7rem 0;
+          padding: 0.5rem 0;
         }
 
         .nav-container {
