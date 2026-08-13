@@ -4834,6 +4834,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           display: grid;
           grid-template-columns: 280px 1fr;
           min-height: 100vh;
+          align-items: start; /* This is essential for position: sticky to work in a grid */
         }
 
         /* Sidebar Styling - Deep Navy Dominant Color */
@@ -4856,6 +4857,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             padding: 30px 1.5rem 2rem 1.5rem; /* Crop top padding for laptop */
             top: 85px; /* Stick right below the 85px navbar */
             height: calc(100vh - 85px);
+            overflow-y: hidden; /* Ensure the menu itself does not scroll */
           }
         }
 
