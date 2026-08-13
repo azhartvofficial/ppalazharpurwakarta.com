@@ -434,6 +434,7 @@ export default function AdminDashboardPage() {
   
   // Pusat Data Siswa states
   const [pusatDataSubTab, setPusatDataSubTab] = useState<"data_siswa" | "pengajuan_data" | "status_pendaftaran">("data_siswa");
+  const [beritaSubTab, setBeritaSubTab] = useState<"kelola_berita" | "konten_beranda" | "iklan">("kelola_berita");
   
   // Registration Settings states
   const [registrationSettings, setRegistrationSettings] = useState<any[]>([]);
@@ -2791,7 +2792,55 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   exit={{ opacity: 0, y: -15 }}
                   className="tab-content"
                 >
-                  <div className="data-card">
+                  {/* Glassmorphic Sub-Navbar for Berita */}
+                  <div className="accounts-sub-navbar" style={{
+                    display: 'flex', alignItems: 'center', background: 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(12px)', borderRadius: '12px', padding: '0.5rem', marginBottom: '1.5rem',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid rgba(226, 232, 240, 0.8)',
+                    gap: '0.5rem', overflowX: 'auto', whiteSpace: 'nowrap'
+                  }}>
+                    <button
+                      onClick={() => setBeritaSubTab("kelola_berita")}
+                      style={{
+                        padding: '0.6rem 1.2rem', background: beritaSubTab === "kelola_berita" ? '#002147' : 'transparent',
+                        color: beritaSubTab === "kelola_berita" ? '#ffffff' : '#64748b', border: 'none', borderRadius: '8px',
+                        fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.3s ease', display: 'flex', alignItems: 'center', gap: '8px'
+                      }}
+                    >
+                      <span style={{ fontSize: '1rem' }}>📰</span> Kelola Berita
+                    </button>
+                    <button
+                      onClick={() => setBeritaSubTab("konten_beranda")}
+                      style={{
+                        padding: '0.6rem 1.2rem', background: beritaSubTab === "konten_beranda" ? '#002147' : 'transparent',
+                        color: beritaSubTab === "konten_beranda" ? '#ffffff' : '#64748b', border: 'none', borderRadius: '8px',
+                        fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.3s ease', display: 'flex', alignItems: 'center', gap: '8px'
+                      }}
+                    >
+                      <span style={{ fontSize: '1rem' }}>🏠</span> Konten Beranda
+                    </button>
+                    <button
+                      onClick={() => setBeritaSubTab("iklan")}
+                      style={{
+                        padding: '0.6rem 1.2rem', background: beritaSubTab === "iklan" ? '#002147' : 'transparent',
+                        color: beritaSubTab === "iklan" ? '#ffffff' : '#64748b', border: 'none', borderRadius: '8px',
+                        fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.3s ease', display: 'flex', alignItems: 'center', gap: '8px'
+                      }}
+                    >
+                      <span style={{ fontSize: '1rem' }}>📢</span> Iklan
+                    </button>
+                  </div>
+
+                  <AnimatePresence mode="wait">
+                    {beritaSubTab === "kelola_berita" && (
+                      <motion.div
+                        key="kelola_berita"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div className="data-card">
                     <div className="card-header-flex">
                       <h3>Kelola Konten Berita & Pengumuman</h3>
                       <button onClick={() => {
@@ -2878,7 +2927,40 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         </tbody>
                       </table>
                     </div>
-                  </div>
+                        </div>
+                      </motion.div>
+                    )}
+                    {beritaSubTab === "konten_beranda" && (
+                      <motion.div
+                        key="konten_beranda"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                          <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>🏠</span>
+                          <h4 style={{ color: '#002147', marginBottom: '0.5rem' }}>Konten Beranda</h4>
+                          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Fitur pengelolaan konten beranda sedang dalam pengembangan.</p>
+                        </div>
+                      </motion.div>
+                    )}
+                    {beritaSubTab === "iklan" && (
+                      <motion.div
+                        key="iklan"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                          <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>📢</span>
+                          <h4 style={{ color: '#002147', marginBottom: '0.5rem' }}>Manajemen Iklan</h4>
+                          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Fitur pengelolaan iklan sedang dalam pengembangan.</p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               )}
 
@@ -3225,8 +3307,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.2 }}
                         >
-                          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', gap: '10px' }}>
-                            <button onClick={() => { fetchPusatData(); openAlert("Sedang menyegarkan Pusat Data..."); }} style={{ padding: '8px 16px', background: 'rgba(0, 33, 71, 0.05)', color: '#002147', borderRadius: '8px', border: '1px solid rgba(0, 33, 71, 0.1)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }} onMouseOver={(e) => { e.currentTarget.style.background = '#002147'; e.currentTarget.style.color = 'white'; }} onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(0, 33, 71, 0.05)'; e.currentTarget.style.color = '#002147'; }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', gap: '10px' }}>
+                            <button onClick={() => { fetchPusatData(); openAlert("Sedang menyegarkan Pusat Data..."); }} style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}>
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 2s linear infinite' }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                               <span className="hide-on-mobile-text">Refresh</span>
                             </button>
