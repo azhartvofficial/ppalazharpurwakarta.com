@@ -241,9 +241,81 @@ export default function AdminDashboardPage() {
   const [chartMaxVal, setChartMaxVal] = useState<number>(800);
   const [chartRange, setChartRange] = useState<"7D" | "30D">("7D");
   const [chartData, setChartData] = useState<any[]>([]);
+  const [rawVisitorLogs, setRawVisitorLogs] = useState<any[]>([]);
 
   useEffect(() => {
     const today = new Date();
+    
+    // IF REAL DATA IS AVAILABLE, COMPUTE ACCURATELY!
+    if (supabaseSyncActive && rawVisitorLogs.length > 0) {
+      const activeChartPoints: any[] = [];
+      let maxVisits = 0;
+      
+      if (chartRange === "7D") {
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const dateStr = d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
+          
+          const dayStart = new Date(d);
+          dayStart.setHours(0, 0, 0, 0);
+          const dayEnd = new Date(d);
+          dayEnd.setHours(23, 59, 59, 999);
+          
+          const dayLogs = rawVisitorLogs.filter(log => {
+            const logDate = new Date(log.created_at);
+            return logDate >= dayStart && logDate <= dayEnd;
+          });
+          
+          const daySessions = Array.from(new Set(dayLogs.map(l => l.session_id))).length;
+          if (daySessions > maxVisits) maxVisits = daySessions;
+          activeChartPoints.push({ date: dateStr, visitors: daySessions, x: 0, y: 0 });
+        }
+      } else {
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        
+        for (let i = 1; i <= daysInMonth; i++) {
+          const d = new Date(currentYear, currentMonth, i);
+          const dateStr = `${i} ${d.toLocaleDateString("id-ID", { month: "short" })}`;
+          
+          let daySessions = 0;
+          if (d <= today) {
+            const dayStart = new Date(d);
+            dayStart.setHours(0, 0, 0, 0);
+            const dayEnd = new Date(d);
+            dayEnd.setHours(23, 59, 59, 999);
+            
+            const dayLogs = rawVisitorLogs.filter(log => {
+              const logDate = new Date(log.created_at);
+              return logDate >= dayStart && logDate <= dayEnd;
+            });
+            daySessions = Array.from(new Set(dayLogs.map(l => l.session_id))).length;
+          }
+          if (daySessions > maxVisits) maxVisits = daySessions;
+          activeChartPoints.push({ date: dateStr, visitors: daySessions, x: 0, y: 0 });
+        }
+      }
+
+      const safeMaxVal = Math.max(maxVisits, 10);
+      const scaledMax = Math.ceil(safeMaxVal / 10) * 10;
+      setChartMaxVal(scaledMax);
+      
+      const count = activeChartPoints.length;
+      const spanX = 600;
+      
+      const finalData = activeChartPoints.map((pt, idx) => {
+        const x = 50 + (count > 1 ? (idx / (count - 1)) * spanX : 0);
+        const ratio = pt.visitors / scaledMax;
+        const y = 190 - (ratio * 150);
+        return { ...pt, x, y };
+      });
+      setChartData(finalData);
+      return;
+    }
+
+    // --- FALLBACK MOCK DATA LOGIC (If Supabase is down or empty) ---
     let newData: any[] = [];
     let maxVisits = 0;
     
@@ -302,7 +374,7 @@ export default function AdminDashboardPage() {
     });
     
     setChartData(newData);
-  }, [chartRange]);
+  }, [chartRange, supabaseSyncActive, rawVisitorLogs]);
   
   // Auth states
   const [user, setUser] = useState<any>(null);
@@ -1196,6 +1268,7 @@ export default function AdminDashboardPage() {
 
       if (data && data.length > 0) {
         setSupabaseSyncActive(true);
+        setRawVisitorLogs(data);
 
         // 1. Total unique sessions
         const uniqueSessions = Array.from(new Set(data.map(d => d.session_id)));
@@ -1273,46 +1346,8 @@ export default function AdminDashboardPage() {
           tablet: Math.round((devCounts.Tablet / devTotal) * 100) || 4
         });
 
-        // 6. Calculate dynamic chart data from visitor_logs database!
-        const last7DaysList = [];
-        for (let i = 6; i >= 0; i--) {
-          const d = new Date();
-          d.setDate(d.getDate() - i);
-          const dateStr = d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
-          
-          const dayStart = new Date(d);
-          dayStart.setHours(0, 0, 0, 0);
-          const dayEnd = new Date(d);
-          dayEnd.setHours(23, 59, 59, 999);
-          
-          const dayLogs = data.filter(log => {
-            const logDate = new Date(log.created_at);
-            return logDate >= dayStart && logDate <= dayEnd;
-          });
-          
-          const daySessions = Array.from(new Set(dayLogs.map(l => l.session_id))).length;
-          
-          last7DaysList.push({
-            date: dateStr,
-            visitors: daySessions
-          });
-        }
-
-        const maxVal = Math.max(...last7DaysList.map(item => item.visitors), 10);
-        const scaledMax = Math.ceil(maxVal / 10) * 10;
-        setChartMaxVal(scaledMax);
-
-        const activeChartPoints = last7DaysList.map((item, idx) => {
-          const x = 50 + idx * 100;
-          const y = 190 - ((item.visitors / scaledMax) * 150);
-          return {
-            date: item.date,
-            visitors: item.visitors,
-            x,
-            y
-          };
-        });
-        setChartData(activeChartPoints);
+        // 6. Dynamic chart data is now handled by the chartRange useEffect 
+        // using the rawVisitorLogs state!
       }
     } catch (err) {
       console.warn("Table visitor_logs not available or setup in Supabase yet. Using beautiful realistic mock data.");
