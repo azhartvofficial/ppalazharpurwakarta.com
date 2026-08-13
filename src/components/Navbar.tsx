@@ -1224,10 +1224,10 @@ export default function Navbar() {
 
         .login-switch-container {
           position: relative;
-          width: 120px;
-          height: 44px;
+          width: 140px;
+          height: 48px;
           background: transparent;
-          border-radius: 12px;
+          border-radius: 50px;
           overflow: visible;
         }
 
@@ -1245,7 +1245,8 @@ export default function Navbar() {
         .nav-login-premium:hover .login-back {
           opacity: 1 !important;
           transform: scale(1) !important;
-          border-color: rgba(230, 126, 34, 0.6) !important;
+          border-color: var(--primary) !important;
+          background: rgba(0, 33, 71, 0.12) !important;
         }
 
         .login-front, .login-back {
@@ -1255,33 +1256,34 @@ export default function Navbar() {
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 12px;
-          transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out, border-color 0.3s ease;
+          border-radius: 50px;
+          transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out, background 0.5s ease;
         }
 
         .login-front {
           background: transparent;
           border: none;
           z-index: 2;
-          animation: autoFadeFront 8s infinite;
+          animation: autoFadeFront 14s infinite ease-in-out;
         }
 
         .login-back {
-          background: rgba(230, 126, 34, 0.1);
-          border: 1px solid rgba(230, 126, 34, 0.3);
-          color: #e67e22;
-          font-size: 0.75rem;
+          background: rgba(0, 33, 71, 0.08);
+          border: 2px solid var(--primary);
+          color: var(--primary);
+          font-size: 0.8rem;
           font-weight: 800;
-          letter-spacing: 1px;
+          letter-spacing: 0.5px;
+          box-shadow: 0 4px 15px rgba(0, 33, 71, 0.08);
           z-index: 1;
           opacity: 0;
           transform: scale(0.95);
-          animation: autoFadeBack 8s infinite;
+          animation: autoFadeBack 14s infinite ease-in-out;
         }
 
         @keyframes autoFadeFront {
           0%, 80%, 100% { opacity: 1; transform: scale(1); }
-          85%, 95% { opacity: 0; transform: scale(1.05); }
+          85%, 95% { opacity: 0; transform: scale(1.03); }
         }
 
         @keyframes autoFadeBack {
@@ -1290,8 +1292,8 @@ export default function Navbar() {
         }
 
         .nav-login-img {
-          max-height: 32px;
-          max-width: 110px;
+          max-height: 42px;
+          max-width: 130px;
           width: auto;
           height: auto;
           object-fit: contain;
@@ -1696,8 +1698,8 @@ export default function Navbar() {
           }
 
           .login-switch-container {
-            width: 110px;
-            height: 38px;
+            width: 120px;
+            height: 42px;
           }
 
           .login-graphic {
@@ -1712,8 +1714,8 @@ export default function Navbar() {
           }
 
           .nav-login-img {
-            max-height: 28px;
-            max-width: 95px;
+            max-height: 34px;
+            max-width: 110px;
           }
 
           .logo-img {
