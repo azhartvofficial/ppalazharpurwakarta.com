@@ -6426,35 +6426,32 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           /* Floating Admin Toggle & Animation */
           .floating-admin-wrapper {
             position: fixed;
-            bottom: 25px;
-            right: 20px;
-            left: auto;
-            top: auto;
+            left: 0;
+            top: 75px;
             z-index: 999;
             display: flex;
             align-items: center;
-            flex-direction: row-reverse;
-            animation: introSlideUpAndWiggle 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: introSlideAndWiggle 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
           }
 
-          @keyframes introSlideUpAndWiggle {
-            0% { transform: translateY(150%); }
-            40% { transform: translateY(0); }
-            55% { transform: translateY(-8px); }
-            70% { transform: translateY(4px); }
-            85% { transform: translateY(-4px); }
-            100% { transform: translateY(0); }
+          @keyframes introSlideAndWiggle {
+            0% { transform: translateX(-100%); }
+            10% { transform: translateX(0); }
+            15% { transform: translateX(8px); }
+            25% { transform: translateX(-4px); }
+            35% { transform: translateX(4px); }
+            45% { transform: translateX(0); }
+            100% { transform: translateX(0); }
           }
 
           .floating-tooltip {
             background: #ff8c00;
             color: white;
-            padding: 0.5rem 0.8rem;
+            padding: 0.4rem 0.6rem;
             border-radius: 8px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 800;
-            margin-right: 0.8rem;
-            margin-left: 0;
+            margin-left: 0.5rem;
             box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
             white-space: nowrap;
             position: relative;
@@ -6465,35 +6462,33 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           .floating-tooltip::before {
             content: '';
             position: absolute;
-            right: -5px;
-            left: auto;
+            left: -5px;
             top: 50%;
             transform: translateY(-50%);
             border-top: 5px solid transparent;
             border-bottom: 5px solid transparent;
-            border-left: 5px solid #ff8c00;
-            border-right: none;
+            border-right: 5px solid #ff8c00;
           }
 
           @keyframes showAndFadeTooltip {
-            0%, 20% { opacity: 0; transform: translateX(10px); visibility: visible; }
-            35%, 85% { opacity: 1; transform: translateX(0); visibility: visible; }
-            100% { opacity: 0; transform: translateX(-10px); visibility: hidden; }
+            0%, 15% { opacity: 0; transform: translateX(-10px); visibility: visible; }
+            25%, 85% { opacity: 1; transform: translateX(0); visibility: visible; }
+            100% { opacity: 0; transform: translateX(10px); visibility: hidden; }
           }
 
           .floating-admin-toggle {
-            background: rgba(0, 33, 71, 0.85); /* Glass Navy */
+            background: rgba(0, 33, 71, 0.85);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 50px;
-            padding: 0.3rem 0.8rem 0.3rem 0.3rem;
+            border-left: none;
+            border-radius: 0 40px 40px 0;
+            padding: 0.75rem 1rem 0.75rem 0.25rem;
             display: flex;
             align-items: center;
-            flex-direction: row-reverse;
-            gap: 0.6rem;
-            box-shadow: 0 8px 25px rgba(0, 33, 71, 0.4);
+            gap: 0.4rem;
+            box-shadow: 4px 4px 15px rgba(0, 33, 71, 0.3);
             cursor: pointer;
             transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background 0.2s;
             outline: none;
@@ -6505,32 +6500,34 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           }
 
           .toggle-text {
-            font-size: 0.85rem;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 0.75rem;
             font-weight: 800;
-            letter-spacing: 0.5px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
+            transform: rotate(180deg);
+            margin-left: 0.2rem;
             color: #ff8c00;
-            writing-mode: horizontal-tb;
-            transform: none;
-            margin: 0;
           }
 
           .toggle-logo-wrapper {
             position: relative;
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: white;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+            margin-right: -1.5rem;
+            margin-left: 0.2rem;
             border: 2px solid #002147;
-            margin: 0;
           }
 
           .toggle-logo {
-            width: 24px;
+            width: 20px;
             height: auto;
             object-fit: contain;
           }
