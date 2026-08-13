@@ -170,7 +170,7 @@ const Preloader = () => {
             </div>
           </div>
           <img 
-            src={getCloudinaryUrl(pathname && pathname.startsWith("/login") ? "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999182/izzlhzwa6vvmkfa95eww.png" : "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png")} 
+            src={getCloudinaryUrl(pathname && pathname.startsWith("/login") ? "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999182/izzlhzwa6vvmkfa95eww.png" : "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999207/ntxuizh8mm8odxndbvs2.png")} 
             alt="Logo" 
             className="preloader-logo" 
             width={130}

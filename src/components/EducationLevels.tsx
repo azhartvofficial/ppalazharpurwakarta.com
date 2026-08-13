@@ -16,7 +16,7 @@ const EducationLevels = () => {
       link: "/profil/alazhapurwakarta",
       icon: (
         <img 
-          src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" 
+          src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999207/ntxuizh8mm8odxndbvs2.png" 
           alt="Logo Pondok Pesantren" 
           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />
@@ -28,7 +28,7 @@ const EducationLevels = () => {
       link: "/unit/ma",
       icon: (
         <img 
-          src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999206/tseftzv1omefjsldurni.png" 
+          src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999206/tseftzv1omefjsldurni.png" 
           alt="Logo Madrasah Aliyah" 
           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />
@@ -40,7 +40,7 @@ const EducationLevels = () => {
       link: "/unit/smp",
       icon: (
         <img 
-          src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999209/ftxowvzkp4bix7mimh3v.png" 
+          src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999209/ftxowvzkp4bix7mimh3v.png" 
           alt="Logo SMP Islam" 
           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />
@@ -52,7 +52,7 @@ const EducationLevels = () => {
       link: "/unit/sdit",
       icon: (
         <img 
-          src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999208/vqmahfuz6iqrzg916oab.png" 
+          src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999208/vqmahfuz6iqrzg916oab.png" 
           alt="Logo SDIT Al-Azhar" 
           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />
@@ -65,7 +65,7 @@ const EducationLevels = () => {
       comingSoon: true,
       icon: (
         <img 
-          src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999210/xblypre0sq4suc8bjdld.png" 
+          src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999210/xblypre0sq4suc8bjdld.png" 
           alt="Logo TKIT Al-Azhar" 
           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />

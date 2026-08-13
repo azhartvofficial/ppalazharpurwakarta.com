@@ -220,7 +220,7 @@ export default function Navbar() {
       <div className="main-nav">
         <div className="container nav-container">
           <Link href="/" className="logo" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
-            <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Al Azhar" className="logo-img" />
+            <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Al Azhar" className="logo-img" />
             <div className="logo-box">
               <span className="logo-main">PESANTREN AL-AZHAR</span>
               <span className="logo-sub">PURWAKARTA</span>
@@ -347,7 +347,7 @@ export default function Navbar() {
                 <div className="login-switch-container">
                   <div className="login-switch-inner">
                     <div className="login-front">
-                      <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999182/izzlhzwa6vvmkfa95eww.png" alt="Azwa Page" className="nav-login-img" />
+                      <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999182/izzlhzwa6vvmkfa95eww.png" alt="Azwa Page" className="nav-login-img" />
                     </div>
                     <div className="login-back">
                       <span>LOGIN</span>
@@ -2033,7 +2033,7 @@ export default function Navbar() {
       {maintenanceActive && !isAdminLoggedIn && !isLoginPage && (
         <div className="maintenance-overlay">
           <div className="maintenance-glass-card">
-            <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Al Azhar" className="maintenance-logo" />
+            <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Al Azhar" className="maintenance-logo" />
             <h1 className="maintenance-title">SISTEM MAINTENANCE</h1>
             <div className="maintenance-gear-container">
               <span className="maintenance-gear-icon spinning">⚙️</span>

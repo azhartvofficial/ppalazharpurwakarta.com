@@ -347,9 +347,9 @@ export default function AdminDashboardPage() {
 
   // Docs states
   const [photos, setPhotos] = useState<DocPhoto[]>([
-    { id: "1", url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999166/mnxrqkh8y8lei8wjio1f.png", description: "Wisuda Kelulusan Alumni Angkatan 12", date: "24 April 2026" },
-    { id: "2", url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999167/lmj09gushldyzgflpfms.png", description: "Kegiatan Halaqah Qur'an di Masjid Utama", date: "18 April 2026" },
-    { id: "3", url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999168/fttozmnhyylwwegvwl6r.png", description: "Kunjungan Studi Lapangan Santri Mandiri", date: "05 April 2026" },
+    { id: "1", url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999166/mnxrqkh8y8lei8wjio1f.png", description: "Wisuda Kelulusan Alumni Angkatan 12", date: "24 April 2026" },
+    { id: "2", url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999167/lmj09gushldyzgflpfms.png", description: "Kegiatan Halaqah Qur'an di Masjid Utama", date: "18 April 2026" },
+    { id: "3", url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999168/fttozmnhyylwwegvwl6r.png", description: "Kunjungan Studi Lapangan Santri Mandiri", date: "05 April 2026" },
   ]);
   const [newPhotoUrl, setNewPhotoUrl] = useState("");
   const [newPhotoDesc, setNewPhotoDesc] = useState("");
@@ -2086,7 +2086,7 @@ export default function AdminDashboardPage() {
             <button className="floating-admin-toggle" onClick={() => setSidebarOpen(true)} title="Buka Menu Pengurus">
               <span className="toggle-text">Menu Admin</span>
               <div className="toggle-logo-wrapper">
-                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo" className="toggle-logo" />
+                <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo" className="toggle-logo" />
               </div>
             </button>
             <div className="floating-tooltip">

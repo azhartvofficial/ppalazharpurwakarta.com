@@ -52,20 +52,20 @@ export default function SejarahPage() {
               </p>
             </div>
             <div className="sejarah-img">
-              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999221/jbdav9rhoivmmytzjjen.png" alt="Profil Al-Azhar Purwakarta" />
+              <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999221/jbdav9rhoivmmytzjjen.png" alt="Profil Al-Azhar Purwakarta" />
             </div>
           </div>
 
           <div className="visi-misi-section">
               <div className="vm-logos-column">
                 <div className="vm-logos-row">
-                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Ponpes" />
-                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999209/ftxowvzkp4bix7mimh3v.png" alt="Logo SMP" />
-                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999206/tseftzv1omefjsldurni.png" alt="Logo MA" />
+                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999207/ntxuizh8mm8odxndbvs2.png" alt="Logo Ponpes" />
+                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999209/ftxowvzkp4bix7mimh3v.png" alt="Logo SMP" />
+                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999206/tseftzv1omefjsldurni.png" alt="Logo MA" />
                 </div>
                 <div className="vm-logos-row">
-                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999208/vqmahfuz6iqrzg916oab.png" alt="Logo SDIT" />
-                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999210/xblypre0sq4suc8bjdld.png" alt="Logo TK" />
+                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999208/vqmahfuz6iqrzg916oab.png" alt="Logo SDIT" />
+                  <img src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999210/xblypre0sq4suc8bjdld.png" alt="Logo TK" />
                 </div>
               </div>
             <div className="v-m-box">

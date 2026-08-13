@@ -10,17 +10,17 @@ export default function Hero() {
 
   const slides = [
     {
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999215/vdc4p1otuifswwdjx7zt.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999215/vdc4p1otuifswwdjx7zt.jpg",
       title: t('heroTitle1'),
       desc: t('heroDesc1')
     },
     {
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999216/jisfbfuvn0kxs6axaks4.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999216/jisfbfuvn0kxs6axaks4.jpg",
       title: t('heroTitle2'),
       desc: t('heroDesc2')
     },
     {
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999219/yfb3mbixr4otuvcl6wmp.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999219/yfb3mbixr4otuvcl6wmp.jpg",
       title: t('heroTitle3'),
       desc: t('heroDesc3')
     }

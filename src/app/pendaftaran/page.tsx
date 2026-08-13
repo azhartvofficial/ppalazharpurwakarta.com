@@ -164,7 +164,7 @@ export default function PendaftaranPage() {
 
         .hero-header {
           padding: 12rem 0 6rem;
-          background: linear-gradient(rgba(0, 33, 71, 0.9), rgba(0, 33, 71, 0.8)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999165/qyvcomndxiwejcvzmfsl.png');
+          background: linear-gradient(rgba(0, 33, 71, 0.9), rgba(0, 33, 71, 0.8)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999165/qyvcomndxiwejcvzmfsl.png');
           background-size: cover;
           background-position: center;
           background-attachment: fixed;

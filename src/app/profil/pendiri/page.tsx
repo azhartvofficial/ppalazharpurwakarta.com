@@ -106,7 +106,7 @@ export default function PendiriPage() {
             >
               <div className="image-wrapper">
                 <Image 
-                  src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999220/hjozyz9pb8puevlg2ynu.png" 
+                  src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999220/hjozyz9pb8puevlg2ynu.png" 
                   alt="KH. Andi Mappaenre" 
                   width={450} 
                   height={550} 
@@ -131,7 +131,7 @@ export default function PendiriPage() {
             >
               <div className="image-wrapper left-accent">
                 <Image 
-                  src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999180/hpw4kbe8jglic4kpdtbj.png" 
+                  src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999180/hpw4kbe8jglic4kpdtbj.png" 
                   alt="Ketua Yayasan Andi Azhar" 
                   width={450} 
                   height={550} 
@@ -194,9 +194,9 @@ export default function PendiriPage() {
           <div className="galeri-grid">
             {[...Array(21)].map((_, i) => {
               const images = [
-                "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999220/hjozyz9pb8puevlg2ynu.png",
-                "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999180/hpw4kbe8jglic4kpdtbj.png",
-                "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999165/qyvcomndxiwejcvzmfsl.png"
+                "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999220/hjozyz9pb8puevlg2ynu.png",
+                "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999180/hpw4kbe8jglic4kpdtbj.png",
+                "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999165/qyvcomndxiwejcvzmfsl.png"
               ];
               return (
                 <motion.div 
@@ -231,7 +231,7 @@ export default function PendiriPage() {
         .header-section {
           padding: 12rem 0 6rem;
           text-align: center;
-          background: linear-gradient(rgba(0, 33, 71, 0.8), rgba(0, 33, 71, 0.7)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999165/qyvcomndxiwejcvzmfsl.png');
+          background: linear-gradient(rgba(0, 33, 71, 0.8), rgba(0, 33, 71, 0.7)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999165/qyvcomndxiwejcvzmfsl.png');
           background-size: cover;
           background-position: center;
           background-attachment: fixed;

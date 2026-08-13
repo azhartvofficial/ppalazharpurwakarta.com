@@ -977,7 +977,7 @@ export default function PusdaPage() {
           content: '';
           position: absolute;
           top: 0; left: 0; right: 0; bottom: 0;
-          background: url('https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999215/vdc4p1otuifswwdjx7zt.jpg') center/cover;
+          background: url('https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999215/vdc4p1otuifswwdjx7zt.jpg') center/cover;
           opacity: 0.15;
           mix-blend-mode: overlay;
         }

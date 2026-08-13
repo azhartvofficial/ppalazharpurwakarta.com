@@ -7,14 +7,14 @@ import Image from "next/image";
 const AlumniDocumentation = () => {
   // Sample alumni documentation images
   const photos = [
-    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999166/mnxrqkh8y8lei8wjio1f.png", size: "large", rotate: -5, y: 0 },
-    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999167/lmj09gushldyzgflpfms.png", size: "medium", rotate: 8, y: 40 },
-    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999168/fttozmnhyylwwegvwl6r.png", size: "small", rotate: -12, y: -20 },
-    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999169/gxnrrxwaie8ln7niagop.jpg", size: "medium", rotate: 15, y: 10 },
-    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999170/lgceqxazwh0wwjqp0gte.png", size: "large", rotate: -3, y: 50 },
-    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999172/et1dzyokivsyaq5c5muw.png", size: "small", rotate: 10, y: -40 },
-    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999173/tfgxenoboqrensvxqgqo.png", size: "medium", rotate: -7, y: 20 },
-    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999174/sbshvliwtt33it77nycr.png", size: "large", rotate: 5, y: -10 },
+    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999166/mnxrqkh8y8lei8wjio1f.png", size: "large", rotate: -5, y: 0 },
+    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999167/lmj09gushldyzgflpfms.png", size: "medium", rotate: 8, y: 40 },
+    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999168/fttozmnhyylwwegvwl6r.png", size: "small", rotate: -12, y: -20 },
+    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999169/gxnrrxwaie8ln7niagop.jpg", size: "medium", rotate: 15, y: 10 },
+    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999170/lgceqxazwh0wwjqp0gte.png", size: "large", rotate: -3, y: 50 },
+    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999172/et1dzyokivsyaq5c5muw.png", size: "small", rotate: 10, y: -40 },
+    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999173/tfgxenoboqrensvxqgqo.png", size: "medium", rotate: -7, y: 20 },
+    { url: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999174/sbshvliwtt33it77nycr.png", size: "large", rotate: 5, y: -10 },
   ];
 
   return (

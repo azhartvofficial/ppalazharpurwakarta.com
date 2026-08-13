@@ -119,11 +119,11 @@ export default function MaintenanceGuard({ children }: { children: React.ReactNo
             backdropFilter: 'blur(10px)'
           }}>
             {[
-              "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999207/ntxuizh8mm8odxndbvs2.png",
-              "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999209/ftxowvzkp4bix7mimh3v.png",
-              "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999206/tseftzv1omefjsldurni.png",
-              "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999208/vqmahfuz6iqrzg916oab.png",
-              "https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999210/xblypre0sq4suc8bjdld.png"
+              "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999207/ntxuizh8mm8odxndbvs2.png",
+              "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999209/ftxowvzkp4bix7mimh3v.png",
+              "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999206/tseftzv1omefjsldurni.png",
+              "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999208/vqmahfuz6iqrzg916oab.png",
+              "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999210/xblypre0sq4suc8bjdld.png"
             ].map((src, idx) => (
               <div key={idx} style={{
                 position: 'relative',

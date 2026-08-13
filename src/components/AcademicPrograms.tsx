@@ -10,77 +10,77 @@ const AcademicPrograms = () => {
     {
       title: "Tahfidz Al-Qur'an",
       subtitle: "Mujahid Qur'ani",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786528/n2oc9q4aa503gzpgqsnn.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780786528/n2oc9q4aa503gzpgqsnn.jpg",
     },
     {
       title: "Fiqih 4 Mazhab",
       subtitle: "Dirasah Islamiyah",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786524/o53twqvwfneikr2ws8cb.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780786524/o53twqvwfneikr2ws8cb.jpg",
     },
     {
       title: "Bahasa Arab",
       subtitle: "Komunikasi Global",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780811075/db29otexxjvu6rgb8wvz.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780811075/db29otexxjvu6rgb8wvz.jpg",
     },
     {
       title: "Bahasa Inggris",
       subtitle: "Komunikasi Global",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786523/npfdawgze3pvsga3ygau.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780786523/npfdawgze3pvsga3ygau.jpg",
     },
     {
       title: "Kitab Kuning",
       subtitle: "Dirasah Islamiyah",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786525/qnxb3x7hoguxf9lzebh7.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780786525/qnxb3x7hoguxf9lzebh7.jpg",
     },
     {
       title: "Pendidikan Pancasila",
       subtitle: "Kewarganegaraan",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780811081/b7ksep4k9nqipbuk6nta.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780811081/b7ksep4k9nqipbuk6nta.jpg",
     },
     {
       title: "Pendidikan Jasmani",
       subtitle: "Keterampilan",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786526/exeu7mqzrkhupi7fiijw.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780786526/exeu7mqzrkhupi7fiijw.jpg",
     },
     {
       title: "Sosiologi",
       subtitle: "Wawasan Kemanusiaan",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786527/usdo5ctfnamku7cbnoq9.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780786527/usdo5ctfnamku7cbnoq9.jpg",
     },
     {
       title: "Biologi",
       subtitle: "Sains & Analitika",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780811076/fdr5yovrjswcoy1guy7e.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780811076/fdr5yovrjswcoy1guy7e.jpg",
     },
     {
       title: "Matematika",
       subtitle: "Sains & Analitika",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780808246/sdla2gzbxvuo4oim53rn.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780808246/sdla2gzbxvuo4oim53rn.jpg",
     },
     {
       title: "Nahwu & Shorof",
       subtitle: "Dirasah Islamiyah",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780811078/zgft66objlx103h7oaoc.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780811078/zgft66objlx103h7oaoc.jpg",
     },
     {
       title: "Media Kreatif",
       subtitle: "Multimedia & Digital",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780808246/avixiqzitli7c3ojc1ro.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780808246/avixiqzitli7c3ojc1ro.jpg",
     },
     {
       title: "Artificial Intelligence",
       subtitle: "Sains & Teknologi",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780811079/islswwqj3ad92jiemx7l.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780811079/islswwqj3ad92jiemx7l.jpg",
     },
     {
       title: "Seni & Budaya",
       subtitle: "Keterampilan",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780811082/avsg4wakmgqzhspnldic.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780811082/avsg4wakmgqzhspnldic.jpg",
     },
     {
       title: "Teknologi Informatika",
       subtitle: "Mujahid Digital",
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/v1780786527/tqkqys7wtvykwecjixoq.jpg",
+      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1780786527/tqkqys7wtvykwecjixoq.jpg",
     },
   ];
 

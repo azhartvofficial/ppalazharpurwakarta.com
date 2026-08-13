@@ -19,7 +19,7 @@ const Admission = () => {
           >
             <div className="main-image-box">
               <img 
-                src="https://res.cloudinary.com/dpgqct4hz/image/upload/v1778999225/luk0g71ynw99bhtqfbe7.png" 
+                src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999225/luk0g71ynw99bhtqfbe7.png" 
                 alt="Santri Al Azhar Purwakarta" 
               />
             </div>
