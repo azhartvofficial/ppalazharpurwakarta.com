@@ -449,8 +449,7 @@ export default function AdminDashboardPage() {
   const [pusatDataFilterProgram, setPusatDataFilterProgram] = useState("Semua");
   const [pusatDataFilterBerkas, setPusatDataFilterBerkas] = useState("Semua");
   const [pusatDataFilterProvinsi, setPusatDataFilterProvinsi] = useState("Semua");
-  const [pusatDataFilterTanggal, setPusatDataFilterTanggal] = useState("");
-  const [pusatDataFilterLembaga, setPusatDataFilterLembaga] = useState("Semua");
+  const [pusatDataFilterTahun, setPusatDataFilterTahun] = useState("Semua");
   const [pusatDataFilterKampus, setPusatDataFilterKampus] = useState("Semua");
   const [showAddPusatDataModal, setShowAddPusatDataModal] = useState(false);
   const [isEditingPusatData, setIsEditingPusatData] = useState(false);
@@ -1986,22 +1985,20 @@ export default function AdminDashboardPage() {
       // Program Pendidikan
       if (pusatDataFilterProgram !== 'Semua' && d.program_pendidikan !== pusatDataFilterProgram) return false;
 
-      // Lembaga & Kampus
-      if (pusatDataFilterLembaga !== 'Semua' && d.lembaga !== pusatDataFilterLembaga) return false;
+      // Kampus
       if (pusatDataFilterKampus !== 'Semua' && d.kampus !== pusatDataFilterKampus) return false;
 
       // Kelengkapan Berkas
       if (pusatDataFilterBerkas !== 'Semua') {
-        const docCount = [d.kk_url, d.akte_url, d.ijazah_url, d.sktm_url].filter(Boolean).length;
-        if (pusatDataFilterBerkas === 'Lengkap' && docCount < 4) return false;
-        if (pusatDataFilterBerkas === 'Belum Lengkap' && docCount === 4) return false;
+        const isLengkap = !!(d.kk_url && d.akte_url && d.ijazah_url); // SKTM is optional
+        if (pusatDataFilterBerkas === 'Lengkap' && !isLengkap) return false;
+        if (pusatDataFilterBerkas === 'Belum Lengkap' && isLengkap) return false;
       }
 
-      // Tanggal Masuk
-      if (pusatDataFilterTanggal) {
+      // Tahun Masuk
+      if (pusatDataFilterTahun !== 'Semua') {
         const dDate = new Date(d.created_at || new Date());
-        const filterDate = new Date(pusatDataFilterTanggal);
-        if (dDate.toDateString() !== filterDate.toDateString()) return false;
+        if (dDate.getFullYear().toString() !== pusatDataFilterTahun) return false;
       }
 
       // Provinsi & WNA
@@ -2991,15 +2988,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   exit={{ opacity: 0, y: -15 }}
                   className="tab-content"
                 >
-                                    <div className="accounts-header-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                  <div className="accounts-header-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#002147', margin: 0 }}>Data Identitas Santri</h3>
                       <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Kelola rekam jejak identitas dan dokumen vital santri</span>
                     </div>
-                    <button onClick={() => { fetchPusatData(); openAlert("Sedang menyegarkan Pusat Data..."); }} style={{ padding: '8px 16px', background: 'rgba(0, 33, 71, 0.05)', color: '#002147', borderRadius: '8px', border: '1px solid rgba(0, 33, 71, 0.1)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }} onMouseOver={(e) => { e.currentTarget.style.background = '#002147'; e.currentTarget.style.color = 'white'; }} onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(0, 33, 71, 0.05)'; e.currentTarget.style.color = '#002147'; }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 2s linear infinite' }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                      Refresh
-                    </button>
                   </div>
 
                   {/* Glassmorphic Sub-Navbar for Pusat Data */}
@@ -3122,27 +3115,22 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <option value="Putra">Putra</option>
                             <option value="Putri">Putri</option>
                           </select>
-                          <select value={pusatDataFilterKelas} onChange={(e) => setPusatDataFilterKelas(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
-                            <option value="Semua">Semua Kelas</option>
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(k => <option key={k} value={k}>Kelas {k}</option>)}
-                          </select>
-                          <select value={pusatDataFilterJenjang} onChange={(e) => setPusatDataFilterJenjang(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
+                          <select value={pusatDataFilterJenjang} onChange={(e) => { setPusatDataFilterJenjang(e.target.value); setPusatDataFilterKelas("Semua"); }} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
                             <option value="Semua">Semua Jenjang</option>
                             <option value="SDIT">SDIT (1-6)</option>
                             <option value="SMP">SMP (7-9)</option>
                             <option value="MA">Madrasah Aliyah (10-12)</option>
                           </select>
+                          {pusatDataFilterJenjang !== "Semua" && (
+                            <select value={pusatDataFilterKelas} onChange={(e) => setPusatDataFilterKelas(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
+                              <option value="Semua">Semua Kelas</option>
+                              {(pusatDataFilterJenjang === "SDIT" ? [1,2,3,4,5,6] : pusatDataFilterJenjang === "SMP" ? [7,8,9] : [10,11,12]).map(k => <option key={k} value={k}>Kelas {k}</option>)}
+                            </select>
+                          )}
                           <select value={pusatDataFilterProgram} onChange={(e) => setPusatDataFilterProgram(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
                             <option value="Semua">Semua Program</option>
                             <option value="Mondok">Mondok</option>
                             <option value="Non Mondok">Non Mondok</option>
-                          </select>
-                          <select value={pusatDataFilterLembaga} onChange={(e) => setPusatDataFilterLembaga(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
-                            <option value="Semua">Semua Lembaga</option>
-                            <option value="Pondok Pesantren">Pondok Pesantren</option>
-                            <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
-                            <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
-                            <option value="TKIT Al-Azhar">TKIT Al-Azhar</option>
                           </select>
                           <select value={pusatDataFilterKampus} onChange={(e) => setPusatDataFilterKampus(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
                             <option value="Semua">Semua Kampus</option>
@@ -3154,32 +3142,71 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           <select value={pusatDataFilterProvinsi} onChange={(e) => setPusatDataFilterProvinsi(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
                             <option value="Semua">Semua Domisili</option>
                             <option value="WNA">WNA (Asing)</option>
-                            <option value="Jawa Barat">Jawa Barat</option>
-                            <option value="DKI Jakarta">DKI Jakarta</option>
+                            <option value="Aceh">Aceh</option>
+                            <option value="Sumatera Utara">Sumatera Utara</option>
+                            <option value="Sumatera Selatan">Sumatera Selatan</option>
+                            <option value="Sumatera Barat">Sumatera Barat</option>
+                            <option value="Bengkulu">Bengkulu</option>
+                            <option value="Riau">Riau</option>
+                            <option value="Kepulauan Riau">Kepulauan Riau</option>
+                            <option value="Jambi">Jambi</option>
+                            <option value="Lampung">Lampung</option>
+                            <option value="Bangka Belitung">Bangka Belitung</option>
+                            <option value="Kalimantan Barat">Kalimantan Barat</option>
+                            <option value="Kalimantan Timur">Kalimantan Timur</option>
+                            <option value="Kalimantan Selatan">Kalimantan Selatan</option>
+                            <option value="Kalimantan Tengah">Kalimantan Tengah</option>
+                            <option value="Kalimantan Utara">Kalimantan Utara</option>
                             <option value="Banten">Banten</option>
+                            <option value="DKI Jakarta">DKI Jakarta</option>
+                            <option value="Jawa Barat">Jawa Barat</option>
                             <option value="Jawa Tengah">Jawa Tengah</option>
-                            <option value="Lainnya">Provinsi Lainnya</option>
+                            <option value="DI Yogyakarta">DI Yogyakarta</option>
+                            <option value="Jawa Timur">Jawa Timur</option>
+                            <option value="Bali">Bali</option>
+                            <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
+                            <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
+                            <option value="Gorontalo">Gorontalo</option>
+                            <option value="Sulawesi Barat">Sulawesi Barat</option>
+                            <option value="Sulawesi Tengah">Sulawesi Tengah</option>
+                            <option value="Sulawesi Utara">Sulawesi Utara</option>
+                            <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
+                            <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+                            <option value="Maluku Utara">Maluku Utara</option>
+                            <option value="Maluku">Maluku</option>
+                            <option value="Papua Barat">Papua Barat</option>
+                            <option value="Papua">Papua</option>
+                            <option value="Papua Tengah">Papua Tengah</option>
+                            <option value="Papua Pegunungan">Papua Pegunungan</option>
+                            <option value="Papua Selatan">Papua Selatan</option>
+                            <option value="Papua Barat Daya">Papua Barat Daya</option>
                           </select>
                           <select value={pusatDataFilterBerkas} onChange={(e) => setPusatDataFilterBerkas(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
                             <option value="Semua">Semua Status Berkas</option>
-                            <option value="Lengkap">Lengkap (4/4)</option>
+                            <option value="Lengkap">Lengkap (KK, Akte, Ijazah)</option>
                             <option value="Belum Lengkap">Belum Lengkap</option>
                           </select>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 8px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #cbd5e1', flex: '1 1 200px' }}>
-                            <label style={{ fontSize: '0.8rem', color: '#64748b' }}>Waktu Masuk:</label>
-                            <input 
-                              type="date" 
-                              value={pusatDataFilterTanggal} 
-                              onChange={(e) => setPusatDataFilterTanggal(e.target.value)} 
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 8px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #cbd5e1', flex: '1 1 140px' }}>
+                            <label style={{ fontSize: '0.8rem', color: '#64748b' }}>Tahun Masuk:</label>
+                            <select 
+                              value={pusatDataFilterTahun} 
+                              onChange={(e) => setPusatDataFilterTahun(e.target.value)} 
                               style={{ border: 'none', background: 'transparent', fontSize: '0.8rem', color: '#334155', outline: 'none', flexGrow: 1 }}
-                            />
+                            >
+                              <option value="Semua">Semua Tahun</option>
+                              {Array.from({length: 10}, (_, i) => new Date().getFullYear() - 5 + i).map(year => (
+                                <option key={year} value={year.toString()}>{year}</option>
+                              ))}
+                            </select>
                           </div>
                           
-                          <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                            <button onClick={() => setShowPusatDataFilter(false)} style={{ padding: '6px 16px', background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = '#e2e8f0'} onMouseOut={(e) => e.currentTarget.style.background = '#f1f5f9'}>
-                              Tutup Filter
-                            </button>
-                          </div>
+                          <button 
+                            onClick={() => setShowPusatDataFilter(false)} 
+                            style={{ position: 'absolute', top: '10px', right: '10px', padding: '6px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            title="Tutup Filter"
+                          >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                          </button>
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -3198,7 +3225,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.2 }}
                         >
-                          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', gap: '10px' }}>
+                            <button onClick={() => { fetchPusatData(); openAlert("Sedang menyegarkan Pusat Data..."); }} style={{ padding: '8px 16px', background: 'rgba(0, 33, 71, 0.05)', color: '#002147', borderRadius: '8px', border: '1px solid rgba(0, 33, 71, 0.1)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }} onMouseOver={(e) => { e.currentTarget.style.background = '#002147'; e.currentTarget.style.color = 'white'; }} onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(0, 33, 71, 0.05)'; e.currentTarget.style.color = '#002147'; }}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 2s linear infinite' }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                              <span className="hide-on-mobile-text">Refresh</span>
+                            </button>
                             <button 
                               onClick={() => {
                                 setIsEditingPusatData(false);
@@ -3266,10 +3297,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                             borderRadius: '20px', 
                                             fontSize: '0.75rem', 
                                             fontWeight: 800, 
-                                            background: docCount === 4 ? '#dcfce7' : docCount > 0 ? '#fef3c7' : '#fee2e2',
-                                            color: docCount === 4 ? '#166534' : docCount > 0 ? '#92400e' : '#991b1b'
+                                            background: (siswa.kk_url && siswa.akte_url && siswa.ijazah_url) ? '#dcfce7' : (siswa.kk_url || siswa.akte_url || siswa.ijazah_url || siswa.sktm_url) ? '#fef3c7' : '#fee2e2',
+                                            color: (siswa.kk_url && siswa.akte_url && siswa.ijazah_url) ? '#166534' : (siswa.kk_url || siswa.akte_url || siswa.ijazah_url || siswa.sktm_url) ? '#92400e' : '#991b1b'
                                           }}>
-                                            {docCount}/4 Berkas
+                                            {(siswa.kk_url && siswa.akte_url && siswa.ijazah_url) ? 'Lengkap' : (siswa.kk_url || siswa.akte_url || siswa.ijazah_url || siswa.sktm_url) ? 'Belum Lengkap' : 'Kosong'}
                                           </span>
                                         </td>
                                         <td style={{ padding: '1rem', textAlign: 'center' }}>
@@ -3346,10 +3377,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                             borderRadius: '20px', 
                                             fontSize: '0.75rem', 
                                             fontWeight: 800, 
-                                            background: docCount === 4 ? '#dcfce7' : docCount > 0 ? '#fef3c7' : '#fee2e2',
-                                            color: docCount === 4 ? '#166534' : docCount > 0 ? '#92400e' : '#991b1b'
+                                            background: (siswa.kk_url && siswa.akte_url && siswa.ijazah_url) ? '#dcfce7' : (siswa.kk_url || siswa.akte_url || siswa.ijazah_url || siswa.sktm_url) ? '#fef3c7' : '#fee2e2',
+                                            color: (siswa.kk_url && siswa.akte_url && siswa.ijazah_url) ? '#166534' : (siswa.kk_url || siswa.akte_url || siswa.ijazah_url || siswa.sktm_url) ? '#92400e' : '#991b1b'
                                           }}>
-                                            {docCount}/4 Berkas
+                                            {(siswa.kk_url && siswa.akte_url && siswa.ijazah_url) ? 'Lengkap' : (siswa.kk_url || siswa.akte_url || siswa.ijazah_url || siswa.sktm_url) ? 'Belum Lengkap' : 'Kosong'}
                                           </span>
                                         </td>
                                         <td style={{ padding: '1rem', textAlign: 'center' }}>
@@ -6448,6 +6479,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         }
 
         @media (max-width: 768px) {
+          .hide-on-mobile-text { display: none; }
           .dashboard-layout { padding-top: 61px; } /* Safe padding for mobile */
           .dashboard-grid { grid-template-columns: 1fr; }
           .gallery-admin-grid { grid-template-columns: 1fr; }
