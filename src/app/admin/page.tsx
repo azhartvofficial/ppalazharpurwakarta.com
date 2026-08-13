@@ -6547,13 +6547,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: -1.4rem;
+            margin-right: -2.25rem; /* Protrude by exactly half the logo */
             margin-left: 0.2rem;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
           }
 
           .toggle-logo {
-            width: 28px;
+            width: 40px;
             height: auto;
             object-fit: contain;
           }
