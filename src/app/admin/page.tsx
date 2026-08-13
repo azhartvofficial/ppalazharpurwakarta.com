@@ -441,6 +441,7 @@ export default function AdminDashboardPage() {
   const [loadingRegistration, setLoadingRegistration] = useState(false);
 
   // Pusat Data Filters
+  const [showPusatDataFilter, setShowPusatDataFilter] = useState(false);
   const [pusatDataSearchQuery, setPusatDataSearchQuery] = useState("");
   const [pusatDataFilterGender, setPusatDataFilterGender] = useState("Semua");
   const [pusatDataFilterKelas, setPusatDataFilterKelas] = useState("Semua");
@@ -3087,71 +3088,101 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
                   {/* Advanced Filters (Shared for both tabs) */}
                   {(pusatDataSubTab === "data_siswa" || pusatDataSubTab === "pengajuan_data") && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '1.5rem', background: '#fff', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-                    <input 
-                      type="text" 
-                      placeholder="Cari Nama, NIK, atau NISN..." 
-                      value={pusatDataSearchQuery}
-                      onChange={(e) => setPusatDataSearchQuery(e.target.value)}
-                      style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', minWidth: '150px', flexGrow: 1 }}
-                    />
-                    <select value={pusatDataFilterGender} onChange={(e) => setPusatDataFilterGender(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
-                      <option value="Semua">Semua Gender</option>
-                      <option value="Putra">Putra</option>
-                      <option value="Putri">Putri</option>
-                    </select>
-                    <select value={pusatDataFilterKelas} onChange={(e) => setPusatDataFilterKelas(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
-                      <option value="Semua">Semua Kelas</option>
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(k => <option key={k} value={k}>Kelas {k}</option>)}
-                    </select>
-                    <select value={pusatDataFilterJenjang} onChange={(e) => setPusatDataFilterJenjang(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
-                      <option value="Semua">Semua Jenjang</option>
-                      <option value="SDIT">SDIT (1-6)</option>
-                      <option value="SMP">SMP (7-9)</option>
-                      <option value="MA">Madrasah Aliyah (10-12)</option>
-                    </select>
-                    <select value={pusatDataFilterProgram} onChange={(e) => setPusatDataFilterProgram(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
-                      <option value="Semua">Semua Program</option>
-                      <option value="Mondok">Mondok</option>
-                      <option value="Non Mondok">Non Mondok</option>
-                    </select>
-                    <select value={pusatDataFilterLembaga} onChange={(e) => setPusatDataFilterLembaga(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
-                      <option value="Semua">Semua Lembaga</option>
-                      <option value="Pondok Pesantren">Pondok Pesantren</option>
-                      <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
-                      <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
-                      <option value="TKIT Al-Azhar">TKIT Al-Azhar</option>
-                    </select>
-                    <select value={pusatDataFilterKampus} onChange={(e) => setPusatDataFilterKampus(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
-                      <option value="Semua">Semua Kampus</option>
-                      <option value="Azhar 1">Azhar 1</option>
-                      <option value="Azhar 2">Azhar 2</option>
-                      <option value="Azhar 3">Azhar 3</option>
-                      <option value="Azhar 4">Azhar 4</option>
-                    </select>
-                    <select value={pusatDataFilterProvinsi} onChange={(e) => setPusatDataFilterProvinsi(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
-                      <option value="Semua">Semua Domisili</option>
-                      <option value="WNA">WNA (Asing)</option>
-                      <option value="Jawa Barat">Jawa Barat</option>
-                      <option value="DKI Jakarta">DKI Jakarta</option>
-                      <option value="Banten">Banten</option>
-                      <option value="Jawa Tengah">Jawa Tengah</option>
-                      <option value="Lainnya">Provinsi Lainnya</option>
-                    </select>
-                    <select value={pusatDataFilterBerkas} onChange={(e) => setPusatDataFilterBerkas(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc' }}>
-                      <option value="Semua">Semua Status Berkas</option>
-                      <option value="Lengkap">Lengkap (4/4)</option>
-                      <option value="Belum Lengkap">Belum Lengkap</option>
-                    </select>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 8px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                      <label style={{ fontSize: '0.8rem', color: '#64748b' }}>Waktu Masuk:</label>
+                  <div style={{ position: 'relative', marginBottom: '1.5rem', display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', flexGrow: 1, position: 'relative' }}>
                       <input 
-                        type="date" 
-                        value={pusatDataFilterTanggal} 
-                        onChange={(e) => setPusatDataFilterTanggal(e.target.value)} 
-                        style={{ border: 'none', background: 'transparent', fontSize: '0.8rem', color: '#334155', outline: 'none' }}
+                        type="text" 
+                        placeholder="Cari Nama, NIK, atau NISN..." 
+                        value={pusatDataSearchQuery}
+                        onChange={(e) => setPusatDataSearchQuery(e.target.value)}
+                        style={{ padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem', width: '100%', outline: 'none', transition: 'border 0.2s', boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}
+                        onFocus={(e) => e.target.style.border = '1px solid var(--primary)'}
+                        onBlur={(e) => e.target.style.border = '1px solid #cbd5e1'}
                       />
                     </div>
+                    <button
+                      onClick={() => setShowPusatDataFilter(!showPusatDataFilter)}
+                      style={{ padding: '10px 14px', background: showPusatDataFilter ? 'var(--primary)' : '#fff', color: showPusatDataFilter ? '#fff' : '#64748b', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', fontWeight: 'bold', transition: 'all 0.2s', boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                      Filter
+                    </button>
+
+                    <AnimatePresence>
+                      {showPusatDataFilter && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.2 }}
+                          style={{ position: 'absolute', top: 'calc(100% + 10px)', right: 0, zIndex: 100, background: '#fff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', display: 'flex', flexWrap: 'wrap', gap: '10px', width: '100%', maxWidth: '700px' }}
+                        >
+                          <select value={pusatDataFilterGender} onChange={(e) => setPusatDataFilterGender(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
+                            <option value="Semua">Semua Gender</option>
+                            <option value="Putra">Putra</option>
+                            <option value="Putri">Putri</option>
+                          </select>
+                          <select value={pusatDataFilterKelas} onChange={(e) => setPusatDataFilterKelas(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
+                            <option value="Semua">Semua Kelas</option>
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(k => <option key={k} value={k}>Kelas {k}</option>)}
+                          </select>
+                          <select value={pusatDataFilterJenjang} onChange={(e) => setPusatDataFilterJenjang(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
+                            <option value="Semua">Semua Jenjang</option>
+                            <option value="SDIT">SDIT (1-6)</option>
+                            <option value="SMP">SMP (7-9)</option>
+                            <option value="MA">Madrasah Aliyah (10-12)</option>
+                          </select>
+                          <select value={pusatDataFilterProgram} onChange={(e) => setPusatDataFilterProgram(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
+                            <option value="Semua">Semua Program</option>
+                            <option value="Mondok">Mondok</option>
+                            <option value="Non Mondok">Non Mondok</option>
+                          </select>
+                          <select value={pusatDataFilterLembaga} onChange={(e) => setPusatDataFilterLembaga(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
+                            <option value="Semua">Semua Lembaga</option>
+                            <option value="Pondok Pesantren">Pondok Pesantren</option>
+                            <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
+                            <option value="SDIT Al-Azhar">SDIT Al-Azhar</option>
+                            <option value="TKIT Al-Azhar">TKIT Al-Azhar</option>
+                          </select>
+                          <select value={pusatDataFilterKampus} onChange={(e) => setPusatDataFilterKampus(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
+                            <option value="Semua">Semua Kampus</option>
+                            <option value="Azhar 1">Azhar 1</option>
+                            <option value="Azhar 2">Azhar 2</option>
+                            <option value="Azhar 3">Azhar 3</option>
+                            <option value="Azhar 4">Azhar 4</option>
+                          </select>
+                          <select value={pusatDataFilterProvinsi} onChange={(e) => setPusatDataFilterProvinsi(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
+                            <option value="Semua">Semua Domisili</option>
+                            <option value="WNA">WNA (Asing)</option>
+                            <option value="Jawa Barat">Jawa Barat</option>
+                            <option value="DKI Jakarta">DKI Jakarta</option>
+                            <option value="Banten">Banten</option>
+                            <option value="Jawa Tengah">Jawa Tengah</option>
+                            <option value="Lainnya">Provinsi Lainnya</option>
+                          </select>
+                          <select value={pusatDataFilterBerkas} onChange={(e) => setPusatDataFilterBerkas(e.target.value)} style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#f8fafc', flex: '1 1 140px' }}>
+                            <option value="Semua">Semua Status Berkas</option>
+                            <option value="Lengkap">Lengkap (4/4)</option>
+                            <option value="Belum Lengkap">Belum Lengkap</option>
+                          </select>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 8px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #cbd5e1', flex: '1 1 200px' }}>
+                            <label style={{ fontSize: '0.8rem', color: '#64748b' }}>Waktu Masuk:</label>
+                            <input 
+                              type="date" 
+                              value={pusatDataFilterTanggal} 
+                              onChange={(e) => setPusatDataFilterTanggal(e.target.value)} 
+                              style={{ border: 'none', background: 'transparent', fontSize: '0.8rem', color: '#334155', outline: 'none', flexGrow: 1 }}
+                            />
+                          </div>
+                          
+                          <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                            <button onClick={() => setShowPusatDataFilter(false)} style={{ padding: '6px 16px', background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = '#e2e8f0'} onMouseOut={(e) => e.currentTarget.style.background = '#f1f5f9'}>
+                              Tutup Filter
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                   )}
 
