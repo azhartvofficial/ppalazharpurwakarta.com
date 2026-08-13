@@ -2569,10 +2569,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <strong>Connected (PostgreSQL)</strong>
                           </div>
                           <div className="detail-row">
-                            <span>Data Usage</span>
-                            <strong>{integrationStats.supabaseUsage} / 500 MB (Free Tier)</strong>
-                          </div>
-                          <div className="detail-row">
                             <span>SSL Security</span>
                             <strong>Enabled (AES-256)</strong>
                           </div>
@@ -2621,10 +2617,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <strong>{integrationStats.vercelStatus}</strong>
                           </div>
                           <div className="detail-row">
-                            <span>Bandwidth</span>
-                            <strong>{integrationStats.vercelBandwidth} / 100 GB</strong>
-                          </div>
-                          <div className="detail-row">
                             <span>Domain Resmi</span>
                             <strong>pp-alazharpwk.com</strong>
                           </div>
@@ -2659,13 +2651,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       </div>
 
                       {/* Card 5: AntiGravity */}
-                      <div className="integration-card warning">
+                      <div className="integration-card">
                         <div className="integration-card-header">
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span className="integration-logo-text">AntiGravity</span>
                             <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: azhartvofficial25@gmail.com</span>
                           </div>
-                          <span className="status-pill orange-badge">HAMPIR HABIS</span>
+                          <span className="status-pill green">AKTIF</span>
                         </div>
                         <div className="integration-details">
                           <div className="detail-row">
@@ -2673,16 +2665,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <strong>Google One AI Premium (2 TB)</strong>
                           </div>
                           <div className="detail-row">
-                            <span>Masa Berlaku</span>
-                            <strong style={{ color: '#ff8c00' }}>Hingga 24 Juni 2026</strong>
-                          </div>
-                          <div className="detail-row">
                             <span>Paket</span>
                             <strong>AntiGravity Builder Web</strong>
                           </div>
                         </div>
-                        <a href="https://play.google.com/store/account/subscriptions" target="_blank" rel="noopener noreferrer" className="floating-manage-btn warning">
-                          Perpanjang Langganan
+                        <a href="https://play.google.com/store/account/subscriptions" target="_blank" rel="noopener noreferrer" className="floating-manage-btn">
+                          Kelola
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </a>
                       </div>
