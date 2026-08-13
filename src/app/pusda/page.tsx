@@ -116,7 +116,7 @@ export default function PusdaPage() {
       }
     };
     initFetch();
-    fetch("https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json")
+    fetch("/api/wilayah/provinces.json")
       .then(res => res.json())
       .then(data => setProvinces(data))
       .catch(err => console.error(err));
@@ -133,7 +133,7 @@ export default function PusdaPage() {
   // Fetch Regencies when Province changes
   useEffect(() => {
     if (selectedProvId) {
-      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${selectedProvId}.json`)
+      fetch(`/api/wilayah/regencies/${selectedProvId}.json`)
         .then(res => res.json())
         .then(data => {
           setRegencies(data);
@@ -157,7 +157,7 @@ export default function PusdaPage() {
   // Fetch Districts when Regency changes
   useEffect(() => {
     if (selectedRegId) {
-      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${selectedRegId}.json`)
+      fetch(`/api/wilayah/districts/${selectedRegId}.json`)
         .then(res => res.json())
         .then(data => {
           setDistricts(data);
@@ -177,7 +177,7 @@ export default function PusdaPage() {
   // Fetch Villages when District changes
   useEffect(() => {
     if (selectedDistId) {
-      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/villages/${selectedDistId}.json`)
+      fetch(`/api/wilayah/villages/${selectedDistId}.json`)
         .then(res => res.json())
         .then(data => {
           setVillages(data);

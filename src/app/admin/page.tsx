@@ -427,7 +427,7 @@ export default function AdminDashboardPage() {
           let currentProvinces = provinces;
           if (currentProvinces.length === 0) {
             try {
-              const res = await fetch("https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json");
+              const res = await fetch("/api/wilayah/provinces.json");
               currentProvinces = await res.json();
               setProvinces(currentProvinces);
             } catch(e) {}
@@ -448,21 +448,21 @@ export default function AdminDashboardPage() {
             setAddPusatDataProvId(provId);
             setAddPusatDataProvName(alamatObj.provinsi);
             try {
-              const regRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${provId}.json`);
+              const regRes = await fetch(`/api/wilayah/regencies/${provId}.json`);
               const regenciesData = await regRes.json();
               setRegencies(regenciesData);
               const regId = regenciesData.find((r: any) => r.name?.trim().toUpperCase() === alamatObj.kota?.trim().toUpperCase())?.id;
               if (regId) {
                 setAddPusatDataRegId(regId);
                 setAddPusatDataRegName(alamatObj.kota);
-                const distRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${regId}.json`);
+                const distRes = await fetch(`/api/wilayah/districts/${regId}.json`);
                 const districtsData = await distRes.json();
                 setDistricts(districtsData);
                 const distId = districtsData.find((d: any) => d.name?.trim().toUpperCase() === alamatObj.kecamatan?.trim().toUpperCase())?.id;
                 if (distId) {
                   setAddPusatDataDistId(distId);
                   setAddPusatDataDistName(alamatObj.kecamatan);
-                  const villRes = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/villages/${distId}.json`);
+                  const villRes = await fetch(`/api/wilayah/villages/${distId}.json`);
                   const villagesData = await villRes.json();
                   setVillages(villagesData);
                   if (alamatObj.kelurahan) {
@@ -573,7 +573,7 @@ export default function AdminDashboardPage() {
 
   // Fetch initial data (Provinces & Countries)
   useEffect(() => {
-    fetch("https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json").then(res => res.json()).then(data => setProvinces(data)).catch(() => {});
+    fetch("/api/wilayah/provinces.json").then(res => res.json()).then(data => setProvinces(data)).catch(() => {});
     fetch("https://restcountries.com/v3.1/all?fields=name").then(res => res.json()).then(data => {
       const sorted = data.map((c: any) => c.name.common).sort();
       setCountries(sorted);
@@ -583,7 +583,7 @@ export default function AdminDashboardPage() {
   // Fetch Regencies when Province changes
   useEffect(() => {
     if (addPusatDataProvId && addPusatDataProvId !== "OLD_PROV") {
-      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${addPusatDataProvId}.json`).then(res => res.json()).then(data => {
+      fetch(`/api/wilayah/regencies/${addPusatDataProvId}.json`).then(res => res.json()).then(data => {
         setRegencies(data); setAddPusatDataRegId(""); setAddPusatDataRegName(""); setDistricts([]); setAddPusatDataDistId(""); setAddPusatDataDistName(""); setVillages([]); setAddPusatDataVillageId(""); setAddPusatDataVillageName("");
       }).catch(() => {});
     } else if (!addPusatDataProvId) {
@@ -594,7 +594,7 @@ export default function AdminDashboardPage() {
   // Fetch Districts when Regency changes
   useEffect(() => {
     if (addPusatDataRegId && addPusatDataRegId !== "OLD_REG") {
-      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/districts/${addPusatDataRegId}.json`).then(res => res.json()).then(data => {
+      fetch(`/api/wilayah/districts/${addPusatDataRegId}.json`).then(res => res.json()).then(data => {
         setDistricts(data); setAddPusatDataDistId(""); setAddPusatDataDistName(""); setVillages([]); setAddPusatDataVillageId(""); setAddPusatDataVillageName("");
       }).catch(() => {});
     } else if (!addPusatDataRegId) {
@@ -605,7 +605,7 @@ export default function AdminDashboardPage() {
   // Fetch Villages when District changes
   useEffect(() => {
     if (addPusatDataDistId && addPusatDataDistId !== "OLD_DIST") {
-      fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/villages/${addPusatDataDistId}.json`).then(res => res.json()).then(data => {
+      fetch(`/api/wilayah/villages/${addPusatDataDistId}.json`).then(res => res.json()).then(data => {
         setVillages(data); setAddPusatDataVillageId(""); setAddPusatDataVillageName("");
       }).catch(() => {});
     } else if (!addPusatDataDistId) {
