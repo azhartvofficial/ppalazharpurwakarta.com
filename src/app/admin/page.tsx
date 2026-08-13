@@ -590,7 +590,7 @@ export default function AdminDashboardPage() {
     "Petani / Peternak / Nelayan",
     "Buruh / Pekerja Lepas",
     "Guru / Dosen",
-    "Tenaga Medis (Dokter/Perawat/dll)",
+    "Tenaga Medis (Dokter/Perawat/Bidan)",
     "Pedagang",
     "Pensiunan",
     "Mengurus Rumah Tangga",
@@ -7275,7 +7275,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </select>
   ) : (
     <div style={{ display: 'flex', gap: '8px' }}>
-      <input type="text" required value={addPusatDataForm.pekerjaan_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="Ketik pekerjaan ayah..." autoFocus />
+      <input type="text" required value={addPusatDataForm.pekerjaan_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="Ketik pekerjaan ayah..." />
       <button type="button" onClick={() => { setIsAddPekerjaanAyahLainnya(false); setAddPusatDataForm({...addPusatDataForm, pekerjaan_ayah: ""}); }} style={{ padding: '0 16px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Batal</button>
     </div>
   )}
@@ -7298,7 +7298,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </select>
   ) : (
     <div style={{ display: 'flex', gap: '8px' }}>
-      <input type="text" required value={addPusatDataForm.pekerjaan_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="Ketik pekerjaan ibu..." autoFocus />
+      <input type="text" required value={addPusatDataForm.pekerjaan_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="Ketik pekerjaan ibu..." />
       <button type="button" onClick={() => { setIsAddPekerjaanIbuLainnya(false); setAddPusatDataForm({...addPusatDataForm, pekerjaan_ibu: ""}); }} style={{ padding: '0 16px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Batal</button>
     </div>
   )}

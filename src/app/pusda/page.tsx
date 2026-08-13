@@ -67,7 +67,7 @@ export default function PusdaPage() {
     "Petani / Peternak / Nelayan",
     "Buruh / Pekerja Lepas",
     "Guru / Dosen",
-    "Tenaga Medis (Dokter/Perawat/dll)",
+    "Tenaga Medis (Dokter/Perawat/Bidan)",
     "Pedagang",
     "Pensiunan",
     "Mengurus Rumah Tangga",
@@ -799,7 +799,7 @@ export default function PusdaPage() {
                   </select>
                 ) : (
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <input type="text" name="pekerjaan_ayah" required value={formData.pekerjaan_ayah} onChange={handleInputChange} placeholder="Ketik pekerjaan ayah..." style={{ flex: 1 }} autoFocus />
+                    <input type="text" name="pekerjaan_ayah" required value={formData.pekerjaan_ayah} onChange={handleInputChange} placeholder="Ketik pekerjaan ayah..." style={{ flex: 1 }} />
                     <button type="button" onClick={() => { setIsPekerjaanAyahLainnya(false); setFormData(f => ({...f, pekerjaan_ayah: ""})); }} style={{ padding: '0 16px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, color: '#475569' }}>Batal</button>
                   </div>
                 )}
@@ -832,7 +832,7 @@ export default function PusdaPage() {
                   </select>
                 ) : (
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <input type="text" name="pekerjaan_ibu" required value={formData.pekerjaan_ibu} onChange={handleInputChange} placeholder="Ketik pekerjaan ibu..." style={{ flex: 1 }} autoFocus />
+                    <input type="text" name="pekerjaan_ibu" required value={formData.pekerjaan_ibu} onChange={handleInputChange} placeholder="Ketik pekerjaan ibu..." style={{ flex: 1 }} />
                     <button type="button" onClick={() => { setIsPekerjaanIbuLainnya(false); setFormData(f => ({...f, pekerjaan_ibu: ""})); }} style={{ padding: '0 16px', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, color: '#475569' }}>Batal</button>
                   </div>
                 )}
