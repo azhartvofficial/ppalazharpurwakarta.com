@@ -2450,12 +2450,6 @@ export default function AdminDashboardPage() {
 
 
 
-                    <div className="analytics-integration-info">
-                      <p>
-                        <strong>Sistem Pelacakan Vercel Analytics Berhasil Dipasang:</strong> Kami telah menyuntikkan komponen pelacakan <code>&lt;Analytics /&gt;</code> ke dalam <code>RootLayout</code> website. Seluruh data lalu lintas pengunjung yang sah akan direkam secara aman oleh Vercel. Untuk melihat laporan analitik lengkap yang mencakup rasio pentalan (*bounce rate*), durasi sesi, dan peta asal negara pengunjung, Anda dapat langsung masuk ke <strong>Vercel Dashboard Project</strong> Anda di panel resmi Vercel.
-                      </p>
-                    </div>
-
                     {!supabaseSyncActive && (
                       <div className="supabase-migration-alert" style={{ marginTop: '1.5rem', border: '1.5px dashed #ff8c00', background: '#fffbeb', padding: '1.25rem', borderRadius: '12px' }}>
                         <strong style={{ color: '#b45309', fontSize: '0.85rem' }}>Hubungkan Database Supabase Secara Riil:</strong>
