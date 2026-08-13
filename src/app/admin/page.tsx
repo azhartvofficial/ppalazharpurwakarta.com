@@ -2319,13 +2319,13 @@ export default function AdminDashboardPage() {
                   {/* Vercel Analytics Visualizer Section */}
                   <div className="analytics-visualizer-card" style={{ marginBottom: '2rem' }}>
                     <div className="visualizer-header">
-                      <h3>Grafik Pengunjung Web</h3>
+                      <h3>Grafik Data Pengunjung</h3>
                       <span className="live-badge" style={{ backgroundColor: supabaseSyncActive ? 'rgba(76, 175, 80, 0.15)' : 'rgba(255, 140, 0, 0.15)', color: supabaseSyncActive ? '#4CAF50' : '#ff8c00' }}>
                         ● {supabaseSyncActive ? 'SUPABASE SYNCED' : 'DEMO MODE ACTIVE'}
                       </span>
                     </div>
                     <p className="visualizer-desc">
-                      Statistik kunjungan, demografi perangkat, dan performa pemuatan web dideteksi secara presisi melalui integrasi langsung <code>@vercel/analytics</code> di server CDN Vercel.
+                      Monitoring statistik kunjungan, demografi perangkat dan pemuatan kinerja web yang di deteksi secara realtime
                     </p>
 
                     {/* Interactive Glowing Statistical Line/Area Chart */}
@@ -2448,69 +2448,7 @@ export default function AdminDashboardPage() {
                       </div>
                     </div>
 
-                    <div className="analytics-metrics-grid">
-                      {/* Priority Pages Interactive Card */}
-                      <div className="metric-box priority-pages-box" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)', border: '1.5px solid rgba(255, 140, 0, 0.15)', boxShadow: '0 8px 32px rgba(255, 140, 0, 0.05)' }}>
-                        <span className="metric-box-label" style={{ color: 'var(--secondary)', fontWeight: '900', letterSpacing: '0.5px' }}>📌 DAFTAR HALAMAN PRIORITAS (INTERAKTIF)</span>
-                        <div className="progress-list" style={{ marginTop: '0.85rem' }}>
-                          
-                          {/* Item 1: Santri Page */}
-                          <div 
-                            className="priority-item-card" 
-                            onClick={() => setActivePriorityModal("santri")}
-                            style={{ cursor: 'pointer', padding: '0.85rem', borderRadius: '12px', background: 'rgba(0, 33, 71, 0.03)', border: '1px solid rgba(0, 33, 71, 0.06)', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '0.75rem' }}
-                          >
-                            <div className="priority-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                🎓 Portal Layanan Santri (Santri Page)
-                              </span>
-                              <span className="badge-priority" style={{ fontSize: '0.62rem', fontWeight: 900, background: 'rgba(76, 175, 80, 0.12)', color: '#4CAF50', padding: '2px 8px', borderRadius: '20px' }}>PRIORITAS 1</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#64748b', marginTop: '4px' }}>
-                              <span>Path: /login/santri</span>
-                              <span style={{ fontWeight: 700, color: 'var(--primary)' }}>Detail Portal →</span>
-                            </div>
-                          </div>
 
-                          {/* Item 2: Pendaftaran */}
-                          <div 
-                            className="priority-item-card" 
-                            onClick={() => setActivePriorityModal("pendaftaran")}
-                            style={{ cursor: 'pointer', padding: '0.85rem', borderRadius: '12px', background: 'rgba(0, 33, 71, 0.03)', border: '1px solid rgba(0, 33, 71, 0.06)', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '0.75rem' }}
-                          >
-                            <div className="priority-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                📝 Formulir Pendaftaran PPDB (Pendaftaran)
-                              </span>
-                              <span className="badge-priority" style={{ fontSize: '0.62rem', fontWeight: 900, background: 'rgba(255, 140, 0, 0.12)', color: '#ff8c00', padding: '2px 8px', borderRadius: '20px' }}>PRIORITAS 2</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#64748b', marginTop: '4px' }}>
-                              <span>Path: /pendaftaran</span>
-                              <span style={{ fontWeight: 700, color: 'var(--primary)' }}>Cek Grafik PPDB →</span>
-                            </div>
-                          </div>
-
-                          {/* Item 3: Az-Learn */}
-                          <div 
-                            className="priority-item-card" 
-                            onClick={() => setActivePriorityModal("azlearn")}
-                            style={{ cursor: 'pointer', padding: '0.85rem', borderRadius: '12px', background: 'rgba(0, 33, 71, 0.03)', border: '1px solid rgba(0, 33, 71, 0.06)', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', gap: '4px' }}
-                          >
-                            <div className="priority-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                🌐 LMS Al-Azhar Academics (Az-Learn)
-                              </span>
-                              <span className="badge-priority" style={{ fontSize: '0.62rem', fontWeight: 900, background: 'rgba(0, 150, 136, 0.12)', color: '#009688', padding: '2px 8px', borderRadius: '20px' }}>PRIORITAS 3</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#64748b', marginTop: '4px' }}>
-                              <span>Path: /azhar-learn</span>
-                              <span style={{ fontWeight: 700, color: 'var(--primary)' }}>Status LMS →</span>
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-                    </div>
 
                     <div className="analytics-integration-info">
                       <p>
@@ -2550,9 +2488,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     <div className="control-panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                         <h3>Control Panel Integrasi & Langganan Layanan</h3>
-                        <span className="account-badge">
-                          Akun Utama: danishalzam8002@gmail.com
-                        </span>
                       </div>
                       <button 
                         onClick={refreshIntegrationStats} 
@@ -2587,14 +2522,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       </button>
                     </div>
                     <p className="control-panel-desc">
-                      Pusat monitoring status layanan cloud, basis data, dan langganan AI Gemini Advanced untuk mendukung operasional optimal portal Pondok Pesantren Al-Azhar Purwakarta.
+                      Pusat monitoring status layanan cloud, Database, Langganan Antigravity Builder Web untuk mendukung operasional optimal website resmi Pondok Pesantren Al-Azhar Purwakarta
                     </p>
                     
                     <div className="control-panel-grid">
                       {/* Card 1: Supabase */}
                       <div className="integration-card">
                         <div className="integration-card-header">
-                          <span className="integration-logo-text">Supabase</span>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span className="integration-logo-text">Supabase</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: GitHub (danishalzam8002)</span>
+                          </div>
                           <span className="status-pill green">AKTIF</span>
                         </div>
                         <div className="integration-details">
@@ -2616,7 +2554,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       {/* Card 2: Cloudinary */}
                       <div className="integration-card">
                         <div className="integration-card-header">
-                          <span className="integration-logo-text">Cloudinary</span>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span className="integration-logo-text">Cloudinary</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: Google (danishalzam8002@gmail.com)</span>
+                          </div>
                           <span className="status-pill green">AKTIF</span>
                         </div>
                         <div className="integration-details">
@@ -2638,7 +2579,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       {/* Card 3: Vercel */}
                       <div className="integration-card">
                         <div className="integration-card-header">
-                          <span className="integration-logo-text">Vercel</span>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span className="integration-logo-text">Vercel</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: GitHub (danishalzam8002)</span>
+                          </div>
                           <span className="status-pill green">AKTIF</span>
                         </div>
                         <div className="integration-details">
@@ -2657,10 +2601,38 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         </div>
                       </div>
 
-                      {/* Card 4: Gemini Advanced Subscription */}
+                      {/* Card 4: Google Drive */}
+                      <div className="integration-card">
+                        <div className="integration-card-header">
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span className="integration-logo-text">Google Drive</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: Google (danishalzam8002@gmail.com)</span>
+                          </div>
+                          <span className="status-pill green">AKTIF</span>
+                        </div>
+                        <div className="integration-details">
+                          <div className="detail-row">
+                            <span>Penyimpanan</span>
+                            <strong>15 GB / Terhubung</strong>
+                          </div>
+                          <div className="detail-row">
+                            <span>Akses</span>
+                            <strong>Database Backup & Berkas</strong>
+                          </div>
+                          <div className="detail-row">
+                            <span>Keamanan</span>
+                            <strong>Google Workspace Security</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card 5: AntiGravity */}
                       <div className="integration-card warning">
                         <div className="integration-card-header">
-                          <span className="integration-logo-text">Gemini Advanced AI</span>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span className="integration-logo-text">AntiGravity</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600, marginTop: '2px' }}>Akun: Google (danishalzam8002@gmail.com)</span>
+                          </div>
                           <span className="status-pill orange-badge">HAMPIR HABIS</span>
                         </div>
                         <div className="integration-details">
@@ -2673,8 +2645,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <strong style={{ color: '#ff8c00' }}>Hingga 24 Juni 2026</strong>
                           </div>
                           <div className="detail-row">
-                            <span>Email Terdaftar</span>
-                            <strong>danishalzam8002@gmail.com</strong>
+                            <span>Paket</span>
+                            <strong>AntiGravity Builder Web</strong>
                           </div>
                           <div style={{ marginTop: '0.8rem' }}>
                             <a 
