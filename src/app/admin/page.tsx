@@ -584,7 +584,7 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     if (addPusatDataProvId && addPusatDataProvId !== "OLD_PROV") {
       fetch(`/api/wilayah/regencies/${addPusatDataProvId}.json`).then(res => res.json()).then(data => {
-        setRegencies(data); setAddPusatDataRegId(""); setAddPusatDataRegName(""); setDistricts([]); setAddPusatDataDistId(""); setAddPusatDataDistName(""); setVillages([]); setAddPusatDataVillageId(""); setAddPusatDataVillageName("");
+        setRegencies(data);
       }).catch(() => {});
     } else if (!addPusatDataProvId) {
       setRegencies([]); setDistricts([]); setVillages([]);
@@ -595,7 +595,7 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     if (addPusatDataRegId && addPusatDataRegId !== "OLD_REG") {
       fetch(`/api/wilayah/districts/${addPusatDataRegId}.json`).then(res => res.json()).then(data => {
-        setDistricts(data); setAddPusatDataDistId(""); setAddPusatDataDistName(""); setVillages([]); setAddPusatDataVillageId(""); setAddPusatDataVillageName("");
+        setDistricts(data);
       }).catch(() => {});
     } else if (!addPusatDataRegId) {
       setDistricts([]); setVillages([]);
@@ -606,7 +606,7 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     if (addPusatDataDistId && addPusatDataDistId !== "OLD_DIST") {
       fetch(`/api/wilayah/villages/${addPusatDataDistId}.json`).then(res => res.json()).then(data => {
-        setVillages(data); setAddPusatDataVillageId(""); setAddPusatDataVillageName("");
+        setVillages(data);
       }).catch(() => {});
     } else if (!addPusatDataDistId) {
       setVillages([]);
