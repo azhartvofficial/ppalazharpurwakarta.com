@@ -1224,8 +1224,8 @@ export default function Navbar() {
 
         .login-switch-container {
           position: relative;
-          width: 140px;
-          height: 48px;
+          width: 150px;
+          height: 52px;
           background: transparent;
           border-radius: 50px;
           overflow: visible;
@@ -1292,8 +1292,8 @@ export default function Navbar() {
         }
 
         .nav-login-img {
-          max-height: 42px;
-          max-width: 130px;
+          max-height: 50px;
+          max-width: 145px;
           width: auto;
           height: auto;
           object-fit: contain;
@@ -1698,8 +1698,8 @@ export default function Navbar() {
           }
 
           .login-switch-container {
-            width: 120px;
-            height: 42px;
+            width: 130px;
+            height: 46px;
           }
 
           .login-graphic {
@@ -1714,8 +1714,8 @@ export default function Navbar() {
           }
 
           .nav-login-img {
-            max-height: 34px;
-            max-width: 110px;
+            max-height: 42px;
+            max-width: 125px;
           }
 
           .logo-img {
