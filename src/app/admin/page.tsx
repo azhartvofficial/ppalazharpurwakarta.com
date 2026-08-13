@@ -4790,7 +4790,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           color: #0f172a;
           font-family: 'Inter', sans-serif;
           overflow-x: hidden;
-          padding-top: 110px; /* Safe padding for desktop */
+          padding-top: 110px; /* Default for mobile */
+        }
+
+        @media (min-width: 1024px) {
+          .dashboard-layout {
+            padding-top: 85px; /* Crop distance to main navbar for laptop */
+          }
         }
 
         .demo-banner {
@@ -4802,7 +4808,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           justify-content: space-between;
           align-items: center;
           position: sticky;
-          top: 90px;
+          top: 85px; /* Matches navbar height */
           z-index: 1000;
           box-shadow: 0 4px 15px rgba(255, 140, 0, 0.15);
         }
@@ -4843,6 +4849,14 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           box-sizing: border-box;
           z-index: 99;
           box-shadow: 4px 0 20px rgba(0, 33, 71, 0.15);
+        }
+
+        @media (min-width: 1024px) {
+          .sidebar {
+            padding: 30px 1.5rem 2rem 1.5rem; /* Crop top padding for laptop */
+            top: 85px; /* Stick right below the 85px navbar */
+            height: calc(100vh - 85px);
+          }
         }
 
         .sidebar-header {
