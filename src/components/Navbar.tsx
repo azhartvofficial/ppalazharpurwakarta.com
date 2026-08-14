@@ -267,10 +267,6 @@ export default function Navbar() {
             <Link href="/fasilitas" className="nav-item" onClick={() => setMenuOpen(false)}>{t('fasilitas')}</Link>
             <Link href="/azhar-learn" className="nav-item" onClick={() => setMenuOpen(false)}>{t('learn')}</Link>
 
-            <Link href="/pendaftaran" className="nav-cta-special" onClick={() => setMenuOpen(false)}>
-              {t('daftar')}
-            </Link>
-
             <div
               className="nav-item-dropdown"
               onMouseEnter={() => !menuOpen && setActiveDropdown('informasi')}
@@ -287,6 +283,10 @@ export default function Navbar() {
                 <Link href="/jelajahi/beasiswa" onClick={() => setMenuOpen(false)}>{t('jalur_beasiswa') || 'Jalur Beasiswa'}</Link>
               </div>
             </div>
+
+            <Link href="/pendaftaran" className="nav-cta-special" onClick={() => setMenuOpen(false)}>
+              {t('daftar')}
+            </Link>
 
           </div>
 
