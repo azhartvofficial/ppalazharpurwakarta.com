@@ -2735,7 +2735,7 @@ export default function AdminDashboardPage() {
                         display: 'inline-flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        $10.9rem',
+                        fontSize: '0.9rem',
                         fontWeight: 700,
                         backgroundColor: '#002147',
                         color: 'white',
@@ -3547,7 +3547,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
                                           <button 
                                             onClick={() => toggleBerandaStatus(item.id, item.status)}
-                                            style={{ $10.9rem', fontWeight: 600, border: 'none', background: item.status === 'Rilis' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)', color: item.status === 'Rilis' ? '#f59e0b' : '#10b981', borderRadius: '6px', cursor: 'pointer' }}
+                                            style={{ fontSize: '0.9rem', fontWeight: 600, border: 'none', background: item.status === 'Rilis' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)', color: item.status === 'Rilis' ? '#f59e0b' : '#10b981', borderRadius: '6px', cursor: 'pointer' }}
                                             title={item.status === 'Rilis' ? "Ubah ke Draf" : "Sematkan (Rilis)"}
                                           >
                                             {item.status === 'Rilis' ? "Drafkan" : "Sematkan"}
@@ -7865,76 +7865,69 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
       {/* ADD AD MODAL */}
       <AnimatePresence>
+        
         {showAdModal && (
-          <div className="modal-overlay" onClick={() => setShowAdModal(false)}>
-            <motion.div
-              className="modal-content"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              onClick={(e) => e.stopPropagation()}
-              style={{ maxWidth: '500px' }}
-            >
+          <div className="modal-backdrop">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="modal-content" style={{ maxWidth: '500px' }}>
               <div className="modal-header">
                 <h3>Tambah Pop-up Iklan</h3>
-                <button onClick={() => setShowAdModal(false)} className="close-btn">×</button>
               </div>
               
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#0f172a' }}>
-                  Gambar Pop-up (Rekomendasi Aspek Rasio 4:3)
-                </label>
-                
-                {adPreviewUrl ? (
-                  <div style={{ position: 'relative', width: '100%', aspectRatio: '4/3', borderRadius: '12px', overflow: 'hidden', border: '2px dashed #cbd5e1', marginBottom: '1rem' }}>
-                    <img src={adPreviewUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <button 
-                      onClick={() => { setAdPreviewUrl(null); setNewAdImage(null); }}
-                      style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(239, 68, 68, 0.9)', color: 'white', border: 'none', width: '30px', height: '30px', borderRadius: '50%', cursor: 'pointer' }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                ) : (
-                  <div style={{ width: '100%', aspectRatio: '4/3', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', marginBottom: '1rem', cursor: 'pointer' }} onClick={() => document.getElementById('ad-upload')?.click()}>
-                    <span style={{ fontSize: '2rem' }}>🖼️</span>
-                    <span style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.5rem' }}>Klik untuk memilih gambar</span>
-                    <input 
-                      id="ad-upload"
-                      type="file" 
-                      accept="image/*" 
-                      style={{ display: 'none' }}
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          setNewAdImage(e.target.files[0]);
-                          setAdPreviewUrl(URL.createObjectURL(e.target.files[0]));
-                        }
-                      }}
-                    />
-                  </div>
-                )}
-                
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#0f172a', marginTop: '1rem' }}>
-                  Tanggal & Waktu Kedaluwarsa (Timer) - Opsional
-                </label>
-                <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.5rem' }}>
-                  Jika diisi, pengunjung akan melihat hitung mundur (countdown) di pop-up, dan pop-up tidak akan muncul lagi setelah waktu ini lewat.
-                </p>
-                <input 
-                  type="datetime-local" 
-                  value={adExpiryDate}
-                  onChange={(e) => setAdExpiryDate(e.target.value)}
-                  style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}
-                />
+              <div className="modal-body form-grid">
+                <div className="form-group">
+                  <label>Gambar Pop-up (Rekomendasi Aspek Rasio 4:3)</label>
+                  
+                  {adPreviewUrl ? (
+                    <div style={{ position: 'relative', width: '100%', aspectRatio: '4/3', borderRadius: '12px', overflow: 'hidden', border: '2px dashed #cbd5e1', marginBottom: '1rem' }}>
+                      <img src={adPreviewUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <button 
+                        onClick={() => { setAdPreviewUrl(null); setNewAdImage(null); }}
+                        style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(239, 68, 68, 0.9)', color: 'white', border: 'none', width: '30px', height: '30px', borderRadius: '50%', cursor: 'pointer', fontWeight: 'bold' }}
+                      >
+                        X
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ width: '100%', aspectRatio: '4/3', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', marginBottom: '1rem', cursor: 'pointer' }} onClick={() => document.getElementById('ad-upload')?.click()}>
+                      <span style={{ fontSize: '2rem' }}>???</span>
+                      <span style={{ fontSize: '0.85rem', color: '#cbd5e1', marginTop: '0.5rem' }}>Klik untuk memilih gambar</span>
+                      <input 
+                        id="ad-upload"
+                        type="file" 
+                        accept="image/*" 
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            setNewAdImage(e.target.files[0]);
+                            setAdPreviewUrl(URL.createObjectURL(e.target.files[0]));
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="form-group">
+                  <label>Tanggal & Waktu Kedaluwarsa (Opsional)</label>
+                  <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.5rem' }}>
+                    Jika diisi, pengunjung akan melihat hitung mundur (countdown) di pop-up, dan pop-up tidak akan muncul lagi setelah waktu ini lewat.
+                  </p>
+                  <input 
+                    type="datetime-local" 
+                    value={adExpiryDate}
+                    onChange={(e) => setAdExpiryDate(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
               </div>
 
-              <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                <button onClick={() => setShowAdModal(false)} className="btn-secondary" style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', background: 'white', cursor: 'pointer' }}>Batal</button>
+              <div className="modal-actions">
+                <button onClick={() => setShowAdModal(false)} className="btn-secondary">Batal</button>
                 <button 
                   onClick={handleAddAd} 
                   className="btn-primary" 
                   disabled={!newAdImage}
-                  style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: 'none', background: newAdImage ? '#002147' : '#94a3b8', color: 'white', cursor: newAdImage ? 'pointer' : 'not-allowed' }}
+                  style={{ opacity: !newAdImage ? 0.5 : 1, cursor: !newAdImage ? 'not-allowed' : 'pointer' }}
                 >
                   Simpan Pop-up
                 </button>
@@ -8638,6 +8631,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
+
 
 
 
