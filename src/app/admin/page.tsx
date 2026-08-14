@@ -90,7 +90,7 @@ const capitalizeWords = (str: string) => {
 };
 
 export default function AdminDashboardPage() {
-  const [activeTab, setActiveTab] = useState<"overview" | "ppdb" | "news" | "docs" | "settings" | "accounts" | "pusatdata">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "ppdb" | "news" | "docs" | "settings" | "accounts" | "pusatdata" | "ads">("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const modalStatesRef = useRef<any>({});
   
@@ -393,6 +393,15 @@ export default function AdminDashboardPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loadingNews, setLoadingNews] = useState(false);
   const [errorNews, setErrorNews] = useState("");
+
+  // Ads states
+  const [ads, setAds] = useState<any[]>([]);
+  const [loadingAds, setLoadingAds] = useState(false);
+  const [showAdModal, setShowAdModal] = useState(false);
+  const [currentAd, setCurrentAd] = useState<any>(null);
+  const [newAdImage, setNewAdImage] = useState<File | null>(null);
+  const [adPreviewUrl, setAdPreviewUrl] = useState<string | null>(null);
+  const [adExpiryDate, setAdExpiryDate] = useState<string>("");
 
   // Form states
   const [editingNewsId, setEditingNewsId] = useState<string | null>(null);
@@ -1025,6 +1034,87 @@ export default function AdminDashboardPage() {
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>([]);
   const [loadingAccounts, setLoadingAccounts] = useState(false);
   const [errorAccounts, setErrorAccounts] = useState("");
+
+  // Ads Functions
+  const fetchAds = async () => {
+    setLoadingAds(true);
+    try {
+      const { data, error } = await supabase.from('popup_ads').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      setAds(data || []);
+    } catch (err: any) {
+      console.error(err);
+    } finally {
+      setLoadingAds(false);
+    }
+  };
+
+  const handleAddAd = async () => {
+    if (!newAdImage) {
+      openAlert('Pilih gambar pop-up terlebih dahulu!', true);
+      return;
+    }
+    setPendingSuperAdminAction(() => async () => {
+      try {
+        const fileExt = newAdImage.name.split('.').pop();
+        const fileName = `popup_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+        const filePath = `ads/${fileName}`;
+        const { error: uploadError } = await supabase.storage.from('assets').upload(filePath, newAdImage);
+        if (uploadError) throw uploadError;
+        const { data: publicUrlData } = supabase.storage.from('assets').getPublicUrl(filePath);
+        const { error: insertError } = await supabase.from('popup_ads').insert([{ image_url: publicUrlData.publicUrl, status: 'draft', expires_at: adExpiryDate ? new Date(adExpiryDate).toISOString() : null }]);
+        if (insertError) throw insertError;
+        openAlert('Pop-up berhasil ditambahkan!');
+        setShowAdModal(false);
+        setNewAdImage(null);
+        setAdPreviewUrl(null);
+        setAdExpiryDate('');
+        fetchAds();
+      } catch (err: any) {
+        openAlert('Gagal upload: ' + err.message, true);
+      }
+    });
+    setShowMasterPasswordPrompt(true);
+  };
+
+  const handleDeleteAd = async (id: string) => {
+    openConfirm('Hapus Pop-up?', 'Apakah Anda yakin ingin menghapus iklan pop-up ini secara permanen?', () => {
+      setPendingSuperAdminAction(() => async () => {
+        try {
+          const { error } = await supabase.from('popup_ads').delete().eq('id', id);
+          if (error) throw error;
+          openAlert('Pop-up berhasil dihapus!');
+          fetchAds();
+        } catch (err: any) { openAlert('Gagal menghapus: ' + err.message, true); }
+      });
+      setShowMasterPasswordPrompt(true);
+    }, true, 'Ya, Hapus', 'Batal');
+  };
+
+  const handleToggleAdStatus = async (ad: any) => {
+    const newStatus = ad.status === 'published' ? 'draft' : 'published';
+    setPendingSuperAdminAction(() => async () => {
+      try {
+        const { error } = await supabase.from('popup_ads').update({ status: newStatus }).eq('id', ad.id);
+        if (error) throw error;
+        openAlert(`Status berhasil diubah menjadi ${newStatus}`);
+        fetchAds();
+      } catch (err: any) { openAlert('Gagal mengubah status: ' + err.message, true); }
+    });
+    setShowMasterPasswordPrompt(true);
+  };
+
+  const handleUpdateAdTimer = async (id: string, newDate: string) => {
+    setPendingSuperAdminAction(() => async () => {
+      try {
+        const { error } = await supabase.from('popup_ads').update({ expires_at: newDate ? new Date(newDate).toISOString() : null }).eq('id', id);
+        if (error) throw error;
+        openAlert('Timer berhasil diperbarui!');
+        fetchAds();
+      } catch (err: any) { openAlert('Gagal update timer: ' + err.message, true); }
+    });
+    setShowMasterPasswordPrompt(true);
+  };
 
   const fetchAccounts = async () => {
     setLoadingAccounts(true);
@@ -2504,7 +2594,15 @@ export default function AdminDashboardPage() {
               onClick={() => { setActiveTab("news"); setSidebarOpen(false); }}
               style={{ color: 'white' }}
             >
-              <span className="nav-icon"></span> <span>Laman Berita</span>
+              <span className="nav-icon">📰</span> <span>Laman Berita</span>
+            </button>
+
+            <button 
+              className={`nav-item ${activeTab === "ads" ? "active" : ""}`}
+              onClick={() => { setActiveTab("ads"); setSidebarOpen(false); }}
+              style={{ color: 'white' }}
+            >
+              <span className="nav-icon">🎯</span> <span>Pop-up Iklan</span>
             </button>
             
             <button 
@@ -2565,14 +2663,16 @@ export default function AdminDashboardPage() {
           <header className="content-header">
             <div>
               <span className="header-breadcrumbs">
-                {activeTab === "overview" ? "Dashboard Admin" : `Dashboard Admin / ${activeTab.toUpperCase()}`}
+                {activeTab === "overview" ? "Dashboard Admin" : 
+                 activeTab === "news" ? "DASHBOARD ADMIN / BERITA" : 
+                 `Dashboard Admin / ${activeTab.toUpperCase()}`}
               </span>
               <h2 className={`${frizQuadrata.className} header-title`}>
                 {activeTab === "overview" && "Aktivitas Web"}
                 {activeTab === "ppdb" && "Manajemen Pendaftaran Santri Baru (PPDB)"}
                 {activeTab === "news" && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    Pusat Pengelolaan Berita & Pengumuman
+                    Pusat Pengelolaan Berita
                     <a 
                       href="/berita" 
                       target="_blank" 
@@ -2581,28 +2681,25 @@ export default function AdminDashboardPage() {
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        padding: '4px 12px',
-                        borderRadius: '20px',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        color: '#3b82f6',
-                        textDecoration: 'none',
-                        fontSize: '0.85rem',
-                        fontWeight: 'bold',
+                        justifyContent: 'center',
+                        padding: '0.4rem 0.8rem',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        backgroundColor: 'transparent',
+                        color: '#002147',
+                        border: 'none',
+                        textDecoration: 'underline',
                         transition: 'all 0.2s ease',
+                        marginLeft: '0.5rem',
+                        fontFamily: 'Inter, sans-serif'
                       }}
-                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.2)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.1)'; e.currentTarget.style.transform = 'translateY(0)'; }}
                     >
-                      <span style={{ whiteSpace: 'nowrap', color: '#3b82f6' }}>Cek Halaman</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                      </svg>
+                      <span style={{ marginRight: '0.3rem' }}>👁️</span>
+                      Cek Halaman
                     </a>
                   </div>
                 )}
+                {activeTab === "ads" && "Manajemen Pop-up Iklan (Beranda)"}
                 {activeTab === "docs" && "Pengelolaan Dokumentasi & Galeri Alumni"}
                 {activeTab === "settings" && "Konfigurasi Desain & Informasi Umum"}
                 {activeTab === "accounts" && "Kelola Data & Hak Akses Pengurus"}
@@ -3210,7 +3307,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         setNewNewsOptionalSources("");
                         setNewNewsImageManualSource("");
                         setShowAddNewsModal(true);
-                      }} className="btn-add-item">
+                      }} className="btn-add-item" style={{ background: '#002147', color: 'white', boxShadow: '0 4px 6px -1px rgba(0, 33, 71, 0.3)' }}>
                         Tulis Artikel Baru
                       </button>
                     </div>
@@ -3439,6 +3536,84 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       </motion.div>
                     )}
                   </AnimatePresence>
+                </motion.div>
+              )}
+
+              {/* TAB ADS MANAGEMENT */}
+              {activeTab === 'ads' && (
+                <motion.div
+                  key="ads"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  className="tab-content"
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', color: '#002147', margin: 0 }}>Daftar Pop-up Iklan</h3>
+                    <button 
+                      onClick={() => setShowAdModal(true)}
+                      className="btn-primary"
+                      style={{ background: '#ff8c00', color: '#002147', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      + Tambah Iklan
+                    </button>
+                  </div>
+
+                  {loadingAds ? (
+                    <div style={{ padding: '3rem', textAlign: 'center', color: '#64748b' }}>Memuat data iklan...</div>
+                  ) : ads.length === 0 ? (
+                    <div style={{ padding: '3rem', textAlign: 'center', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+                      <span style={{ fontSize: '3rem' }}>🎯</span>
+                      <p style={{ color: '#64748b', marginTop: '1rem' }}>Belum ada iklan pop-up yang ditambahkan.</p>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                      {ads.map((ad: any) => (
+                        <div key={ad.id} style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                          <div style={{ aspectRatio: '4/3', background: '#f1f5f9', position: 'relative' }}>
+                            <img src={ad.image_url} alt="Ad" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <div style={{ position: 'absolute', top: 10, right: 10 }}>
+                              <span style={{ padding: '4px 8px', borderRadius: '20px', fontSize: '0.7rem', fontWeight: 700, color: 'white', background: ad.status === 'published' ? '#10b981' : '#64748b' }}>
+                                {ad.status === 'published' ? 'PUBLISHED' : 'DRAFT'}
+                              </span>
+                            </div>
+                            
+                            {/* Preview Timer Overlay */}
+                            {ad.expires_at && (
+                              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,33,71,0.85)', padding: '0.5rem', color: 'white', textAlign: 'center', fontSize: '0.75rem' }}>
+                                <span style={{ color: '#ff8c00', fontWeight: 'bold' }}>Kedaluwarsa:</span> {new Date(ad.expires_at).toLocaleString('id-ID')}
+                              </div>
+                            )}
+                          </div>
+                          <div style={{ padding: '1rem' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+                              <input 
+                                type="datetime-local" 
+                                value={ad.expires_at ? new Date(ad.expires_at).toISOString().slice(0,16) : ''}
+                                onChange={(e) => handleUpdateAdTimer(ad.id, e.target.value)}
+                                style={{ flex: 1, padding: '0.5rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem' }}
+                                title="Ubah Waktu Kedaluwarsa"
+                              />
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                              <button 
+                                onClick={() => handleToggleAdStatus(ad)}
+                                style={{ flex: 1, padding: '0.5rem', borderRadius: '6px', border: 'none', background: ad.status === 'published' ? '#fef3c7' : '#dcfce3', color: ad.status === 'published' ? '#d97706' : '#166534', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem' }}
+                              >
+                                {ad.status === 'published' ? 'Jadikan Draft' : 'Publish'}
+                              </button>
+                              <button 
+                                onClick={() => handleDeleteAd(ad.id)}
+                                style={{ padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', background: '#fee2e2', color: '#b91c1c', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem' }}
+                              >
+                                Hapus
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -3886,6 +4061,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.2 }}
                         >
+                          <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '1rem' }}>
+                            <button onClick={() => fetchPusatData(true)} style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 2s linear infinite' }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                              <span className="hide-on-mobile-text">Refresh</span>
+                            </button>
+                          </div>
                           {filteredPengajuanData.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
                               <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>📬</span>
@@ -7522,6 +7703,87 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           100% { stroke-dashoffset: 0; }
         }
       `}</style>
+
+      {/* ADD AD MODAL */}
+      <AnimatePresence>
+        {showAdModal && (
+          <div className="modal-overlay" onClick={() => setShowAdModal(false)}>
+            <motion.div
+              className="modal-content"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{ maxWidth: '500px' }}
+            >
+              <div className="modal-header">
+                <h3>Tambah Pop-up Iklan</h3>
+                <button onClick={() => setShowAdModal(false)} className="close-btn">×</button>
+              </div>
+              
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#0f172a' }}>
+                  Gambar Pop-up (Rekomendasi Aspek Rasio 4:3)
+                </label>
+                
+                {adPreviewUrl ? (
+                  <div style={{ position: 'relative', width: '100%', aspectRatio: '4/3', borderRadius: '12px', overflow: 'hidden', border: '2px dashed #cbd5e1', marginBottom: '1rem' }}>
+                    <img src={adPreviewUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <button 
+                      onClick={() => { setAdPreviewUrl(null); setNewAdImage(null); }}
+                      style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(239, 68, 68, 0.9)', color: 'white', border: 'none', width: '30px', height: '30px', borderRadius: '50%', cursor: 'pointer' }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ width: '100%', aspectRatio: '4/3', borderRadius: '12px', border: '2px dashed #cbd5e1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', marginBottom: '1rem', cursor: 'pointer' }} onClick={() => document.getElementById('ad-upload')?.click()}>
+                    <span style={{ fontSize: '2rem' }}>🖼️</span>
+                    <span style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.5rem' }}>Klik untuk memilih gambar</span>
+                    <input 
+                      id="ad-upload"
+                      type="file" 
+                      accept="image/*" 
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setNewAdImage(e.target.files[0]);
+                          setAdPreviewUrl(URL.createObjectURL(e.target.files[0]));
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+                
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#0f172a', marginTop: '1rem' }}>
+                  Tanggal & Waktu Kedaluwarsa (Timer) - Opsional
+                </label>
+                <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.5rem' }}>
+                  Jika diisi, pengunjung akan melihat hitung mundur (countdown) di pop-up, dan pop-up tidak akan muncul lagi setelah waktu ini lewat.
+                </p>
+                <input 
+                  type="datetime-local" 
+                  value={adExpiryDate}
+                  onChange={(e) => setAdExpiryDate(e.target.value)}
+                  style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}
+                />
+              </div>
+
+              <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <button onClick={() => setShowAdModal(false)} className="btn-secondary" style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', background: 'white', cursor: 'pointer' }}>Batal</button>
+                <button 
+                  onClick={handleAddAd} 
+                  className="btn-primary" 
+                  disabled={!newAdImage}
+                  style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: 'none', background: newAdImage ? '#002147' : '#94a3b8', color: 'white', cursor: newAdImage ? 'pointer' : 'not-allowed' }}
+                >
+                  Simpan Pop-up
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Master Password Prompt Modal */}
       <AnimatePresence>
