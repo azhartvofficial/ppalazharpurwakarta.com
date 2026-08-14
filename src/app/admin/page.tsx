@@ -1991,8 +1991,15 @@ export default function AdminDashboardPage() {
   const toggleBerandaStatus = async (id: string, currentStatus: string) => {
     const newStatus = currentStatus === "Rilis" ? "Draf" : "Rilis";
     try {
-      const { error } = await supabase.from('beranda_content').update({ status: newStatus }).eq('id', id);
-      if (error) throw error;
+      const res = await fetch('/api/admin/beranda', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus })
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Gagal mengubah status");
+      }
       fetchBerandaContents();
     } catch (err) {
       console.error("Gagal mengubah status beranda:", err);
@@ -2006,8 +2013,13 @@ export default function AdminDashboardPage() {
       "Apakah Anda yakin ingin menghapus konten ini dari slider beranda?",
       async () => {
         try {
-          const { error } = await supabase.from('beranda_content').delete().eq('id', id);
-          if (error) throw error;
+          const res = await fetch(`/api/admin/beranda?id=${id}`, {
+            method: 'DELETE'
+          });
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || "Gagal menghapus konten");
+          }
           fetchBerandaContents();
         } catch (err) {
           console.error("Gagal menghapus konten beranda:", err);
@@ -2122,21 +2134,36 @@ export default function AdminDashboardPage() {
         }
         
         if (editBerandaId) {
-          const { error } = await supabase.from('beranda_content').update({
-            foto_utama_url: imageUrl,
-            judul_utama: berandaJudul,
-            deskripsi: berandaDeskripsi
-          }).eq('id', editBerandaId);
-          if (error) throw error;
-        } else {
-          const { error } = await supabase.from('beranda_content').insert({
-            tipe: 'manual',
-            foto_utama_url: imageUrl,
-            judul_utama: berandaJudul,
-            deskripsi: berandaDeskripsi,
-            status: 'Rilis'
+          const res = await fetch('/api/admin/beranda', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: editBerandaId,
+              foto_utama_url: imageUrl,
+              judul_utama: berandaJudul,
+              deskripsi: berandaDeskripsi
+            })
           });
-          if (error) throw error;
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || "Gagal menyimpan beranda");
+          }
+        } else {
+          const res = await fetch('/api/admin/beranda', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              tipe: 'manual',
+              foto_utama_url: imageUrl,
+              judul_utama: berandaJudul,
+              deskripsi: berandaDeskripsi,
+              status: 'Rilis'
+            })
+          });
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || "Gagal menyimpan beranda");
+          }
         }
         
         fetchBerandaContents();
@@ -2166,15 +2193,22 @@ export default function AdminDashboardPage() {
           }
         }
         
-        const { error } = await supabase.from('beranda_content').insert({
-          tipe: 'berita',
-          berita_id: selectedBeritaId,
-          foto_utama_url: selectedNews.gambar_judul_url || '',
-          judul_utama: selectedNews.judul_utama || '',
-          deskripsi: strippedDesc,
-          status: 'Rilis'
+        const res = await fetch('/api/admin/beranda', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tipe: 'berita',
+            berita_id: selectedBeritaId,
+            foto_utama_url: selectedNews.gambar_judul_url || '',
+            judul_utama: selectedNews.judul_utama || '',
+            deskripsi: strippedDesc,
+            status: 'Rilis'
+          })
         });
-        if (error) throw error;
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || "Gagal menyematkan berita");
+        }
         fetchBerandaContents();
         closeBerandaModal();
         openAlert("Berhasil menyematkan berita ke beranda.");
