@@ -2677,16 +2677,18 @@ export default function AdminDashboardPage() {
                         padding: '0.4rem 0.8rem',
                         fontSize: '0.75rem',
                         fontWeight: 700,
-                        backgroundColor: 'transparent',
-                        color: '#3b82f6',
+                        backgroundColor: '#002147',
+                        color: 'white',
                         border: 'none',
+                        borderRadius: '20px',
                         textDecoration: 'none',
                         transition: 'all 0.2s ease',
                         marginLeft: '0.5rem',
-                        fontFamily: 'Inter, sans-serif'
+                        fontFamily: 'Inter, sans-serif',
+                        boxShadow: '0 4px 6px -1px rgba(0, 33, 71, 0.3)'
                       }}
-                      onMouseEnter={(e) => { e.currentTarget.style.textDecoration = 'underline'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.textDecoration = 'none'; }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#003366'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#002147'; e.currentTarget.style.transform = 'translateY(0)'; }}
                     >
                       Cek Halaman
                       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
@@ -3530,7 +3532,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     <button 
                       onClick={() => setShowAdModal(true)}
                       className="btn-primary"
-                      style={{ background: '#ff8c00', color: '#002147', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer' }}
+                      style={{ background: '#002147', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0, 33, 71, 0.3)' }}
                     >
                       + Tambah Iklan
                     </button>
