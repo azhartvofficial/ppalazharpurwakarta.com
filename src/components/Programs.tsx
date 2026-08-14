@@ -9,7 +9,7 @@ export default function Programs() {
 
   const scrollLeft = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -382, behavior: 'smooth' });
+      scrollRef.current.scrollBy({ left: -(scrollRef.current.clientWidth), behavior: 'smooth' });
     }
   };
 
@@ -19,7 +19,7 @@ export default function Programs() {
       if (scrollLeft + clientWidth >= scrollWidth - 10) {
         scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
       } else {
-        scrollRef.current.scrollBy({ left: 382, behavior: 'smooth' });
+        scrollRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' });
       }
     }
   };
@@ -31,41 +31,12 @@ export default function Programs() {
     return () => clearInterval(interval);
   }, []);
 
-  const news = [
-    {
-      title: "Penerimaan Santri Baru Tahun Ajaran 2026/2027 Resmi Dibuka",
-      date: "12 Mei 2026",
-      category: "Pengumuman",
-      image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2070&auto=format&fit=crop",
-      excerpt: "Alhamdulillah, Pondok Pesantren Al-Azhar kembali membuka pendaftaran untuk santri baru dengan berbagai program unggulan."
-    },
-    {
-      title: "Prestasi Gemilang Santri di Ajang Musabaqah Qira'atil Kutub",
-      date: "05 Mei 2026",
-      category: "Prestasi",
-      image: "https://images.unsplash.com/photo-1609599006353-e629aaab31bc?q=80&w=2000&auto=format&fit=crop",
-      excerpt: "Delegasi santri Al-Azhar berhasil membawa pulang juara umum pada ajang MQK tingkat Nasional."
-    },
-    {
-      title: "Kunjungan Studi Banding dari Universitas Al-Azhar Kairo",
-      date: "28 April 2026",
-      category: "Kunjungan",
-      image: "https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=2070&auto=format&fit=crop",
-      excerpt: "Mempererat tali silaturahmi dan kerja sama pendidikan, masyayikh dari Al-Azhar Kairo mengunjungi pondok kami."
-    },
-    {
-      title: "Peresmian Gedung Asrama Baru Khusus Santri Tahfidz",
-      date: "15 April 2026",
-      category: "Infrastruktur",
-      image: "https://images.unsplash.com/photo-1584281729155-3c9933073019?q=80&w=2070&auto=format&fit=crop",
-      excerpt: "Fasilitas asrama modern khusus untuk program tahfidz intensif telah resmi beroperasi."
-    }
-  ];
-
-  const [displayNews, setDisplayNews] = React.useState(news);
+  const [displayNews, setDisplayNews] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
     const fetchLatestNews = async () => {
+      setLoading(true);
       const { data, error } = await supabase
         .from('news_articles')
         .select('*')
@@ -83,7 +54,10 @@ export default function Programs() {
           image: item.gambar_judul_url || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2070&auto=format&fit=crop',
           excerpt: item.isi_berita ? item.isi_berita.substring(0, 100) + '...' : ''
         })));
+      } else {
+        setDisplayNews([]);
       }
+      setLoading(false);
     };
     fetchLatestNews();
   }, []);
@@ -104,26 +78,38 @@ export default function Programs() {
           </button>
           
           <div className="news-slider" ref={scrollRef}>
-            {displayNews.map((item: any, index) => (
-              <motion.div 
-                key={item.id || index} 
-                className="news-card"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <div className="news-img-wrapper">
-                  <div className="news-img" style={{ backgroundImage: `url(${item.image})` }}></div>
-                </div>
-                <div className="news-content">
-                  <span className="news-date">{item.date}</span>
-                  <h3 className="news-title">{item.title}</h3>
-                  <p className="news-excerpt">{item.excerpt}</p>
-                  <Link href={item.id ? `/berita/${item.id}` : "/berita"} className="read-more">Baca Selengkapnya &rarr;</Link>
-                </div>
-              </motion.div>
-            ))}
+            {loading ? (
+              <div style={{ width: '100%', padding: '4rem 2rem', textAlign: 'center' }}>
+                 <p style={{ color: '#64748b' }}>Memuat berita...</p>
+              </div>
+            ) : displayNews.length > 0 ? (
+              displayNews.map((item: any, index) => (
+                <motion.div 
+                  key={item.id || index} 
+                  className="news-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div className="news-img-wrapper">
+                    <div className="news-img" style={{ backgroundImage: `url(${item.image})` }}></div>
+                  </div>
+                  <div className="news-content">
+                    <span className="news-date">{item.date}</span>
+                    <h3 className="news-title">{item.title}</h3>
+                    <p className="news-excerpt">{item.excerpt}</p>
+                    <Link href={item.id ? `/berita/${item.id}` : "/berita"} className="read-more">Baca Selengkapnya &rarr;</Link>
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              <div style={{ width: '100%', padding: '4rem 2rem', textAlign: 'center', background: '#f8fafc', borderRadius: '24px', border: '2px dashed #e2e8f0' }}>
+                <span style={{ fontSize: '3rem', display: 'block', marginBottom: '1rem' }}>📰</span>
+                <h3 style={{ color: '#002147', fontSize: '1.5rem', marginBottom: '0.5rem' }}>Berita Segera Hadir</h3>
+                <p style={{ color: '#64748b' }}>Belum ada berita yang dipublikasikan saat ini. Nantikan kabar terbaru dari kami.</p>
+              </div>
+            )}
           </div>
 
           <button onClick={scrollRight} className="side-nav next" aria-label="Next">
@@ -241,8 +227,7 @@ export default function Programs() {
         }
 
         .news-card {
-          min-width: 380px;
-          max-width: 380px;
+          flex: 0 0 calc((100% - 4rem) / 3);
           scroll-snap-align: center;
           background: white;
           border-radius: 28px;
@@ -378,6 +363,7 @@ export default function Programs() {
 
         @media (max-width: 992px) {
           .blue-title { font-size: 2.8rem; }
+          .news-card { flex: 0 0 calc((100% - 2rem) / 2); }
           .side-nav { width: 50px; height: 50px; }
           .side-nav.prev { left: -15px; }
           .side-nav.next { right: -15px; }
@@ -386,7 +372,7 @@ export default function Programs() {
         @media (max-width: 768px) {
           .news-section { padding: 1rem 0; }
           .blue-title { font-size: 2.2rem; }
-          .news-card { min-width: 300px; max-width: 300px; }
+          .news-card { flex: 0 0 calc(100% - 1rem); }
           .side-nav { display: flex; transform: translateY(-50%); }
           .side-nav.prev { left: 5px; }
           .side-nav.next { right: 5px; }
