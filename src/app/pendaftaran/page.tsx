@@ -283,31 +283,34 @@ export default function PendaftaranPage() {
         }
 
         .alur-card {
-          background: #f8fafc;
+          background: #002147;
           padding: 2.5rem 1.5rem;
-          border-radius: 20px;
+          border-radius: 24px;
           text-align: center;
-          border: 1px solid #e2e8f0;
+          border: 2px solid #ff8c00;
           position: relative;
-          transition: transform 0.3s;
+          transition: transform 0.3s, box-shadow 0.3s;
+          box-shadow: 0 15px 35px rgba(0, 33, 71, 0.4);
         }
 
         .alur-card:hover {
           transform: translateY(-10px);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-          border-color: #cbd5e1;
+          box-shadow: 0 25px 50px rgba(0, 33, 71, 0.6);
+          border-color: #ffa500;
         }
 
         .step-num {
           margin: 0 auto 1rem auto;
-          background: #002147;
-          color: white;
+          background: #ff8c00;
+          color: #002147;
           width: 40px;
           height: 40px;
           display: flex;
           align-items: center;
           justify-content: center;
           border-radius: 50%;
+          font-weight: 900;
+          border: 3px solid white;
           font-weight: 900;
           font-size: 1.2rem;
           box-shadow: 0 10px 20px rgba(0,33,71,0.2);
@@ -320,13 +323,13 @@ export default function PendaftaranPage() {
 
         .alur-card h3 {
           font-size: 1.1rem;
-          color: #0f172a;
+          color: #ff8c00;
           font-weight: 800;
           margin-bottom: 0.5rem;
         }
 
         .alur-card p.desc-desktop {
-          color: #64748b;
+          color: #e2e8f0;
           font-size: 0.85rem;
           line-height: 1.6;
         }
@@ -494,31 +497,31 @@ export default function PendaftaranPage() {
           .alur-card {
             width: 31%;
             box-sizing: border-box;
-            padding: 0.5rem 0;
+            padding: 0.8rem 0.5rem;
             border-radius: 12px;
-            background: transparent;
-            border: none;
-            box-shadow: none;
+            background: #002147;
+            border: 1px solid rgba(255, 140, 0, 0.5);
+            box-shadow: 0 8px 20px rgba(0, 33, 71, 0.3);
           }
           .alur-card:hover {
-            transform: none;
-            box-shadow: none;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 33, 71, 0.4);
           }
           .step-num {
             display: none;
           }
           .step-icon {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             margin: 0 auto 0.5rem auto;
-            background: white;
-            width: 60px;
-            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,33,71,0.08);
-            border: 1px solid #e2e8f0;
+            box-shadow: none;
+            border: 1px solid rgba(255, 140, 0, 0.3);
           }
           .alur-card h3 {
             font-size: 0.65rem;
