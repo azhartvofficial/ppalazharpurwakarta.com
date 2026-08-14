@@ -1130,22 +1130,22 @@ export default function AdminDashboardPage() {
           console.warn("Gagal kompresi, menggunakan file asli", err);
         }
 
-        const formData = new FormData();
+                const formData = new FormData();
         formData.append('file', fileToUpload);
-        formData.append('upload_preset', 'ppalazharpwk'); 
+        formData.append('filename', newAdImage.name);
         
         setUploadProgressAd(60);
-        const res = await fetch('https://api.cloudinary.com/v1_1/dpgqct4hz/image/upload', {
+        const res = await fetch('/api/upload-cloudinary', {
           method: 'POST',
           body: formData
         });
         const uploadData = await res.json();
         setUploadProgressAd(80);
-        if (!uploadData.secure_url) {
-          throw new Error("Gagal upload ke Cloudinary: " + JSON.stringify(uploadData));
+        if (!uploadData.url) {
+          throw new Error("Gagal upload ke Server: " + JSON.stringify(uploadData));
         }
         
-        const publicUrl = uploadData.secure_url;
+        const publicUrl = uploadData.url;
         const { error: insertError } = await supabase.from('popup_ads').insert([{ image_url: publicUrl, status: 'draft', expires_at: adExpiryDate ? new Date(adExpiryDate).toISOString() : null }]);
         if (insertError) throw insertError;
         
@@ -8770,6 +8770,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
 
 
 
