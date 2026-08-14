@@ -43,14 +43,7 @@ export default function Hero() {
           }
         }));
       } else {
-        setSlides([
-          {
-            image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999215/vdc4p1otuifswwdjx7zt.jpg",
-            title: t('heroTitle1'),
-            desc: t('heroDesc1'),
-            isNews: false
-          }
-        ]);
+        setSlides([]);
       }
     };
     fetchBeranda();
@@ -115,8 +108,9 @@ export default function Hero() {
 
       {/* Removed nav buttons as requested */}
 
-      <div className="hero-timeline-container">
-        <div className="container">
+      {slides.length > 0 && (
+        <div className="hero-timeline-container">
+          <div className="container">
           <div className="timeline-grid">
             {slides.map((slide, index) => (
               <div 
@@ -135,6 +129,7 @@ export default function Hero() {
           </div>
         </div>
       </div>
+      )}
 
       <style jsx>{`
         .hero {
