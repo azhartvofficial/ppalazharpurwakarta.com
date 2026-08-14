@@ -34,6 +34,7 @@ export default function PendaftaranPage() {
   }, []);
 
   const anyOpen = waves.some(w => w.is_open);
+  const isPusdaOpen = waves.some(w => w.access_code);
 
   return (
     <main className="pendaftaran-layout">
@@ -138,7 +139,7 @@ export default function PendaftaranPage() {
         {/* PUSDA CTA Section - Compact Version */}
         <div className="pusda-cta-section">
           <div className="pusda-content">
-            {anyOpen ? (
+            {isPusdaOpen ? (
               <>
                 <motion.div 
                   className="pusda-badge"

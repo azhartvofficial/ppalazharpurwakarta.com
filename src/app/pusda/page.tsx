@@ -100,7 +100,7 @@ export default function PusdaPage() {
   const [wavesSettings, setWavesSettings] = useState<any[]>([]);
   const [loadingSettings, setLoadingSettings] = useState(true);
   
-  const isPusdaClosed = !loadingSettings && wavesSettings.length > 0 && wavesSettings.filter(w => w.is_open).length === 0;
+  const isPusdaClosed = !loadingSettings && wavesSettings.length > 0 && wavesSettings.filter(w => w.access_code).length === 0;
 
   // Fetch initial data (Provinces & Countries & Registration Settings)
   useEffect(() => {
@@ -317,16 +317,16 @@ export default function PusdaPage() {
     setCheckingAccess(true);
     setAccessCodeError("");
     
-    // Check if any wave is open
-    const openWaves = wavesSettings.filter(w => w.is_open);
-    if (openWaves.length === 0) {
-      setAccessCodeError("Saat ini tidak ada gelombang pendaftaran PPDB yang dibuka.");
+    // Check if any wave has PUSDA open
+    const pusdaWaves = wavesSettings.filter(w => w.access_code);
+    if (pusdaWaves.length === 0) {
+      setAccessCodeError("Saat ini tidak ada gelombang PUSDA yang dibuka.");
       setCheckingAccess(false);
       return;
     }
 
     // Check if input matches any open wave's access code (case-insensitive)
-    const matchedWave = openWaves.find(w => w.access_code?.toLowerCase() === accessCodeInput.toLowerCase());
+    const matchedWave = pusdaWaves.find(w => w.access_code?.toLowerCase() === accessCodeInput.toLowerCase());
     
     if (matchedWave) {
       setAccessGranted(true);
