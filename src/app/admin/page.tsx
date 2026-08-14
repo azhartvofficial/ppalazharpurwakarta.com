@@ -3851,15 +3851,15 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       <h3>Informasi Kontak Lembaga</h3>
                       <form className="config-form" onSubmit={(e) => { e.preventDefault(); openAlert("Pengaturan berhasil disimpan lokal!"); }}>
                         <div className="input-group">
-                          <label>Nomor Telepon Kantor / Pondok</label>
+                          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Nomor Telepon Kantor / Pondok</label>
                           <input type="text" defaultValue="+62 264 887123" />
                         </div>
                         <div className="input-group">
-                          <label>Alamat E-Mail Resmi</label>
+                          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Alamat E-Mail Resmi</label>
                           <input type="email" defaultValue="info@ppalazharpurwakarta.com" />
                         </div>
                         <div className="input-group">
-                          <label>Alamat Fisik Pondok</label>
+                          <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Alamat Fisik Pondok</label>
                           <textarea rows={3} defaultValue="Jl. Terusan Pasawahan No. 45, Purwakarta, Jawa Barat, Indonesia" />
                         </div>
                         <button type="submit" className="btn-submit-config">Simpan Informasi Kontak</button>
@@ -3871,21 +3871,21 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       <form className="config-form" onSubmit={(e) => { e.preventDefault(); openAlert("Statistik berhasil diperbarui!"); }}>
                         <div className="input-row">
                           <div className="input-group">
-                            <label>Jumlah Santri Aktif</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Jumlah Santri Aktif</label>
                             <input type="number" defaultValue={850} />
                           </div>
                           <div className="input-group">
-                            <label>Jumlah Asatidzah / Pengajar</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Jumlah Asatidzah / Pengajar</label>
                             <input type="number" defaultValue={42} />
                           </div>
                         </div>
                         <div className="input-row">
                           <div className="input-group">
-                            <label>Jumlah Alumni Sukses</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Jumlah Alumni Sukses</label>
                             <input type="number" defaultValue={1200} />
                           </div>
                           <div className="input-group">
-                            <label>Jumlah Program Hafalan (Hafidz)</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Jumlah Program Hafalan (Hafidz)</label>
                             <input type="number" defaultValue={150} />
                           </div>
                         </div>
@@ -5502,7 +5502,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             </h3>
             <form onSubmit={handleSubmitNews} className="modal-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '70vh', overflowY: 'auto', padding: '0 10px' }}>
               <div className="input-group">
-                <label>Kategori Berita</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kategori Berita</label>
                 <select value={newNewsCategory} onChange={(e) => setNewNewsCategory(e.target.value)} required>
                   <option value="Papan Pengumuman">Papan Pengumuman</option>
                   <option value="Artikel Berita">Artikel Berita</option>
@@ -5510,7 +5510,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               </div>
 
               <div className="input-group">
-                <label>Judul Utama</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Judul Utama</label>
                 <input 
                   type="text" 
                   required 
@@ -5522,7 +5522,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
 
                   <div className="input-group">
-                    <label>Sumber Gambar (Cover)</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Sumber Gambar (Cover)</label>
                     <div style={{ display: 'flex', gap: '1rem' }}>
                       <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'normal', color: '#334155' }}>
                         <input type="radio" name="imageSource" value="Internal" checked={newNewsImageSource === "Internal"} onChange={(e) => setNewNewsImageSource(e.target.value as "Internal")} />
@@ -5537,7 +5537,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
                   {newNewsImageSource === "Manual" && (
                     <div className="input-group">
-                      <label>Keterangan Sumber Manual</label>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Keterangan Sumber Manual</label>
                       <input 
                         type="text" 
                         placeholder="Contoh: Dokumen Pribadi Ust. Ahmad"
@@ -5548,7 +5548,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   )}
 
                   <div className="input-group">
-                    <label>Upload Gambar Judul (Cover) <span style={{ color: '#ef4444', fontSize: '0.8rem' }}>(Rekomendasi ukuran: 16:9, misal: 1280x720 pixels agar tidak merusak format saat disematkan ke beranda)</span></label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Upload Gambar Judul (Cover) <span style={{ color: '#ef4444', fontSize: '0.8rem' }}>(Rekomendasi ukuran: 16:9, misal: 1280x720 pixels agar tidak merusak format saat disematkan ke beranda)</span></label>
                     <input 
                       type="file" 
                       accept="image/*"
@@ -5591,7 +5591,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   </div>
 
                   <div className="input-group">
-                    <label>Isi / Topik Berita</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Isi / Topik Berita</label>
                     <textarea 
                       required 
                       rows={5}
@@ -5602,7 +5602,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   </div>
 
                   <div className="input-group">
-                    <label>Lampiran Ke-2 (Opsional)</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Lampiran Ke-2 (Opsional)</label>
                     <select value={newNewsAttachmentType} onChange={(e) => setNewNewsAttachmentType(e.target.value as any)}>
                       <option value="">-- Tidak Ada --</option>
                       <option value="PDF">Opsi PDF</option>
@@ -5645,7 +5645,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   )}
                   {['Video Youtube', 'PDF', 'Gambar'].includes(newNewsAttachmentType) && (
                     <div className="input-group">
-                      <label>Judul {newNewsAttachmentType} (Opsional)</label>
+                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Judul {newNewsAttachmentType} (Opsional)</label>
                       <input 
                         type="text" 
                         placeholder={`Masukkan judul ${newNewsAttachmentType} untuk ditampilkan`}
@@ -5656,7 +5656,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   )}
 
                   <div className="input-group" style={{ marginTop: '1rem' }}>
-                    <label>Paragraf Penutup (Opsional)</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Paragraf Penutup (Opsional)</label>
                     <textarea 
                       rows={3}
                       placeholder="Tulis paragraf penutup di sini (opsional)..."
@@ -5667,7 +5667,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
 
               <div className="input-group">
-                <label>Penulis</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Penulis</label>
                 <input 
                   type="text" 
                   required 
@@ -5679,7 +5679,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
               {newNewsCategory === "Artikel Berita" && (
                 <div className="input-group">
-                  <label>Sumber (Opsional)</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Sumber (Opsional)</label>
                   <input 
                     type="text" 
                     placeholder="Sumber tambahan jika ada"
@@ -5690,7 +5690,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               )}
 
               <div className="input-group">
-                <label>Status Publikasi</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Status Publikasi</label>
                 <select value={newNewsStatus} onChange={(e) => setNewNewsStatus(e.target.value as any)}>
                   <option value="Published">Published (Langsung Terbit)</option>
                   <option value="Draft">Draft (Simpan Draf)</option>
@@ -5761,7 +5761,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             <h3 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '1.5rem', color: '#002147' }}>Upload / Hubungkan Foto Baru</h3>
             <form onSubmit={handleAddPhoto} className="modal-form">
               <div className="input-group">
-                <label>Tautan URL Gambar (Cloudinary CDN URL)</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Tautan URL Gambar (Cloudinary CDN URL)</label>
                 <input 
                   type="url" 
                   required 
@@ -5773,7 +5773,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               </div>
 
               <div className="input-group">
-                <label>Deskripsi Foto (Keterangan)</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Deskripsi Foto (Keterangan)</label>
                 <input 
                   type="text" 
                   required 
@@ -7897,9 +7897,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <button onClick={() => setShowAdModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
               </div>
               
-              <div className="modal-body form-grid">
+              <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div className="form-group">
-                  <label>Gambar Pop-up (Rekomendasi Aspek Rasio 3:4)</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Gambar Pop-up (Rekomendasi Aspek Rasio 3:4)</label>
                   
                   {adPreviewUrl ? (
                     <div style={{ position: 'relative', width: '100%', aspectRatio: '3/4', borderRadius: '12px', overflow: 'hidden', border: '2px dashed #cbd5e1', marginBottom: '1rem' }}>
@@ -7932,7 +7932,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 </div>
 
                 <div className="form-group">
-                  <label>Tanggal & Waktu Kedaluwarsa (Opsional)</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Tanggal & Waktu Kedaluwarsa (Opsional)</label>
                   <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.5rem' }}>
                     Jika diisi, pengunjung akan melihat hitung mundur (countdown) di pop-up, dan pop-up tidak akan muncul lagi setelah waktu ini lewat.
                   </p>
@@ -7940,7 +7940,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     type="datetime-local" 
                     value={adExpiryDate}
                     onChange={(e) => setAdExpiryDate(e.target.value)}
-                    className="form-input"
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }}
                   />
                 </div>
               </div>
@@ -7986,18 +7986,18 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   <h3 style={{ margin: 0, color: '#002147', fontWeight: 900 }}>Tambah Berita Head News</h3>
                   <button onClick={() => setShowAzTvMainModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
                 </div>
-                <div className="modal-body form-grid">
+                <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div className="form-group">
-                    <label>Judul Berita</label>
-                    <input type="text" value={azTvMainForm.title} onChange={(e) => setAzTvMainForm({...azTvMainForm, title: e.target.value})} className="form-input" />
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Judul Berita</label>
+                    <input type="text" value={azTvMainForm.title} onChange={(e) => setAzTvMainForm({...azTvMainForm, title: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }} />
                   </div>
                   <div className="form-group">
-                    <label>Deskripsi Singkat</label>
-                    <textarea value={azTvMainForm.excerpt} onChange={(e) => setAzTvMainForm({...azTvMainForm, excerpt: e.target.value})} className="form-input" rows={3}></textarea>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Deskripsi Singkat</label>
+                    <textarea value={azTvMainForm.excerpt} onChange={(e) => setAzTvMainForm({...azTvMainForm, excerpt: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }} rows={3}></textarea>
                   </div>
                   <div className="form-group">
-                    <label>Link Gambar / URL Video</label>
-                    <input type="text" value={azTvMainForm.image} onChange={(e) => setAzTvMainForm({...azTvMainForm, image: e.target.value})} className="form-input" placeholder="https://..." />
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Link Gambar / URL Video</label>
+                    <input type="text" value={azTvMainForm.image} onChange={(e) => setAzTvMainForm({...azTvMainForm, image: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }} placeholder="https://..." />
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
@@ -8015,18 +8015,18 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   <h3 style={{ margin: 0, color: '#002147', fontWeight: 900 }}>Tambah Video YouTube</h3>
                   <button onClick={() => setShowAzTvYtModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
                 </div>
-                <div className="modal-body form-grid">
+                <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div className="form-group">
-                    <label>Judul Video</label>
-                    <input type="text" value={azTvYtForm.title} onChange={(e) => setAzTvYtForm({...azTvYtForm, title: e.target.value})} className="form-input" />
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Judul Video</label>
+                    <input type="text" value={azTvYtForm.title} onChange={(e) => setAzTvYtForm({...azTvYtForm, title: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }} />
                   </div>
                   <div className="form-group">
-                    <label>Link YouTube</label>
-                    <input type="text" value={azTvYtForm.url} onChange={(e) => setAzTvYtForm({...azTvYtForm, url: e.target.value})} className="form-input" placeholder="https://youtube.com/..." />
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Link YouTube</label>
+                    <input type="text" value={azTvYtForm.url} onChange={(e) => setAzTvYtForm({...azTvYtForm, url: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }} placeholder="https://youtube.com/..." />
                   </div>
                   <div className="form-group">
-                    <label>Kategori</label>
-                    <input type="text" value={azTvYtForm.category} onChange={(e) => setAzTvYtForm({...azTvYtForm, category: e.target.value})} className="form-input" placeholder="ex: Ceramah, Vlog..." />
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kategori</label>
+                    <input type="text" value={azTvYtForm.category} onChange={(e) => setAzTvYtForm({...azTvYtForm, category: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }} placeholder="ex: Ceramah, Vlog..." />
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
@@ -8049,18 +8049,18 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   <h3 style={{ margin: 0, color: '#002147', fontWeight: 900 }}>Tambah Link Dokumentasi (G-Drive)</h3>
                   <button onClick={() => setShowAzTvDokModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
                 </div>
-                <div className="modal-body form-grid">
+                <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   <div className="form-group">
-                    <label>Nama Dokumentasi / Acara</label>
-                    <input type="text" value={azTvDokForm.title} onChange={(e) => setAzTvDokForm({...azTvDokForm, title: e.target.value})} className="form-input" />
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Nama Dokumentasi / Acara</label>
+                    <input type="text" value={azTvDokForm.title} onChange={(e) => setAzTvDokForm({...azTvDokForm, title: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }} />
                   </div>
                   <div className="form-group">
-                    <label>Link Google Drive</label>
-                    <input type="text" value={azTvDokForm.link} onChange={(e) => setAzTvDokForm({...azTvDokForm, link: e.target.value})} className="form-input" placeholder="https://drive.google.com/..." />
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Link Google Drive</label>
+                    <input type="text" value={azTvDokForm.link} onChange={(e) => setAzTvDokForm({...azTvDokForm, link: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }} placeholder="https://drive.google.com/..." />
                   </div>
                   <div className="form-group">
-                    <label>Target Akses</label>
-                    <select value={azTvDokForm.target} onChange={(e) => setAzTvDokForm({...azTvDokForm, target: e.target.value})} className="form-input">
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Target Akses</label>
+                    <select value={azTvDokForm.target} onChange={(e) => setAzTvDokForm({...azTvDokForm, target: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }}>
                       <option value="Semua">Semua (Publik)</option>
                       <option value="Santri">Santri Saja</option>
                       <option value="Guru">Guru Saja</option>
@@ -8309,19 +8309,19 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     <input type="email" value={addPusatDataForm.email_santri} onChange={e => setAddPusatDataForm({...addPusatDataForm, email_santri: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="Email aktif (opsional)"/>
                   </div>
                   <div className="input-group">
-                    <label>Tempat, Tanggal Lahir</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Tempat, Tanggal Lahir</label>
                     <input type="text" required value={addPusatDataForm.tempat_tanggal_lahir} onChange={e => setAddPusatDataForm({...addPusatDataForm, tempat_tanggal_lahir: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
                   </div>
                   <div className="input-group">
-                    <label>NIK</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>NIK</label>
                     <input type="number" required value={addPusatDataForm.nik} onChange={e => setAddPusatDataForm({...addPusatDataForm, nik: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
                   </div>
                   <div className="input-group">
-                    <label>NISN</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>NISN</label>
                     <input type="number" required value={addPusatDataForm.nisn} onChange={e => setAddPusatDataForm({...addPusatDataForm, nisn: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
                   </div>
                   <div className="input-group">
-                    <label>Jenjang Pendidikan</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Jenjang Pendidikan</label>
                     <select value={addPusatDataJenjang} onChange={e => setAddPusatDataJenjang(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                       <option value="MA Unggulan Al-Azhar">MA Unggulan Al-Azhar</option>
                       <option value="SMP Islam Al-Azhar">SMP Islam Al-Azhar</option>
@@ -8329,27 +8329,27 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     </select>
                   </div>
                   <div className="input-group">
-                    <label>Kelas</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kelas</label>
                     <select value={addPusatDataForm.kelas} onChange={e => setAddPusatDataForm({...addPusatDataForm, kelas: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                       {getAddPusatDataKelasOptions().map(k => <option key={k} value={k}>Kelas {k}</option>)}
                     </select>
                   </div>
                   <div className="input-group">
-                    <label>Program Pendidikan</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Program Pendidikan</label>
                     <select value={addPusatDataForm.program_pendidikan} onChange={e => setAddPusatDataForm({...addPusatDataForm, program_pendidikan: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                       <option value="Mondok">Mondok (Pesantren)</option>
                       <option value="Non Mondok">Non Mondok (Pulang Pergi)</option>
                     </select>
                   </div>
                   <div className="input-group">
-                    <label>Gender</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Gender</label>
                     <select value={addPusatDataForm.gender} onChange={e => setAddPusatDataForm({...addPusatDataForm, gender: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                       <option value="Putra">Putra</option><option value="Putri">Putri</option>
                     </select>
                   </div>
 
                   <div className="input-group">
-                    <label>Kampus</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kampus</label>
                     <select value={addPusatDataForm.kampus} onChange={e => setAddPusatDataForm({...addPusatDataForm, kampus: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                       <option value="Azhar 1">Azhar 1</option>
                       <option value="Azhar 2">Azhar 2</option>
@@ -8371,19 +8371,19 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   {addPusatDataIsWNA ? (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                       <div>
-                        <label>Negara</label>
+                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Negara</label>
                         <input list="admin-country-list" required={addPusatDataIsWNA} value={addPusatDataCountry} onChange={e => setAddPusatDataCountry(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
                         <datalist id="admin-country-list">{countries.map((c,i) => <option key={i} value={c} />)}</datalist>
                       </div>
                       <div>
-                        <label>Kode Pos</label>
+                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kode Pos</label>
                         <input type="text" value={addPusatDataKodePos} onChange={e => setAddPusatDataKodePos(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
                       </div>
                     </div>
                   ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                       <div>
-                        <label>Provinsi</label>
+                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Provinsi</label>
                         <select required={!addPusatDataIsWNA} value={addPusatDataProvId} onChange={e => { setAddPusatDataProvId(e.target.value); setAddPusatDataProvName(e.target.options[e.target.selectedIndex].text); setAddPusatDataRegId(""); setAddPusatDataRegName(""); setDistricts([]); setAddPusatDataDistId(""); setAddPusatDataDistName(""); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Provinsi --</option>
                           {addPusatDataProvId === "OLD_PROV" && <option value="OLD_PROV">{addPusatDataProvName}</option>}
@@ -8392,7 +8392,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     {addPusatDataErrors.provinsi && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.provinsi}</div>}
                       </div>
                       <div>
-                        <label>Kota/Kabupaten</label>
+                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kota/Kabupaten</label>
                         <select required={!addPusatDataIsWNA} value={addPusatDataRegId} disabled={!addPusatDataProvId} onChange={e => { setAddPusatDataRegId(e.target.value); setAddPusatDataRegName(e.target.options[e.target.selectedIndex].text); setAddPusatDataDistId(""); setAddPusatDataDistName(""); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Kota/Kabupaten --</option>
                           {addPusatDataRegId === "OLD_REG" && <option value="OLD_REG">{addPusatDataRegName}</option>}
@@ -8401,7 +8401,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     {addPusatDataErrors.kota && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.kota}</div>}
                       </div>
                       <div>
-                        <label>Kecamatan</label>
+                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kecamatan</label>
                         <select required={!addPusatDataIsWNA} value={addPusatDataDistId} disabled={!addPusatDataRegId} onChange={e => { setAddPusatDataDistId(e.target.value); setAddPusatDataDistName(e.target.options[e.target.selectedIndex].text); setAddPusatDataVillageId(""); setAddPusatDataVillageName(""); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Kecamatan --</option>
                           {addPusatDataDistId === "OLD_DIST" && <option value="OLD_DIST">{addPusatDataDistName}</option>}
@@ -8410,7 +8410,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     {addPusatDataErrors.kecamatan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.kecamatan}</div>}
                       </div>
                       <div>
-                        <label>Kelurahan/Desa</label>
+                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kelurahan/Desa</label>
                         <select required={!addPusatDataIsWNA} value={addPusatDataVillageId} disabled={!addPusatDataDistId} onChange={e => { setAddPusatDataVillageId(e.target.value); setAddPusatDataVillageName(e.target.options[e.target.selectedIndex].text); }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                           <option value="">-- Pilih Kelurahan/Desa --</option>
                           {addPusatDataVillageId === "OLD_VILL" && <option value="OLD_VILL">{addPusatDataVillageName}</option>}
@@ -8419,21 +8419,21 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     {addPusatDataErrors.kelurahan && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{addPusatDataErrors.kelurahan}</div>}
                       </div>
                       <div>
-                        <label>Kode Pos</label>
+                        <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kode Pos</label>
                         <input type="number" value={addPusatDataKodePos} onChange={e => setAddPusatDataKodePos(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
                       </div>
                     </div>
                   )}
                   <div>
-                    <label>Detail Alamat</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Detail Alamat</label>
                     <textarea required value={addPusatDataDetail} onChange={e => setAddPusatDataDetail(e.target.value)} rows={2} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}></textarea>
                   </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div className="input-group"><label>Nama Ayah</label><input type="text" required value={addPusatDataForm.nama_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ayah: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Nama Ayah</label><input type="text" required value={addPusatDataForm.nama_ayah} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ayah: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
                   <div className="input-group">
-  <label>Pekerjaan Ayah</label>
+  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Pekerjaan Ayah</label>
   {!isAddPekerjaanAyahLainnya ? (
     <select required value={addPusatDataForm.pekerjaan_ayah} onChange={e => {
       if (e.target.value === "Lainnya") {
@@ -8454,9 +8454,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </div>
   )}
 </div>
-                  <div className="input-group"><label>Nama Ibu</label><input type="text" required value={addPusatDataForm.nama_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ibu: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Nama Ibu</label><input type="text" required value={addPusatDataForm.nama_ibu} onChange={e => setAddPusatDataForm({...addPusatDataForm, nama_ibu: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
                   <div className="input-group">
-  <label>Pekerjaan Ibu</label>
+  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Pekerjaan Ibu</label>
   {!isAddPekerjaanIbuLainnya ? (
     <select required value={addPusatDataForm.pekerjaan_ibu} onChange={e => {
       if (e.target.value === "Lainnya") {
@@ -8477,14 +8477,14 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </div>
   )}
 </div>
-                  <div className="input-group"><label>No HP/WhatsApp Wali</label><input type="text" required value={addPusatDataForm.no_hp_wali} onChange={e => setAddPusatDataForm({...addPusatDataForm, no_hp_wali: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
+                  <div className="input-group"><label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>No HP/WhatsApp Wali</label><input type="text" required value={addPusatDataForm.no_hp_wali} onChange={e => setAddPusatDataForm({...addPusatDataForm, no_hp_wali: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/></div>
                 </div>
 
                 <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                   <strong style={{ display: 'block', marginBottom: '1rem' }}>Unggah Berkas</strong>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
-    <label>Pas Foto {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept="image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, pas_foto: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Pas Foto {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept="image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, pas_foto: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
     {isEditingPusatData && addPusatDataExistingFiles.pas_foto && (
       <div style={{ marginTop: '8px' }}>
         <a href={addPusatDataExistingFiles.pas_foto} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat Pas Foto Saat Ini</a>
@@ -8492,7 +8492,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     )}
   </div>
                     <div>
-    <label>Kartu Keluarga (KK) {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, kk: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kartu Keluarga (KK) {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, kk: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
     {isEditingPusatData && addPusatDataExistingFiles.kk_url && (
       <div style={{ marginTop: '8px' }}>
         <a href={addPusatDataExistingFiles.kk_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat KK Saat Ini</a>
@@ -8500,7 +8500,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     )}
   </div>
                     <div>
-    <label>Akte Kelahiran</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, akte: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Akte Kelahiran</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, akte: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
     {isEditingPusatData && addPusatDataExistingFiles.akte_url && (
       <div style={{ marginTop: '8px' }}>
         <a href={addPusatDataExistingFiles.akte_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat Akte Saat Ini</a>
@@ -8508,7 +8508,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     )}
   </div>
                     <div>
-    <label>Ijazah Terakhir</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, ijazah: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Ijazah Terakhir</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, ijazah: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
     {isEditingPusatData && addPusatDataExistingFiles.ijazah_url && (
       <div style={{ marginTop: '8px' }}>
         <a href={addPusatDataExistingFiles.ijazah_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat Ijazah Saat Ini</a>
@@ -8516,7 +8516,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     )}
   </div>
                     <div>
-    <label>SKTM (Bila Ada)</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, sktm: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>SKTM (Bila Ada)</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, sktm: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
     {isEditingPusatData && addPusatDataExistingFiles.sktm_url && (
       <div style={{ marginTop: '8px' }}>
         <a href={addPusatDataExistingFiles.sktm_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat SKTM Saat Ini</a>
@@ -8770,6 +8770,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
+
 
 
 
