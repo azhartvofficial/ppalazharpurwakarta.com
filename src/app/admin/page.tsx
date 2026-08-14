@@ -2594,15 +2594,7 @@ export default function AdminDashboardPage() {
               onClick={() => { setActiveTab("news"); setSidebarOpen(false); }}
               style={{ color: 'white' }}
             >
-              <span className="nav-icon">📰</span> <span>Laman Berita</span>
-            </button>
-
-            <button 
-              className={`nav-item ${activeTab === "ads" ? "active" : ""}`}
-              onClick={() => { setActiveTab("ads"); setSidebarOpen(false); }}
-              style={{ color: 'white' }}
-            >
-              <span className="nav-icon">🎯</span> <span>Pop-up Iklan</span>
+              <span>Laman Berita</span>
             </button>
             
             <button 
@@ -2686,20 +2678,25 @@ export default function AdminDashboardPage() {
                         fontSize: '0.75rem',
                         fontWeight: 700,
                         backgroundColor: 'transparent',
-                        color: '#002147',
+                        color: '#3b82f6',
                         border: 'none',
-                        textDecoration: 'underline',
+                        textDecoration: 'none',
                         transition: 'all 0.2s ease',
                         marginLeft: '0.5rem',
                         fontFamily: 'Inter, sans-serif'
                       }}
+                      onMouseEnter={(e) => { e.currentTarget.style.textDecoration = 'underline'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.textDecoration = 'none'; }}
                     >
-                      <span style={{ marginRight: '0.3rem' }}>👁️</span>
                       Cek Halaman
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
                     </a>
                   </div>
                 )}
-                {activeTab === "ads" && "Manajemen Pop-up Iklan (Beranda)"}
                 {activeTab === "docs" && "Pengelolaan Dokumentasi & Galeri Alumni"}
                 {activeTab === "settings" && "Konfigurasi Desain & Informasi Umum"}
                 {activeTab === "accounts" && "Kelola Data & Hak Akses Pengurus"}
@@ -3528,26 +3525,6 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-                          <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>📢</span>
-                          <h4 style={{ color: '#002147', marginBottom: '0.5rem' }}>Manajemen Iklan</h4>
-                          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Fitur pengelolaan iklan sedang dalam pengembangan.</p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              )}
-
-              {/* TAB ADS MANAGEMENT */}
-              {activeTab === 'ads' && (
-                <motion.div
-                  key="ads"
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  className="tab-content"
-                >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <h3 style={{ fontSize: '1.25rem', color: '#002147', margin: 0 }}>Daftar Pop-up Iklan</h3>
                     <button 
@@ -3614,8 +3591,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       ))}
                     </div>
                   )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               )}
+
+
 
               {/* TAB 4: GALLERY/DOCS MANAGEMENT */}
               {activeTab === "docs" && (
