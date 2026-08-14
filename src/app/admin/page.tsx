@@ -4315,7 +4315,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
                         <h4 style={{ margin: '0 0 1rem 0', color: '#002147', fontSize: '1.2rem', fontWeight: 800 }}>Pengaturan Gelombang Pendaftaran</h4>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
-                          <p style={{ color: '#64748b', fontSize: '0.9rem', maxWidth: '600px', margin: 0 }}>
+                          <p style={{ color: '#64748b', fontSize: '0.9rem', maxWidth: '450px', margin: 0 }}>
                             Atur ketersediaan pendaftaran PPDB. Saat status diubah menjadi "Tersedia", sistem akan otomatis menghasilkan kode akses baru untuk PUSDA.
                           </p>
                           <button
@@ -5459,7 +5459,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               borderRadius: '20px',
               padding: '2rem',
               width: '100%',
-              maxWidth: '600px',
+              maxWidth: '450px',
               boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
               maxHeight: '90vh',
               overflowY: 'auto',
@@ -8573,7 +8573,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}
+              style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '450px', maxHeight: '90vh', overflowY: 'auto' }}
             >
               <h3 style={{ color: '#002147', marginBottom: '1.5rem', fontWeight: 800 }}>
                 {berandaModalType === "manual" ? (editBerandaId ? "Edit Konten Manual" : "Tambah Konten Manual") : "Sematkan Berita"}
@@ -8719,6 +8719,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
 
 
 
