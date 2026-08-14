@@ -59,6 +59,9 @@ export default function Hero() {
 
   return (
     <section className="hero">
+      {slides.length === 0 && (
+        <div className="hero-overlay" style={{ background: 'linear-gradient(90deg, rgba(0, 33, 71, 1) 0%, rgba(0, 33, 71, 0.8) 100%)', zIndex: 1 }}></div>
+      )}
       {slides.map((slide, index) => (
         <div 
           key={index} 
