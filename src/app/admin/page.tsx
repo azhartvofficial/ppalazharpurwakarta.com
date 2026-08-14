@@ -1110,50 +1110,62 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleAddAd = async () => {
-      if (!newAdImage) {
-        openAlert('Pilih gambar pop-up terlebih dahulu!', true);
-        return;
-      }
-      setPendingSuperAdminAction(() => async () => {
+    const handleAddAd = async () => {
+    if (!newAdImage) {
+      openAlert('Pilih gambar pop-up terlebih dahulu!', true);
+      return;
+    }
+    setPendingSuperAdminAction(() => async () => {
+      setIsUploadingAd(true);
+      setUploadProgressAd(10);
+      try {
+        let fileToUpload = newAdImage;
         try {
-          let fileToUpload = newAdImage;
-          try {
-            const compressionOptions = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
-            fileToUpload = await imageCompression(newAdImage, compressionOptions);
-          } catch (err) {
-            console.warn("Gagal kompresi, menggunakan file asli", err);
-          }
-
-          const formData = new FormData();
-          formData.append('file', fileToUpload);
-          formData.append('upload_preset', 'ppalazharpwk'); 
-          
-          const res = await fetch('https://api.cloudinary.com/v1_1/dpgqct4hz/image/upload', {
-            method: 'POST',
-            body: formData
-          });
-          const uploadData = await res.json();
-          if (!uploadData.secure_url) {
-            throw new Error("Gagal upload gambar ke server");
-          }
-          
-          const publicUrl = uploadData.secure_url;
-          const { error: insertError } = await supabase.from('popup_ads').insert([{ image_url: publicUrl, status: 'draft', expires_at: adExpiryDate ? new Date(adExpiryDate).toISOString() : null }]);
-          if (insertError) throw insertError;
-          
-          openAlert('Pop-up berhasil ditambahkan!');
-          setShowAdModal(false);
-          setNewAdImage(null);
-          setAdPreviewUrl(null);
-          setAdExpiryDate('');
-          fetchAds();
-        } catch (err: any) {
-          openAlert('Gagal upload: ' + err.message, true);
+          const compressionOptions = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
+          fileToUpload = await imageCompression(newAdImage, compressionOptions);
+          setUploadProgressAd(40);
+        } catch (err) {
+          console.warn("Gagal kompresi, menggunakan file asli", err);
         }
-      });
-      setShowMasterPasswordPrompt(true);
-    };
+
+        const formData = new FormData();
+        formData.append('file', fileToUpload);
+        formData.append('upload_preset', 'ppalazharpwk'); 
+        
+        setUploadProgressAd(60);
+        const res = await fetch('https://api.cloudinary.com/v1_1/dpgqct4hz/image/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const uploadData = await res.json();
+        setUploadProgressAd(80);
+        if (!uploadData.secure_url) {
+          throw new Error("Gagal upload ke Cloudinary: " + JSON.stringify(uploadData));
+        }
+        
+        const publicUrl = uploadData.secure_url;
+        const { error: insertError } = await supabase.from('popup_ads').insert([{ image_url: publicUrl, status: 'draft', expires_at: adExpiryDate ? new Date(adExpiryDate).toISOString() : null }]);
+        if (insertError) throw insertError;
+        
+        setUploadProgressAd(100);
+        openAlert('Pop-up berhasil ditambahkan!');
+        setTimeout(() => {
+            setShowAdModal(false);
+            setNewAdImage(null);
+            setAdPreviewUrl(null);
+            setAdExpiryDate('');
+            setIsUploadingAd(false);
+            setUploadProgressAd(0);
+            fetchAds();
+        }, 1000);
+      } catch (err: any) {
+        setIsUploadingAd(false);
+        setUploadProgressAd(0);
+        openAlert('Gagal upload: ' + err.message, true);
+      }
+    });
+    setShowMasterPasswordPrompt(true);
+  };
 
   const handleDeleteAd = async (id: string) => {
     openConfirm('Hapus Pop-up?', 'Apakah Anda yakin ingin menghapus iklan pop-up ini secara permanen?', () => {
@@ -7931,16 +7943,33 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
-                <button onClick={() => setShowAdModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 1 }}>Batal</button>
-                <button 
-                  onClick={handleAddAd} 
-                  disabled={!newAdImage}
-                  style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: !newAdImage ? 'not-allowed' : 'pointer', flex: 2, opacity: !newAdImage ? 0.5 : 1 }}
-                >
-                  Simpan Pop-up
-                </button>
-              </div>
+              {isUploadingAd ? (
+                <div style={{ marginTop: '1.5rem', background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold', color: uploadProgressAd === 100 ? '#16a34a' : '#002147' }}>
+                    <span>{uploadProgressAd === 100 ? 'Selesai!' : (uploadProgressAd < 50 ? 'Mengompresi Gambar...' : 'Mengunggah ke Server...')}</span>
+                    <span>{uploadProgressAd}%</span>
+                  </div>
+                  <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                    <motion.div 
+                      initial={{ width: 0 }} 
+                      animate={{ width: `${uploadProgressAd}%` }} 
+                      transition={{ duration: 0.2 }}
+                      style={{ height: '100%', background: uploadProgressAd === 100 ? '#16a34a' : '#ff8c00' }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
+                  <button onClick={() => setShowAdModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 1 }}>Batal</button>
+                  <button 
+                    onClick={handleAddAd} 
+                    disabled={!newAdImage}
+                    style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: !newAdImage ? 'not-allowed' : 'pointer', flex: 2, opacity: !newAdImage ? 0.5 : 1 }}
+                  >
+                    Simpan Pop-up
+                  </button>
+                </div>
+              )}
             </motion.div>
           </div>
         )}
@@ -8739,6 +8768,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
 
 
 
