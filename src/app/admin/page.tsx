@@ -2794,40 +2794,67 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 >
                   {/* Glassmorphic Sub-Navbar for Berita */}
                   <div className="accounts-sub-navbar" style={{
-                    display: 'flex', alignItems: 'center', background: 'rgba(255, 255, 255, 0.8)',
-                    backdropFilter: 'blur(12px)', borderRadius: '12px', padding: '0.5rem', marginBottom: '1.5rem',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid rgba(226, 232, 240, 0.8)',
-                    gap: '0.5rem', overflowX: 'auto', whiteSpace: 'nowrap'
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'rgba(0, 33, 71, 0.03)',
+                    padding: '6px',
+                    borderRadius: '12px',
+                    border: '1.5px solid rgba(0, 33, 71, 0.05)',
+                    marginBottom: '1.75rem',
+                    width: 'fit-content',
+                    boxShadow: '0 4px 15px rgba(0, 33, 71, 0.02)'
                   }}>
                     <button
                       onClick={() => setBeritaSubTab("kelola_berita")}
+                      className={`sub-nav-btn ${beritaSubTab === "kelola_berita" ? "active" : ""}`}
                       style={{
-                        padding: '0.6rem 1.2rem', background: beritaSubTab === "kelola_berita" ? '#002147' : 'transparent',
-                        color: beritaSubTab === "kelola_berita" ? '#ffffff' : '#64748b', border: 'none', borderRadius: '8px',
-                        fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.3s ease', display: 'flex', alignItems: 'center', gap: '8px'
+                        padding: '8px 18px',
+                        border: 'none',
+                        background: beritaSubTab === "kelola_berita" ? 'var(--primary)' : 'transparent',
+                        color: beritaSubTab === "kelola_berita" ? '#fff' : 'var(--primary)',
+                        fontWeight: 800,
+                        borderRadius: '8px',
+                        fontSize: '0.8rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease'
                       }}
                     >
-                      <span style={{ fontSize: '1rem' }}>📰</span> Kelola Berita
+                      Kelola Berita
                     </button>
                     <button
                       onClick={() => setBeritaSubTab("konten_beranda")}
+                      className={`sub-nav-btn ${beritaSubTab === "konten_beranda" ? "active" : ""}`}
                       style={{
-                        padding: '0.6rem 1.2rem', background: beritaSubTab === "konten_beranda" ? '#002147' : 'transparent',
-                        color: beritaSubTab === "konten_beranda" ? '#ffffff' : '#64748b', border: 'none', borderRadius: '8px',
-                        fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.3s ease', display: 'flex', alignItems: 'center', gap: '8px'
+                        padding: '8px 18px',
+                        border: 'none',
+                        background: beritaSubTab === "konten_beranda" ? 'var(--primary)' : 'transparent',
+                        color: beritaSubTab === "konten_beranda" ? '#fff' : 'var(--primary)',
+                        fontWeight: 800,
+                        borderRadius: '8px',
+                        fontSize: '0.8rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease'
                       }}
                     >
-                      <span style={{ fontSize: '1rem' }}>🏠</span> Konten Beranda
+                      Konten Beranda
                     </button>
                     <button
                       onClick={() => setBeritaSubTab("iklan")}
+                      className={`sub-nav-btn ${beritaSubTab === "iklan" ? "active" : ""}`}
                       style={{
-                        padding: '0.6rem 1.2rem', background: beritaSubTab === "iklan" ? '#002147' : 'transparent',
-                        color: beritaSubTab === "iklan" ? '#ffffff' : '#64748b', border: 'none', borderRadius: '8px',
-                        fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.3s ease', display: 'flex', alignItems: 'center', gap: '8px'
+                        padding: '8px 18px',
+                        border: 'none',
+                        background: beritaSubTab === "iklan" ? 'var(--primary)' : 'transparent',
+                        color: beritaSubTab === "iklan" ? '#fff' : 'var(--primary)',
+                        fontWeight: 800,
+                        borderRadius: '8px',
+                        fontSize: '0.8rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease'
                       }}
                     >
-                      <span style={{ fontSize: '1rem' }}>📢</span> Iklan
+                      Iklan
                     </button>
                   </div>
 
