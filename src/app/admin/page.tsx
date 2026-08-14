@@ -1101,13 +1101,32 @@ export default function AdminDashboardPage() {
   const [loadingAccounts, setLoadingAccounts] = useState(false);
   const [errorAccounts, setErrorAccounts] = useState("");
 
-  // Ads Functions
   const fetchAds = async () => {
     setLoadingAds(true);
     try {
       const { data, error } = await supabase.from('popup_ads').select('*').order('created_at', { ascending: false });
       if (error) throw error;
-      setAds(data || []);
+      
+      const now = new Date();
+      const validAds: any[] = [];
+      const expiredAdsIds: string[] = [];
+
+      (data || []).forEach((ad: any) => {
+        if (ad.expires_at && new Date(ad.expires_at) <= now) {
+          expiredAdsIds.push(ad.id);
+        } else {
+          validAds.push(ad);
+        }
+      });
+
+      if (expiredAdsIds.length > 0) {
+        // Auto delete expired ads silently in background
+        supabase.from('popup_ads').delete().in('id', expiredAdsIds).then(({ error }) => {
+          if (error) console.error("Gagal auto-delete iklan kedaluwarsa:", error);
+        });
+      }
+
+      setAds(validAds);
     } catch (err: any) {
       console.error(err);
     } finally {
