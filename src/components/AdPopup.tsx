@@ -43,7 +43,7 @@ export default function AdPopup() {
           // Kasih jeda sedikit biar website muncul dulu sebelum popup
           setTimeout(() => {
             setShowAd(true);
-          }, 1500);
+          }, 2000);
         }
       } catch (err) {
         console.error("Error:", err);
@@ -61,8 +61,12 @@ export default function AdPopup() {
   return (
     <AnimatePresence>
       {showAd && adUrl && (
-        <div 
+        <motion.div 
           onClick={closeAd}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
           style={{ 
             position: 'fixed', 
             top: 0, 
@@ -142,8 +146,9 @@ export default function AdPopup() {
               }} 
             />
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );
 }
+
