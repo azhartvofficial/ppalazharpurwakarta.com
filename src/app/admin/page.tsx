@@ -1810,13 +1810,17 @@ export default function AdminDashboardPage() {
     setShowAddNewsModal(true);
   };
 
-  const handleSubmitNews = async (e: React.FormEvent) => {
+  const handleSubmitNews = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newNewsTitle || !newNewsContent || !newNewsAuthor) {
       openAlert("Mohon lengkapi data wajib (Judul, Isi, Penulis)!");
       return;
     }
+    setPendingSuperAdminAction(() => executeSubmitNews);
+    setShowMasterPasswordPrompt(true);
+  };
 
+  const executeSubmitNews = async () => {
     setIsUploadingNews(true);
     setUploadProgress(0);
     setUploadSuccess(false);
@@ -1908,6 +1912,8 @@ export default function AdminDashboardPage() {
       setUploadSuccess(true);
       fetchNewsData(); // refresh data
       
+      openAlert(editingNewsId ? "Berita berhasil diperbarui!" : "Berita berhasil diterbitkan!");
+
       // Delay before closing to show success animation
       setTimeout(() => {
         // Reset forms
@@ -2102,10 +2108,26 @@ export default function AdminDashboardPage() {
     });
   };
 
-  const handleSaveBeranda = async () => {
+  const handleSaveBeranda = () => {
     if (berandaModalType === "manual") {
-      if (!berandaJudul || !berandaDeskripsi || (!berandaFile && !berandaPreview)) {
-        openAlert("Mohon lengkapi judul, deskripsi, dan foto utama.");
+      if (!berandaFile && !berandaPreview) {
+        openAlert("Mohon lengkapi foto utama.");
+        return;
+      }
+    } else if (berandaModalType === "berita") {
+      if (!selectedBeritaId) {
+        openAlert("Pilih berita yang ingin disematkan.");
+        return;
+      }
+    }
+    setPendingSuperAdminAction(() => executeSaveBeranda);
+    setShowMasterPasswordPrompt(true);
+  };
+
+  const executeSaveBeranda = async () => {
+    if (berandaModalType === "manual") {
+      if (!berandaFile && !berandaPreview) {
+        openAlert("Mohon lengkapi foto utama.");
         return;
       }
       setIsUploadingBeranda(true);
