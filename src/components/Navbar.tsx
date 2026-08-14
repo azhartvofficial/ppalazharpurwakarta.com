@@ -299,14 +299,18 @@ export default function Navbar() {
               >
                 <div 
                   className="nav-profile-badge" 
+                  onClick={() => setProfileDropdownOpen(prev => !prev)}
                   style={{ 
                     display: 'flex', alignItems: 'center', gap: '8px', 
-                    padding: '6px 12px', borderRadius: '20px', 
+                    padding: '8px 16px', borderRadius: '25px', 
                     cursor: 'pointer',
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
                     background: isAdminLoggedIn ? (adminRole?.toLowerCase() === 'wali' ? '#fef08a' : (adminRole?.toLowerCase() === 'super admin' ? '#bbf7d0' : '#bae6fd')) : '#f1f5f9',
                     color: isAdminLoggedIn ? (adminRole?.toLowerCase() === 'wali' ? '#854d0e' : (adminRole?.toLowerCase() === 'super admin' ? '#166534' : '#0369a1')) : '#475569',
                     border: '1px solid',
                     borderColor: isAdminLoggedIn ? (adminRole?.toLowerCase() === 'wali' ? '#fde047' : (adminRole?.toLowerCase() === 'super admin' ? '#86efac' : '#7dd3fc')) : '#e2e8f0',
+                    transition: 'all 0.2s ease',
                   }}
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
