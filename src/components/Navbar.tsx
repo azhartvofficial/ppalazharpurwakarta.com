@@ -332,7 +332,7 @@ export default function Navbar() {
                           {getShortenedName(isAdminLoggedIn ? adminName : santriName).charAt(0).toUpperCase()}
                         </div>
                         <div className="dropdown-user-info">
-                          <strong>{isAdminLoggedIn ? adminName : santriName}</strong>
+                          <strong>{getShortenedName(isAdminLoggedIn ? adminName : santriName)}</strong>
                           <span>{isAdminLoggedIn ? adminEmail : santriEmail || 'Email tidak tersedia'}</span>
                         </div>
                       </div>
