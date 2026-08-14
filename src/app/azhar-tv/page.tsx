@@ -12,8 +12,6 @@ const frizQuadrata = localFont({
 });
 
 export default function AzharTvPage() {
-  const [activeSlide, setActiveSlide] = useState(0);
-
   const newsSlides = [
     {
       title: "Penerimaan Santri Baru Tahun Ajaran 2026/2027 Resmi Dibuka",
@@ -54,14 +52,37 @@ export default function AzharTvPage() {
     { title: "Idul Adha & Qurban 2025", count: "120+ Photos", link: "https://drive.google.com" },
   ];
 
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [liveData, setLiveData] = useState({ isLive: false, title: "", url: "" });
+  const [youtubeSlides, setYoutubeSlides] = useState(youtubeVideos);
+  const [kontenUtama, setKontenUtama] = useState(newsSlides);
+  const [galeriDocs, setGaleriDocs] = useState(documentationEvents);
+
+  useEffect(() => {
+    const savedLive = localStorage.getItem("azhartv_live");
+    if (savedLive) setLiveData(JSON.parse(savedLive));
+
+    const savedYT = localStorage.getItem("azhartv_youtube");
+    if (savedYT) setYoutubeSlides(JSON.parse(savedYT));
+
+    const savedKonten = localStorage.getItem("azhartv_konten_utama");
+    if (savedKonten) setKontenUtama(JSON.parse(savedKonten));
+
+    const savedDocs = localStorage.getItem("azhartv_dok_publik");
+    if (savedDocs) setGaleriDocs(JSON.parse(savedDocs));
+  }, []);
+
+
+
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % newsSlides.length);
+      setActiveSlide((prev) => (prev + 1) % kontenUtama.length);
     }, 8000);
     return () => clearInterval(interval);
-  }, [newsSlides.length]);
+  }, [kontenUtama.length]);
 
-  const activeNews = newsSlides[activeSlide];
+  const activeNews = kontenUtama[activeSlide];
 
   return (
     <main className="tv-page">
@@ -101,7 +122,7 @@ export default function AzharTvPage() {
                   </motion.div>
                 </AnimatePresence>
                 <div className="slider-controls-custom">
-                  {newsSlides.map((_, idx) => (
+                  {kontenUtama.map((_, idx) => (
                     <button 
                       key={idx}
                       className={`dot-indicator ${idx === activeSlide ? 'active' : ''}`}
@@ -111,7 +132,7 @@ export default function AzharTvPage() {
                   ))}
                   <button 
                     className="next-btn-round"
-                    onClick={() => setActiveSlide((activeSlide + 1) % newsSlides.length)}
+                    onClick={() => setActiveSlide((activeSlide + 1) % kontenUtama.length)}
                   >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#002147" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                   </button>
@@ -140,6 +161,47 @@ export default function AzharTvPage() {
             <p style={{ fontSize: 'clamp(1rem, 4vw, 1.3rem)', color: '#475569', lineHeight: 1.7, margin: 0 }}>
               Saluran informasi, dokumentasi, dan inspirasi seputar kegiatan Pondok Pesantren Al-Azhar Purwakarta.
             </p>
+          </motion.div>
+        </div>
+      </section>
+      {/* Live Streaming Section */}
+      {liveData.isLive && liveData.url && (
+        <section className="live-streaming-section" style={{ padding: '3rem 0', background: '#002147', color: 'white', textAlign: 'center' }}>
+          <div className="container">
+            <h2 className={frizQuadrata.className} style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: '#ff8c00' }}>Live Streaming</h2>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '2rem', fontWeight: 500, opacity: 0.9 }}>{liveData.title}</h3>
+            <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}>
+              <iframe 
+                src={liveData.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/')} 
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        </section>
+      )}
+
+
+      {/* Tim Media Azhar Tv Section */}
+      <section className="media-team-poster" style={{ padding: '2rem 0 4rem', background: '#ffffff' }}>
+        <div className="container">
+          <motion.div 
+            className="poster-container" 
+            style={{ display: 'flex', justifyContent: 'center' }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Image 
+              src="/azhar%20tv%20poster.jpeg" 
+              alt="Poster Azhar Tv" 
+              width={800} 
+              height={1131} 
+              style={{ objectFit: 'contain', width: '100%', maxWidth: '800px', height: 'auto', borderRadius: '20px', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }} 
+              unoptimized 
+            />
           </motion.div>
         </div>
       </section>
@@ -236,28 +298,6 @@ export default function AzharTvPage() {
         </div>
       </section>
 
-      {/* Tim Media Azhar Tv Section */}
-      <section className="media-team-poster" style={{ padding: '2rem 0 4rem', background: '#ffffff' }}>
-        <div className="container">
-          <motion.div 
-            className="poster-container" 
-            style={{ display: 'flex', justifyContent: 'center' }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <Image 
-              src="/azhar%20tv%20poster.jpeg" 
-              alt="Poster Azhar Tv" 
-              width={800} 
-              height={1131} 
-              style={{ objectFit: 'contain', width: '100%', maxWidth: '800px', height: 'auto', borderRadius: '20px', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }} 
-              unoptimized 
-            />
-          </motion.div>
-        </div>
-      </section>
-
       {/* YouTube Section */}
       <section className="youtube-center">
         <div className="container">
@@ -267,7 +307,7 @@ export default function AzharTvPage() {
           </div>
 
           <div className="video-grid">
-            {youtubeVideos.map((vid, i) => (
+            {youtubeSlides.map((vid, i) => (
               <motion.div 
                 key={i} 
                 className="video-item"
@@ -300,7 +340,7 @@ export default function AzharTvPage() {
             </div>
 
             <div className="event-grid">
-              {documentationEvents.map((event, i) => (
+              {galeriDocs.map((event, i) => (
                 <a key={i} href={event.link} target="_blank" className="event-card">
                   <div className="event-icon">📂</div>
                   <div className="event-info">
@@ -952,3 +992,10 @@ export default function AzharTvPage() {
     </main>
   );
 }
+
+
+
+
+
+
+

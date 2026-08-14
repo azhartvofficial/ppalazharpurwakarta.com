@@ -90,6 +90,7 @@ const capitalizeWords = (str: string) => {
 };
 
 export default function AdminDashboardPage() {
+  const [azhartvSubTab, setAzhartvSubTab] = useState<'konten_utama' | 'youtube_slide' | 'galeri' | 'dok_publik'>('konten_utama');
   const [activeTab, setActiveTab] = useState<"overview" | "ppdb" | "news" | "docs" | "settings" | "accounts" | "pusatdata" | "ads">("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const modalStatesRef = useRef<any>({});
@@ -437,6 +438,66 @@ export default function AdminDashboardPage() {
   const [newPhotoUrl, setNewPhotoUrl] = useState("");
   const [newPhotoDesc, setNewPhotoDesc] = useState("");
   const [showAddPhotoModal, setShowAddPhotoModal] = useState(false);
+  // Azhar TV States
+  const [azharTvLive, setAzharTvLive] = useState({ isLive: false, title: '', url: '' });
+  const [azharTvYtSlides, setAzharTvYtSlides] = useState<any[]>([]);
+  const [azharTvKontenUtama, setAzharTvKontenUtama] = useState<any[]>([]);
+  const [azharTvDokPublik, setAzharTvDokPublik] = useState<any[]>([]);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const live = localStorage.getItem('azhartv_live');
+      if (live) setAzharTvLive(JSON.parse(live));
+      
+      const yt = localStorage.getItem('azhartv_youtube');
+      if (yt) setAzharTvYtSlides(JSON.parse(yt));
+
+      const konten = localStorage.getItem('azhartv_konten_utama');
+      if (konten) setAzharTvKontenUtama(JSON.parse(konten));
+      else {
+        const defaultKonten = [
+          {
+            title: "Penerimaan Santri Baru Tahun Ajaran 2026/2027 Resmi Dibuka",
+            image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2070&auto=format&fit=crop",
+            excerpt: "Alhamdulillah, Pondok Pesantren Al-Azhar kembali membuka pendaftaran...",
+            date: "12 Mei 2026"
+          }
+        ];
+        setAzharTvKontenUtama(defaultKonten);
+      }
+
+      const docs = localStorage.getItem('azhartv_dok_publik');
+      if (docs) setAzharTvDokPublik(JSON.parse(docs));
+    }
+  }, []);
+
+  const saveAzharTvLive = (data: any) => {
+    setAzharTvLive(data);
+    localStorage.setItem('azhartv_live', JSON.stringify(data));
+  };
+  const saveAzharTvYtSlides = (data: any[]) => {
+    const limited = data.slice(-10); // Keep last 10
+    setAzharTvYtSlides(limited);
+    localStorage.setItem('azhartv_youtube', JSON.stringify(limited));
+  };
+  const saveAzharTvKontenUtama = (data: any[]) => {
+    setAzharTvKontenUtama(data);
+    localStorage.setItem('azhartv_konten_utama', JSON.stringify(data));
+  };
+  const saveAzharTvDokPublik = (data: any[]) => {
+    setAzharTvDokPublik(data);
+    localStorage.setItem('azhartv_dok_publik', JSON.stringify(data));
+  };
+
+  // Azhar TV Modals
+  const [showAzTvMainModal, setShowAzTvMainModal] = useState(false);
+  const [showAzTvYtModal, setShowAzTvYtModal] = useState(false);
+  const [showAzTvDokModal, setShowAzTvDokModal] = useState(false);
+  
+  const [azTvMainForm, setAzTvMainForm] = useState({ title: '', excerpt: '', image: '' });
+  const [azTvYtForm, setAzTvYtForm] = useState({ title: '', url: '', category: '' });
+  const [azTvDokForm, setAzTvDokForm] = useState({ title: '', link: '', target: 'Semua' });
+
 
   // Accounts sub-tab and login requests states
   const [accountsSubTab, setAccountsSubTab] = useState<"kelola_akun" | "permintaan_login">("kelola_akun");
@@ -2602,7 +2663,7 @@ export default function AdminDashboardPage() {
               onClick={() => { setActiveTab("docs"); setSidebarOpen(false); }}
               style={{ color: 'white' }}
             >
-              <span className="nav-icon"></span> <span>Galeri Publikasi</span>
+              <span className="nav-icon"></span> <span>Publikasi Azhar Tv</span>
             </button>
 
             <button 
@@ -2699,7 +2760,7 @@ export default function AdminDashboardPage() {
                     </a>
                   </div>
                 )}
-                {activeTab === "docs" && "Pengelolaan Dokumentasi & Galeri Alumni"}
+                {activeTab === "docs" && "Publikasi Azhar Tv & Dokumentasi"}
                 {activeTab === "settings" && "Konfigurasi Desain & Informasi Umum"}
                 {activeTab === "accounts" && "Kelola Data & Hak Akses Pengurus"}
                 {activeTab === "pusatdata" && "Pusat Data Siswa & Dokumen"}
@@ -3602,42 +3663,157 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
 
               {/* TAB 4: GALLERY/DOCS MANAGEMENT */}
-              {activeTab === "docs" && (
-                <motion.div
-                  key="docs"
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  className="tab-content"
-                >
-                  <div className="data-card">
-                    <div className="card-header-flex">
-                      <h3>Kelola Foto Dokumentasi & Alumni</h3>
-                      <button onClick={() => setShowAddPhotoModal(true)} className="btn-add-item">
-                        Tambah Foto Baru
-                      </button>
+              
+                {activeTab === "docs" && (
+                  <motion.div
+                    key="docs"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    className="tab-content"
+                  >
+                    {/* Glassmorphic Sub-Navbar pop up / tab menu */}
+                    <div className="accounts-sub-navbar" style={{
+                      display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', background: 'rgba(0, 33, 71, 0.03)', padding: '6px', borderRadius: '12px', border: '1.5px solid rgba(0, 33, 71, 0.05)', marginBottom: '1.75rem', width: 'fit-content', boxShadow: '0 4px 15px rgba(0, 33, 71, 0.02)'
+                    }}>
+                      <button onClick={() => setAzhartvSubTab('konten_utama')} className={"sub-nav-btn ${azhartvSubTab === 'konten_utama' ? 'active' : ''}"} style={{ padding: '8px 18px', borderRadius: '8px', border: 'none', background: azhartvSubTab === 'konten_utama' ? '#002147' : 'transparent', color: azhartvSubTab === 'konten_utama' ? 'white' : '#64748b', fontWeight: azhartvSubTab === 'konten_utama' ? 600 : 500, cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '6px' }}>Konten Utama</button>
+                      <button onClick={() => setAzhartvSubTab('youtube_slide')} className={"sub-nav-btn ${azhartvSubTab === 'youtube_slide' ? 'active' : ''}"} style={{ padding: '8px 18px', borderRadius: '8px', border: 'none', background: azhartvSubTab === 'youtube_slide' ? '#002147' : 'transparent', color: azhartvSubTab === 'youtube_slide' ? 'white' : '#64748b', fontWeight: azhartvSubTab === 'youtube_slide' ? 600 : 500, cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '6px' }}>Youtube Slide</button>
+                      <button onClick={() => setAzhartvSubTab('galeri')} className={"sub-nav-btn ${azhartvSubTab === 'galeri' ? 'active' : ''}"} style={{ padding: '8px 18px', borderRadius: '8px', border: 'none', background: azhartvSubTab === 'galeri' ? '#002147' : 'transparent', color: azhartvSubTab === 'galeri' ? 'white' : '#64748b', fontWeight: azhartvSubTab === 'galeri' ? 600 : 500, cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '6px' }}>Galeri</button>
+                      <button onClick={() => setAzhartvSubTab('dok_publik')} className={"sub-nav-btn ${azhartvSubTab === 'dok_publik' ? 'active' : ''}"} style={{ padding: '8px 18px', borderRadius: '8px', border: 'none', background: azhartvSubTab === 'dok_publik' ? '#002147' : 'transparent', color: azhartvSubTab === 'dok_publik' ? 'white' : '#64748b', fontWeight: azhartvSubTab === 'dok_publik' ? 600 : 500, cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '6px' }}>Dokumentasi Publik</button>
                     </div>
 
-                    <div className="gallery-admin-grid">
-                      {photos.map((p, idx) => (
-                        <div key={idx} className="gallery-admin-card">
-                          <div className="photo-preview-box">
-                            <img src={p.url} alt={p.description} />
-                          </div>
-                          <div className="photo-info-box">
-                            <p className="photo-desc">{p.description}</p>
-                            <span className="photo-meta">{p.date}</span>
-                            <div className="photo-actions">
-                              <a href={p.url} target="_blank" className="btn-view-url">Buka CDN URL</a>
-                              <button onClick={() => handleDeletePhoto(p.id)} className="btn-photo-delete">Hapus Foto</button>
+                    <AnimatePresence mode="wait">
+                      {azhartvSubTab === 'konten_utama' && (
+                        <motion.div key="konten_utama" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                          <div className="data-card">
+                            <div className="card-header-flex">
+                              <h3>Berita Head News Azhar TV</h3>
+                              <button onClick={() => { setAzTvMainForm({title: '', excerpt: '', image: ''}); setShowAzTvMainModal(true); }} className="btn-add-item">Tambah Berita</button>
+                            </div>
+                            <div className="data-table-container">
+                              <table className="data-table">
+                                <thead><tr><th>Judul Berita</th><th>Deskripsi</th><th>Media</th><th>Aksi</th></tr></thead>
+                                <tbody>
+                                  {azharTvKontenUtama.length === 0 ? (<tr><td colSpan={4} style={{ textAlign: 'center' }}>Belum ada data.</td></tr>) : azharTvKontenUtama.map((k, i) => (
+                                    <tr key={i}>
+                                      <td style={{ fontWeight: 600 }}>{k.title}</td>
+                                      <td>{k.excerpt}</td>
+                                      <td>{k.image && <img src={k.image} style={{ width: '80px', borderRadius: '8px' }} />}</td>
+                                      <td>
+                                        <button onClick={() => { const nx = [...azharTvKontenUtama]; nx.splice(i, 1); saveAzharTvKontenUtama(nx); }} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>Hapus</button>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
+                        </motion.div>
+                      )}
+
+                      {azhartvSubTab === 'youtube_slide' && (
+                        <motion.div key="youtube_slide" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                          <div className="data-card" style={{ marginBottom: '1.5rem', background: '#fff', borderLeft: '4px solid #e11d48' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <div>
+                                <h3>Status Siaran Langsung (Live)</h3>
+                                <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Atur link live streaming yang sedang berlangsung. Ini akan memunculkan notifikasi pop-up di website.</p>
+                              </div>
+                              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                <input type="text" placeholder="Link YouTube Live" value={azharTvLive.url} onChange={(e) => setAzharTvLive({...azharTvLive, url: e.target.value})} style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+                                <input type="text" placeholder="Judul Live" value={azharTvLive.title} onChange={(e) => setAzharTvLive({...azharTvLive, title: e.target.value})} style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+                                <button onClick={() => saveAzharTvLive({...azharTvLive, isLive: !azharTvLive.isLive})} style={{ background: azharTvLive.isLive ? '#e11d48' : '#10b981', color: 'white', border: 'none', padding: '0.6rem 1rem', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>
+                                  {azharTvLive.isLive ? 'Matikan Live' : 'Mulai Live'}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="data-card">
+                            <div className="card-header-flex">
+                              <div>
+                                <h3>Daftar Youtube Slide</h3>
+                                <p style={{ fontSize: '0.85rem', color: '#64748b' }}>Maksimal 10 video terakhir. Jika lebih, video terlama akan dihapus otomatis.</p>
+                              </div>
+                              <button onClick={() => { setAzTvYtForm({title: '', url: '', category: ''}); setShowAzTvYtModal(true); }} className="btn-add-item">Tambah Video</button>
+                            </div>
+                            <div className="data-table-container">
+                              <table className="data-table">
+                                <thead><tr><th>Judul Video</th><th>Kategori</th><th>Link YouTube</th><th>Aksi</th></tr></thead>
+                                <tbody>
+                                  {azharTvYtSlides.length === 0 ? (<tr><td colSpan={4} style={{ textAlign: 'center' }}>Belum ada data.</td></tr>) : azharTvYtSlides.map((y, i) => (
+                                    <tr key={i}>
+                                      <td style={{ fontWeight: 600 }}>{y.title}</td>
+                                      <td><span className="badge-status active">{y.category}</span></td>
+                                      <td><a href={y.url} target="_blank" rel="noreferrer" style={{ color: '#0ea5e9' }}>{y.url}</a></td>
+                                      <td>
+                                        <button onClick={() => { const nx = [...azharTvYtSlides]; nx.splice(i, 1); saveAzharTvYtSlides(nx); }} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>Hapus</button>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {azhartvSubTab === 'galeri' && (
+                        <motion.div key="galeri" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                          <div className="data-card">
+                            <div className="card-header-flex">
+                              <h3>Dokumentasi Harian Azhar TV</h3>
+                              <button onClick={() => setShowAddPhotoModal(true)} className="btn-add-item">Tambah Dokumentasi</button>
+                            </div>
+                            <div className="gallery-admin-grid">
+                              {photos.map((p, idx) => (
+                                <div key={idx} className="gallery-admin-card">
+                                  <div className="photo-preview-box"><img src={p.url} alt={p.description} /></div>
+                                  <div className="photo-info-box">
+                                    <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.95rem' }}>{p.description.substring(0, 40)}{p.description.length > 40 ? '...' : ''}</h4>
+                                    <span className="photo-meta">{p.date}</span>
+                                    <div className="photo-actions">
+                                      <button onClick={() => { handleDeletePhoto(p.id) }} className="btn-delete-icon">Hapus</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {azhartvSubTab === 'dok_publik' && (
+                        <motion.div key="dok_publik" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                          <div className="data-card">
+                            <div className="card-header-flex">
+                              <h3>Dokumentasi Publik (G-Drive)</h3>
+                              <button onClick={() => { setAzTvDokForm({title: '', link: '', target: 'Semua'}); setShowAzTvDokModal(true); }} className="btn-add-item">Tambah Link Drive</button>
+                            </div>
+                            <div className="data-table-container">
+                              <table className="data-table">
+                                <thead><tr><th>Nama Dokumentasi / Acara</th><th>Target Akses</th><th>Link Google Drive</th><th>Aksi</th></tr></thead>
+                                <tbody>
+                                  {azharTvDokPublik.length === 0 ? (<tr><td colSpan={4} style={{ textAlign: 'center' }}>Belum ada data.</td></tr>) : azharTvDokPublik.map((d, i) => (
+                                    <tr key={i}>
+                                      <td style={{ fontWeight: 600 }}>{d.title}</td>
+                                      <td><span className="badge-status pending">{d.target}</span></td>
+                                      <td><a href={d.link} target="_blank" rel="noreferrer" style={{ color: '#0ea5e9' }}>Buka Drive</a></td>
+                                      <td>
+                                        <button onClick={() => { const nx = [...azharTvDokPublik]; nx.splice(i, 1); saveAzharTvDokPublik(nx); }} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer' }}>Hapus</button>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                )}
+
 
               {/* TAB 5: WEBSITE CONFIGURATION */}
               {activeTab === "settings" && (
@@ -8463,3 +8639,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
+
+
+
+

@@ -26,12 +26,16 @@ export default function Navbar() {
   const [santriPhone, setSantriPhone] = useState("");
   const [santriGender, setSantriGender] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [liveData, setLiveData] = useState({ isLive: false, title: "", url: "" });
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const navMenuRef = useRef<HTMLDivElement>(null);
   const lastOutsideClickTime = useRef<number>(0);
 
   useEffect(() => {
+    const savedLive = localStorage.getItem("azhartv_live");
+    if (savedLive) setLiveData(JSON.parse(savedLive));
+
     function handleClickOutside(event: MouseEvent | TouchEvent) {
       const target = event.target as Node;
       
@@ -2100,3 +2104,4 @@ export default function Navbar() {
     </nav>
   );
 }
+
