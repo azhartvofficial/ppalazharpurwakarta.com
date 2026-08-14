@@ -10,11 +10,13 @@ import Programs from "@/components/Programs";
 import GlobalAlumni from "@/components/GlobalAlumni";
 import AlumniDocumentation from "@/components/AlumniDocumentation";
 import Footer from "@/components/Footer";
+import AdPopup from "@/components/AdPopup";
 
 export default function Home() {
   return (
     <main>
       <Navbar />
+      <AdPopup />
       <Hero />
       <SapaKilat />
       <AcademicPrograms />
@@ -29,3 +31,4 @@ export default function Home() {
     </main>
   );
 }
+

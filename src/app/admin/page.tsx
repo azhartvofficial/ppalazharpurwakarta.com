@@ -1111,32 +1111,49 @@ export default function AdminDashboardPage() {
   };
 
   const handleAddAd = async () => {
-    if (!newAdImage) {
-      openAlert('Pilih gambar pop-up terlebih dahulu!', true);
-      return;
-    }
-    setPendingSuperAdminAction(() => async () => {
-      try {
-        const fileExt = newAdImage.name.split('.').pop();
-        const fileName = `popup_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-        const filePath = `ads/${fileName}`;
-        const { error: uploadError } = await supabase.storage.from('assets').upload(filePath, newAdImage);
-        if (uploadError) throw uploadError;
-        const { data: publicUrlData } = supabase.storage.from('assets').getPublicUrl(filePath);
-        const { error: insertError } = await supabase.from('popup_ads').insert([{ image_url: publicUrlData.publicUrl, status: 'draft', expires_at: adExpiryDate ? new Date(adExpiryDate).toISOString() : null }]);
-        if (insertError) throw insertError;
-        openAlert('Pop-up berhasil ditambahkan!');
-        setShowAdModal(false);
-        setNewAdImage(null);
-        setAdPreviewUrl(null);
-        setAdExpiryDate('');
-        fetchAds();
-      } catch (err: any) {
-        openAlert('Gagal upload: ' + err.message, true);
+      if (!newAdImage) {
+        openAlert('Pilih gambar pop-up terlebih dahulu!', true);
+        return;
       }
-    });
-    setShowMasterPasswordPrompt(true);
-  };
+      setPendingSuperAdminAction(() => async () => {
+        try {
+          let fileToUpload = newAdImage;
+          try {
+            const compressionOptions = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
+            fileToUpload = await imageCompression(newAdImage, compressionOptions);
+          } catch (err) {
+            console.warn("Gagal kompresi, menggunakan file asli", err);
+          }
+
+          const formData = new FormData();
+          formData.append('file', fileToUpload);
+          formData.append('upload_preset', 'ppalazharpwk'); 
+          
+          const res = await fetch('https://api.cloudinary.com/v1_1/dpgqct4hz/image/upload', {
+            method: 'POST',
+            body: formData
+          });
+          const uploadData = await res.json();
+          if (!uploadData.secure_url) {
+            throw new Error("Gagal upload gambar ke server");
+          }
+          
+          const publicUrl = uploadData.secure_url;
+          const { error: insertError } = await supabase.from('popup_ads').insert([{ image_url: publicUrl, status: 'draft', expires_at: adExpiryDate ? new Date(adExpiryDate).toISOString() : null }]);
+          if (insertError) throw insertError;
+          
+          openAlert('Pop-up berhasil ditambahkan!');
+          setShowAdModal(false);
+          setNewAdImage(null);
+          setAdPreviewUrl(null);
+          setAdExpiryDate('');
+          fetchAds();
+        } catch (err: any) {
+          openAlert('Gagal upload: ' + err.message, true);
+        }
+      });
+      setShowMasterPasswordPrompt(true);
+    };
 
   const handleDeleteAd = async (id: string) => {
     openConfirm('Hapus Pop-up?', 'Apakah Anda yakin ingin menghapus iklan pop-up ini secara permanen?', () => {
@@ -8722,6 +8739,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
 
 
 
