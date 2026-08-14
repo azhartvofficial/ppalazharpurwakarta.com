@@ -9,17 +9,20 @@ export default function Programs() {
 
   const scrollLeft = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -(scrollRef.current.clientWidth), behavior: 'smooth' });
+      // clientWidth is the visible width. The gap is 2rem (32px) on desktop, 1rem (16px) on mobile.
+      const gap = window.innerWidth > 992 ? 32 : 16;
+      scrollRef.current.scrollBy({ left: -(scrollRef.current.clientWidth + gap), behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (scrollRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      const gap = window.innerWidth > 992 ? 32 : 16;
       if (scrollLeft + clientWidth >= scrollWidth - 10) {
         scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
       } else {
-        scrollRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' });
+        scrollRef.current.scrollBy({ left: clientWidth + gap, behavior: 'smooth' });
       }
     }
   };
@@ -228,13 +231,20 @@ export default function Programs() {
 
         .news-card {
           flex: 0 0 calc((100% - 4rem) / 3);
-          scroll-snap-align: center;
+          scroll-snap-align: none; /* Handled by media queries */
           background: white;
           border-radius: 28px;
           overflow: hidden;
           box-shadow: 0 15px 45px rgba(0,0,0,0.06);
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        /* Snap every 3 items on desktop */
+        @media (min-width: 993px) {
+          .news-card:nth-child(3n + 1) {
+            scroll-snap-align: start;
+          }
         }
 
         .news-card:hover {
@@ -363,7 +373,10 @@ export default function Programs() {
 
         @media (max-width: 992px) {
           .blue-title { font-size: 2.8rem; }
-          .news-card { flex: 0 0 calc((100% - 2rem) / 2); }
+          .news-card { 
+            flex: 0 0 calc((100% - 2rem) / 2); 
+            scroll-snap-align: start;
+          }
           .side-nav { width: 50px; height: 50px; }
           .side-nav.prev { left: -15px; }
           .side-nav.next { right: -15px; }
@@ -372,7 +385,10 @@ export default function Programs() {
         @media (max-width: 768px) {
           .news-section { padding: 1rem 0; }
           .blue-title { font-size: 2.2rem; }
-          .news-card { flex: 0 0 calc(100% - 1rem); }
+          .news-card { 
+            flex: 0 0 calc(100% - 1rem); 
+            scroll-snap-align: center;
+          }
           .side-nav { display: flex; transform: translateY(-50%); }
           .side-nav.prev { left: 5px; }
           .side-nav.next { right: 5px; }
