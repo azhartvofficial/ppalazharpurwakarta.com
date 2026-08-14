@@ -96,7 +96,7 @@ export default function Programs() {
                   transition={{ delay: index * 0.1 }}
                 >
                   <div className="news-img-wrapper">
-                    <div className="news-img" style={{ backgroundImage: `url(${item.image})` }}></div>
+                    <img src={item.image} alt={item.title} className="news-img" />
                   </div>
                   <div className="news-content">
                     <span className="news-date">{item.date}</span>
@@ -262,8 +262,8 @@ export default function Programs() {
         .news-img {
           width: 100%;
           height: 100%;
-          background-size: cover;
-          background-position: center;
+          object-fit: cover;
+          object-position: center;
           transition: transform 1s ease;
         }
 
