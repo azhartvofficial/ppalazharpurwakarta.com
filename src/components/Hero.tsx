@@ -360,17 +360,27 @@ export default function Hero() {
           .hero-btns-separated { 
             flex-direction: row !important; 
             justify-content: flex-start !important;
-            gap: 0.8rem;
+            gap: 0.4rem;
             padding: 0;
             width: 100%;
+            flex-wrap: nowrap;
           }
           :global(.glass-btn-pill) {
-            padding: 0.5rem 1.2rem !important;
-            font-size: 0.72rem !important;
-            letter-spacing: 1px !important;
+            padding: 0.4rem 0.6rem !important;
+            font-size: 0.65rem !important;
+            letter-spacing: 0.5px !important;
             width: fit-content;
-            min-width: 130px;
-            height: 50px !important;
+            min-width: unset !important;
+            height: 45px !important;
+            flex: 1;
+            text-align: center;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
+          :global(.glass-btn-pill .mob-text) {
+            line-height: 1.1;
+          }
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;

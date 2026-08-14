@@ -4541,8 +4541,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                               </select>
                             </div>
 
-                            <div className="table-responsive">
-                              <table className="main-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <div className="table-responsive" style={{ overflowX: 'auto', background: '#ffffff', borderRadius: '16px', border: '1.5px solid #f1f5f9' }}>
+                              <table className="main-table" style={{ width: '100%', borderCollapse: 'collapse', minWidth: '700px' }}>
                                 <thead>
                                   <tr>
                                     <th style={{ textAlign: 'left', padding: '10px 8px', fontSize: '0.8rem' }}>Nama Akun</th>
@@ -4954,8 +4954,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             </div>
                           </div>
 
-                          <div className="table-responsive">
-                            <table className="main-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                          <div className="table-responsive" style={{ overflowX: 'auto', background: '#ffffff', borderRadius: '16px', border: '1.5px solid #f1f5f9' }}>
+                            <table className="main-table" style={{ width: '100%', borderCollapse: 'collapse', minWidth: '900px' }}>
                               <thead>
                                 <tr>
                                   <th style={{ width: '40px', padding: '12px', textAlign: 'center' }}>
@@ -8389,30 +8389,38 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     ) : publishedNewsForPin.length === 0 ? (
                       <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>Belum ada berita yang diterbitkan.</div>
                     ) : (
-                      publishedNewsForPin.map(news => (
-                        <div 
-                          key={news.id} 
-                          onClick={() => setSelectedBeritaId(news.id)}
-                          style={{ 
-                            padding: '1rem', 
-                            borderBottom: '1px solid #f1f5f9', 
-                            cursor: 'pointer',
-                            background: selectedBeritaId === news.id ? 'rgba(59, 130, 246, 0.1)' : '#fff',
-                            borderRadius: '6px',
-                            display: 'flex',
-                            gap: '1rem',
-                            alignItems: 'center'
-                          }}
-                        >
-                          <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: '2px solid #3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {selectedBeritaId === news.id && <div style={{ width: '10px', height: '10px', background: '#3b82f6', borderRadius: '50%' }}></div>}
+                      publishedNewsForPin.map(news => {
+                        const isPinned = berandaContents.some(c => c.tipe === 'berita' && c.berita_id === news.id);
+                        return (
+                          <div 
+                            key={news.id} 
+                            onClick={() => !isPinned && setSelectedBeritaId(news.id)}
+                            style={{ 
+                              padding: '1rem', 
+                              borderBottom: '1px solid #f1f5f9', 
+                              cursor: isPinned ? 'not-allowed' : 'pointer',
+                              background: selectedBeritaId === news.id ? 'rgba(59, 130, 246, 0.1)' : (isPinned ? '#f8fafc' : '#fff'),
+                              borderRadius: '6px',
+                              display: 'flex',
+                              gap: '1rem',
+                              alignItems: 'center',
+                              opacity: isPinned ? 0.6 : 1
+                            }}
+                          >
+                            <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: isPinned ? '2px solid #94a3b8' : '2px solid #3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {selectedBeritaId === news.id && <div style={{ width: '10px', height: '10px', background: '#3b82f6', borderRadius: '50%' }}></div>}
+                              {isPinned && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                            </div>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontWeight: 600, color: '#002147', fontSize: '0.95rem' }}>{news.judul_utama}</div>
+                              <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.2rem' }}>{news.kategori} &bull; {new Date(news.created_at).toLocaleDateString('id-ID')}</div>
+                            </div>
+                            {isPinned && (
+                              <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', padding: '4px 8px', borderRadius: '20px' }}>Sudah Disematkan</div>
+                            )}
                           </div>
-                          <div>
-                            <div style={{ fontWeight: 600, color: '#002147', fontSize: '0.95rem' }}>{news.judul_utama}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.2rem' }}>{news.kategori} &bull; {new Date(news.created_at).toLocaleDateString('id-ID')}</div>
-                          </div>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 </div>
