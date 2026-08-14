@@ -3644,16 +3644,22 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                       >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', color: '#002147', margin: 0 }}>Kelola Iklan ( Pop-up )</h3>
-                    <button 
-                      onClick={() => setShowAdModal(true)}
-                      className="btn-primary"
-                      style={{ background: '#002147', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0, 33, 71, 0.3)' }}
-                    >
-                      + Tambah Iklan
-                    </button>
-                  </div>
+                  <div style={{ marginBottom: '2rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                        <button onClick={fetchAds} style={{ background: '#f1f5f9', color: '#002147', border: '1px solid #cbd5e1', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.67-1.35"/></svg>
+                          Refresh
+                        </button>
+                        <button 
+                          onClick={() => setShowAdModal(true)}
+                          className="btn-primary"
+                          style={{ background: '#002147', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0, 33, 71, 0.3)' }}
+                        >
+                          + Tambah Iklan
+                        </button>
+                      </div>
+                      <h3 style={{ fontSize: '1.25rem', color: '#002147', margin: 0 }}>Kelola Iklan ( Pop-up )</h3>
+                    </div>
 
                   {loadingAds ? (
                     <div style={{ padding: '3rem', textAlign: 'center', color: '#64748b' }}>Memuat data iklan...</div>
@@ -7933,7 +7939,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <p style={{ color: '#64748b', textAlign: 'center', marginBottom: '2rem', fontSize: '0.95rem' }}>Pilih bagaimana Anda ingin menyimpan iklan ini. Anda bisa menyimpannya sebagai draft (tanpa password) atau langsung publish.</p>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  <button onClick={() => executeAdSave('published')} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%' }}>Langsung Publish (Butuh Password)</button>
+                  <button onClick={() => executeAdSave('published')} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%' }}>Publish Konten</button>
                   <button onClick={() => executeAdSave('draft')} style={{ padding: '12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%' }}>Simpan sebagai Draft</button>
                   <button onClick={() => setShowAdSaveConfirmModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%', marginTop: '0.5rem' }}>Batal</button>
                 </div>
@@ -7974,7 +7980,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <p style={{ color: '#64748b', textAlign: 'center', marginBottom: '2rem', fontSize: '0.95rem' }}>Pilih bagaimana Anda ingin menyimpan iklan ini. Anda bisa menyimpannya sebagai draft (tanpa password) atau langsung publish.</p>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  <button onClick={() => executeAdSave('published')} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%' }}>Langsung Publish (Butuh Password)</button>
+                  <button onClick={() => executeAdSave('published')} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%' }}>Publish Konten</button>
                   <button onClick={() => executeAdSave('draft')} style={{ padding: '12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%' }}>Simpan sebagai Draft</button>
                   <button onClick={() => setShowAdSaveConfirmModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%', marginTop: '0.5rem' }}>Batal</button>
                 </div>
@@ -8886,6 +8892,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
 
 
 
