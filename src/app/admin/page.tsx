@@ -2735,8 +2735,7 @@ export default function AdminDashboardPage() {
                         display: 'inline-flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: '0.4rem 0.8rem',
-                        fontSize: '0.75rem',
+                        $10.9rem',
                         fontWeight: 700,
                         backgroundColor: '#002147',
                         color: 'white',
@@ -2751,8 +2750,8 @@ export default function AdminDashboardPage() {
                       onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#003366'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#002147'; e.currentTarget.style.transform = 'translateY(0)'; }}
                     >
-                      Cek Halaman
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
+                      <span style={{ color: '#ffffff', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>Cek Halaman</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                         <polyline points="15 3 21 3 21 9"></polyline>
                         <line x1="10" y1="14" x2="21" y2="3"></line>
@@ -3548,7 +3547,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
                                           <button 
                                             onClick={() => toggleBerandaStatus(item.id, item.status)}
-                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', fontWeight: 600, border: 'none', background: item.status === 'Rilis' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)', color: item.status === 'Rilis' ? '#f59e0b' : '#10b981', borderRadius: '6px', cursor: 'pointer' }}
+                                            style={{ $10.9rem', fontWeight: 600, border: 'none', background: item.status === 'Rilis' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)', color: item.status === 'Rilis' ? '#f59e0b' : '#10b981', borderRadius: '6px', cursor: 'pointer' }}
                                             title={item.status === 'Rilis' ? "Ubah ke Draf" : "Sematkan (Rilis)"}
                                           >
                                             {item.status === 'Rilis' ? "Drafkan" : "Sematkan"}
@@ -8639,6 +8638,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
 
 
 
