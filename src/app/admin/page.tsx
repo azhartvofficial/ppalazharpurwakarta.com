@@ -400,6 +400,9 @@ export default function AdminDashboardPage() {
   const [loadingAds, setLoadingAds] = useState(false);
   const [showAdModal, setShowAdModal] = useState(false);
   const [currentAd, setCurrentAd] = useState<any>(null);
+  const [showAdSaveConfirmModal, setShowAdSaveConfirmModal] = useState(false);
+  const [showEditAdDateModal, setShowEditAdDateModal] = useState(false);
+  const [editAdData, setEditAdData] = useState<{id: string, date: string} | null>(null);
   const [isUploadingAd, setIsUploadingAd] = useState(false);
   const [uploadProgressAd, setUploadProgressAd] = useState(0);
   const [newAdImage, setNewAdImage] = useState<File | null>(null);
@@ -1112,27 +1115,33 @@ export default function AdminDashboardPage() {
     }
   };
 
-    const handleAddAd = async () => {
+  const handleAddAdClick = () => {
     if (!newAdImage) {
       openAlert('Pilih gambar pop-up terlebih dahulu!', true);
       return;
     }
-    setPendingSuperAdminAction(() => async () => {
+    setShowAdSaveConfirmModal(true);
+  };
+
+  const executeAdSave = async (status: 'draft' | 'published') => {
+    setShowAdSaveConfirmModal(false);
+    
+    const uploadLogic = async () => {
       setIsUploadingAd(true);
       setUploadProgressAd(10);
       try {
         let fileToUpload = newAdImage;
         try {
           const compressionOptions = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
-          fileToUpload = await imageCompression(newAdImage, compressionOptions);
+          fileToUpload = await imageCompression(newAdImage!, compressionOptions);
           setUploadProgressAd(40);
         } catch (err) {
           console.warn("Gagal kompresi, menggunakan file asli", err);
         }
 
-                const formData = new FormData();
-        formData.append('file', fileToUpload);
-        formData.append('filename', newAdImage.name);
+        const formData = new FormData();
+        formData.append('file', fileToUpload!);
+        formData.append('filename', newAdImage!.name);
         
         setUploadProgressAd(60);
         const res = await fetch('/api/upload-cloudinary', {
@@ -1146,11 +1155,11 @@ export default function AdminDashboardPage() {
         }
         
         const publicUrl = uploadData.url;
-        const { error: insertError } = await supabase.from('popup_ads').insert([{ image_url: publicUrl, status: 'draft', expires_at: adExpiryDate ? new Date(adExpiryDate).toISOString() : null }]);
+        const { error: insertError } = await supabase.from('popup_ads').insert([{ image_url: publicUrl, status: status, expires_at: adExpiryDate ? new Date(adExpiryDate).toISOString() : null }]);
         if (insertError) throw insertError;
         
         setUploadProgressAd(100);
-        openAlert('Pop-up berhasil ditambahkan!');
+        openAlert(status === 'published' ? 'Pop-up berhasil dipublish!' : 'Pop-up disimpan sebagai draft!');
         setTimeout(() => {
             setShowAdModal(false);
             setNewAdImage(null);
@@ -1165,8 +1174,14 @@ export default function AdminDashboardPage() {
         setUploadProgressAd(0);
         openAlert('Gagal upload: ' + err.message, true);
       }
-    });
-    setShowMasterPasswordPrompt(true);
+    };
+
+    if (status === 'published') {
+      setPendingSuperAdminAction(() => uploadLogic);
+      setShowMasterPasswordPrompt(true);
+    } else {
+      uploadLogic();
+    }
   };
 
   const handleDeleteAd = async (id: string) => {
@@ -3611,7 +3626,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         transition={{ duration: 0.2 }}
                       >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', color: '#002147', margin: 0 }}>Daftar Pop-up Iklan</h3>
+                    <h3 style={{ fontSize: '1.25rem', color: '#002147', margin: 0 }}>Kelola Iklan ( Pop-up )</h3>
                     <button 
                       onClick={() => setShowAdModal(true)}
                       className="btn-primary"
@@ -7889,6 +7904,88 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
       {/* ADD AD MODAL */}
       <AnimatePresence>
         
+        
+        {/* Ad Save Confirm Modal */}
+        <AnimatePresence>
+          {showAdSaveConfirmModal && (
+            <div onClick={() => setShowAdSaveConfirmModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '2rem' }}>
+              <motion.div onClick={(e) => e.stopPropagation()} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '400px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+                <h3 style={{ margin: '0 0 1rem 0', color: '#002147', fontWeight: 900, textAlign: 'center' }}>Opsi Penyimpanan</h3>
+                <p style={{ color: '#64748b', textAlign: 'center', marginBottom: '2rem', fontSize: '0.95rem' }}>Pilih bagaimana Anda ingin menyimpan iklan ini. Anda bisa menyimpannya sebagai draft (tanpa password) atau langsung publish.</p>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <button onClick={() => executeAdSave('published')} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%' }}>Langsung Publish (Butuh Password)</button>
+                  <button onClick={() => executeAdSave('draft')} style={{ padding: '12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%' }}>Simpan sebagai Draft</button>
+                  <button onClick={() => setShowAdSaveConfirmModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%', marginTop: '0.5rem' }}>Batal</button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* Edit Ad Date Modal */}
+        <AnimatePresence>
+          {showEditAdDateModal && editAdData && (
+            <div onClick={() => setShowEditAdDateModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '2rem' }}>
+              <motion.div onClick={(e) => e.stopPropagation()} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '400px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+                <h3 style={{ margin: '0 0 1rem 0', color: '#002147', fontWeight: 900 }}>Edit Jadwal Kedaluwarsa</h3>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Tanggal & Jam Kedaluwarsa</label>
+                  <input type="datetime-local" value={editAdData.date} onChange={(e) => setEditAdData({...editAdData, date: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }} />
+                </div>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <button onClick={() => setShowEditAdDateModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 1 }}>Batal</button>
+                  <button onClick={() => {
+                    handleUpdateAdTimer(editAdData.id, editAdData.date);
+                    setShowEditAdDateModal(false);
+                  }} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 2 }}>Simpan Jadwal</button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        
+        {/* Ad Save Confirm Modal */}
+        <AnimatePresence>
+          {showAdSaveConfirmModal && (
+            <div onClick={() => setShowAdSaveConfirmModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '2rem' }}>
+              <motion.div onClick={(e) => e.stopPropagation()} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '400px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+                <h3 style={{ margin: '0 0 1rem 0', color: '#002147', fontWeight: 900, textAlign: 'center' }}>Opsi Penyimpanan</h3>
+                <p style={{ color: '#64748b', textAlign: 'center', marginBottom: '2rem', fontSize: '0.95rem' }}>Pilih bagaimana Anda ingin menyimpan iklan ini. Anda bisa menyimpannya sebagai draft (tanpa password) atau langsung publish.</p>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <button onClick={() => executeAdSave('published')} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%' }}>Langsung Publish (Butuh Password)</button>
+                  <button onClick={() => executeAdSave('draft')} style={{ padding: '12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%' }}>Simpan sebagai Draft</button>
+                  <button onClick={() => setShowAdSaveConfirmModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', width: '100%', marginTop: '0.5rem' }}>Batal</button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* Edit Ad Date Modal */}
+        <AnimatePresence>
+          {showEditAdDateModal && editAdData && (
+            <div onClick={() => setShowEditAdDateModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '2rem' }}>
+              <motion.div onClick={(e) => e.stopPropagation()} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '400px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+                <h3 style={{ margin: '0 0 1rem 0', color: '#002147', fontWeight: 900 }}>Edit Jadwal Kedaluwarsa</h3>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Tanggal & Jam Kedaluwarsa</label>
+                  <input type="datetime-local" value={editAdData.date} onChange={(e) => setEditAdData({...editAdData, date: e.target.value})} style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontWeight: 500 }} />
+                </div>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <button onClick={() => setShowEditAdDateModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 1 }}>Batal</button>
+                  <button onClick={() => {
+                    handleUpdateAdTimer(editAdData.id, editAdData.date);
+                    setShowEditAdDateModal(false);
+                  }} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 2 }}>Simpan Jadwal</button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
         {showAdModal && (
           <div onClick={() => setShowAdModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, overflowY: 'auto', padding: '2rem' }}>
               <motion.div onClick={(e) => e.stopPropagation()} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '450px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
@@ -7964,7 +8061,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
                   <button onClick={() => setShowAdModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 1 }}>Batal</button>
                   <button 
-                    onClick={handleAddAd} 
+                    onClick={handleAddAdClick} 
                     disabled={!newAdImage}
                     style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: !newAdImage ? 'not-allowed' : 'pointer', flex: 2, opacity: !newAdImage ? 0.5 : 1 }}
                   >
@@ -8770,6 +8867,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
 
 
 
