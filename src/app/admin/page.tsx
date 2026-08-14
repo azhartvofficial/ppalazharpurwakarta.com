@@ -7929,7 +7929,103 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         )}
       </AnimatePresence>
 
-      {/* Master Password Prompt Modal */}
+      {/* AZHAR TV MODALS */}
+        <AnimatePresence>
+          {showAzTvMainModal && (
+            <div className="modal-overlay" onClick={() => setShowAzTvMainModal(false)}>
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h3>Tambah Berita Head News</h3>
+                </div>
+                <div className="modal-body form-grid">
+                  <div className="form-group">
+                    <label>Judul Berita</label>
+                    <input type="text" value={azTvMainForm.title} onChange={(e) => setAzTvMainForm({...azTvMainForm, title: e.target.value})} className="form-input" />
+                  </div>
+                  <div className="form-group">
+                    <label>Deskripsi Singkat</label>
+                    <textarea value={azTvMainForm.excerpt} onChange={(e) => setAzTvMainForm({...azTvMainForm, excerpt: e.target.value})} className="form-input" rows={3}></textarea>
+                  </div>
+                  <div className="form-group">
+                    <label>Link Gambar / URL Video</label>
+                    <input type="text" value={azTvMainForm.image} onChange={(e) => setAzTvMainForm({...azTvMainForm, image: e.target.value})} className="form-input" placeholder="https://..." />
+                  </div>
+                </div>
+                <div className="modal-actions">
+                  <button onClick={() => setShowAzTvMainModal(false)} className="btn-secondary">Batal</button>
+                  <button onClick={() => { saveAzharTvKontenUtama([azTvMainForm, ...azharTvKontenUtama]); setShowAzTvMainModal(false); }} className="btn-primary">Simpan Berita</button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+
+          {showAzTvYtModal && (
+            <div className="modal-overlay" onClick={() => setShowAzTvYtModal(false)}>
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h3>Tambah Video YouTube</h3>
+                </div>
+                <div className="modal-body form-grid">
+                  <div className="form-group">
+                    <label>Judul Video</label>
+                    <input type="text" value={azTvYtForm.title} onChange={(e) => setAzTvYtForm({...azTvYtForm, title: e.target.value})} className="form-input" />
+                  </div>
+                  <div className="form-group">
+                    <label>Link YouTube</label>
+                    <input type="text" value={azTvYtForm.url} onChange={(e) => setAzTvYtForm({...azTvYtForm, url: e.target.value})} className="form-input" placeholder="https://youtube.com/..." />
+                  </div>
+                  <div className="form-group">
+                    <label>Kategori</label>
+                    <input type="text" value={azTvYtForm.category} onChange={(e) => setAzTvYtForm({...azTvYtForm, category: e.target.value})} className="form-input" placeholder="ex: Ceramah, Vlog..." />
+                  </div>
+                </div>
+                <div className="modal-actions">
+                  <button onClick={() => setShowAzTvYtModal(false)} className="btn-secondary">Batal</button>
+                  <button onClick={() => { 
+                    let updated = [azTvYtForm, ...azharTvYtSlides];
+                    if (updated.length > 10) updated = updated.slice(0, 10);
+                    saveAzharTvYtSlides(updated); 
+                    setShowAzTvYtModal(false); 
+                  }} className="btn-primary">Simpan Video</button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+
+          {showAzTvDokModal && (
+            <div className="modal-overlay" onClick={() => setShowAzTvDokModal(false)}>
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h3>Tambah Link Dokumentasi (G-Drive)</h3>
+                </div>
+                <div className="modal-body form-grid">
+                  <div className="form-group">
+                    <label>Nama Dokumentasi / Acara</label>
+                    <input type="text" value={azTvDokForm.title} onChange={(e) => setAzTvDokForm({...azTvDokForm, title: e.target.value})} className="form-input" />
+                  </div>
+                  <div className="form-group">
+                    <label>Link Google Drive</label>
+                    <input type="text" value={azTvDokForm.link} onChange={(e) => setAzTvDokForm({...azTvDokForm, link: e.target.value})} className="form-input" placeholder="https://drive.google.com/..." />
+                  </div>
+                  <div className="form-group">
+                    <label>Target Akses</label>
+                    <select value={azTvDokForm.target} onChange={(e) => setAzTvDokForm({...azTvDokForm, target: e.target.value})} className="form-input">
+                      <option value="Semua">Semua (Publik)</option>
+                      <option value="Santri">Santri Saja</option>
+                      <option value="Guru">Guru Saja</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="modal-actions">
+                  <button onClick={() => setShowAzTvDokModal(false)} className="btn-secondary">Batal</button>
+                  <button onClick={() => { saveAzharTvDokPublik([azTvDokForm, ...azharTvDokPublik]); setShowAzTvDokModal(false); }} className="btn-primary">Simpan Link</button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* Master Password Prompt Modal */}
       <AnimatePresence>
         {showMasterPasswordPrompt && (
           <motion.div 
@@ -8623,6 +8719,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
 
 
 
