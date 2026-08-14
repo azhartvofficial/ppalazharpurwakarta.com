@@ -686,17 +686,14 @@ export default function PusdaPage() {
         
         <div className="info-cards">
           <div className="info-card">
-            <span className="icon">🔒</span>
             <h3>Data Tersimpan Aman</h3>
             <p>Seluruh dokumen dan identitas dienkripsi dan disimpan di server terpusat milik pesantren.</p>
           </div>
           <div className="info-card">
-            <span className="icon">📂</span>
             <h3>Arsip Terstruktur</h3>
             <p>Berkas otomatis diklasifikasikan berdasarkan kelas, gender, dan nama santri secara rapi.</p>
           </div>
           <div className="info-card">
-            <span className="icon">⚡</span>
             <h3>Proses Instan</h3>
             <p>Sistem akan otomatis mengkompres pas foto Anda untuk meminimalisir penggunaan kuota.</p>
           </div>
@@ -1127,12 +1124,6 @@ export default function PusdaPage() {
 
         .info-card:hover {
           transform: translateY(-5px);
-        }
-
-        .info-card .icon {
-          font-size: 2rem;
-          display: block;
-          margin-bottom: 1rem;
         }
 
         .info-card h3 {
