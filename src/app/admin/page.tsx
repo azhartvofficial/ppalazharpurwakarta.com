@@ -957,6 +957,7 @@ export default function AdminDashboardPage() {
     }
   }, [supabaseSyncActive, rawVisitorLogs.length, pusatData.length]);
   const [loadingPusatData, setLoadingPusatData] = useState(false);
+  const [showRefreshPopup, setShowRefreshPopup] = useState(false);
   const [selectedPusatData, setSelectedPusatData] = useState<any | null>(null);
   const [accountsMenuExpanded, setAccountsMenuExpanded] = useState(false);
   const [loginRequests, setLoginRequests] = useState<any[]>([]);
@@ -1449,7 +1450,10 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const fetchPusatData = async () => {
+  const fetchPusatData = async (showPopup = false) => {
+    if (showPopup) {
+      setShowRefreshPopup(true);
+    }
     setLoadingPusatData(true);
     try {
       const { data, error } = await supabase.from('pusat_data_siswa').select('*').order('created_at', { ascending: false });
@@ -1459,6 +1463,9 @@ export default function AdminDashboardPage() {
       console.warn("Table pusat_data_siswa not available yet.");
     } finally {
       setLoadingPusatData(false);
+      if (showPopup) {
+        setTimeout(() => setShowRefreshPopup(false), 1200);
+      }
     }
   };
 
@@ -3705,7 +3712,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           transition={{ duration: 0.2 }}
                         >
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', gap: '10px' }}>
-                            <button onClick={() => { fetchPusatData(); openAlert("Sedang menyegarkan Pusat Data..."); }} style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}>
+                            <button onClick={() => fetchPusatData(true)} style={{ padding: '8px 16px', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}>
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 2s linear infinite' }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                               <span className="hide-on-mobile-text">Refresh</span>
                             </button>
@@ -8095,6 +8102,21 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* REFRESH POPUP */}
+      <AnimatePresence>
+        {showRefreshPopup && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            style={{ position: 'fixed', bottom: '30px', left: '50%', transform: 'translateX(-50%)', background: 'rgba(0, 33, 71, 0.9)', color: 'white', padding: '1rem 1.5rem', borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '0.8rem', zIndex: 99999, boxShadow: '0 10px 25px rgba(0,0,0,0.2)', backdropFilter: 'blur(10px)' }}
+          >
+             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+             <span style={{ fontWeight: 600, fontSize: '0.95rem', letterSpacing: '0.5px' }}>Refresh Pusat Data</span>
+          </motion.div>
         )}
       </AnimatePresence>
 
