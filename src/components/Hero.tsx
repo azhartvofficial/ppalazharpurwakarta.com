@@ -25,22 +25,19 @@ export default function Hero() {
         
       if (data && data.length > 0) {
         setSlides(data.map(item => {
-          if (item.tipe === 'manual') {
-            return {
-              image: item.foto_utama_url,
-              title: item.judul_utama,
-              desc: item.deskripsi,
-              isNews: false,
-            };
-          } else {
-            return {
-              image: item.news_articles?.gambar_judul_url || '',
-              title: item.news_articles?.judul_utama || '',
-              desc: item.news_articles?.isi_berita ? item.news_articles.isi_berita.substring(0, 150) + '...' : '',
-              isNews: true,
-              newsId: item.news_articles?.id
-            };
+          let finalDesc = item.deskripsi || '';
+          if (!finalDesc && item.news_articles?.isi_berita) {
+            finalDesc = item.news_articles.isi_berita.replace(/<[^>]+>/g, '');
+            if (finalDesc.length > 150) finalDesc = finalDesc.substring(0, 150) + '...';
           }
+          
+          return {
+            image: item.foto_utama_url || item.news_articles?.gambar_judul_url || '',
+            title: item.judul_utama || item.news_articles?.judul_utama || '',
+            desc: finalDesc,
+            isNews: item.tipe === 'berita',
+            newsId: item.berita_id || item.news_articles?.id
+          };
         }));
       } else {
         setSlides([]);

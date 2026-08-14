@@ -1974,7 +1974,7 @@ export default function AdminDashboardPage() {
     try {
       const { data, error } = await supabase
         .from('news_articles')
-        .select('id, judul_utama, created_at, kategori')
+        .select('id, judul_utama, created_at, kategori, gambar_judul_url, isi_berita')
         .eq('status', 'Published')
         .order('created_at', { ascending: false });
       if (error) throw error;
@@ -2155,9 +2155,23 @@ export default function AdminDashboardPage() {
       }
       setIsUploadingBeranda(true);
       try {
+        const selectedNews = publishedNewsForPin.find(n => n.id === selectedBeritaId);
+        if (!selectedNews) throw new Error("Berita tidak ditemukan.");
+        
+        let strippedDesc = "";
+        if (selectedNews.isi_berita) {
+          strippedDesc = selectedNews.isi_berita.replace(/<[^>]+>/g, '');
+          if (strippedDesc.length > 150) {
+            strippedDesc = strippedDesc.substring(0, 150) + '...';
+          }
+        }
+        
         const { error } = await supabase.from('beranda_content').insert({
           tipe: 'berita',
           berita_id: selectedBeritaId,
+          foto_utama_url: selectedNews.gambar_judul_url || '',
+          judul_utama: selectedNews.judul_utama || '',
+          deskripsi: strippedDesc,
           status: 'Rilis'
         });
         if (error) throw error;
@@ -3284,8 +3298,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                               ) : (
                                 berandaContents.map((item, idx) => {
                                   const isManual = item.tipe === "manual";
-                                  const imageUrl = isManual ? item.foto_utama_url : item.news_articles?.gambar_judul_url;
-                                  const title = isManual ? item.judul_utama : item.news_articles?.judul_utama;
+                                  const imageUrl = item.foto_utama_url || item.news_articles?.gambar_judul_url;
+                                  const title = item.judul_utama || item.news_articles?.judul_utama;
                                   
                                   return (
                                     <tr key={item.id} style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
@@ -5115,7 +5129,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   )}
 
                   <div className="input-group">
-                    <label>Upload Gambar Judul (Cover) <span style={{ color: '#ef4444', fontSize: '0.8rem' }}>(Gunakan gambar berukuran persis atau rasio 392x221 px)</span></label>
+                    <label>Upload Gambar Judul (Cover) <span style={{ color: '#ef4444', fontSize: '0.8rem' }}>(Rekomendasi ukuran: 16:9, misal: 1280x720 pixels agar tidak merusak format saat disematkan ke beranda)</span></label>
                     <input 
                       type="file" 
                       accept="image/*"
@@ -8029,6 +8043,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '0.5rem' }}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                           <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600 }}>Klik atau Drag & Drop foto di sini</p>
                           <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem' }}>Maksimal 2 MB (Akan dikompresi otomatis jika lebih)</p>
+                          <p style={{ margin: '0.2rem 0 0', fontSize: '0.8rem', color: '#3b82f6' }}>*Rekomendasi ukuran: 16:9 (misal: 1280x720 pixels)</p>
                         </div>
                       )}
                     </div>
