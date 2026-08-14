@@ -169,7 +169,7 @@ export default function PendaftaranPage() {
                 <p>Untuk saat ini akses pengisian biodata dan kelengkapan berkas sedang ditutup.</p>
                 <p style={{ marginTop: '0.5rem', color: '#cbd5e1', fontSize: '0.95rem' }}>
                   Untuk kendala dan informasi lebih lanjut hubungi:<br/>
-                  <a href="https://wa.me/6283846489366" target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', fontWeight: 800, textDecoration: 'none' }}>085846489366 (Admin Danish)</a>
+                  <a href="https://wa.me/6283846489366" target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', fontWeight: 800, textDecoration: 'none' }}>085846489366 (Danish)</a>
                 </p>
                 
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
