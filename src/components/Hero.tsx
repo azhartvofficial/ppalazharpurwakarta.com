@@ -4,42 +4,65 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 
+import { supabase } from "@/lib/supabase";
+
 export default function Hero() {
   const [current, setCurrent] = useState(0);
   const { t } = useLanguage();
-
-  const slides = [
-    {
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999215/vdc4p1otuifswwdjx7zt.jpg",
-      title: t('heroTitle1'),
-      desc: t('heroDesc1')
-    },
-    {
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999216/jisfbfuvn0kxs6axaks4.jpg",
-      title: t('heroTitle2'),
-      desc: t('heroDesc2')
-    },
-    {
-      image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999219/yfb3mbixr4otuvcl6wmp.jpg",
-      title: t('heroTitle3'),
-      desc: t('heroDesc3')
-    }
-  ];
+  const [slides, setSlides] = useState<any[]>([]);
 
   useEffect(() => {
+    const fetchBeranda = async () => {
+      const { data, error } = await supabase
+        .from('beranda_content')
+        .select(`
+          *,
+          news_articles (id, judul_utama, gambar_judul_url, isi_berita)
+        `)
+        .eq('status', 'Rilis')
+        .order('created_at', { ascending: false })
+        .limit(8);
+        
+      if (data && data.length > 0) {
+        setSlides(data.map(item => {
+          if (item.tipe === 'manual') {
+            return {
+              image: item.foto_utama_url,
+              title: item.judul_utama,
+              desc: item.deskripsi,
+              isNews: false,
+            };
+          } else {
+            return {
+              image: item.news_articles?.gambar_judul_url || '',
+              title: item.news_articles?.judul_utama || '',
+              desc: item.news_articles?.isi_berita ? item.news_articles.isi_berita.substring(0, 150) + '...' : '',
+              isNews: true,
+              newsId: item.news_articles?.id
+            };
+          }
+        }));
+      } else {
+        setSlides([
+          {
+            image: "https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999215/vdc4p1otuifswwdjx7zt.jpg",
+            title: t('heroTitle1'),
+            desc: t('heroDesc1'),
+            isNews: false
+          }
+        ]);
+      }
+    };
+    fetchBeranda();
+  }, [t]);
+
+  useEffect(() => {
+    if (slides.length <= 1) return;
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 6000);
     return () => clearInterval(timer);
   }, [slides.length]);
-
-  const nextSlide = () => {
-    setCurrent((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  };
 
   return (
     <section className="hero">
@@ -79,6 +102,13 @@ export default function Hero() {
               <span className="desk-text">{t('ctaJelajahi')}</span>
               <span className="mob-text">JELAJAHI<br/>AL-AZHAR</span>
             </Link>
+            
+            {slides[current]?.isNews && slides[current]?.newsId && (
+              <Link href={`/berita/${slides[current].newsId}`} className="glass-btn-pill news-link" style={{ background: 'var(--primary) !important', borderColor: 'rgba(255,255,255,0.4) !important', padding: '0.75rem 2rem' }}>
+                <span className="desk-text">Baca Selengkapnya</span>
+                <span className="mob-text">BACA<br/>BERITA</span>
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -94,10 +124,10 @@ export default function Hero() {
                 className={`timeline-item ${index === current ? "active" : ""}`}
                 onClick={() => setCurrent(index)}
               >
-                <div className="timeline-info">
+                <div className="timeline-info" style={{ display: index === current ? 'flex' : 'none' }}>
                   <span className="timeline-title">{slide.title}</span>
                 </div>
-                <div className="timeline-bar-bg">
+                <div className="timeline-bar-bg" style={{ height: index === current ? '3px' : '2px', opacity: index === current ? 1 : 0.4 }}>
                   <div className={`timeline-bar-fill ${index === current ? "animate" : ""}`}></div>
                 </div>
               </div>
@@ -253,10 +283,10 @@ export default function Hero() {
         }
 
         .timeline-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1rem;
-          max-width: 300px;
+          display: flex;
+          gap: 0.5rem;
+          width: 100%;
+          max-width: 600px;
           margin: 0;
         }
 
@@ -264,10 +294,12 @@ export default function Hero() {
           cursor: pointer;
           transition: all 0.3s ease;
           opacity: 0.6;
+          flex: 1;
         }
 
         .timeline-item.active {
           opacity: 1;
+          flex: 2;
         }
 
         .timeline-info {
@@ -319,9 +351,8 @@ export default function Hero() {
 
         @media (max-width: 768px) {
           .timeline-grid {
-            grid-template-columns: repeat(3, 1fr);
             gap: 0.3rem;
-            max-width: 100px;
+            max-width: 300px;
           }
           .timeline-title { 
             display: block; 

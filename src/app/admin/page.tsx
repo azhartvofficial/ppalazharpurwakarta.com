@@ -436,6 +436,21 @@ export default function AdminDashboardPage() {
   const [pusatDataSubTab, setPusatDataSubTab] = useState<"data_siswa" | "pengajuan_data" | "status_pendaftaran">("data_siswa");
   const [beritaSubTab, setBeritaSubTab] = useState<"kelola_berita" | "konten_beranda" | "iklan">("kelola_berita");
   
+  // Konten Beranda states
+  const [berandaContents, setBerandaContents] = useState<any[]>([]);
+  const [isFetchingBeranda, setIsFetchingBeranda] = useState(false);
+  const [showBerandaModal, setShowBerandaModal] = useState(false);
+  const [berandaModalType, setBerandaModalType] = useState<"manual" | "berita" | null>(null);
+  
+  const [berandaJudul, setBerandaJudul] = useState("");
+  const [berandaDeskripsi, setBerandaDeskripsi] = useState("");
+  const [berandaFile, setBerandaFile] = useState<File | null>(null);
+  const [berandaPreview, setBerandaPreview] = useState("");
+  const [isUploadingBeranda, setIsUploadingBeranda] = useState(false);
+  const [selectedBeritaId, setSelectedBeritaId] = useState("");
+  const [publishedNewsForPin, setPublishedNewsForPin] = useState<any[]>([]);
+  const [editBerandaId, setEditBerandaId] = useState<string | null>(null);
+  
   // Registration Settings states
   const [registrationSettings, setRegistrationSettings] = useState<any[]>([]);
   const [draftDates, setDraftDates] = useState<Record<number, { open_date: string, close_date: string }>>({});
@@ -1655,12 +1670,38 @@ export default function AdminDashboardPage() {
     );
   };
 
+  const fetchBerandaContents = async () => {
+    setIsFetchingBeranda(true);
+    try {
+      const { data, error } = await supabase
+        .from('beranda_content')
+        .select(`
+          *,
+          news_articles (
+            judul_utama,
+            gambar_judul_url,
+            isi_berita
+          )
+        `)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      if (data) {
+        setBerandaContents(data);
+      }
+    } catch (error) {
+      console.error("Error fetching beranda content:", error);
+    } finally {
+      setIsFetchingBeranda(false);
+    }
+  };
+
   useEffect(() => {
     fetchPpdbData();
     fetchVisitorStats();
     fetchNewsData();
     fetchPusatData();
     fetchRegistrationSettings();
+    fetchBerandaContents();
   }, []);
 
   // Handle status changes in Supabase
@@ -1917,6 +1958,207 @@ export default function AdminDashboardPage() {
     } catch (err) {
       console.error("Gagal mengubah status berita:", err);
       openAlert("Terjadi kesalahan saat mengubah status.");
+    }
+  };
+
+  const fetchPublishedNewsForPin = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('news_articles')
+        .select('id, judul_utama, created_at, kategori')
+        .eq('status', 'Published')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      if (data) {
+        setPublishedNewsForPin(data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const toggleBerandaStatus = async (id: string, currentStatus: string) => {
+    const newStatus = currentStatus === "Rilis" ? "Draf" : "Rilis";
+    try {
+      const { error } = await supabase.from('beranda_content').update({ status: newStatus }).eq('id', id);
+      if (error) throw error;
+      fetchBerandaContents();
+    } catch (err) {
+      console.error("Gagal mengubah status beranda:", err);
+      openAlert("Terjadi kesalahan saat mengubah status konten.");
+    }
+  };
+
+  const deleteBerandaContent = async (id: string) => {
+    openConfirm(
+      "Hapus Konten Beranda?",
+      "Apakah Anda yakin ingin menghapus konten ini dari slider beranda?",
+      async () => {
+        try {
+          const { error } = await supabase.from('beranda_content').delete().eq('id', id);
+          if (error) throw error;
+          fetchBerandaContents();
+        } catch (err) {
+          console.error("Gagal menghapus konten beranda:", err);
+          openAlert("Terjadi kesalahan saat menghapus konten.");
+        }
+      },
+      true,
+      "Hapus",
+      "Batal"
+    );
+  };
+
+  const openEditBeranda = (item: any) => {
+    setBerandaModalType("manual");
+    setEditBerandaId(item.id);
+    setBerandaJudul(item.judul_utama || "");
+    setBerandaDeskripsi(item.deskripsi || "");
+    setBerandaPreview(item.foto_utama_url || "");
+    setBerandaFile(null);
+    setShowBerandaModal(true);
+  };
+
+  const closeBerandaModal = () => {
+    setShowBerandaModal(false);
+    setBerandaModalType(null);
+    setEditBerandaId(null);
+    setBerandaJudul("");
+    setBerandaDeskripsi("");
+    setBerandaPreview("");
+    setBerandaFile(null);
+    setSelectedBeritaId("");
+  };
+
+  const compressImage = async (file: File, maxMB: number = 2): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          const MAX_WIDTH = 1920;
+          const MAX_HEIGHT = 1080;
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const newFile = new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() });
+                resolve(newFile);
+              } else {
+                reject(new Error('Canvas to Blob failed'));
+              }
+            }, 'image/jpeg', 0.8);
+          } else {
+            reject(new Error('Canvas context failed'));
+          }
+        };
+      };
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  const handleSaveBeranda = async () => {
+    if (berandaModalType === "manual") {
+      if (!berandaJudul || !berandaDeskripsi || (!berandaFile && !berandaPreview)) {
+        openAlert("Mohon lengkapi judul, deskripsi, dan foto utama.");
+        return;
+      }
+      setIsUploadingBeranda(true);
+      try {
+        let imageUrl = berandaPreview;
+        if (berandaFile) {
+          let fileToUpload = berandaFile;
+          if (fileToUpload.size > 2 * 1024 * 1024) {
+             fileToUpload = await compressImage(fileToUpload, 2);
+          }
+          
+          const formData = new FormData();
+          formData.append('file', fileToUpload);
+          formData.append('upload_preset', 'ppalazharpwk'); 
+          
+          const res = await fetch(`https://api.cloudinary.com/v1_1/dpgqct4hz/image/upload`, {
+            method: 'POST',
+            body: formData
+          });
+          const uploadData = await res.json();
+          if (uploadData.secure_url) {
+            imageUrl = uploadData.secure_url;
+          } else {
+            throw new Error("Gagal upload foto");
+          }
+        }
+        
+        if (editBerandaId) {
+          const { error } = await supabase.from('beranda_content').update({
+            foto_utama_url: imageUrl,
+            judul_utama: berandaJudul,
+            deskripsi: berandaDeskripsi
+          }).eq('id', editBerandaId);
+          if (error) throw error;
+        } else {
+          const { error } = await supabase.from('beranda_content').insert({
+            tipe: 'manual',
+            foto_utama_url: imageUrl,
+            judul_utama: berandaJudul,
+            deskripsi: berandaDeskripsi,
+            status: 'Rilis'
+          });
+          if (error) throw error;
+        }
+        
+        fetchBerandaContents();
+        closeBerandaModal();
+        openAlert("Berhasil menyimpan konten beranda.");
+      } catch (err) {
+        console.error(err);
+        openAlert("Gagal menyimpan konten beranda.");
+      } finally {
+        setIsUploadingBeranda(false);
+      }
+    } else if (berandaModalType === "berita") {
+      if (!selectedBeritaId) {
+        openAlert("Pilih berita yang akan disematkan.");
+        return;
+      }
+      setIsUploadingBeranda(true);
+      try {
+        const { error } = await supabase.from('beranda_content').insert({
+          tipe: 'berita',
+          berita_id: selectedBeritaId,
+          status: 'Rilis'
+        });
+        if (error) throw error;
+        fetchBerandaContents();
+        closeBerandaModal();
+        openAlert("Berhasil menyematkan berita ke beranda.");
+      } catch (err) {
+        console.error(err);
+        openAlert("Gagal menyematkan berita.");
+      } finally {
+        setIsUploadingBeranda(false);
+      }
     }
   };
 
@@ -2271,7 +2513,7 @@ export default function AdminDashboardPage() {
                       onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.2)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.1)'; e.currentTarget.style.transform = 'translateY(0)'; }}
                     >
-                      <span style={{ whiteSpace: 'nowrap' }}>Cek Halaman</span>
+                      <span style={{ whiteSpace: 'nowrap', color: '#3b82f6' }}>Cek Halaman</span>
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                         <polyline points="15 3 21 3 21 9"></polyline>
@@ -2968,10 +3210,135 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-                          <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>🏠</span>
-                          <h4 style={{ color: '#002147', marginBottom: '0.5rem' }}>Konten Beranda</h4>
-                          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Fitur pengelolaan konten beranda sedang dalam pengembangan.</p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                          <div>
+                            <h3 style={{ color: '#002147', fontWeight: 800, fontSize: '1.25rem', marginBottom: '0.25rem' }}>Pengelolaan Head News Beranda</h3>
+                            <p style={{ color: '#64748b', fontSize: '0.9rem', margin: 0 }}>Maksimal 8 konten yang akan ditampilkan di slider beranda.</p>
+                          </div>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button 
+                              onClick={() => {
+                                if (berandaContents.length >= 8) {
+                                  openAlert("Maksimal 8 konten pada beranda. Hapus konten lama terlebih dahulu.");
+                                  return;
+                                }
+                                setBerandaModalType("manual");
+                                setShowBerandaModal(true);
+                              }}
+                              style={{ padding: '0.6rem 1.2rem', background: '#fff', color: '#002147', border: '1.5px solid rgba(0, 33, 71, 0.1)', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                              Tambah Manual
+                            </button>
+                            <button 
+                              onClick={() => {
+                                if (berandaContents.length >= 8) {
+                                  openAlert("Maksimal 8 konten pada beranda. Hapus konten lama terlebih dahulu.");
+                                  return;
+                                }
+                                fetchPublishedNewsForPin();
+                                setBerandaModalType("berita");
+                                setShowBerandaModal(true);
+                              }}
+                              style={{ padding: '0.6rem 1.2rem', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                              Sematkan Berita
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="table-responsive" style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+                          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <thead style={{ background: 'rgba(0, 33, 71, 0.02)' }}>
+                              <tr>
+                                <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.85rem', color: '#64748b', fontWeight: 700, borderBottom: '1px solid rgba(0,0,0,0.05)' }}>FOTO & JUDUL</th>
+                                <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.85rem', color: '#64748b', fontWeight: 700, borderBottom: '1px solid rgba(0,0,0,0.05)' }}>TIPE / SUMBER</th>
+                                <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: '#64748b', fontWeight: 700, borderBottom: '1px solid rgba(0,0,0,0.05)' }}>STATUS</th>
+                                <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.85rem', color: '#64748b', fontWeight: 700, borderBottom: '1px solid rgba(0,0,0,0.05)' }}>AKSI</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {isFetchingBeranda ? (
+                                <tr>
+                                  <td colSpan={4} style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>Memuat data konten beranda...</td>
+                                </tr>
+                              ) : berandaContents.length === 0 ? (
+                                <tr>
+                                  <td colSpan={4} style={{ padding: '3rem', textAlign: 'center', color: '#64748b' }}>
+                                    <div style={{ marginBottom: '1rem' }}>Belum ada konten yang disematkan ke slider beranda.</div>
+                                    <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Maksimal 8 konten. Tambahkan konten manual atau sematkan berita yang sudah rilis.</span>
+                                  </td>
+                                </tr>
+                              ) : (
+                                berandaContents.map((item, idx) => {
+                                  const isManual = item.tipe === "manual";
+                                  const imageUrl = isManual ? item.foto_utama_url : item.news_articles?.gambar_judul_url;
+                                  const title = isManual ? item.judul_utama : item.news_articles?.judul_utama;
+                                  
+                                  return (
+                                    <tr key={item.id} style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+                                      <td style={{ padding: '1rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                          <div style={{ width: '80px', height: '50px', borderRadius: '6px', background: `url(${imageUrl}) center/cover no-repeat`, border: '1px solid #e2e8f0' }}></div>
+                                          <div>
+                                            <div style={{ fontWeight: 700, color: '#002147', fontSize: '0.9rem', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{title}</div>
+                                            <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.2rem' }}>Ditambahkan pada: {new Date(item.created_at).toLocaleDateString('id-ID')}</div>
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td style={{ padding: '1rem', fontSize: '0.85rem', color: '#64748b' }}>
+                                        {isManual ? (
+                                          <span style={{ padding: '0.3rem 0.6rem', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderRadius: '4px', fontWeight: 600 }}>Input Manual</span>
+                                        ) : (
+                                          <span style={{ padding: '0.3rem 0.6rem', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', borderRadius: '4px', fontWeight: 600 }}>Sematkan Berita</span>
+                                        )}
+                                      </td>
+                                      <td style={{ padding: '1rem', textAlign: 'center' }}>
+                                        <span style={{ 
+                                          padding: '0.3rem 0.6rem', 
+                                          background: item.status === 'Rilis' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', 
+                                          color: item.status === 'Rilis' ? '#10b981' : '#f59e0b', 
+                                          borderRadius: '20px', 
+                                          fontSize: '0.75rem', 
+                                          fontWeight: 700 
+                                        }}>
+                                          {item.status}
+                                        </span>
+                                      </td>
+                                      <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                                          <button 
+                                            onClick={() => toggleBerandaStatus(item.id, item.status)}
+                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', fontWeight: 600, border: 'none', background: item.status === 'Rilis' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)', color: item.status === 'Rilis' ? '#f59e0b' : '#10b981', borderRadius: '6px', cursor: 'pointer' }}
+                                            title={item.status === 'Rilis' ? "Ubah ke Draf" : "Sematkan (Rilis)"}
+                                          >
+                                            {item.status === 'Rilis' ? "Drafkan" : "Sematkan"}
+                                          </button>
+                                          {isManual && (
+                                            <button 
+                                              onClick={() => openEditBeranda(item)}
+                                              style={{ padding: '0.4rem', background: 'rgba(0, 33, 71, 0.05)', color: '#002147', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                                              title="Edit"
+                                            >
+                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                            </button>
+                                          )}
+                                          <button 
+                                            onClick={() => deleteBerandaContent(item.id)}
+                                            style={{ padding: '0.4rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                                            title="Hapus"
+                                          >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                          </button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                })
+                              )}
+                            </tbody>
+                          </table>
                         </div>
                       </motion.div>
                     )}
@@ -7610,6 +7977,124 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               </button>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+      {/* BERANDA CONTENT MODAL */}
+      <AnimatePresence>
+        {showBerandaModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}
+            >
+              <h3 style={{ color: '#002147', marginBottom: '1.5rem', fontWeight: 800 }}>
+                {berandaModalType === "manual" ? (editBerandaId ? "Edit Konten Manual" : "Tambah Konten Manual") : "Sematkan Berita"}
+              </h3>
+              
+              {berandaModalType === "manual" && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#334155', fontSize: '0.9rem' }}>Foto Utama</label>
+                    <div style={{ padding: '1.5rem', border: '2px dashed #cbd5e1', borderRadius: '12px', textAlign: 'center', cursor: 'pointer', position: 'relative' }}>
+                      <input type="file" accept="image/*" onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          const file = e.target.files[0];
+                          setBerandaFile(file);
+                          const reader = new FileReader();
+                          reader.onload = (event) => setBerandaPreview(event.target?.result as string);
+                          reader.readAsDataURL(file);
+                        }
+                      }} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} />
+                      
+                      {berandaPreview ? (
+                        <img src={berandaPreview} alt="Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', borderRadius: '8px' }} />
+                      ) : (
+                        <div style={{ color: '#64748b' }}>
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '0.5rem' }}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                          <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600 }}>Klik atau Drag & Drop foto di sini</p>
+                          <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem' }}>Maksimal 2 MB (Akan dikompresi otomatis jika lebih)</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#334155', fontSize: '0.9rem' }}>Judul Utama</label>
+                    <input 
+                      type="text" 
+                      value={berandaJudul} 
+                      onChange={(e) => setBerandaJudul(e.target.value)} 
+                      maxLength={50}
+                      placeholder="Masukkan judul singkat..."
+                      style={{ width: '100%', padding: '0.8rem 1rem', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '1rem', color: '#1e293b' }} 
+                    />
+                    <div style={{ textAlign: 'right', fontSize: '0.75rem', color: '#64748b', marginTop: '0.3rem' }}>{berandaJudul.length}/50 karakter</div>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#334155', fontSize: '0.9rem' }}>Deskripsi Singkat</label>
+                    <textarea 
+                      value={berandaDeskripsi} 
+                      onChange={(e) => setBerandaDeskripsi(e.target.value)} 
+                      maxLength={150}
+                      rows={3}
+                      placeholder="Masukkan deskripsi untuk konten ini..."
+                      style={{ width: '100%', padding: '0.8rem 1rem', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '1rem', color: '#1e293b', resize: 'vertical' }} 
+                    />
+                    <div style={{ textAlign: 'right', fontSize: '0.75rem', color: '#64748b', marginTop: '0.3rem' }}>{berandaDeskripsi.length}/150 karakter</div>
+                  </div>
+                </div>
+              )}
+              
+              {berandaModalType === "berita" && (
+                <div>
+                  <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1rem' }}>Pilih berita yang sudah diterbitkan untuk disematkan di slider utama beranda.</p>
+                  <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0.5rem' }}>
+                    {publishedNewsForPin.length === 0 ? (
+                      <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>Belum ada berita yang diterbitkan.</div>
+                    ) : (
+                      publishedNewsForPin.map(news => (
+                        <div 
+                          key={news.id} 
+                          onClick={() => setSelectedBeritaId(news.id)}
+                          style={{ 
+                            padding: '1rem', 
+                            borderBottom: '1px solid #f1f5f9', 
+                            cursor: 'pointer',
+                            background: selectedBeritaId === news.id ? 'rgba(59, 130, 246, 0.1)' : '#fff',
+                            borderRadius: '6px',
+                            display: 'flex',
+                            gap: '1rem',
+                            alignItems: 'center'
+                          }}
+                        >
+                          <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: '2px solid #3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {selectedBeritaId === news.id && <div style={{ width: '10px', height: '10px', background: '#3b82f6', borderRadius: '50%' }}></div>}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 600, color: '#002147', fontSize: '0.95rem' }}>{news.judul_utama}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.2rem' }}>{news.kategori} &bull; {new Date(news.created_at).toLocaleDateString('id-ID')}</div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
+                <button onClick={closeBerandaModal} style={{ padding: '0.8rem 1.5rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }} disabled={isUploadingBeranda}>Batal</button>
+                <button onClick={handleSaveBeranda} style={{ padding: '0.8rem 1.5rem', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }} disabled={isUploadingBeranda}>
+                  {isUploadingBeranda ? (
+                    <>
+                      <div className="loader" style={{ width: '16px', height: '16px', borderTopColor: '#fff', borderRightColor: 'transparent', borderBottomColor: 'transparent', borderLeftColor: 'transparent', borderRadius: '50%', borderStyle: 'solid', borderWidth: '2px', animation: 'spin 1s linear infinite' }}></div>
+                      Menyimpan...
+                    </>
+                  ) : "Simpan"}
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
