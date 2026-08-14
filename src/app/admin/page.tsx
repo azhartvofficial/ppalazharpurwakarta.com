@@ -400,6 +400,8 @@ export default function AdminDashboardPage() {
   const [loadingAds, setLoadingAds] = useState(false);
   const [showAdModal, setShowAdModal] = useState(false);
   const [currentAd, setCurrentAd] = useState<any>(null);
+  const [isUploadingAd, setIsUploadingAd] = useState(false);
+  const [uploadProgressAd, setUploadProgressAd] = useState(0);
   const [newAdImage, setNewAdImage] = useState<File | null>(null);
   const [adPreviewUrl, setAdPreviewUrl] = useState<string | null>(null);
   const [adExpiryDate, setAdExpiryDate] = useState<string>("");
