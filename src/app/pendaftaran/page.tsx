@@ -135,30 +135,25 @@ export default function PendaftaranPage() {
           </motion.div>
         </div>
 
-        {/* PUSDA CTA Section */}
+        {/* PUSDA CTA Section - Compact Version */}
         <div className="pusda-cta-section">
           <div className="pusda-content">
-            <div className="pusda-badge">PORTAL PUSDA AZHAR</div>
-            <h2>Sudah Mendaftar PPDB?</h2>
-            <p>Bagi wali santri yang sudah melakukan pendaftaran dan memiliki akun, silakan lengkapi biodata serta dokumen persyaratan administrasi melalui Portal Pusat Data Santri (PUSDA).</p>
+            <motion.div 
+              className="pusda-badge"
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              PORTAL PUSDA AZHAR
+            </motion.div>
+            <p>Bagi wali santri yang sudah memiliki akun PPDB, silakan lengkapi biodata & berkas di:</p>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '2rem' }}>
-              <span style={{ color: '#cbd5e1', fontSize: '1rem', fontWeight: 600 }}>Lengkapi data & berkas santri di :</span>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
               <Link href="/pusda" className="btn-pusda-floating">
                 <span className="btn-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M3 15h6"/><path d="M3 18h6"/><path d="M14 15h.01"/><path d="M14 18h.01"/></svg>
                 </span>
                 PORTAL PUSDA AZHAR
               </Link>
-            </div>
-          </div>
-          <div className="pusda-image-modern">
-            <div className="glass-folder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="folder-icon">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-                <line x1="12" y1="11" x2="12" y2="17" />
-                <line x1="9" y1="14" x2="15" y2="14" />
-              </svg>
             </div>
           </div>
         </div>
@@ -360,13 +355,14 @@ export default function PendaftaranPage() {
         /* PUSDA CTA Section */
         .pusda-cta-section {
           background: linear-gradient(135deg, #002147 0%, #00122e 100%);
-          border-radius: 24px;
-          padding: 4rem;
+          border-radius: 20px;
+          padding: 2.5rem 2rem;
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          box-shadow: 0 20px 50px rgba(0,33,71,0.25);
-          margin-bottom: 5rem;
+          justify-content: center;
+          text-align: center;
+          box-shadow: 0 15px 35px rgba(0,33,71,0.2);
+          margin-bottom: 4rem;
           position: relative;
           overflow: hidden;
           border: 1px solid rgba(255, 255, 255, 0.05);
@@ -446,44 +442,6 @@ export default function PendaftaranPage() {
           height: 20px;
         }
 
-        .pusda-image-modern {
-          position: relative;
-          width: 220px;
-          height: 220px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 2;
-        }
-
-        .glass-folder {
-          width: 160px;
-          height: 160px;
-          background: rgba(255, 140, 0, 0.12);
-          backdrop-filter: blur(10px);
-          border-radius: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 1px solid rgba(255, 140, 0, 0.3);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(255, 140, 0, 0.1);
-          transform: rotate(-8deg);
-          transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .pusda-cta-section:hover .glass-folder {
-          transform: rotate(4deg) scale(1.05);
-          background: rgba(255, 140, 0, 0.18);
-          box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3), inset 0 0 30px rgba(255, 140, 0, 0.2);
-        }
-
-        .folder-icon {
-          width: 75px;
-          height: 75px;
-          color: #ff8c00;
-          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-        }
-
         @media (max-width: 992px) {
           .hero-header { padding: 10rem 0 5rem; }
           .hero-header h1 { font-size: 2.8rem; }
@@ -547,19 +505,6 @@ export default function PendaftaranPage() {
           }
           .alur-card p.desc-desktop {
             display: none;
-          }
-          .pusda-cta-section {
-            flex-direction: column;
-            text-align: center;
-            gap: 2rem;
-            padding: 3rem 1.5rem;
-          }
-          .btn-pusda-floating {
-            margin: 0 auto;
-          }
-          .pusda-image-modern {
-            display: none;
-          }
         }
       `}</style>
     </main>
