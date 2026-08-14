@@ -7859,10 +7859,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
       <AnimatePresence>
         
         {showAdModal && (
-          <div className="modal-overlay" onClick={() => setShowAdModal(false)}>
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h3>Tambah Pop-up Iklan</h3>
+          <div onClick={() => setShowAdModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, overflowY: 'auto', padding: '2rem' }}>
+              <motion.div onClick={(e) => e.stopPropagation()} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '450px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
+                <h3 style={{ margin: 0, color: '#002147', fontWeight: 900 }}>Tambah Pop-up Iklan</h3>
+                <button onClick={() => setShowAdModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
               </div>
               
               <div className="modal-body form-grid">
@@ -7913,13 +7914,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 </div>
               </div>
 
-              <div className="modal-actions">
-                <button onClick={() => setShowAdModal(false)} className="btn-secondary">Batal</button>
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
+                <button onClick={() => setShowAdModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 1 }}>Batal</button>
                 <button 
                   onClick={handleAddAd} 
-                  className="btn-primary" 
                   disabled={!newAdImage}
-                  style={{ opacity: !newAdImage ? 0.5 : 1, cursor: !newAdImage ? 'not-allowed' : 'pointer' }}
+                  style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: !newAdImage ? 'not-allowed' : 'pointer', flex: 2, opacity: !newAdImage ? 0.5 : 1 }}
                 >
                   Simpan Pop-up
                 </button>
@@ -7932,10 +7932,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
       {/* AZHAR TV MODALS */}
         <AnimatePresence>
           {showAzTvMainModal && (
-            <div className="modal-overlay" onClick={() => setShowAzTvMainModal(false)}>
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                  <h3>Tambah Berita Head News</h3>
+            <div onClick={() => setShowAzTvMainModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, overflowY: 'auto', padding: '2rem' }}>
+              <motion.div onClick={(e) => e.stopPropagation()} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '450px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
+                  <h3 style={{ margin: 0, color: '#002147', fontWeight: 900 }}>Tambah Berita Head News</h3>
+                  <button onClick={() => setShowAzTvMainModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
                 </div>
                 <div className="modal-body form-grid">
                   <div className="form-group">
@@ -7951,19 +7952,20 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     <input type="text" value={azTvMainForm.image} onChange={(e) => setAzTvMainForm({...azTvMainForm, image: e.target.value})} className="form-input" placeholder="https://..." />
                   </div>
                 </div>
-                <div className="modal-actions">
-                  <button onClick={() => setShowAzTvMainModal(false)} className="btn-secondary">Batal</button>
-                  <button onClick={() => { saveAzharTvKontenUtama([azTvMainForm, ...azharTvKontenUtama]); setShowAzTvMainModal(false); }} className="btn-primary">Simpan Berita</button>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
+                  <button onClick={() => setShowAzTvMainModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 1 }}>Batal</button>
+                  <button onClick={() => { saveAzharTvKontenUtama([azTvMainForm, ...azharTvKontenUtama]); setShowAzTvMainModal(false); }} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 2 }}>Simpan Berita</button>
                 </div>
               </motion.div>
             </div>
           )}
 
           {showAzTvYtModal && (
-            <div className="modal-overlay" onClick={() => setShowAzTvYtModal(false)}>
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                  <h3>Tambah Video YouTube</h3>
+            <div onClick={() => setShowAzTvYtModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, overflowY: 'auto', padding: '2rem' }}>
+              <motion.div onClick={(e) => e.stopPropagation()} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '450px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
+                  <h3 style={{ margin: 0, color: '#002147', fontWeight: 900 }}>Tambah Video YouTube</h3>
+                  <button onClick={() => setShowAzTvYtModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
                 </div>
                 <div className="modal-body form-grid">
                   <div className="form-group">
@@ -7979,24 +7981,25 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     <input type="text" value={azTvYtForm.category} onChange={(e) => setAzTvYtForm({...azTvYtForm, category: e.target.value})} className="form-input" placeholder="ex: Ceramah, Vlog..." />
                   </div>
                 </div>
-                <div className="modal-actions">
-                  <button onClick={() => setShowAzTvYtModal(false)} className="btn-secondary">Batal</button>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
+                  <button onClick={() => setShowAzTvYtModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 1 }}>Batal</button>
                   <button onClick={() => { 
                     let updated = [azTvYtForm, ...azharTvYtSlides];
                     if (updated.length > 10) updated = updated.slice(0, 10);
                     saveAzharTvYtSlides(updated); 
                     setShowAzTvYtModal(false); 
-                  }} className="btn-primary">Simpan Video</button>
+                  }} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 2 }}>Simpan Video</button>
                 </div>
               </motion.div>
             </div>
           )}
 
           {showAzTvDokModal && (
-            <div className="modal-overlay" onClick={() => setShowAzTvDokModal(false)}>
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                  <h3>Tambah Link Dokumentasi (G-Drive)</h3>
+            <div onClick={() => setShowAzTvDokModal(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, overflowY: 'auto', padding: '2rem' }}>
+              <motion.div onClick={(e) => e.stopPropagation()} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} style={{ background: '#fff', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '450px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
+                  <h3 style={{ margin: 0, color: '#002147', fontWeight: 900 }}>Tambah Link Dokumentasi (G-Drive)</h3>
+                  <button onClick={() => setShowAzTvDokModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
                 </div>
                 <div className="modal-body form-grid">
                   <div className="form-group">
@@ -8016,9 +8019,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     </select>
                   </div>
                 </div>
-                <div className="modal-actions">
-                  <button onClick={() => setShowAzTvDokModal(false)} className="btn-secondary">Batal</button>
-                  <button onClick={() => { saveAzharTvDokPublik([azTvDokForm, ...azharTvDokPublik]); setShowAzTvDokModal(false); }} className="btn-primary">Simpan Link</button>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
+                  <button onClick={() => setShowAzTvDokModal(false)} style={{ padding: '12px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 1 }}>Batal</button>
+                  <button onClick={() => { saveAzharTvDokPublik([azTvDokForm, ...azharTvDokPublik]); setShowAzTvDokModal(false); }} style={{ padding: '12px', background: '#002147', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', flex: 2 }}>Simpan Link</button>
                 </div>
               </motion.div>
             </div>
