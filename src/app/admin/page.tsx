@@ -2727,36 +2727,28 @@ export default function AdminDashboardPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     Pusat Pengelolaan Berita
                     <a 
-                      href="/berita" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      title="Buka halaman publik berita"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '0.9rem',
-                        fontWeight: 700,
-                        backgroundColor: '#002147',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '20px',
-                        textDecoration: 'none',
-                        transition: 'all 0.2s ease',
-                        marginLeft: '0.5rem',
-                        fontFamily: 'Inter, sans-serif',
-                        boxShadow: '0 4px 6px -1px rgba(0, 33, 71, 0.3)'
-                      }}
-                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#003366'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#002147'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                    >
-                      <span style={{ color: '#ffffff', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>Cek Halaman</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                      </svg>
-                    </a>
+                        href="/berita" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        title="Buka halaman publik berita"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#38bdf8',
+                          textDecoration: 'none',
+                          transition: 'all 0.2s ease',
+                          marginLeft: '0.5rem',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = '#7dd3fc'; e.currentTarget.style.transform = 'scale(1.1)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = '#38bdf8'; e.currentTarget.style.transform = 'scale(1)'; }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                          <polyline points="15 3 21 3 21 9"></polyline>
+                          <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                      </a>
                   </div>
                 )}
                 {activeTab === "docs" && "Publikasi Azhar Tv & Dokumentasi"}
@@ -7867,8 +7859,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
       <AnimatePresence>
         
         {showAdModal && (
-          <div className="modal-backdrop">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="modal-content" style={{ maxWidth: '500px' }}>
+          <div className="modal-overlay" onClick={() => setShowAdModal(false)}>
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="modal-content" style={{ maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h3>Tambah Pop-up Iklan</h3>
               </div>
@@ -8631,6 +8623,8 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
+
 
 
 
