@@ -138,23 +138,48 @@ export default function PendaftaranPage() {
         {/* PUSDA CTA Section - Compact Version */}
         <div className="pusda-cta-section">
           <div className="pusda-content">
-            <motion.div 
-              className="pusda-badge"
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              PORTAL PUSDA AZHAR
-            </motion.div>
-            <p>Bagi wali santri yang sudah memiliki akun PPDB, silakan lengkapi biodata & berkas di:</p>
-            
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
-              <Link href="/pusda" className="btn-pusda-floating">
-                <span className="btn-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M3 15h6"/><path d="M3 18h6"/><path d="M14 15h.01"/><path d="M14 18h.01"/></svg>
-                </span>
-                PORTAL PUSDA AZHAR
-              </Link>
-            </div>
+            {anyOpen ? (
+              <>
+                <motion.div 
+                  className="pusda-badge"
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  PORTAL PUSDA AZHAR
+                </motion.div>
+                <p>Bagi wali santri yang sudah memiliki akun PPDB, silakan lengkapi biodata & berkas di:</p>
+                
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
+                  <Link href="/pusda" className="btn-pusda-floating">
+                    <span className="btn-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M3 15h6"/><path d="M3 18h6"/><path d="M14 15h.01"/><path d="M14 18h.01"/></svg>
+                    </span>
+                    PORTAL PUSDA AZHAR
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <>
+                <div 
+                  className="pusda-badge"
+                  style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+                >
+                  PORTAL PUSDA DITUTUP
+                </div>
+                <p>Untuk saat ini akses pengisian biodata dan kelengkapan berkas sedang ditutup.</p>
+                <p style={{ marginTop: '0.5rem', color: '#cbd5e1', fontSize: '0.95rem' }}>
+                  Untuk kendala dan informasi lebih lanjut hubungi:<br/>
+                  <a href="https://wa.me/6283846489366" target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', fontWeight: 800, textDecoration: 'none' }}>085846489366 (Admin Danish)</a>
+                </p>
+                
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
+                  <button disabled className="btn-pusda-floating" style={{ background: '#475569', cursor: 'not-allowed', border: 'none', transform: 'none', boxShadow: 'none' }}>
+                    <span className="btn-icon">🔒</span>
+                    AKSES PORTAL TUTUP
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
