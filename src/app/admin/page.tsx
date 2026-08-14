@@ -449,6 +449,8 @@ export default function AdminDashboardPage() {
   const [isUploadingBeranda, setIsUploadingBeranda] = useState(false);
   const [selectedBeritaId, setSelectedBeritaId] = useState("");
   const [publishedNewsForPin, setPublishedNewsForPin] = useState<any[]>([]);
+  const [isFetchingBeritaForPin, setIsFetchingBeritaForPin] = useState(false);
+  const [showSuccessAnim, setShowSuccessAnim] = useState(false);
   const [editBerandaId, setEditBerandaId] = useState<string | null>(null);
   
   // Registration Settings states
@@ -1969,6 +1971,7 @@ export default function AdminDashboardPage() {
   };
 
   const fetchPublishedNewsForPin = async () => {
+    setIsFetchingBeritaForPin(true);
     try {
       const { data, error } = await supabase
         .from('news_articles')
@@ -1981,6 +1984,8 @@ export default function AdminDashboardPage() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsFetchingBeritaForPin(false);
     }
   };
 
@@ -2137,7 +2142,8 @@ export default function AdminDashboardPage() {
         
         fetchBerandaContents();
         closeBerandaModal();
-        openAlert("Berhasil menyimpan konten beranda.");
+        setShowSuccessAnim(true);
+        setTimeout(() => setShowSuccessAnim(false), 2000);
       } catch (err) {
         console.error(err);
         openAlert("Gagal menyimpan konten beranda.");
@@ -2159,7 +2165,8 @@ export default function AdminDashboardPage() {
         if (error) throw error;
         fetchBerandaContents();
         closeBerandaModal();
-        openAlert("Berhasil menyematkan berita ke beranda.");
+        setShowSuccessAnim(true);
+        setTimeout(() => setShowSuccessAnim(false), 2000);
       } catch (err) {
         console.error(err);
         openAlert("Gagal menyematkan berita.");
@@ -7444,6 +7451,9 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         .priority-item-card:hover::after {
           background: var(--secondary) !important;
         }
+        @keyframes stroke {
+          100% { stroke-dashoffset: 0; }
+        }
       `}</style>
 
       {/* Master Password Prompt Modal */}
@@ -8057,7 +8067,12 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <div>
                   <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1rem' }}>Pilih berita yang sudah diterbitkan untuk disematkan di slider utama beranda.</p>
                   <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0.5rem' }}>
-                    {publishedNewsForPin.length === 0 ? (
+                    {isFetchingBeritaForPin ? (
+                      <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                        Memuat data berita...
+                      </div>
+                    ) : publishedNewsForPin.length === 0 ? (
                       <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>Belum ada berita yang diterbitkan.</div>
                     ) : (
                       publishedNewsForPin.map(news => (
@@ -8116,6 +8131,26 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
           >
              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
              <span style={{ fontWeight: 600, fontSize: '0.95rem', letterSpacing: '0.5px' }}>Refresh Pusat Data</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* SUCCESS ANIMATION */}
+      <AnimatePresence>
+        {showSuccessAnim && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255, 255, 255, 0.95)', padding: '2.5rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', zIndex: 999999, boxShadow: '0 20px 40px rgba(0,0,0,0.15)', backdropFilter: 'blur(10px)' }}
+          >
+             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+               <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" style={{ width: '40px', height: '40px' }}>
+                 <path className="checkmark__check" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="48" strokeDashoffset="48" d="M14.1 27.2l7.1 7.2 16.7-16.8" style={{ animation: 'stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) 0.2s forwards' }} />
+               </svg>
+             </div>
+
+             <span style={{ fontWeight: 700, fontSize: '1.2rem', color: '#0f172a' }}>Berhasil Disimpan!</span>
           </motion.div>
         )}
       </AnimatePresence>
