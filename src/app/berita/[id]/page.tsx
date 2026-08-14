@@ -209,7 +209,7 @@ export default function BeritaDetailPage() {
 
         <aside className="sidebar-container">
           <div className="sidebar-widget widget-pengumuman">
-            <h3 className="widget-title">📌 Papan Pengumuman</h3>
+            <h3 className="widget-title">Papan Pengumuman</h3>
             <div className="widget-content">
               {pengumumanList.length > 0 ? (
                 pengumumanList.map(p => (
@@ -220,7 +220,6 @@ export default function BeritaDetailPage() {
                 ))
               ) : (
                 <div className="empty-state">
-                  <span className="empty-icon">📢</span>
                   <p>Segera Hadir</p>
                 </div>
               )}
@@ -228,7 +227,7 @@ export default function BeritaDetailPage() {
           </div>
 
           <div className="sidebar-widget widget-berita">
-            <h3 className="widget-title">📰 Berita Lainnya</h3>
+            <h3 className="widget-title">Berita Lainnya</h3>
             <div className="widget-content">
               {beritaList.length > 0 ? (
                 beritaList.map(b => (
@@ -237,7 +236,7 @@ export default function BeritaDetailPage() {
                       {b.gambar_judul_url ? (
                         <img src={b.gambar_judul_url} alt={b.judul_utama} />
                       ) : (
-                        <div className="no-img">📰</div>
+                        <div className="no-img">IMG</div>
                       )}
                     </div>
                     <div className="berita-item-info">
@@ -248,7 +247,6 @@ export default function BeritaDetailPage() {
                 ))
               ) : (
                 <div className="empty-state">
-                  <span className="empty-icon">📰</span>
                   <p>Segera Hadir</p>
                 </div>
               )}

@@ -150,7 +150,7 @@ export default function BeritaPage() {
   // Hapus fallback mock data, jika kosong ya benar-benar kosong
   const finalNews = dbNews;
   
-  const finalSliderData = sliderData as any[];
+  const finalSliderData = dbNews.length > 0 ? dbNews.slice(0, 5) : sliderData;
   
   const finalAnnouncements = dbAnnouncements.length > 0 ? dbAnnouncements : [{
     id: 'empty-announcement',
@@ -214,10 +214,10 @@ export default function BeritaPage() {
                 <div className="slide-content container">
                   <h1 className="slide-title">{finalSliderData[currentSlide]?.judul_utama || finalSliderData[currentSlide]?.title}</h1>
                   <div className="slide-meta">
-                    <span className="slide-date">🗓 {finalSliderData[currentSlide]?.created_at ? new Date(finalSliderData[currentSlide].created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : finalSliderData[currentSlide]?.date}</span>
+                    <span className="slide-date">{finalSliderData[currentSlide]?.created_at ? new Date(finalSliderData[currentSlide].created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : finalSliderData[currentSlide]?.date}</span>
                   </div>
                   <Link href={`/berita/${finalSliderData[currentSlide]?.id}`} className="slide-btn">
-                    Baca Berita
+                    Baca Selengkapnya
                   </Link>
                 </div>
               </div>
@@ -425,17 +425,21 @@ export default function BeritaPage() {
           display: inline-block;
           background: var(--primary);
           color: white;
-          padding: 12px 30px;
-          border-radius: 30px;
-          font-weight: 600;
-          transition: all 0.3s ease;
-          border: 2px solid rgba(255,255,255,0.2);
+          padding: 12px 32px;
+          border-radius: 50px;
+          font-weight: 700;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border: none;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+          position: relative;
+          z-index: 10;
         }
 
         .slide-btn:hover {
-          background: white;
-          color: var(--primary);
-          border-color: white;
+          background: var(--secondary);
+          color: white;
+          transform: translateY(-5px);
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
         }
 
         .slider-controls {
