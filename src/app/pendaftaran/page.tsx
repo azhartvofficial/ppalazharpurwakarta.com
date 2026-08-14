@@ -189,7 +189,7 @@ export default function PendaftaranPage() {
 
         .hero-header {
           background: linear-gradient(135deg, #002147 0%, #00122e 100%);
-          padding: 8rem 1.5rem 4rem;
+          padding: 12rem 1.5rem 5rem;
           text-align: center;
           position: relative;
           overflow: hidden;
@@ -497,7 +497,7 @@ export default function PendaftaranPage() {
         }
 
         @media (max-width: 992px) {
-          .hero-header { padding: 10rem 0 5rem; }
+          .hero-header { padding: 9rem 1.5rem 4rem; }
           .hero-header h1 { font-size: 2.8rem; }
         }
 

@@ -151,7 +151,7 @@ export default function SistemPendidikanPage() {
 
         .hero-header {
           background: linear-gradient(135deg, #002147 0%, #00122e 100%);
-          padding: 8rem 1.5rem 4rem;
+          padding: 12rem 1.5rem 5rem;
           text-align: center;
           position: relative;
           overflow: hidden;
@@ -461,7 +461,7 @@ export default function SistemPendidikanPage() {
             gap: 4rem;
           }
           h1 { font-size: 2.8rem; }
-          .hero-header { padding: 10rem 0 5rem; }
+          .hero-header { padding: 9rem 1.5rem 4rem; }
           .image-overlay-box {
             position: static;
             margin-top: 2rem;

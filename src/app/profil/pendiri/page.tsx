@@ -224,7 +224,7 @@ export default function PendiriPage() {
 
         .header-section {
           background: linear-gradient(135deg, #002147 0%, #00122e 100%);
-          padding: 8rem 1.5rem 4rem;
+          padding: 12rem 1.5rem 5rem;
           text-align: center;
           position: relative;
           overflow: hidden;
@@ -446,7 +446,7 @@ export default function PendiriPage() {
             text-align: center;
             align-items: center;
           }
-          .header-section { padding: 10rem 0 5rem; }
+          .header-section { padding: 9rem 1.5rem 4rem; }
           .tokoh-grid.reverse {
             flex-direction: column; /* Ketua Yayasan: image is 1st in DOM, so column keeps it on top */
           }

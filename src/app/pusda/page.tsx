@@ -1041,7 +1041,7 @@ export default function PusdaPage() {
 
         .pusda-hero {
           background: linear-gradient(135deg, #002147 0%, #00122e 100%);
-          padding: 8rem 1.5rem 4rem;
+          padding: 12rem 1.5rem 5rem;
           text-align: center;
           position: relative;
           overflow: hidden;
@@ -1330,7 +1330,7 @@ export default function PusdaPage() {
 
         @media (max-width: 768px) {
           .pusda-hero {
-            padding: 7rem 1.5rem 3rem;
+            padding: 9rem 1.5rem 4rem;
           }
           .hero-title { font-size: 2.2rem; }
           .info-cards, .grid-2, .doc-uploads {
