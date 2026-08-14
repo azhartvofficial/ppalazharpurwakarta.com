@@ -152,9 +152,6 @@ export default function PendaftaranPage() {
                 
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
                   <Link href="/pusda" className="btn-pusda-floating">
-                    <span className="btn-icon">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M3 15h6"/><path d="M3 18h6"/><path d="M14 15h.01"/><path d="M14 18h.01"/></svg>
-                    </span>
                     PORTAL PUSDA AZHAR
                   </Link>
                 </div>
@@ -175,7 +172,6 @@ export default function PendaftaranPage() {
                 
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
                   <button disabled className="btn-pusda-floating" style={{ background: '#475569', cursor: 'not-allowed', border: 'none', transform: 'none', boxShadow: 'none' }}>
-                    <span className="btn-icon">🔒</span>
                     AKSES PORTAL TUTUP
                   </button>
                 </div>
