@@ -318,25 +318,47 @@ export default function Navbar() {
                   </span>
                 </div>
 
-                <div 
-                  className={`profile-dropdown-menu ${profileDropdownOpen ? 'show' : ''}`}
-                >
-                  <div className="profile-dropdown-header">
-                    <div className="profile-name">{isAdminLoggedIn ? adminName : santriName}</div>
-                    <div className="profile-email">{isAdminLoggedIn ? adminEmail : santriEmail || 'Email tidak tersedia'}</div>
-                    {(isAdminLoggedIn ? adminPhone : santriPhone) && (
-                      <div className="profile-phone">{isAdminLoggedIn ? adminPhone : santriPhone}</div>
-                    )}
-                  </div>
-                  <div className="profile-dropdown-body">
-                    <Link href={isAdminLoggedIn ? "/admin" : "/santri"} className="profile-link">
-                      Dashboard {isAdminLoggedIn ? 'Admin' : 'Santri'}
-                    </Link>
-                    <button onClick={() => setShowLogoutModal(true)} className="profile-logout-btn">
-                      Logout
-                    </button>
-                  </div>
-                </div>
+                <AnimatePresence>
+                  {profileDropdownOpen && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                      className="navbar-profile-dropdown-panel"
+                    >
+                      <div className="dropdown-user-header">
+                        <div className="dropdown-avatar-bubble">
+                          {getShortenedName(isAdminLoggedIn ? adminName : santriName).charAt(0).toUpperCase()}
+                        </div>
+                        <div className="dropdown-user-info">
+                          <strong>{isAdminLoggedIn ? adminName : santriName}</strong>
+                          <span>{isAdminLoggedIn ? adminEmail : santriEmail || 'Email tidak tersedia'}</span>
+                        </div>
+                      </div>
+                      <div className="dropdown-divider"></div>
+                      
+                      <Link href={isAdminLoggedIn ? "/admin" : "/santri"} className="dropdown-action-btn panel-btn" onClick={() => setProfileDropdownOpen(false)}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                          <rect x="3" y="3" width="7" height="7"></rect>
+                          <rect x="14" y="3" width="7" height="7"></rect>
+                          <rect x="14" y="14" width="7" height="7"></rect>
+                          <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        Dashboard {isAdminLoggedIn ? 'Admin' : 'Santri'}
+                      </Link>
+                      
+                      <button onClick={() => { setShowLogoutModal(true); setProfileDropdownOpen(false); }} className="dropdown-logout-btn-new">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                          <polyline points="16 17 21 12 16 7"></polyline>
+                          <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout Sesi
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <Link 
