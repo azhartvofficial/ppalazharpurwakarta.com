@@ -40,19 +40,13 @@ export default function PendaftaranPage() {
     <main className="pendaftaran-layout">
       <Navbar />
 
-      {/* Hero Header matching Sistem Pendidikan style */}
+      {/* Hero Header matching PUSDA style */}
       <section className="hero-header">
-        <div className="container">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="pre-title">PPDB ONLINE 2026/2027</span>
-            <h1 className={frizQuadrata.className}>Penerimaan Santri Baru</h1>
-            <p className="school-name">Pondok Pesantren Al-Azhar Purwakarta</p>
-            <p className="hero-desc">Mari bergabung bersama keluarga besar Pondok Pesantren Al-Azhar Purwakarta. Wujudkan generasi Rabbani yang berakhlak mulia dan berwawasan global.</p>
-          </motion.div>
+        <div className="hero-content">
+          <span className="hero-badge">PPDB ONLINE 2026/2027</span>
+          <h1 className="hero-title">Penerimaan <span>Santri Baru</span></h1>
+          <p className="school-name">Pondok Pesantren Al-Azhar Purwakarta</p>
+          <p className="hero-desc">Mari bergabung bersama keluarga besar Pondok Pesantren Al-Azhar Purwakarta. Wujudkan generasi Rabbani yang berakhlak mulia dan berwawasan global.</p>
         </div>
       </section>
 
@@ -142,7 +136,7 @@ export default function PendaftaranPage() {
             {isPusdaOpen ? (
               <>
                 <motion.div 
-                  className="pusda-badge"
+                  className="pusda-title-animated"
                   animate={{ y: [0, -5, 0] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 >
@@ -152,7 +146,10 @@ export default function PendaftaranPage() {
                 
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5rem' }}>
                   <Link href="/pusda" className="btn-pusda-floating">
-                    PORTAL PUSDA AZHAR
+                    <span className="btn-icon" style={{ display: 'flex', alignItems: 'center' }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </span>
+                    Klik untuk Lengkapi Data Santri
                   </Link>
                 </div>
               </>
@@ -191,55 +188,67 @@ export default function PendaftaranPage() {
         }
 
         .hero-header {
-          padding: 12rem 0 6rem;
-          background: linear-gradient(rgba(0, 33, 71, 0.9), rgba(0, 33, 71, 0.8)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999165/qyvcomndxiwejcvzmfsl.png');
-          background-size: cover;
-          background-position: center;
-          background-attachment: fixed;
-          color: white;
+          background: linear-gradient(135deg, #002147 0%, #00122e 100%);
+          padding: 8rem 1.5rem 4rem;
           text-align: center;
+          position: relative;
+          overflow: hidden;
         }
-
-        .container {
-          max-width: 1200px;
+        .hero-header::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: url('https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999165/qyvcomndxiwejcvzmfsl.png') center/cover;
+          opacity: 0.15;
+          mix-blend-mode: overlay;
+        }
+        .hero-content {
+          position: relative;
+          z-index: 10;
+          max-width: 800px;
           margin: 0 auto;
-          padding: 0 1.5rem;
         }
-
-        .pre-title {
-          color: var(--secondary, #ff8c00);
-          text-transform: uppercase;
+        .hero-badge {
+          background: rgba(255,140,0,0.15);
+          color: #ff8c00;
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 0.75rem;
           font-weight: 800;
-          letter-spacing: 3px;
-          font-size: 0.9rem;
-          display: block;
-          margin-bottom: 1rem;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          margin-bottom: 1.5rem;
+          display: inline-block;
+          border: 1px solid rgba(255,140,0,0.3);
         }
-
-        .hero-header h1 {
+        .hero-title {
           font-size: 4rem;
+          color: white;
           font-weight: 900;
           margin-bottom: 0;
-          line-height: 1.1;
+          letter-spacing: -1px;
+        }
+        .hero-title span {
+          color: #ff8c00;
         }
 
         .school-name {
-          font-size: 1.5rem;
+          font-size: 1.2rem;
           font-weight: 700;
-          color: var(--secondary, #ff8c00);
-          margin-top: 1rem;
-          margin-bottom: 2rem;
+          color: white;
+          margin-top: 0.5rem;
+          margin-bottom: 1.5rem;
           text-transform: uppercase;
-          letter-spacing: 5px;
+          letter-spacing: 3px;
           opacity: 0.9;
         }
 
         .hero-desc {
-          font-size: 1.25rem;
-          max-width: 700px;
-          margin: 0 auto;
-          opacity: 0.8;
+          color: #cbd5e1;
+          font-size: 1.1rem;
           line-height: 1.6;
+          max-width: 600px;
+          margin: 0 auto;
         }
 
         .pendaftaran-container {
@@ -412,6 +421,18 @@ export default function PendaftaranPage() {
           z-index: 2;
         }
 
+        .pusda-title-animated {
+          font-size: 2.5rem;
+          font-weight: 900;
+          background: linear-gradient(135deg, #002147 0%, #3b82f6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          margin-bottom: 1.5rem;
+          display: inline-block;
+          letter-spacing: -1px;
+          filter: drop-shadow(0 4px 6px rgba(0,33,71,0.15));
+        }
+
         .pusda-badge {
           background: rgba(255,140,0,0.2);
           color: #ff8c00;
@@ -454,12 +475,20 @@ export default function PendaftaranPage() {
           transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
           border: 2px solid rgba(255, 255, 255, 0.2);
           width: fit-content;
+          animation: pulse-pusda 2s infinite;
+        }
+
+        @keyframes pulse-pusda {
+          0% { box-shadow: 0 0 0 0 rgba(255,140,0,0.7); transform: scale(1); }
+          70% { box-shadow: 0 0 0 15px rgba(255,140,0,0); transform: scale(1.05); }
+          100% { box-shadow: 0 0 0 0 rgba(255,140,0,0); transform: scale(1); }
         }
 
         .btn-pusda-floating:hover {
-          transform: translateY(-4px);
+          transform: translateY(-4px) scale(1.05);
           box-shadow: 0 15px 35px rgba(255,140,0,0.4);
           background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          animation: none;
         }
 
         .btn-pusda-floating .btn-icon svg {

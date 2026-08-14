@@ -55,17 +55,11 @@ export default function SistemPendidikanPage() {
 
       {/* Hero Header */}
       <section className="hero-header">
-        <div className="container">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="pre-title">Metodologi & Kurikulum</span>
-            <h1>Sistem Pendidikan</h1>
-            <p className="school-name">Pesantren Al-Azhar Purwakarta</p>
-            <p className="hero-desc">"Menjadikan Hafidz yang Sarjana dan Sarjana yang Hafidz"</p>
-          </motion.div>
+        <div className="hero-content">
+          <span className="hero-badge">Metodologi & Kurikulum</span>
+          <h1 className="hero-title">Sistem <span>Pendidikan</span></h1>
+          <p className="school-name">Pesantren Al-Azhar Purwakarta</p>
+          <p className="hero-desc">"Menjadikan Hafidz yang Sarjana dan Sarjana yang Hafidz"</p>
         </div>
       </section>
 
@@ -156,30 +150,49 @@ export default function SistemPendidikanPage() {
         }
 
         .hero-header {
-          padding: 12rem 0 6rem;
-          background: linear-gradient(rgba(0, 33, 71, 0.9), rgba(0, 33, 71, 0.8)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999165/qyvcomndxiwejcvzmfsl.png');
-          background-size: cover;
-          background-position: center;
-          background-attachment: fixed;
-          color: white;
+          background: linear-gradient(135deg, #002147 0%, #00122e 100%);
+          padding: 8rem 1.5rem 4rem;
           text-align: center;
+          position: relative;
+          overflow: hidden;
         }
-
-        .pre-title {
-          color: var(--secondary);
-          text-transform: uppercase;
+        .hero-header::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: url('https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999165/qyvcomndxiwejcvzmfsl.png') center/cover;
+          opacity: 0.15;
+          mix-blend-mode: overlay;
+        }
+        .hero-content {
+          position: relative;
+          z-index: 10;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        .hero-badge {
+          background: rgba(255,140,0,0.15);
+          color: #ff8c00;
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 0.75rem;
           font-weight: 800;
-          letter-spacing: 3px;
-          font-size: 0.9rem;
-          display: block;
-          margin-bottom: 1rem;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          margin-bottom: 1.5rem;
+          display: inline-block;
+          border: 1px solid rgba(255,140,0,0.3);
         }
-
-        h1 {
-          font-size: 4rem;
+        .hero-title {
+          font-size: 3.5rem;
+          color: white;
           font-weight: 900;
           margin-bottom: 0;
           font-family: var(--font-custom), sans-serif;
+          letter-spacing: -1px;
+        }
+        .hero-title span {
+          color: #ff8c00;
         }
 
         .school-name {

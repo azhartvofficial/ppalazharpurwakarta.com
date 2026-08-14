@@ -18,16 +18,10 @@ export default function PendiriPage() {
 
       {/* Header Section */}
       <section className="header-section">
-        <div className="container">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="header-content"
-          >
-            <span className="pre-title">PROFILE TOKOH</span>
-            <h1 className={frizQuadrata.className}>Pendiri & Pimpinan <br />Lembaga</h1>
-            <div className="accent-divider"></div>
-          </motion.div>
+        <div className="header-content">
+          <span className="hero-badge">PROFILE TOKOH</span>
+          <h1 className="hero-title">Pendiri & Pimpinan <span>Lembaga</span></h1>
+          <div className="accent-divider" style={{ margin: '0 auto' }}></div>
         </div>
       </section>
 
@@ -229,28 +223,48 @@ export default function PendiriPage() {
         }
 
         .header-section {
-          padding: 12rem 0 6rem;
+          background: linear-gradient(135deg, #002147 0%, #00122e 100%);
+          padding: 8rem 1.5rem 4rem;
           text-align: center;
-          background: linear-gradient(rgba(0, 33, 71, 0.8), rgba(0, 33, 71, 0.7)), url('https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999165/qyvcomndxiwejcvzmfsl.png');
-          background-size: cover;
-          background-position: center;
-          background-attachment: fixed;
-          color: white;
+          position: relative;
+          overflow: hidden;
         }
-
-        .pre-title {
-          display: block;
+        .header-section::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: url('https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999165/qyvcomndxiwejcvzmfsl.png') center/cover;
+          opacity: 0.15;
+          mix-blend-mode: overlay;
+        }
+        .header-content {
+          position: relative;
+          z-index: 10;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        .hero-badge {
+          background: rgba(255,140,0,0.15);
           color: #ff8c00;
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 0.75rem;
           font-weight: 800;
-          letter-spacing: 4px;
-          font-size: 0.9rem;
-          margin-bottom: 1rem;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          margin-bottom: 1.5rem;
+          display: inline-block;
+          border: 1px solid rgba(255,140,0,0.3);
         }
-
-        h1 {
+        .hero-title {
           font-size: 3.5rem;
           color: white;
+          font-weight: 900;
           margin-bottom: 1.5rem;
+          letter-spacing: -1px;
+        }
+        .hero-title span {
+          color: #ff8c00;
         }
 
         .accent-divider {
