@@ -11,6 +11,8 @@ export default function BeritaDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [article, setArticle] = useState<any>(null);
+  const [pengumumanList, setPengumumanList] = useState<any[]>([]);
+  const [beritaList, setBeritaList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,9 +26,35 @@ export default function BeritaDetailPage() {
       if (error || !data) {
         alert("Berita tidak ditemukan!");
         router.push("/berita");
+        return;
       } else {
         setArticle(data);
       }
+      
+      // Fetch Papan Pengumuman
+      const { data: dataPengumuman } = await supabase
+        .from('news_articles')
+        .select('id, judul_utama, created_at')
+        .eq('kategori', 'Papan Pengumuman')
+        .eq('status', 'Published')
+        .neq('id', params.id)
+        .order('created_at', { ascending: false })
+        .limit(3);
+        
+      if (dataPengumuman) setPengumumanList(dataPengumuman);
+
+      // Fetch Berita Lainnya
+      const { data: dataBerita } = await supabase
+        .from('news_articles')
+        .select('id, judul_utama, created_at, gambar_judul_url')
+        .eq('kategori', 'Artikel Berita')
+        .eq('status', 'Published')
+        .neq('id', params.id)
+        .order('created_at', { ascending: false })
+        .limit(4);
+        
+      if (dataBerita) setBeritaList(dataBerita);
+
       setLoading(false);
     };
 
@@ -48,14 +76,16 @@ export default function BeritaDetailPage() {
   const getYouTubeEmbedUrl = (url: string) => {
     if (!url) return "";
     let videoId = "";
-    if (url.includes("youtu.be/")) {
-      videoId = url.split("youtu.be/")[1]?.split("?")[0];
-    } else if (url.includes("youtube.com/watch?v=")) {
-      videoId = url.split("v=")[1]?.split("&")[0];
-    } else if (url.includes("youtube.com/embed/")) {
-      return url;
+    // Robust regex to extract YouTube ID from various formats (m.youtube, shorts, youtu.be, etc.)
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    
+    if (match && match[2].length === 11) {
+      videoId = match[2];
     }
-    return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+    
+    // Default to embed URL with autoplay=0 if video ID is found
+    return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0` : url;
   };
 
   let finalContent = article.isi_berita || "";
@@ -72,109 +102,160 @@ export default function BeritaDetailPage() {
       <Navbar />
       <div style={{ height: '80px', backgroundColor: 'var(--white)' }}></div>
 
-      <article className="article-container">
-        {/* Header */}
-        <header className="article-header">
-          <div className="article-category">{article.kategori}</div>
-          <h1 className="article-title">{article.judul_utama}</h1>
-          <div className="article-meta">
-            <div className="author-info">
-              <span className="author-name">Oleh <strong>{article.penulis}</strong></span>
-              {article.sumber_opsional && (
-                <span className="author-source"> | Sumber Tambahan: {article.sumber_opsional}</span>
+      <div className="berita-layout-container">
+        <article className="article-container">
+          {/* Header */}
+          <header className="article-header">
+            <div className="article-category">{article.kategori}</div>
+            <h1 className="article-title">{article.judul_utama}</h1>
+            <div className="article-meta">
+              <div className="author-info">
+                <span className="author-name">Oleh <strong>{article.penulis}</strong></span>
+                {article.sumber_opsional && (
+                  <span className="author-source"> | Sumber Tambahan: {article.sumber_opsional}</span>
+                )}
+              </div>
+              <div className="article-date">
+                {new Date(article.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
+                {revisionDate && (
+                  <div style={{ marginTop: '4px', fontSize: '0.85rem', color: '#64748b', fontStyle: 'italic' }}>
+                    Revisi: {new Date(revisionDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
+                  </div>
+                )}
+              </div>
+            </div>
+          </header>
+
+          {/* Cover Image */}
+          <div className="article-cover-container">
+            {article.gambar_judul_url ? (
+              <div className="image-wrapper">
+                <img 
+                  src={article.gambar_judul_url} 
+                  alt={article.judul_utama} 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
+              </div>
+            ) : (
+              <div className="image-wrapper placeholder">
+                Tidak Ada Gambar Utama
+              </div>
+            )}
+            <div className="image-caption">
+              Sumber Foto: {article.sumber_gambar === 'Manual' && article.sumber_gambar_manual ? article.sumber_gambar_manual : 'Tim Media Azhar TV'}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="article-body">
+            {finalContent.split('\n').map((paragraph: string, idx: number) => (
+              <p key={idx}>{paragraph}</p>
+            ))}
+          </div>
+
+          {/* Closing Paragraph */}
+          {article.paragraf_penutup && (
+            <div className="article-closing" style={{ marginTop: '2rem', fontSize: '1.15rem', lineHeight: '1.8', color: '#1e293b', fontFamily: "'Georgia', serif" }}>
+              {article.paragraf_penutup.split('\n').map((paragraph: string, idx: number) => (
+                <p key={idx} style={{ marginBottom: '1.5rem' }}>{paragraph}</p>
+              ))}
+            </div>
+          )}
+
+          {/* Attachments */}
+          {article.jenis_lampiran_2 && article.lampiran_2_url && (
+            <div className="article-attachment-box">
+              {article.jenis_lampiran_2 === 'Video Youtube' ? (
+                <div className="video-container">
+                  {article.lampiran_2_url.includes("|||") && (
+                    <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
+                      {article.lampiran_2_url.split("|||")[1]}
+                    </h4>
+                  )}
+                  <iframe 
+                    width="100%" 
+                    height="400" 
+                    src={getYouTubeEmbedUrl(article.lampiran_2_url.split("|||")[0])} 
+                    title="YouTube video player" 
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              ) : article.jenis_lampiran_2 === 'Gambar' ? (
+                <div className="attachment-image">
+                  {article.lampiran_2_url.includes("|||") && (
+                    <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
+                      {article.lampiran_2_url.split("|||")[1]}
+                    </h4>
+                  )}
+                  <img src={article.lampiran_2_url.split("|||")[0]} alt="Lampiran" style={{ maxWidth: '100%', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+                </div>
+              ) : (
+                <div>
+                  {article.lampiran_2_url.includes("|||") && (
+                    <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
+                      {article.lampiran_2_url.split("|||")[1]}
+                    </h4>
+                  )}
+                  <a href={article.lampiran_2_url.split("|||")[0]} target="_blank" rel="noopener noreferrer" className="btn-download">
+                    Lihat / Unduh {article.jenis_lampiran_2}
+                  </a>
+                </div>
               )}
             </div>
-            <div className="article-date">
-              {new Date(article.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
-              {revisionDate && (
-                <div style={{ marginTop: '4px', fontSize: '0.85rem', color: '#64748b', fontStyle: 'italic' }}>
-                  Revisi: {new Date(revisionDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
+          )}
+        </article>
+
+        <aside className="sidebar-container">
+          <div className="sidebar-widget widget-pengumuman">
+            <h3 className="widget-title">📌 Papan Pengumuman</h3>
+            <div className="widget-content">
+              {pengumumanList.length > 0 ? (
+                pengumumanList.map(p => (
+                  <Link href={`/berita/${p.id}`} key={p.id} className="widget-item pengumuman-item">
+                    <span className="widget-date">{new Date(p.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <h4>{p.judul_utama}</h4>
+                  </Link>
+                ))
+              ) : (
+                <div className="empty-state">
+                  <span className="empty-icon">📢</span>
+                  <p>Segera Hadir</p>
                 </div>
               )}
             </div>
           </div>
-        </header>
 
-        {/* Cover Image */}
-        <div className="article-cover-container">
-          {article.gambar_judul_url ? (
-            <div className="image-wrapper">
-              <img 
-                src={article.gambar_judul_url} 
-                alt={article.judul_utama} 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-              />
+          <div className="sidebar-widget widget-berita">
+            <h3 className="widget-title">📰 Berita Lainnya</h3>
+            <div className="widget-content">
+              {beritaList.length > 0 ? (
+                beritaList.map(b => (
+                  <Link href={`/berita/${b.id}`} key={b.id} className="widget-item berita-item">
+                    <div className="berita-item-img">
+                      {b.gambar_judul_url ? (
+                        <img src={b.gambar_judul_url} alt={b.judul_utama} />
+                      ) : (
+                        <div className="no-img">📰</div>
+                      )}
+                    </div>
+                    <div className="berita-item-info">
+                      <span className="widget-date">{new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                      <h4>{b.judul_utama}</h4>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="empty-state">
+                  <span className="empty-icon">📰</span>
+                  <p>Segera Hadir</p>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="image-wrapper placeholder">
-              Tidak Ada Gambar Utama
-            </div>
-          )}
-          <div className="image-caption">
-            Sumber Foto: {article.sumber_gambar === 'Manual' && article.sumber_gambar_manual ? article.sumber_gambar_manual : 'Tim Media Azhar TV'}
           </div>
-        </div>
-
-        {/* Content */}
-        <div className="article-body">
-          {finalContent.split('\n').map((paragraph: string, idx: number) => (
-            <p key={idx}>{paragraph}</p>
-          ))}
-        </div>
-
-        {/* Closing Paragraph */}
-        {article.paragraf_penutup && (
-          <div className="article-closing" style={{ marginTop: '2rem', fontSize: '1.15rem', lineHeight: '1.8', color: '#1e293b', fontFamily: "'Georgia', serif" }}>
-            {article.paragraf_penutup.split('\n').map((paragraph: string, idx: number) => (
-              <p key={idx} style={{ marginBottom: '1.5rem' }}>{paragraph}</p>
-            ))}
-          </div>
-        )}
-
-        {/* Attachments */}
-        {article.jenis_lampiran_2 && article.lampiran_2_url && (
-          <div className="article-attachment-box">
-            {article.jenis_lampiran_2 === 'Video Youtube' ? (
-              <div className="video-container">
-                {article.lampiran_2_url.includes("|||") && (
-                  <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
-                    {article.lampiran_2_url.split("|||")[1]}
-                  </h4>
-                )}
-                <iframe 
-                  width="100%" 
-                  height="400" 
-                  src={getYouTubeEmbedUrl(article.lampiran_2_url.split("|||")[0])} 
-                  title="YouTube video player" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                  allowFullScreen
-                ></iframe>
-              </div>
-            ) : article.jenis_lampiran_2 === 'Gambar' ? (
-              <div className="attachment-image">
-                {article.lampiran_2_url.includes("|||") && (
-                  <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
-                    {article.lampiran_2_url.split("|||")[1]}
-                  </h4>
-                )}
-                <img src={article.lampiran_2_url.split("|||")[0]} alt="Lampiran" style={{ maxWidth: '100%', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-              </div>
-            ) : (
-              <div>
-                {article.lampiran_2_url.includes("|||") && (
-                  <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
-                    {article.lampiran_2_url.split("|||")[1]}
-                  </h4>
-                )}
-                <a href={article.lampiran_2_url.split("|||")[0]} target="_blank" rel="noopener noreferrer" className="btn-download">
-                  Lihat / Unduh {article.jenis_lampiran_2}
-                </a>
-              </div>
-            )}
-          </div>
-        )}
-      </article>
+        </aside>
+      </div>
 
       <Footer />
 
@@ -184,13 +265,150 @@ export default function BeritaDetailPage() {
           min-height: 100vh;
         }
 
-        .article-container {
-          max-width: 800px;
+        .berita-layout-container {
+          max-width: 1200px;
           margin: 0 auto;
-          padding: 3rem 20px;
+          padding: 2rem 1.5rem;
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        @media (min-width: 993px) {
+          .berita-layout-container {
+            grid-template-columns: 2fr 1fr;
+            align-items: flex-start;
+          }
+        }
+
+        .article-container {
           background: white;
+          padding: 2.5rem;
           box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-          border-radius: 0 0 20px 20px;
+          border-radius: 20px;
+        }
+
+        .sidebar-container {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+          position: sticky;
+          top: 100px;
+        }
+
+        .sidebar-widget {
+          background: white;
+          border-radius: 20px;
+          padding: 1.5rem;
+          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+          border: 1px solid #f1f5f9;
+        }
+
+        .widget-title {
+          font-size: 1.2rem;
+          color: #002147;
+          font-weight: 800;
+          margin-bottom: 1.5rem;
+          padding-bottom: 0.8rem;
+          border-bottom: 2px solid #f1f5f9;
+        }
+
+        .widget-content {
+          display: flex;
+          flex-direction: column;
+          gap: 1.2rem;
+        }
+
+        .widget-item {
+          text-decoration: none;
+          display: flex;
+          flex-direction: column;
+          gap: 0.3rem;
+          transition: transform 0.2s;
+        }
+
+        .widget-item:hover {
+          transform: translateX(5px);
+        }
+
+        .widget-item h4 {
+          color: #0f172a;
+          font-size: 0.95rem;
+          font-weight: 700;
+          line-height: 1.4;
+          margin: 0;
+        }
+
+        .widget-item:hover h4 {
+          color: #ff8c00;
+        }
+
+        .widget-date {
+          font-size: 0.75rem;
+          color: #64748b;
+          font-weight: 600;
+        }
+
+        .pengumuman-item {
+          padding: 1rem;
+          background: #fffbeb;
+          border-left: 3px solid #fbbf24;
+          border-radius: 0 8px 8px 0;
+        }
+
+        .berita-item {
+          flex-direction: row;
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .berita-item-img {
+          width: 70px;
+          height: 70px;
+          flex-shrink: 0;
+          border-radius: 12px;
+          overflow: hidden;
+          background: #f1f5f9;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .berita-item-img img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .no-img {
+          font-size: 1.5rem;
+        }
+
+        .berita-item-info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+        }
+
+        .empty-state {
+          text-align: center;
+          padding: 2rem 1rem;
+          background: #f8fafc;
+          border-radius: 12px;
+          border: 2px dashed #cbd5e1;
+          color: #64748b;
+        }
+
+        .empty-icon {
+          font-size: 2rem;
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+          margin: 0;
+          font-weight: 600;
+          font-size: 0.9rem;
         }
 
         .article-category {
