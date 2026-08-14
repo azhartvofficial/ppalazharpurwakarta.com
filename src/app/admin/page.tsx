@@ -450,7 +450,6 @@ export default function AdminDashboardPage() {
   const [selectedBeritaId, setSelectedBeritaId] = useState("");
   const [publishedNewsForPin, setPublishedNewsForPin] = useState<any[]>([]);
   const [isFetchingBeritaForPin, setIsFetchingBeritaForPin] = useState(false);
-  const [showSuccessAnim, setShowSuccessAnim] = useState(false);
   const [editBerandaId, setEditBerandaId] = useState<string | null>(null);
   
   // Registration Settings states
@@ -2142,8 +2141,7 @@ export default function AdminDashboardPage() {
         
         fetchBerandaContents();
         closeBerandaModal();
-        setShowSuccessAnim(true);
-        setTimeout(() => setShowSuccessAnim(false), 2000);
+        openAlert("Berhasil menyimpan konten beranda.");
       } catch (err) {
         console.error(err);
         openAlert("Gagal menyimpan konten beranda.");
@@ -2165,8 +2163,7 @@ export default function AdminDashboardPage() {
         if (error) throw error;
         fetchBerandaContents();
         closeBerandaModal();
-        setShowSuccessAnim(true);
-        setTimeout(() => setShowSuccessAnim(false), 2000);
+        openAlert("Berhasil menyematkan berita ke beranda.");
       } catch (err) {
         console.error(err);
         openAlert("Gagal menyematkan berita.");
@@ -8135,25 +8132,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
         )}
       </AnimatePresence>
 
-      {/* SUCCESS ANIMATION */}
-      <AnimatePresence>
-        {showSuccessAnim && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255, 255, 255, 0.95)', padding: '2.5rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', zIndex: 999999, boxShadow: '0 20px 40px rgba(0,0,0,0.15)', backdropFilter: 'blur(10px)' }}
-          >
-             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-               <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" style={{ width: '40px', height: '40px' }}>
-                 <path className="checkmark__check" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="48" strokeDashoffset="48" d="M14.1 27.2l7.1 7.2 16.7-16.8" style={{ animation: 'stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) 0.2s forwards' }} />
-               </svg>
-             </div>
 
-             <span style={{ fontWeight: 700, fontSize: '1.2rem', color: '#0f172a' }}>Berhasil Disimpan!</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
     </main>
     </>
