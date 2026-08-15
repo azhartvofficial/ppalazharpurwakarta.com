@@ -2119,6 +2119,21 @@ export default function AdminDashboardPage() {
       if (editingNewsId) {
         const { error } = await supabase.from('news_articles').update(newsData).eq('id', editingNewsId);
         if (error) throw error;
+
+        // Auto-sync ke Beranda jika berita ini disematkan
+        const berandaUpdateData: any = {
+          judul_utama: newsData.judul_utama
+        };
+        if (newsData.gambar_judul_url) {
+          berandaUpdateData.foto_utama_url = newsData.gambar_judul_url;
+        }
+        if (newsData.isi_berita) {
+          let strippedDesc = newsData.isi_berita.replace(/<[^>]*>?/gm, '');
+          if (strippedDesc.length > 150) strippedDesc = strippedDesc.substring(0, 150) + "...";
+          berandaUpdateData.deskripsi = strippedDesc;
+        }
+        await supabase.from('beranda_content').update(berandaUpdateData).eq('berita_id', editingNewsId);
+
       } else {
         const { error } = await supabase.from('news_articles').insert([newsData]);
         if (error) throw error;
