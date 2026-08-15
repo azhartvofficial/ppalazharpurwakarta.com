@@ -92,9 +92,7 @@ export async function POST(request: Request) {
     }
 
     // 4. Update status di tabel login_requests
-    // Optional: Kita bisa null-kan password demi keamanan setelah disetujui.
     const updatePayload: any = { status };
-    if (status === "Approved") updatePayload.password = null;
 
     const { error: updateError } = await supabaseAdmin
       .from('login_requests')
@@ -102,7 +100,7 @@ export async function POST(request: Request) {
       .eq('id', id);
 
     if (updateError) {
-      return NextResponse.json({ error: "Gagal memperbarui status permintaan." }, { status: 400 });
+      return NextResponse.json({ error: `Gagal memperbarui status permintaan: ${updateError.message}` }, { status: 400 });
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
