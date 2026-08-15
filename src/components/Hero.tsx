@@ -79,6 +79,11 @@ export default function Hero() {
                 {slide.title}
               </h1>
               <p className="hero-desc">{slide.desc}</p>
+              {slide.isNews && slide.newsId && (
+                <Link href={`/berita/${slide.newsId}`} className="hero-inline-news">
+                  Baca Selengkapnya &rarr;
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -95,13 +100,6 @@ export default function Hero() {
               <span className="desk-text">{t('ctaJelajahi')}</span>
               <span className="mob-text">JELAJAHI<br/>AL-AZHAR</span>
             </Link>
-            
-            {slides[current]?.isNews && slides[current]?.newsId && (
-              <Link href={`/berita/${slides[current].newsId}`} className="glass-btn-pill news-link" style={{ background: 'var(--primary) !important', borderColor: 'rgba(255,255,255,0.4) !important', padding: '0.75rem 2rem' }}>
-                <span className="desk-text">Baca Selengkapnya</span>
-                <span className="mob-text">BACA<br/>BERITA</span>
-              </Link>
-            )}
           </div>
         </div>
       </div>
@@ -201,11 +199,22 @@ export default function Hero() {
 
         .hero-desc {
           font-size: 1.25rem;
-          margin-bottom: 2rem;
+          margin-bottom: 0.5rem;
           max-width: 700px;
           opacity: 0.9;
           font-weight: 400;
           line-height: 1.6;
+        }
+
+        .hero-inline-news {
+          display: inline-block;
+          margin-bottom: 2rem;
+          color: #fff;
+          font-weight: 700;
+          font-size: 1.1rem;
+          text-decoration: underline;
+          text-underline-offset: 4px;
+          pointer-events: auto;
         }
 
         .hero-static-actions {
@@ -357,6 +366,7 @@ export default function Hero() {
           .hero-timeline-container { bottom: 20px; }
           .hero-title { font-size: 2.2rem; text-align: left; }
           .hero-desc { font-size: 0.95rem; text-align: left; }
+          .hero-inline-news { font-size: 0.95rem; text-align: left; margin-bottom: 1rem; }
           .hero-btns-separated { 
             flex-direction: row !important; 
             justify-content: flex-start !important;
