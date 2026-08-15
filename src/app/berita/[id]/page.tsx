@@ -355,14 +355,21 @@ export default function BeritaDetailPage() {
         }
 
         .berita-item {
-          flex-direction: row;
-          align-items: center;
-          gap: 1rem;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.8rem;
+          padding-bottom: 1.2rem;
+          border-bottom: 1px solid #f1f5f9;
+        }
+
+        .berita-item:last-child {
+          border-bottom: none;
+          padding-bottom: 0;
         }
 
         .berita-item-img {
-          width: 70px;
-          height: 70px;
+          width: 100%;
+          aspect-ratio: 16 / 9;
           flex-shrink: 0;
           border-radius: 12px;
           overflow: hidden;
