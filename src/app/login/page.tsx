@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { supabase } from "@/lib/supabase";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,6 +17,7 @@ export default function LoginPage() {
 
   // Modal State
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showRegSuccessModal, setShowRegSuccessModal] = useState(false);
   const [regName, setRegName] = useState("");
   const [regEmail, setRegEmail] = useState("");
   const [regRole, setRegRole] = useState<"Admin" | "Wali">("Admin");
@@ -152,7 +154,7 @@ export default function LoginPage() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Gagal membuat permintaan pendaftaran");
 
-      alert("Permintaan pembuatan akun berhasil dikirim! Harap tunggu persetujuan dari Admin.");
+      setShowRegSuccessModal(true);
       setShowRegisterModal(false);
       // reset form
       setRegName(""); setRegEmail(""); setRegPassword(""); setRegConfirmPassword(""); setRegNamaSantri("");
@@ -775,6 +777,35 @@ export default function LoginPage() {
           to { transform: rotate(360deg); }
         }
       `}</style>
+
+      {/* Registration Success Modal */}
+      <AnimatePresence>
+        {showRegSuccessModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '2rem' }}>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+              animate={{ opacity: 1, scale: 1, y: 0 }} 
+              exit={{ opacity: 0, scale: 0.9, y: 20 }} 
+              style={{ background: '#fff', borderRadius: '20px', padding: '2.5rem 2rem', width: '100%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', textAlign: 'center' }}
+            >
+              <div style={{ width: '70px', height: '70px', background: '#dcfce3', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
+                <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <h3 style={{ margin: '0 0 0.75rem 0', color: '#002147', fontWeight: 900, fontSize: '1.4rem' }}>Permintaan Berhasil!</h3>
+              <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: 1.5, marginBottom: '2rem' }}>
+                Permintaan pembuatan akun Anda telah berhasil dikirim. Harap tunggu persetujuan dari pihak Admin sekolah.
+              </p>
+              <button 
+                onClick={() => setShowRegSuccessModal(false)} 
+                style={{ width: '100%', padding: '14px', background: '#002147', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0, 33, 71, 0.2)' }}
+              >
+                Tutup & Kembali
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </main>
   );
 }
