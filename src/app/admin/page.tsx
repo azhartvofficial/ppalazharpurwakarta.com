@@ -5151,7 +5151,16 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       >
                         {/* Permintaan Login Section */}
                         <div className="data-card" style={{ background: '#ffffff', borderRadius: '16px', padding: '1.75rem', border: '1.5px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-                          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002147', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem' }}>Permintaan Log Masuk Pengurus</h3>
+                          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '0.75rem', gap: '1rem' }}>
+                              <button 
+                                onClick={fetchLoginRequests} 
+                                style={{ background: '#f1f5f9', color: '#002147', border: '1px solid #cbd5e1', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 4px -1px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}
+                              >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l5.67-1.35"/></svg>
+                                Refresh
+                              </button>
+                              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#002147', margin: 0 }}>Permintaan Log Masuk Pengurus</h3>
+                            </div>
                           
                           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.25rem' }}>
                             <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0, lineHeight: 1.5, maxWidth: '500px' }}>
@@ -8892,6 +8901,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </>
   );
 }
+
 
 
 
