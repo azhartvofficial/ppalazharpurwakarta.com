@@ -2122,6 +2122,7 @@ export default function AdminDashboardPage() {
 
         // Auto-sync ke Beranda jika berita ini disematkan
         const berandaUpdateData: any = {
+          berita_id: editingNewsId,
           judul_utama: newsData.judul_utama
         };
         if (newsData.gambar_judul_url) {
@@ -2132,7 +2133,12 @@ export default function AdminDashboardPage() {
           if (strippedDesc.length > 150) strippedDesc = strippedDesc.substring(0, 150) + "...";
           berandaUpdateData.deskripsi = strippedDesc;
         }
-        await supabase.from('beranda_content').update(berandaUpdateData).eq('berita_id', editingNewsId);
+        
+        await fetch('/api/admin/beranda', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(berandaUpdateData)
+        });
 
       } else {
         const { error } = await supabase.from('news_articles').insert([newsData]);

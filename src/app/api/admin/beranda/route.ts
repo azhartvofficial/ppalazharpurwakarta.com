@@ -33,17 +33,21 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const { id, ...updateData } = await request.json();
+    const { id, berita_id, ...updateData } = await request.json();
     
-    if (!id) {
-      return NextResponse.json({ error: "Missing ID" }, { status: 400 });
+    if (!id && !berita_id) {
+      return NextResponse.json({ error: "Missing ID or berita_id" }, { status: 400 });
     }
 
-    const { data: dbData, error } = await supabaseAdmin
-      .from('beranda_content')
-      .update(updateData)
-      .eq('id', id)
-      .select();
+    let query = supabaseAdmin.from('beranda_content').update(updateData);
+    
+    if (id) {
+      query = query.eq('id', id);
+    } else if (berita_id) {
+      query = query.eq('berita_id', berita_id);
+    }
+
+    const { data: dbData, error } = await query.select();
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
