@@ -2358,17 +2358,17 @@ export default function AdminDashboardPage() {
           
           const formData = new FormData();
           formData.append('file', fileToUpload);
-          formData.append('upload_preset', 'ppalazharpwk'); 
+          formData.append('filename', fileToUpload.name); 
           
-          const res = await fetch(`https://api.cloudinary.com/v1_1/dpgqct4hz/image/upload`, {
+          const res = await fetch(`/api/upload-cloudinary`, {
             method: 'POST',
             body: formData
           });
           const uploadData = await res.json();
-          if (uploadData.secure_url) {
-            imageUrl = uploadData.secure_url;
+          if (uploadData.url) {
+            imageUrl = uploadData.url;
           } else {
-            throw new Error("Gagal upload foto");
+            throw new Error(uploadData.error || "Gagal upload foto");
           }
         }
         
