@@ -120,6 +120,7 @@ export default function AdminDashboardPage() {
   // Master Password State
   const [showMasterPasswordPrompt, setShowMasterPasswordPrompt] = useState(false);
   const [masterPasswordInput, setMasterPasswordInput] = useState("");
+  const [masterPasswordError, setMasterPasswordError] = useState(false);
   const [showMasterPassword, setShowMasterPassword] = useState(false);
   const [pendingSuperAdminAction, setPendingSuperAdminAction] = useState<(() => void) | null>(null);
 
@@ -8257,7 +8258,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     type={showMasterPassword ? "text" : "password"}
                     placeholder="Masukkan Master Password..."
                     value={masterPasswordInput}
-                    onChange={(e) => setMasterPasswordInput(e.target.value)}
+                    onChange={(e) => { setMasterPasswordInput(e.target.value); setMasterPasswordError(false); }}
                     autoFocus
                     style={{
                       width: '100%',
