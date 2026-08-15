@@ -1852,7 +1852,7 @@ export default function AdminDashboardPage() {
                 const newWave = {
                   wave_name: waveName,
                   is_open: false,
-                  access_code: generateAccessCode(),
+                  access_code: null,
                   open_date: new Date().toISOString().split('T')[0],
                   close_date: new Date().toISOString().split('T')[0]
                 };
