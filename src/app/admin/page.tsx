@@ -8932,3 +8932,4 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
 
 
+
