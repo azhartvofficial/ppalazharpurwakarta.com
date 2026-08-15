@@ -56,6 +56,18 @@ export default function AzharTvPage() {
   const [liveData, setLiveData] = useState({ isLive: false, title: "", url: "" });
   const [youtubeSlides, setYoutubeSlides] = useState(youtubeVideos);
   const [kontenUtama, setKontenUtama] = useState(newsSlides);
+
+  const getYouTubeEmbedUrl = (url: string) => {
+    if (!url) return "";
+    let videoId = "";
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
+    const match = url.trim().match(regExp);
+    if (match && match[2].length >= 11) {
+      videoId = match[2].substring(0, 11);
+    }
+    return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0` : url;
+  };
+
   const [galeriDocs, setGaleriDocs] = useState(documentationEvents);
 
   useEffect(() => {
@@ -172,7 +184,7 @@ export default function AzharTvPage() {
             <h3 style={{ fontSize: '1.5rem', marginBottom: '2rem', fontWeight: 500, opacity: 0.9 }}>{liveData.title}</h3>
             <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}>
               <iframe 
-                src={liveData.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/')} 
+                src={getYouTubeEmbedUrl(liveData.url)} 
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} 
                 frameBorder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -992,6 +1004,8 @@ export default function AzharTvPage() {
     </main>
   );
 }
+
+
 
 
 

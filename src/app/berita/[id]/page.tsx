@@ -78,10 +78,10 @@ export default function BeritaDetailPage() {
     let videoId = "";
     // Robust regex to extract YouTube ID from various formats (m.youtube, shorts, youtu.be, etc.)
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
-    const match = url.match(regExp);
+    const match = url.trim().match(regExp);
     
-    if (match && match[2].length === 11) {
-      videoId = match[2];
+    if (match && match[2].length >= 11) {
+      videoId = match[2].substring(0, 11);
     }
     
     // Default to embed URL with autoplay=0 if video ID is found
