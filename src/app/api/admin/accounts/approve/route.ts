@@ -33,6 +33,7 @@ export async function POST(request: Request) {
 
     if (status === "Approved") {
       // 2. Create user di Supabase Auth
+      let userId = '';
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: requestData.email,
         password: requestData.password,
@@ -41,15 +42,35 @@ export async function POST(request: Request) {
       });
 
       if (authError) {
-        return NextResponse.json({ error: `Gagal membuat Auth: ${authError.message}` }, { status: 400 });
+        if (authError.message.includes('already been registered') || authError.status === 422 || authError.message.includes('already exists')) {
+          // Cari user yang sudah ada
+          const { data: usersData, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+          if (listError) {
+            return NextResponse.json({ error: `Gagal mencari Auth: ${listError.message}` }, { status: 400 });
+          }
+          const existingUser = usersData.users.find(u => u.email === requestData.email);
+          if (!existingUser) {
+             return NextResponse.json({ error: `User Auth tidak ditemukan walaupun email terdaftar.` }, { status: 400 });
+          }
+          
+          userId = existingUser.id;
+          
+          // Perbarui password dan metadata sesuai permintaan baru
+          await supabaseAdmin.auth.admin.updateUserById(userId, {
+            password: requestData.password,
+            user_metadata: { name: requestData.name, role: requestData.role }
+          });
+        } else {
+          return NextResponse.json({ error: `Gagal membuat Auth: ${authError.message}` }, { status: 400 });
+        }
+      } else {
+        userId = authData.user.id;
       }
-
-      const userId = authData.user.id;
 
       // 3. Masukkan ke public.admin_accounts
       const { error: dbError } = await supabaseAdmin
         .from('admin_accounts')
-        .insert([{
+        .upsert([{
           id: userId,
           name: requestData.name,
           email: requestData.email,

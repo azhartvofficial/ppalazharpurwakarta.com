@@ -5318,7 +5318,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                           Preview
                                         </button>
                                         <button
-                                          onClick={() => handleUpdateLoginRequestStatus(req.id, "Approved")}
+                                          onClick={() => {
+                                            setPendingSuperAdminAction(() => () => handleUpdateLoginRequestStatus(req.id, "Approved"));
+                                            setShowMasterPasswordPrompt(true);
+                                          }}
                                           className="btn-approve"
                                           disabled={req.status !== "Pending"}
                                           style={{
@@ -5335,7 +5338,10 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                           Setujui
                                         </button>
                                         <button
-                                          onClick={() => handleUpdateLoginRequestStatus(req.id, "Rejected")}
+                                          onClick={() => {
+                                            setPendingSuperAdminAction(() => () => handleUpdateLoginRequestStatus(req.id, "Rejected"));
+                                            setShowMasterPasswordPrompt(true);
+                                          }}
                                           className="btn-reject"
                                           disabled={req.status !== "Pending"}
                                           style={{
