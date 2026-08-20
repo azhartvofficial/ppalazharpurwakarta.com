@@ -17,7 +17,8 @@ export default function Hero() {
       const sessionStr = localStorage.getItem('admin_session');
       if (sessionStr) {
         const session = JSON.parse(sessionStr);
-        if (session && session.role && session.role.toLowerCase() === 'super admin') {
+        const role = session?.user_metadata?.role || session?.role;
+        if (role && role.toLowerCase() === 'super admin') {
           setIsSuperAdmin(true);
         }
       }
