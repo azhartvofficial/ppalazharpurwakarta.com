@@ -73,17 +73,15 @@ export default function Hero() {
         <div className="hero-overlay" style={{ background: 'linear-gradient(90deg, rgba(0, 33, 71, 1) 0%, rgba(0, 33, 71, 0.8) 100%)', zIndex: 1 }}></div>
       )}
       {isSuperAdmin && (
-        <div style={{ position: 'absolute', top: '100px', right: '20px', zIndex: 100 }}>
+        <div style={{ position: 'absolute', top: '160px', right: '20px', zIndex: 100 }}>
           <Link 
             href="/admin"
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(255,255,255,0.2)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.4)',
+              background: '#002147',
+              border: '2px solid rgba(255,255,255,0.8)',
               borderRadius: '50%',
               width: '45px',
               height: '45px',
@@ -93,8 +91,8 @@ export default function Hero() {
               transition: 'all 0.3s'
             }}
             title="Edit Konten Beranda (Super Admin)"
-            onMouseOver={(e) => { e.currentTarget.style.transform = 'scale(1.1)'; e.currentTarget.style.background = 'rgba(255,255,255,0.4)'; }}
-            onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = 'rgba(255,255,255,0.2)'; }}
+            onMouseOver={(e) => { e.currentTarget.style.transform = 'scale(1.1)'; e.currentTarget.style.boxShadow = '0 6px 15px rgba(0,33,71,0.5)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)'; }}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px' }}>
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
