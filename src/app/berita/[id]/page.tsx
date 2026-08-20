@@ -79,9 +79,9 @@ export default function BeritaDetailPage() {
   const handleShareWhatsApp = async () => {
     const textToShare = `Yuk baca berita ini: *${article.judul_utama}*\n\n${pageUrl}`;
     
-    if (navigator.share) {
+    if (navigator.share || navigator.clipboard) {
       try {
-        if (navigator.canShare && article.gambar_judul_url) {
+        if (article.gambar_judul_url) {
           setIsSharing(true);
           const response = await fetch(article.gambar_judul_url);
           const blob = await response.blob();
@@ -90,7 +90,7 @@ export default function BeritaDetailPage() {
           if (blob.type.includes('webp')) ext = 'webp';
           const file = new File([blob], `berita.${ext}`, { type: blob.type || 'image/jpeg' });
           
-          if (navigator.canShare({ files: [file] })) {
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
              await navigator.share({
                 title: article.judul_utama,
                 text: textToShare,
@@ -98,16 +98,27 @@ export default function BeritaDetailPage() {
              });
              setIsSharing(false);
              return;
+          } else if (navigator.clipboard && window.ClipboardItem) {
+             // Fallback Desktop: Salin ke clipboard lalu buka WA
+             try {
+               const item = new ClipboardItem({ [blob.type]: blob });
+               await navigator.clipboard.write([item]);
+               alert("Foto sampul berhasil disalin ke Clipboard! \n\nSilakan tekan 'Paste' atau 'Ctrl+V' di kolom chat WhatsApp nanti.");
+             } catch (clipErr) {
+               console.warn("Gagal copy clipboard:", clipErr);
+             }
           }
         }
         
-        // Text-only native share fallback
-        await navigator.share({
-          title: article.judul_utama,
-          text: textToShare
-        });
-        setIsSharing(false);
-        return;
+        if (navigator.share) {
+          // Text-only native share fallback
+          await navigator.share({
+            title: article.judul_utama,
+            text: textToShare
+          });
+          setIsSharing(false);
+          return;
+        }
       } catch (error: any) {
         setIsSharing(false);
         if (error.name !== 'AbortError') {
