@@ -3540,6 +3540,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           </div>
                           <div style={{ display: 'flex', gap: '0.5rem' }}>
                             <button 
+                              onClick={fetchBerandaContents}
+                              style={{ padding: '0.6rem 1.2rem', background: '#f1f5f9', color: '#475569', border: '1.5px solid rgba(0,0,0,0.05)', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                              Refresh
+                            </button>
+                            <button 
                               onClick={() => {
                                 if (berandaContents.length >= 8) {
                                   openAlert("Maksimal 8 konten pada beranda. Hapus konten lama terlebih dahulu.");
