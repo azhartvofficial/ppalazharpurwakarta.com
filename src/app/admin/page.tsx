@@ -5470,11 +5470,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                   <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Nama Lengkap</span>
-                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.nama_lengkap}</span>
+                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.nama_lengkap || '-'}</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                   <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Gender</span>
-                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.gender}</span>
+                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.gender || '-'}</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                   <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Tanggal Daftar</span>
@@ -5493,11 +5493,11 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                   <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Tempat, Tanggal Lahir</span>
-                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.tempat_tanggal_lahir}</span>
+                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.tempat_tanggal_lahir || '-'}</span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                   <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>NIK / NISN</span>
-                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.nik} / {selectedPusatData.nisn}</span>
+                  <span style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 800 }}>{selectedPusatData.nik || '-'} / {selectedPusatData.nisn || '-'}</span>
                 </div>
               </div>
             </div>
@@ -5506,16 +5506,16 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               <div>
                 <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#002147', marginBottom: '1rem' }}>Data Orang Tua & Wali</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Nama Ayah</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.nama_ayah} ({selectedPusatData.pekerjaan_ayah})</span></div>
-                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Nama Ibu</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.nama_ibu} ({selectedPusatData.pekerjaan_ibu})</span></div>
-                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>No HP Wali</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.no_hp_wali}</span></div>
+                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Nama Ayah</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.nama_ayah || '-'} ({selectedPusatData.pekerjaan_ayah || '-'})</span></div>
+                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Nama Ibu</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.nama_ibu || '-'} ({selectedPusatData.pekerjaan_ibu || '-'})</span></div>
+                  <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>No HP Wali</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{selectedPusatData.no_hp_wali || '-'}</span></div>
                   <div><span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Alamat Lengkap</span><span style={{ fontSize: '0.9rem', fontWeight: 700 }}>
                     {(() => {
                       try {
                         const parsed = JSON.parse(selectedPusatData.alamat);
-                        return parsed.full_text || selectedPusatData.alamat;
+                        return parsed.full_text || selectedPusatData.alamat || '-';
                       } catch(e) {
-                        return selectedPusatData.alamat;
+                        return selectedPusatData.alamat || '-';
                       }
                     })()}
                   </span></div>
@@ -5526,11 +5526,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                   {[{name: 'Kartu Keluarga', url: selectedPusatData.kk_url}, {name: 'Akte Kelahiran', url: selectedPusatData.akte_url}, {name: 'Ijazah Terakhir', url: selectedPusatData.ijazah_url}, {name: 'SKTM (Jika Ada)', url: selectedPusatData.sktm_url}].map((doc, i) => (
                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>{doc.name}</span>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
+                        {doc.name} {doc.url && <span style={{ color: '#16a34a', marginLeft: '4px' }}>✔️</span>}
+                      </span>
                       {doc.url ? (
                         <a href={doc.url} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', background: '#002147', color: 'white', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontWeight: 800 }}>Lihat</a>
                       ) : (
-                        <span style={{ fontSize: '0.75rem', background: '#fef2f2', color: '#ef4444', padding: '4px 10px', borderRadius: '6px', fontWeight: 800 }}>Kosong</span>
+                        <span style={{ fontSize: '0.75rem', background: '#fef2f2', color: '#ef4444', padding: '4px 10px', borderRadius: '6px', fontWeight: 800 }}>Lengkapi</span>
                       )}
                     </div>
                   ))}
@@ -8753,13 +8755,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
               style={{ background: '#ffffff', borderRadius: '20px', padding: '2.5rem', width: '100%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', textAlign: 'center' }}
             >
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: confirmModal.isDanger ? '#dc2626' : '#0f172a', margin: '0 0 0.5rem 0' }}>{confirmModal.title}</h3>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#002147', margin: '0 0 0.5rem 0' }}>{confirmModal.title}</h3>
               <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '2rem', lineHeight: 1.5 }}>{confirmModal.message}</p>
               <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
                 <button onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))} style={{ flex: 1, padding: '1rem', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '12px', fontWeight: 700, cursor: 'pointer' }}>
                   {confirmModal.cancelText}
                 </button>
-                <button onClick={confirmModal.onConfirm} style={{ flex: 1, padding: '1rem', background: confirmModal.isDanger ? '#ef4444' : 'var(--primary)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 700, cursor: 'pointer', boxShadow: confirmModal.isDanger ? '0 4px 14px rgba(239, 68, 68, 0.3)' : '0 4px 14px rgba(0, 33, 71, 0.3)' }}>
+                <button onClick={confirmModal.onConfirm} style={{ flex: 1, padding: '1rem', background: '#002147', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 14px rgba(0, 33, 71, 0.3)' }}>
                   {confirmModal.confirmText}
                 </button>
               </div>
