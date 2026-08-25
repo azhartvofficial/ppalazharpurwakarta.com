@@ -874,12 +874,21 @@ export default function AdminDashboardPage() {
       let pas_foto = "", kk_url = "", akte_url = "", ijazah_url = "", sktm_url = "";
       // 1. Create Folder
       let targetFolderId = "";
+      let singkatanJenjang = "";
+      if (addPusatDataJenjang.includes("MA")) singkatanJenjang = "Ma";
+      else if (addPusatDataJenjang.includes("SMP")) singkatanJenjang = "Smp";
+      else if (addPusatDataJenjang.includes("SDIT")) singkatanJenjang = "Sdit";
+      
+      const numMatch = String(addPusatDataForm.kelas).match(/\d+/);
+      const kelasNum = numMatch ? numMatch[0] : addPusatDataForm.kelas;
+      const folderKelasName = `Kelas ${kelasNum} ${singkatanJenjang}`.trim();
+
       try {
         const folderRes = await fetch('/api/create-student-folder', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            kelas: `Kelas ${addPusatDataForm.kelas}`,
+            kelas: folderKelasName,
             gender: addPusatDataForm.gender,
             nama_lengkap: addPusatDataForm.nama_lengkap
           })

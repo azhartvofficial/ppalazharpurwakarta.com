@@ -433,12 +433,21 @@ export default function PusdaPage() {
 
       // 1. Create Folder
       let targetFolderId = "";
+      let singkatanJenjang = "";
+      if (selectedJenjang.includes("MA")) singkatanJenjang = "Ma";
+      else if (selectedJenjang.includes("SMP")) singkatanJenjang = "Smp";
+      else if (selectedJenjang.includes("SDIT")) singkatanJenjang = "Sdit";
+      
+      const numMatch = String(formData.kelas).match(/\d+/);
+      const kelasNum = numMatch ? numMatch[0] : formData.kelas;
+      const folderKelasName = `Kelas ${kelasNum} ${singkatanJenjang}`.trim();
+
       try {
         const folderRes = await fetch('/api/create-student-folder', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            kelas: `Kelas ${formData.kelas}`,
+            kelas: folderKelasName,
             gender: formData.gender,
             nama_lengkap: formData.nama_lengkap
           })
