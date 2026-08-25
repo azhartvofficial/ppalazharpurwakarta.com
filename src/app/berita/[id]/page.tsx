@@ -81,7 +81,7 @@ export default function BeritaDetailPage() {
     const plainText = (article.isi_berita || "").replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
     const snippet = plainText.length > 450 ? plainText.substring(0, 450) + "....." : plainText;
     
-    const textToShare = `*${(article.judul_utama || "").trim()}*\n\n"${snippet}"\n\nBaca selengkapnya di:\n${pageUrl}`;
+    const textToShare = `*${(article.judul_utama || "").trim()}*\n\n${snippet}\n\nBaca selengkapnya di:\n${pageUrl}`;
     
     if (navigator.share || navigator.clipboard) {
       try {
