@@ -5630,27 +5630,39 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       type="file" 
                       accept="image/*"
                       disabled={isCompressing}
-                      onChange={async (e) => {
+                      onChange={(e) => {
                         if (e.target.files && e.target.files.length > 0) {
                           const file = e.target.files[0];
-                          setIsCompressing(true);
-                          setCompressProgress(0);
-                          try {
-                            const compressedFile = await imageCompression(file, {
-                              maxSizeMB: 0.5,
-                              maxWidthOrHeight: 800,
-                              useWebWorker: true,
-                              onProgress: (progress) => setCompressProgress(progress)
-                            });
-                            const finalFile = new File([compressedFile], `cover-${Date.now()}.jpg`, { type: 'image/jpeg' });
-                            setNewNewsImageFile(finalFile);
-                          } catch (err) {
-                            console.error("Compression error:", err);
-                            openAlert("Gagal mengkompres gambar.");
-                          } finally {
-                            setIsCompressing(false);
-                            e.target.value = ''; // reset input
-                          }
+                          
+                          // Validate landscape format
+                          const img = new Image();
+                          img.onload = async () => {
+                            if (img.width <= img.height) {
+                              openAlert("Foto Judul wajib berformat landscape (melebar, bukan kotak/berdiri). Silakan pilih foto lain.");
+                              e.target.value = '';
+                              return;
+                            }
+                            
+                            setIsCompressing(true);
+                            setCompressProgress(0);
+                            try {
+                              const compressedFile = await imageCompression(file, {
+                                maxSizeMB: 0.5,
+                                maxWidthOrHeight: 800,
+                                useWebWorker: true,
+                                onProgress: (progress) => setCompressProgress(progress)
+                              });
+                              const finalFile = new File([compressedFile], `cover-${Date.now()}.jpg`, { type: 'image/jpeg' });
+                              setNewNewsImageFile(finalFile);
+                            } catch (err) {
+                              console.error("Compression error:", err);
+                              openAlert("Gagal mengkompres gambar.");
+                            } finally {
+                              setIsCompressing(false);
+                              e.target.value = ''; // reset input
+                            }
+                          };
+                          img.src = URL.createObjectURL(file);
                         }
                       }}
                     />
