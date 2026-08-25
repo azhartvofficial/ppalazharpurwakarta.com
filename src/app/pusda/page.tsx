@@ -238,8 +238,10 @@ export default function PusdaPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     let value = e.target.value;
-    if (["nama_lengkap", "tempat_tanggal_lahir", "nama_ayah", "pekerjaan_ayah", "nama_ibu", "pekerjaan_ibu"].includes(e.target.name)) {
+    if (e.target.name === "tempat_tanggal_lahir") {
       value = capitalizeWords(value);
+    } else if (e.target.name !== "email_santri" && e.target.type !== "email") {
+      value = value.toUpperCase();
     }
     setFormData({ ...formData, [e.target.name]: value });
   };
@@ -978,7 +980,7 @@ export default function PusdaPage() {
                 <textarea 
                   required 
                   value={detailAlamat} 
-                  onChange={(e) => setDetailAlamat(e.target.value)} 
+                  onChange={(e) => setDetailAlamat(e.target.value.toUpperCase())} 
                   rows={2} 
                   placeholder="Contoh: Desa Margasari, Jl. Pramuka RT 01/RW 02, Gg. Kenanga No. 15"
                 ></textarea>

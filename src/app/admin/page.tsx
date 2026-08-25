@@ -86,6 +86,10 @@ function formatNumber(num: number): string {
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const capitalizeWords = (str: string) => {
+  return str.toUpperCase();
+};
+
+const toTitleCase = (str: string) => {
   return str.replace(/\b\w/g, char => char.toUpperCase());
 };
 
@@ -8456,7 +8460,19 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
       {/* ADD PUSAT DATA MODAL */}
       <AnimatePresence>
         {showAddPusatDataModal && (
-          <div onClick={() => { setShowAddPusatDataModal(false); window.history.pushState(null, "", window.location.href); }} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, overflowY: 'auto', padding: '2rem' }}>
+          <div onClick={() => {
+            openConfirm(
+              "Batalkan Perubahan?",
+              "Apakah Anda yakin ingin menutup form ini? Semua data yang sudah Anda isi tidak akan tersimpan.",
+              () => {
+                setShowAddPusatDataModal(false);
+                window.history.pushState(null, "", window.location.href);
+              },
+              true,
+              "Ya, Tutup",
+              "Lanjutkan Mengisi"
+            );
+          }} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, overflowY: 'auto', padding: '2rem' }}>
             <motion.div
               onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, y: 20 }}
@@ -8466,7 +8482,19 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
                 <h3 style={{ margin: 0, color: '#002147', fontWeight: 900 }}>Tambah Data Siswa Baru (Admin)</h3>
-                <button onClick={() => setShowAddPusatDataModal(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
+                <button onClick={() => {
+                  openConfirm(
+                    "Batalkan Perubahan?",
+                    "Apakah Anda yakin ingin menutup form ini? Semua data yang sudah Anda isi tidak akan tersimpan.",
+                    () => {
+                      setShowAddPusatDataModal(false);
+                      window.history.pushState(null, "", window.location.href);
+                    },
+                    true,
+                    "Ya, Tutup",
+                    "Lanjutkan Mengisi"
+                  );
+                }} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
               </div>
               
               <form onSubmit={handleAddPusatDataSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -8481,7 +8509,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   </div>
                   <div className="input-group">
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Tempat, Tanggal Lahir</label>
-                    <input type="text" required value={addPusatDataForm.tempat_tanggal_lahir} onChange={e => setAddPusatDataForm({...addPusatDataForm, tempat_tanggal_lahir: capitalizeWords(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
+                    <input type="text" required value={addPusatDataForm.tempat_tanggal_lahir} onChange={e => setAddPusatDataForm({...addPusatDataForm, tempat_tanggal_lahir: toTitleCase(e.target.value)})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}/>
                   </div>
                   <div className="input-group">
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>NIK</label>
