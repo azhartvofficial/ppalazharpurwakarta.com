@@ -692,7 +692,8 @@ export default function AdminDashboardPage() {
     "Pedagang",
     "Pensiunan",
     "Mengurus Rumah Tangga",
-    "Tidak Bekerja"
+    "Tidak Bekerja",
+    "Almarhum / Meninggal"
   ];
   const [addPusatDataProvId, setAddPusatDataProvId] = useState("");
   const [addPusatDataProvName, setAddPusatDataProvName] = useState("");
