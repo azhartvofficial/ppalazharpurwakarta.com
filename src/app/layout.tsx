@@ -15,6 +15,7 @@ const bauSerif = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://pp-alazharpwk.com'),
   title: "Pondok Pesantren Al Azhar Purwakarta | Pusat Pendidikan Islam Terpadu",
   description: "Selamat datang di Website Resmi Pondok Pesantren Al Azhar Purwakarta. Pusat pendaftaran santri baru dan pengelolaan data akademik.",
   keywords: "Pondok Pesantren, Al Azhar Purwakarta, PPDB Pesantren, Pendidikan Islam, Purwakarta",

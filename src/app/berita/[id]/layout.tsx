@@ -23,7 +23,16 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     openGraph: {
       title: data.judul_utama,
       description: description,
-      images: data.gambar_judul_url ? [data.gambar_judul_url] : [],
+      url: `https://pp-alazharpwk.com/berita/${params.id}`,
+      siteName: 'Pondok Pesantren Al Azhar Purwakarta',
+      images: data.gambar_judul_url ? [
+        {
+          url: data.gambar_judul_url,
+          width: 1200,
+          height: 630,
+          alt: data.judul_utama,
+        }
+      ] : [],
       type: 'article',
     },
     twitter: {
