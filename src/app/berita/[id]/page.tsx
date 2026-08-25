@@ -259,7 +259,7 @@ export default function BeritaDetailPage() {
               {article.jenis_lampiran_2 === 'Video Youtube' ? (
                 <div className="video-container">
                   {article.lampiran_2_url.includes("|||") && (
-                    <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
+                    <h4 style={{ marginBottom: '1.5rem', fontSize: '1.8rem', color: '#000000', fontFamily: 'var(--font-custom), serif', fontWeight: 'bold' }}>
                       {article.lampiran_2_url.split("|||")[1]}
                     </h4>
                   )}
@@ -276,7 +276,7 @@ export default function BeritaDetailPage() {
               ) : article.jenis_lampiran_2 === 'Gambar' ? (
                 <div className="attachment-image">
                   {article.lampiran_2_url.includes("|||") && (
-                    <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
+                    <h4 style={{ marginBottom: '1.5rem', fontSize: '1.8rem', color: '#000000', fontFamily: 'var(--font-custom), serif', fontWeight: 'bold' }}>
                       {article.lampiran_2_url.split("|||")[1]}
                     </h4>
                   )}
@@ -285,7 +285,7 @@ export default function BeritaDetailPage() {
               ) : (
                 <div>
                   {article.lampiran_2_url.includes("|||") && (
-                    <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#1e293b' }}>
+                    <h4 style={{ marginBottom: '1.5rem', fontSize: '1.8rem', color: '#000000', fontFamily: 'var(--font-custom), serif', fontWeight: 'bold' }}>
                       {article.lampiran_2_url.split("|||")[1]}
                     </h4>
                   )}
@@ -529,9 +529,9 @@ export default function BeritaDetailPage() {
           font-size: 2.5rem;
           font-weight: 900;
           line-height: 1.3;
-          color: #0f172a;
+          color: #000000;
           margin-bottom: 1.5rem;
-          font-family: 'Georgia', serif;
+          font-family: var(--font-custom), 'Georgia', serif;
         }
 
         .article-meta {
