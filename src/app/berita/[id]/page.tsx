@@ -77,50 +77,19 @@ export default function BeritaDetailPage() {
   if (!article) return null;
 
   const handleShareWhatsApp = async () => {
-    const textToShare = `Yuk baca berita ini: *${article.judul_utama}*\n\n${pageUrl}`;
+    // We only send the URL (or text containing the URL). 
+    // WhatsApp will automatically scrape the OpenGraph metadata (og:title, og:image, og:description) 
+    // from this URL to create the rich link preview card.
+    const textToShare = `*${article.judul_utama}*\n\nBaca selengkapnya di:\n${pageUrl}`;
     
-    if (navigator.share || navigator.clipboard) {
+    if (navigator.share) {
       try {
-        if (article.gambar_judul_url) {
-          setIsSharing(true);
-          const response = await fetch(article.gambar_judul_url);
-          const blob = await response.blob();
-          let ext = 'jpg';
-          if (blob.type.includes('png')) ext = 'png';
-          if (blob.type.includes('webp')) ext = 'webp';
-          const file = new File([blob], `berita.${ext}`, { type: blob.type || 'image/jpeg' });
-          
-          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-             await navigator.share({
-                title: article.judul_utama,
-                text: textToShare,
-                files: [file]
-             });
-             setIsSharing(false);
-             return;
-          } else if (navigator.clipboard && window.ClipboardItem) {
-             // Fallback Desktop: Salin ke clipboard lalu buka WA
-             try {
-               const item = new ClipboardItem({ [blob.type]: blob });
-               await navigator.clipboard.write([item]);
-               alert("Foto sampul berhasil disalin ke Clipboard! \n\nSilakan tekan 'Paste' atau 'Ctrl+V' di kolom chat WhatsApp nanti.");
-             } catch (clipErr) {
-               console.warn("Gagal copy clipboard:", clipErr);
-             }
-          }
-        }
-        
-        if (navigator.share) {
-          // Text-only native share fallback
-          await navigator.share({
-            title: article.judul_utama,
-            text: textToShare
-          });
-          setIsSharing(false);
-          return;
-        }
+        await navigator.share({
+          title: article.judul_utama,
+          text: textToShare,
+        });
+        return;
       } catch (error: any) {
-        setIsSharing(false);
         if (error.name !== 'AbortError') {
            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textToShare)}`, '_blank');
         }
@@ -128,6 +97,7 @@ export default function BeritaDetailPage() {
       }
     }
     
+    // Fallback for Desktop/browsers without native share
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textToShare)}`, '_blank');
   };
 
