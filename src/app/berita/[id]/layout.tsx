@@ -4,12 +4,17 @@ import { supabase } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const { data } = await supabase
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const { data, error } = await supabase
     .from('news_articles')
     .select('judul_utama, isi_berita, gambar_judul_url')
-    .eq('id', params.id)
+    .eq('id', resolvedParams.id)
     .single();
+
+  if (error) {
+    console.error("Supabase Error in layout metadata:", error);
+  }
 
   if (!data) {
     return {
@@ -26,7 +31,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     openGraph: {
       title: data.judul_utama,
       description: description,
-      url: `https://pp-alazharpwk.com/berita/${params.id}`,
+      url: `https://pp-alazharpwk.com/berita/${resolvedParams.id}`,
       siteName: 'Pondok Pesantren Al Azhar Purwakarta',
       images: data.gambar_judul_url ? [
         {
