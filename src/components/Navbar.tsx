@@ -1854,6 +1854,80 @@ export default function Navbar() {
           box-shadow: 0 15px 30px rgba(255, 140, 0, 0.5);
         }
 
+        @media (max-width: 768px) {
+          .maintenance-overlay {
+            width: auto;
+            height: auto;
+            top: 75px; /* Below the navbar */
+            left: 10px;
+            bottom: auto;
+            right: auto;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            padding: 0;
+            pointer-events: none; /* Click through overlay */
+          }
+          
+          .maintenance-glass-card {
+            padding: 6px 12px;
+            border-radius: 50px;
+            max-width: none;
+            width: auto;
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            gap: 8px;
+            background: rgba(220, 38, 38, 0.95);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            pointer-events: auto; /* Re-enable clicks */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: slideInLeft 0.5s ease;
+          }
+
+          .maintenance-logo, .maintenance-text, .maintenance-status-badge {
+            display: none !important;
+          }
+
+          .maintenance-title {
+            font-size: 0.75rem;
+            margin: 0;
+            color: white;
+            letter-spacing: normal;
+            font-weight: 800;
+          }
+
+          .maintenance-gear-container {
+            margin: 0;
+            display: flex;
+            align-items: center;
+          }
+
+          .maintenance-gear-icon {
+            font-size: 1.1rem;
+          }
+
+          .maintenance-admin-btn {
+            padding: 4px 10px;
+            font-size: 0.65rem;
+            margin-top: 0;
+            box-shadow: none;
+            background: white !important;
+            color: #ef4444 !important;
+          }
+          
+          .maintenance-glass-card > div:last-child {
+             margin-top: 0 !important;
+          }
+        }
+        
+        @keyframes slideInLeft {
+          from { transform: translateX(-100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+
         /* Admin profile pill */
         .nav-admin-profile-pill {
           display: flex;
