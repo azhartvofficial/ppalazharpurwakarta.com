@@ -739,7 +739,7 @@ export default function PusdaPage() {
             <div className="grid-2">
               <div className="input-group">
                 <label>Nama Lengkap Santri</label>
-                <input type="text" name="nama_lengkap" required value={formData.nama_lengkap} onChange={handleInputChange} placeholder="Sesuai Akte Kelahiran" />
+                <input type="text" name="nama_lengkap" required value={formData.nama_lengkap} onChange={handleInputChange} placeholder="Nama Lengkap" />
                 {errors.nama_lengkap && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.nama_lengkap}</div>}
               </div>
               <div className="input-group">
@@ -804,7 +804,7 @@ export default function PusdaPage() {
             <div className="grid-2">
               <div className="input-group">
                 <label>Nama Ayah Kandung</label>
-                <input type="text" name="nama_ayah" required value={formData.nama_ayah} onChange={handleInputChange} />
+                <input type="text" name="nama_ayah" required value={formData.nama_ayah} onChange={handleInputChange} placeholder="Nama Lengkap" />
                 {errors.nama_ayah && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.nama_ayah}</div>}
               </div>
               <div className="input-group">
@@ -837,7 +837,7 @@ export default function PusdaPage() {
               </div>
               <div className="input-group">
                 <label>Nama Ibu Kandung</label>
-                <input type="text" name="nama_ibu" required value={formData.nama_ibu} onChange={handleInputChange} />
+                <input type="text" name="nama_ibu" required value={formData.nama_ibu} onChange={handleInputChange} placeholder="Nama Lengkap" />
                 {errors.nama_ibu && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.nama_ibu}</div>}
               </div>
               <div className="input-group">
@@ -870,7 +870,7 @@ export default function PusdaPage() {
               </div>
               <div className="input-group">
                 <label>No HP/WhatsApp Wali (Aktif)</label>
-                <input type="tel" name="no_hp_wali" required value={formData.no_hp_wali} onChange={handleInputChange} placeholder="08..." />
+                <input type="tel" name="no_hp_wali" required value={formData.no_hp_wali} onChange={handleInputChange} placeholder="Awali dengan 08..." />
                 {errors.no_hp_wali && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.no_hp_wali}</div>}
               </div>
             </div>
@@ -991,7 +991,7 @@ export default function PusdaPage() {
 
           <div className="form-section">
             <h2 className="section-title"><span>3</span> Unggah Dokumen Berkas</h2>
-            <p style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>Silakan unggah dokumen pendukung dalam format PDF atau Gambar (JPG/PNG). Berkas ini akan langsung masuk ke arsip pusat data.</p>
+            <p style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>Silakan unggah dokumen pendukung dalam format Gambar (JPG/PNG) & PDF. Maksimal ukuran 4MB / Berkas.</p>
             
             <div className="doc-uploads">
               <div className="doc-upload-item">
