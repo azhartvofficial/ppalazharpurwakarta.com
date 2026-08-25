@@ -3571,7 +3571,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           </div>
                         </div>
 
-                        <div className="table-responsive" style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+                        <div className="table-responsive" style={{ background: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', overflowX: 'auto' }}>
                           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead style={{ background: 'rgba(0, 33, 71, 0.02)' }}>
                               <tr>
