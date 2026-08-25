@@ -421,6 +421,7 @@ export default function AdminDashboardPage() {
   const [newNewsImageSource, setNewNewsImageSource] = useState<"Internal" | "Manual">("Internal");
   const [newNewsImageManualSource, setNewNewsImageManualSource] = useState("");
   const [newNewsImageFile, setNewNewsImageFile] = useState<File | null>(null);
+  const [newNewsExistingImageUrl, setNewNewsExistingImageUrl] = useState("");
   const [isUploadingNews, setIsUploadingNews] = useState(false);
   const [newNewsContent, setNewNewsContent] = useState("");
   const [newNewsClosingParagraph, setNewNewsClosingParagraph] = useState("");
@@ -2014,6 +2015,7 @@ export default function AdminDashboardPage() {
     setNewNewsTitle(news.judul_utama);
     setNewNewsImageSource(news.sumber_gambar as any);
     setNewNewsImageManualSource(news.sumber_gambar_manual || "");
+    setNewNewsExistingImageUrl(news.gambar_judul_url || "");
     setNewNewsContent(news.isi_berita);
     setNewNewsClosingParagraph(news.paragraf_penutup || "");
     setNewNewsAttachmentType((news.jenis_lampiran_2 as any) || "");
@@ -3441,6 +3443,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         setNewNewsContent("");
                         setNewNewsCategory("Papan Pengumuman");
                         setNewNewsImageFile(null);
+                        setNewNewsExistingImageUrl("");
                         setNewNewsAttachmentType("");
                         setNewNewsAttachmentUrl("");
                         setNewNewsAttachmentTitle("");
@@ -5677,9 +5680,15 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         Memproses kompresi otomatis... {compressProgress}%
                       </span>
                     )}
+                    {!newNewsImageFile && !isCompressing && newNewsExistingImageUrl && (
+                      <div style={{ marginTop: '0.5rem' }}>
+                        <span style={{ fontSize: '0.8rem', color: '#3b82f6', display: 'block', marginBottom: '0.5rem', fontWeight: 700 }}>Gambar Judul Saat Ini (Tersimpan)</span>
+                        <img src={newNewsExistingImageUrl} alt="Existing Cover" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+                      </div>
+                    )}
                     {newNewsImageFile && !isCompressing && (
                       <div style={{ marginTop: '0.5rem' }}>
-                        <span style={{ fontSize: '0.8rem', color: '#16a34a', display: 'block', marginBottom: '0.5rem' }}>File siap diupload: {newNewsImageFile.name}</span>
+                        <span style={{ fontSize: '0.8rem', color: '#16a34a', display: 'block', marginBottom: '0.5rem', fontWeight: 700 }}>File baru pengganti siap diupload: {newNewsImageFile.name}</span>
                         <img src={URL.createObjectURL(newNewsImageFile)} alt="Preview Cover" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
                       </div>
                     )}
@@ -5723,9 +5732,15 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                                 setNewNewsAttachmentFile(e.target.files[0]);
                               }
                             }}
-                            required
+                            required={!newNewsAttachmentUrl}
                           />
-                          {newNewsAttachmentFile && <span style={{ fontSize: '0.8rem', color: '#16a34a' }}>File dipilih: {newNewsAttachmentFile.name}</span>}
+                          {!newNewsAttachmentFile && newNewsAttachmentUrl && (
+                            <div style={{ marginTop: '0.5rem' }}>
+                              <span style={{ fontSize: '0.8rem', color: '#3b82f6', display: 'block', marginBottom: '0.5rem', fontWeight: 700 }}>Gambar Lampiran Saat Ini (Tersimpan)</span>
+                              <img src={newNewsAttachmentUrl} alt="Existing Attachment" style={{ maxWidth: '100%', maxHeight: '150px', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+                            </div>
+                          )}
+                          {newNewsAttachmentFile && <span style={{ fontSize: '0.8rem', color: '#16a34a', display: 'block', marginTop: '0.5rem', fontWeight: 700 }}>File baru pengganti dipilih: {newNewsAttachmentFile.name}</span>}
                         </>
                       ) : (
                         <input 
