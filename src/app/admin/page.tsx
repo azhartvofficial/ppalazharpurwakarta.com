@@ -814,8 +814,7 @@ export default function AdminDashboardPage() {
     }
     setAddPusatDataErrors({});
 
-    if (!isEditingPusatData && !addPusatDataFiles.pas_foto) { openAlert("Pas foto wajib diunggah."); return; }
-    if (!isEditingPusatData && !addPusatDataFiles.kk) { openAlert("Kartu Keluarga (KK) wajib diunggah."); return; }
+    // Berkas (pas_foto, kk, dll) dibuat opsional untuk admin, dapat ditambahkan kapan saja.
     
     if (addPusatDataForm.nik && addPusatDataForm.nik.trim().length !== 16) {
       openAlert("Perhatian: Nomor Induk Kependudukan (NIK) harus berjumlah tepat 16 digit angka.");
@@ -8729,7 +8728,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem', marginTop: 0 }}>Mendukung format Gambar (JPG/PNG) & PDF. Maksimal ukuran 4MB / Berkas.</p>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
-    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Pas Foto {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept="image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, pas_foto: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Pas Foto (Opsional)</label><input type="file" accept="image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, pas_foto: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
     {isEditingPusatData && addPusatDataExistingFiles.pas_foto && (
       <div style={{ marginTop: '8px' }}>
         <a href={addPusatDataExistingFiles.pas_foto} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat Pas Foto Saat Ini</a>
@@ -8737,7 +8736,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     )}
   </div>
                     <div>
-    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kartu Keluarga (KK) {isEditingPusatData ? '(Opsional)' : '*'}</label><input type="file" required={!isEditingPusatData} accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, kk: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
+    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Kartu Keluarga (KK) (Opsional)</label><input type="file" accept=".pdf,image/*" onChange={e => setAddPusatDataFiles({...addPusatDataFiles, kk: e.target.files?.[0] || null})} style={{ width: '100%', padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid #cbd5e1' }} />
     {isEditingPusatData && addPusatDataExistingFiles.kk_url && (
       <div style={{ marginTop: '8px' }}>
         <a href={addPusatDataExistingFiles.kk_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: '#3b82f6', textDecoration: 'underline' }}>Lihat KK Saat Ini</a>
