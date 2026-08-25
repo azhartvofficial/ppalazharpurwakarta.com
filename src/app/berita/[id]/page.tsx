@@ -79,7 +79,7 @@ export default function BeritaDetailPage() {
   const handleShareWhatsApp = async () => {
     // Extract plain text snippet
     const plainText = (article.isi_berita || "").replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
-    const snippet = plainText.length > 300 ? plainText.substring(0, 300) + "....." : plainText;
+    const snippet = plainText.length > 450 ? plainText.substring(0, 450) + "....." : plainText;
     
     const textToShare = `*${article.judul_utama}*\n\n"${snippet}"\n\nBaca selengkapnya di:\n${pageUrl}`;
     
