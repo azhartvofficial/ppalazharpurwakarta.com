@@ -33,14 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       description: description,
       url: `https://pp-alazharpwk.com/berita/${resolvedParams.id}`,
       siteName: 'Pondok Pesantren Al Azhar Purwakarta',
-      images: data.gambar_judul_url ? [
-        {
-          url: data.gambar_judul_url,
-          width: 1200,
-          height: 630,
-          alt: data.judul_utama,
-        }
-      ] : [],
+      images: data.gambar_judul_url ? [data.gambar_judul_url] : [],
       type: 'article',
     },
     twitter: {
