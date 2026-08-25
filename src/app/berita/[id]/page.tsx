@@ -252,18 +252,9 @@ export default function BeritaDetailPage() {
             ))}
           </div>
 
-          {/* Closing Paragraph */}
-          {article.paragraf_penutup && (
-            <div className="article-closing" style={{ marginTop: '2rem', fontSize: '1.15rem', lineHeight: '1.8', color: '#1e293b', fontFamily: "'Georgia', serif" }}>
-              {article.paragraf_penutup.split('\n').map((paragraph: string, idx: number) => (
-                <p key={idx} style={{ marginBottom: '1.5rem' }}>{paragraph}</p>
-              ))}
-            </div>
-          )}
-
           {/* Attachments */}
           {article.jenis_lampiran_2 && article.lampiran_2_url && (
-            <div className="article-attachment-box">
+            <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
               {article.jenis_lampiran_2 === 'Video Youtube' ? (
                 <div className="video-container">
                   {article.lampiran_2_url.includes("|||") && (
@@ -288,7 +279,7 @@ export default function BeritaDetailPage() {
                       {article.lampiran_2_url.split("|||")[1]}
                     </h4>
                   )}
-                  <img src={article.lampiran_2_url.split("|||")[0]} alt="Lampiran" style={{ maxWidth: '100%', borderRadius: '10px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+                  <img src={article.lampiran_2_url.split("|||")[0]} alt="Lampiran" style={{ maxWidth: '100%', borderRadius: '10px' }} />
                 </div>
               ) : (
                 <div>
@@ -302,6 +293,15 @@ export default function BeritaDetailPage() {
                   </a>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Closing Paragraph */}
+          {article.paragraf_penutup && (
+            <div className="article-closing" style={{ marginTop: '2rem', fontSize: '1.15rem', lineHeight: '1.8', color: '#1e293b', fontFamily: "'Georgia', serif" }}>
+              {article.paragraf_penutup.split('\n').map((paragraph: string, idx: number) => (
+                <p key={idx} style={{ marginBottom: '1.5rem' }}>{paragraph}</p>
+              ))}
             </div>
           )}
         </article>
