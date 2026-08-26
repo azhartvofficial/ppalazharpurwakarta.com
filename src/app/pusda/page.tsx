@@ -72,7 +72,8 @@ export default function PusdaPage() {
     "Pensiunan",
     "Mengurus Rumah Tangga",
     "Tidak Bekerja",
-    "Almarhum / Meninggal"
+    "Almarhum / Meninggal",
+    "Belum Diisi"
   ];
   const [provinces, setProvinces] = useState<any[]>([]);
   const [regencies, setRegencies] = useState<any[]>([]);
@@ -359,7 +360,7 @@ export default function PusdaPage() {
     if (!formData.pekerjaan_ayah) newErrors.pekerjaan_ayah = "Pekerjaan Ayah wajib diisi";
     if (!formData.nama_ibu) newErrors.nama_ibu = "Nama Ibu wajib diisi";
     if (!formData.pekerjaan_ibu) newErrors.pekerjaan_ibu = "Pekerjaan Ibu wajib diisi";
-    if (!formData.no_hp_wali) newErrors.no_hp_wali = "No HP Wali wajib diisi";
+    // no_hp_wali is optional
     if (!detailAlamat) newErrors.detailAlamat = "Detail alamat wajib diisi";
     if (!pasFotoFile) newErrors.pasFotoFile = "Pas foto wajib diunggah";
     if (!isWNA) {
@@ -880,7 +881,7 @@ export default function PusdaPage() {
               </div>
               <div className="input-group">
                 <label>No HP/WhatsApp Wali (Aktif)</label>
-                <input type="tel" name="no_hp_wali" required value={formData.no_hp_wali} onChange={handleInputChange} placeholder="Awali dengan 08..." />
+                <input type="tel" name="no_hp_wali" value={formData.no_hp_wali} onChange={handleInputChange} placeholder="Awali dengan 08..." />
                 {errors.no_hp_wali && <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>{errors.no_hp_wali}</div>}
               </div>
             </div>

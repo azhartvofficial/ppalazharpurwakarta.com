@@ -693,7 +693,8 @@ export default function AdminDashboardPage() {
     "Pensiunan",
     "Mengurus Rumah Tangga",
     "Tidak Bekerja",
-    "Almarhum / Meninggal"
+    "Almarhum / Meninggal",
+    "Belum Diisi"
   ];
   const [addPusatDataProvId, setAddPusatDataProvId] = useState("");
   const [addPusatDataProvName, setAddPusatDataProvName] = useState("");
@@ -797,7 +798,7 @@ export default function AdminDashboardPage() {
     if (!addPusatDataForm.pekerjaan_ayah) newErrors.pekerjaan_ayah = "Pekerjaan Ayah wajib diisi";
     if (!addPusatDataForm.nama_ibu) newErrors.nama_ibu = "Nama Ibu wajib diisi";
     if (!addPusatDataForm.pekerjaan_ibu) newErrors.pekerjaan_ibu = "Pekerjaan Ibu wajib diisi";
-    if (!addPusatDataForm.no_hp_wali) newErrors.no_hp_wali = "No HP Wali wajib diisi";
+    // No HP Wali bersifat opsional
     if (!addPusatDataDetail) newErrors.detailAlamat = "Detail alamat wajib diisi";
     if (!addPusatDataIsWNA) {
       if (!addPusatDataProvId) newErrors.provinsi = "Provinsi wajib dipilih";
@@ -5489,7 +5490,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
 
             <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '2rem' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <img src={selectedPusatData.pas_foto} alt="Pas Foto" style={{ width: '150px', height: '150px', borderRadius: '16px', objectFit: 'cover', border: '3px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                <img src={selectedPusatData.pas_foto || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>"} alt="Pas Foto" style={{ width: '150px', height: '150px', borderRadius: '16px', objectFit: 'cover', border: '3px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
                 <span style={{ background: '#e0f2fe', color: '#0369a1', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800 }}>Kelas {selectedPusatData.kelas.match(/\d+/) ? selectedPusatData.kelas.match(/\d+/)[0] : selectedPusatData.kelas}</span>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
                   <a href={selectedPusatData.pas_foto} download target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#e0f2fe', color: '#0369a1', padding: '6px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 800, textDecoration: 'none', transition: 'all 0.2s', cursor: 'pointer' }} title="Unduh Pas Foto">
@@ -5566,13 +5567,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                   {[{name: 'Kartu Keluarga', url: selectedPusatData.kk_url}, {name: 'Akte Kelahiran', url: selectedPusatData.akte_url}, {name: 'Ijazah Terakhir', url: selectedPusatData.ijazah_url}, {name: 'SKTM (Jika Ada)', url: selectedPusatData.sktm_url}].map((doc, i) => (
                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
-                        {doc.name} {doc.url && <span style={{ color: '#16a34a', marginLeft: '4px' }}>✔️</span>}
+                      <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center' }}>
+                        {doc.name} {doc.url && <svg style={{ marginLeft: '6px', color: '#16a34a' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
                       </span>
                       {doc.url ? (
                         <a href={doc.url} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', background: '#002147', color: 'white', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontWeight: 800 }}>Lihat</a>
                       ) : (
-                        <span style={{ fontSize: '0.75rem', background: '#fef2f2', color: '#ef4444', padding: '4px 10px', borderRadius: '6px', fontWeight: 800 }}>Lengkapi</span>
+                        <span onClick={() => { handleEditPusatData(selectedPusatData); setSelectedPusatData(null); }} style={{ cursor: 'pointer', fontSize: '0.75rem', background: '#fef2f2', color: '#ef4444', padding: '4px 10px', borderRadius: '6px', fontWeight: 800 }}>Lengkapi</span>
                       )}
                     </div>
                   ))}
@@ -8730,7 +8731,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
     </div>
   )}
 </div>
-                  <div className="input-group"><label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>No HP/WhatsApp Wali</label><input type="text" required value={addPusatDataForm.no_hp_wali} onChange={e => setAddPusatDataForm({...addPusatDataForm, no_hp_wali: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="Awali dengan 08..."/></div>
+                  <div className="input-group"><label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>No HP/WhatsApp Wali</label><input type="text" value={addPusatDataForm.no_hp_wali} onChange={e => setAddPusatDataForm({...addPusatDataForm, no_hp_wali: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }} placeholder="Awali dengan 08..."/></div>
                 </div>
 
                 <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
