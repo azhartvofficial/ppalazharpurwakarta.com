@@ -2625,6 +2625,24 @@ export default function AdminDashboardPage() {
   };
 
   useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      const ms = modalStatesRef.current;
+      if (
+        ms.showAddPusatDataModal ||
+        ms.showAddNewsModal ||
+        ms.showAddPhotoModal ||
+        ms.showAddAccountModal ||
+        isEditingPusatData
+      ) {
+        e.preventDefault();
+        e.returnValue = 'Apakah Anda yakin ingin selesai?';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isEditingPusatData]);
+
+  useEffect(() => {
     window.history.pushState(null, "", window.location.href);
     const handlePopState = (e: PopStateEvent) => {
       const ms = modalStatesRef.current;

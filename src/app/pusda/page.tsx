@@ -194,6 +194,15 @@ export default function PusdaPage() {
     }
   }, [selectedDistId]);
 
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = 'Apakah Anda yakin ingin selesai?';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
   const [pasFotoFile, setPasFotoFile] = useState<File | null>(null);
   const [pasFotoPreview, setPasFotoPreview] = useState<string | null>(null);
   const [kkFile, setKkFile] = useState<File | null>(null);
