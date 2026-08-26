@@ -694,7 +694,7 @@ export default function AdminDashboardPage() {
     "Mengurus Rumah Tangga",
     "Tidak Bekerja",
     "Almarhum / Meninggal",
-    "Belum Diisi"
+    "Belum di isi"
   ];
   const [addPusatDataProvId, setAddPusatDataProvId] = useState("");
   const [addPusatDataProvName, setAddPusatDataProvName] = useState("");
