@@ -73,7 +73,7 @@ export default function PusdaPage() {
     "Mengurus Rumah Tangga",
     "Tidak Bekerja",
     "Almarhum / Meninggal",
-    "Belum di isi"
+    "belum diisi"
   ];
   const [provinces, setProvinces] = useState<any[]>([]);
   const [regencies, setRegencies] = useState<any[]>([]);

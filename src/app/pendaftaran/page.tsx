@@ -61,25 +61,34 @@ export default function PendaftaranPage() {
           
           <div className="alur-grid">
             {[
-              { num: 1, icon: "📝", title: "Pendaftaran", desc: "Isi formulir pendaftaran di laman portal web pendaftaran PPDB dengan data lengkap dan akurat.", descMobile: "Isi formulir online" },
-              { num: 2, icon: "💳", title: "Pembayaran", desc: "Jika ada biaya pendaftaran, lakukan pembayaran melalui layanan transfer Bank atau Minimarket.", descMobile: "Bayar administrasi" },
-              { num: 3, icon: "🔍", title: "Proses Seleksi", desc: "Lembaga pendidikan akan melakukan proses seleksi dan prosesnya dapat dipantau secara real time.", descMobile: "Ikuti seleksi" },
-              { num: 4, icon: "📢", title: "Pengumuman", desc: "Hasil penerimaan peserta didik baru dapat dicek secara online dengan memasukkan nomor pendaftaran.", descMobile: "Cek kelulusan" },
-              { num: 5, icon: "🤝", title: "Daftar Ulang", desc: "Peserta yang dinyatakan Diterima wajib melakukan daftar ulang sebagai tanda konfirmasi.", descMobile: "Daftar ulang" }
-            ].map((step, idx) => (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="alur-card"
-              >
-                <div className="step-num">{step.num}</div>
-                <div className="step-icon">{step.icon}</div>
-                <h3>{step.title}</h3>
-                <p className="desc-desktop">{step.desc}</p>
-              </motion.div>
+              { icon: "📝", title: "Pendaftaran", status: "selesai", date: "Sesuai Gelombang" },
+              { icon: "💳", title: "Pembayaran", status: "selesai", date: "Sesuai Gelombang" },
+              { icon: "🔍", title: "Proses Seleksi", status: "tunggu", date: "Menunggu Jadwal" },
+              { icon: "📢", title: "Pengumuman", status: "tunggu", date: "Menunggu Jadwal" },
+              { icon: "🤝", title: "Daftar Ulang", status: "tunggu", date: "Sesuai Kelulusan" }
+            ].map((step, idx, arr) => (
+              <React.Fragment key={idx}>
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="alur-item"
+                >
+                  <div className="alur-icon-wrapper">
+                    <div className="alur-icon">{step.icon}</div>
+                    {step.status === 'selesai' && <span className="alur-status status-selesai"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>}
+                    {step.status === 'tunggu' && <span className="alur-status status-tunggu"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>}
+                  </div>
+                  <h3 className="alur-title">{step.title}</h3>
+                  <p className="alur-date">{step.date}</p>
+                </motion.div>
+                {idx < arr.length - 1 && (
+                  <div className="alur-arrow">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </div>
         </div>
@@ -262,15 +271,16 @@ export default function PendaftaranPage() {
         /* Alur Pendaftaran Style */
         .alur-section {
           background: white;
-          padding: 4rem;
+          padding: 4rem 2rem;
           border-radius: 24px;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.02);
           margin-bottom: 4rem;
         }
 
         .section-header {
           text-align: center;
-          margin-bottom: 3rem;
+          margin-bottom: 4rem;
         }
 
         .section-header h2 {
@@ -285,62 +295,93 @@ export default function PendaftaranPage() {
         }
 
         .alur-grid {
-          display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          gap: 1.5rem;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
           position: relative;
+          gap: 0.5rem;
+          flex-wrap: wrap;
         }
 
-        .alur-card {
-          background: #002147;
-          padding: 2.5rem 1.5rem;
-          border-radius: 24px;
+        /* The faint horizontal line behind items */
+        .alur-grid::before {
+          content: '';
+          position: absolute;
+          top: 45px;
+          left: 10%;
+          right: 10%;
+          height: 2px;
+          background: #e2e8f0;
+          z-index: 0;
+        }
+
+        .alur-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
           text-align: center;
-          border: 2px solid #ff8c00;
+          width: 15%;
+          min-width: 140px;
           position: relative;
-          transition: transform 0.3s, box-shadow 0.3s;
-          box-shadow: 0 15px 35px rgba(0, 33, 71, 0.4);
+          z-index: 1;
         }
 
-        .alur-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 25px 50px rgba(0, 33, 71, 0.6);
-          border-color: #ffa500;
-        }
-
-        .step-num {
-          margin: 0 auto 1rem auto;
-          background: #ff8c00;
-          color: #002147;
-          width: 40px;
-          height: 40px;
+        .alur-icon-wrapper {
+          position: relative;
+          width: 90px;
+          height: 90px;
+          background: white;
+          border: 2px solid #3b82f6;
+          border-radius: 20px;
           display: flex;
           align-items: center;
           justify-content: center;
+          margin-bottom: 1.2rem;
+          box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1);
+        }
+
+        .alur-icon {
+          font-size: 2.5rem;
+        }
+
+        .alur-status {
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          width: 26px;
+          height: 26px;
           border-radius: 50%;
-          font-weight: 900;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           border: 3px solid white;
-          font-weight: 900;
-          font-size: 1.2rem;
-          box-shadow: 0 10px 20px rgba(0,33,71,0.2);
         }
 
-        .step-icon {
-          font-size: 3rem;
-          margin: 1rem 0;
-        }
+        .status-selesai { background: #10b981; }
+        .status-tunggu { background: #94a3b8; }
 
-        .alur-card h3 {
-          font-size: 1.1rem;
-          color: #ff8c00;
+        .alur-title {
+          font-size: 1.05rem;
+          color: #002147;
           font-weight: 800;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.3rem;
+          line-height: 1.3;
         }
 
-        .alur-card p.desc-desktop {
-          color: #e2e8f0;
+        .alur-date {
+          color: #ef4444;
           font-size: 0.85rem;
-          line-height: 1.6;
+          font-weight: 800;
+        }
+
+        .alur-arrow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 33px;
+          z-index: 1;
+          background: white;
+          padding: 0 8px;
         }
 
         /* PPDB CTA Section */
@@ -518,48 +559,41 @@ export default function PendaftaranPage() {
             padding: 3rem 1.5rem;
           }
           .alur-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem;
-          }
-          .alur-card {
-            width: 31%;
-            box-sizing: border-box;
-            padding: 0.8rem 0.5rem;
-            border-radius: 12px;
-            background: #002147;
-            border: 1px solid rgba(255, 140, 0, 0.5);
-            box-shadow: 0 8px 20px rgba(0, 33, 71, 0.3);
-          }
-          .alur-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 33, 71, 0.4);
-          }
-          .step-num {
-            display: none;
-          }
-          .step-icon {
-            font-size: 1.5rem;
-            margin: 0 auto 0.5rem auto;
-            background: rgba(255, 255, 255, 0.1);
-            width: 50px;
-            height: 50px;
-            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            border-radius: 16px;
-            box-shadow: none;
-            border: 1px solid rgba(255, 140, 0, 0.3);
+            gap: 1.5rem;
           }
-          .alur-card h3 {
-            font-size: 0.65rem;
+          .alur-grid::before {
+            top: 0; bottom: 0; left: 50%; width: 2px; height: 100%;
+            transform: translateX(-50%);
+          }
+          .alur-item {
+            width: 100%;
+            max-width: 250px;
             margin-bottom: 0;
-            white-space: normal;
+            background: white;
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
           }
-          .alur-card p.desc-desktop {
-            display: none;
-        }
+          .alur-arrow {
+            transform: rotate(90deg);
+            margin-top: 0;
+            padding: 8px 0;
+          }
+          .alur-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 1rem;
+            border-radius: 16px;
+          }
+          .alur-icon {
+            font-size: 2rem;
+          }
+          .alur-title {
+            font-size: 0.95rem;
+          }
       `}</style>
     </main>
   );
