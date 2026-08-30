@@ -35,6 +35,7 @@ interface NewsItem {
   isi_berita: string;
   jenis_lampiran_2?: string;
   lampiran_2_url?: string;
+  lampiran_tambahan?: any[];
   penulis: string;
   sumber_opsional?: string;
   status: "Published" | "Draft";
@@ -432,6 +433,7 @@ export default function AdminDashboardPage() {
   const [newNewsAuthor, setNewNewsAuthor] = useState("");
   const [newNewsOptionalSources, setNewNewsOptionalSources] = useState("");
   const [newNewsStatus, setNewNewsStatus] = useState<"Published" | "Draft">("Published");
+  const [newNewsAttachments, setNewNewsAttachments] = useState<{ id: string; type: string; url: string; title: string; file: File | null; text_opsional: string; existing_url?: string; }[]>([]);
   
   // States for Image Compress & Upload
   const [isCompressing, setIsCompressing] = useState(false);
@@ -2118,6 +2120,27 @@ export default function AdminDashboardPage() {
         finalAttachmentUrl = publicUrlData.publicUrl;
       }
 
+      let finalLampiranTambahan = [];
+      for (const att of newNewsAttachments) {
+        let finalAttUrl = att.url;
+        if (att.type === 'Gambar' && att.file) {
+          const fileExt = att.file.name.split('.').pop();
+          const fileName = `att-extra-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+          const { error: uploadError } = await supabase.storage.from('berita-images').upload(fileName, att.file);
+          if (uploadError) throw new Error('Gagal mengunggah lampiran tambahan: ' + uploadError.message);
+          const { data: publicUrlData } = supabase.storage.from('berita-images').getPublicUrl(fileName);
+          finalAttUrl = publicUrlData.publicUrl;
+        } else if (att.type === 'Gambar' && !att.file && att.existing_url) {
+           finalAttUrl = att.existing_url;
+        }
+        finalLampiranTambahan.push({
+          type: att.type,
+          url: finalAttUrl,
+          title: att.title,
+          text_opsional: att.text_opsional
+        });
+      }
+      
       let finalContent = newNewsContent;
       if (editingNewsId) {
         // Hapus penanda revisi sebelumnya jika ada
@@ -2138,6 +2161,7 @@ export default function AdminDashboardPage() {
         // If type is not empty but URL is empty, it means user didn't upload new attachment but wants to keep old.
         // Wait, if finalAttachmentUrl is set, we update it. If not, we don't overwrite unless they cleared the type.
         ...(newNewsAttachmentType === "" && { lampiran_2_url: null }),
+        lampiran_tambahan: finalLampiranTambahan.length > 0 ? finalLampiranTambahan : null,
         paragraf_penutup: newNewsClosingParagraph || null,
         penulis: newNewsAuthor,
         sumber_opsional: newNewsOptionalSources || null,
@@ -2186,6 +2210,7 @@ export default function AdminDashboardPage() {
         setNewNewsTitle("");
         setNewNewsContent("");
         setNewNewsClosingParagraph("");
+                          setNewNewsAttachments([]);
         setNewNewsImageFile(null);
         setNewNewsAttachmentType("");
         setNewNewsAttachmentUrl("");
@@ -5661,7 +5686,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                   required 
                   placeholder="Contoh: Pendaftaran Santri Baru Dibuka"
                   value={newNewsTitle}
-                  onChange={(e) => setNewNewsTitle(e.target.value)}
+                  onChange={(e) => setNewNewsTitle(toTitleCase(e.target.value))}
                 />
               </div>
 
@@ -5823,6 +5848,106 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                       />
                     </div>
                   )}
+
+                  
+                  <div className="input-group" style={{ marginTop: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <label style={{ fontSize: '0.85rem', fontWeight: 800, color: '#475569', margin: 0 }}>Lampiran Tambahan (Opsional)</label>
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          const maxAllowed = newNewsCategory === 'Artikel Berita' ? 7 : 2; // 1 already in lampiran_2
+                          if (newNewsAttachments.length >= maxAllowed) {
+                            openAlert(`Maksimal lampiran tambahan untuk kategori ini adalah ${maxAllowed}.`);
+                            return;
+                          }
+                          setNewNewsAttachments([...newNewsAttachments, { id: Math.random().toString(36).substring(7), type: 'Gambar', url: '', title: '', file: null, text_opsional: '' }]);
+                        }}
+                        style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '4px 10px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer' }}
+                      >
+                        + Tambah Lampiran
+                      </button>
+                    </div>
+                    {newNewsAttachments.map((att, index) => (
+                      <div key={att.id} style={{ background: '#f8fafc', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '10px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                          <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0f172a' }}>Lampiran #{index + 3}</span>
+                          <button type="button" onClick={() => setNewNewsAttachments(newNewsAttachments.filter(a => a.id !== att.id))} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem' }}>Hapus</button>
+                        </div>
+                        
+                        <select 
+                          value={att.type} 
+                          onChange={(e) => {
+                            const newAtts = [...newNewsAttachments];
+                            newAtts[index].type = e.target.value;
+                            setNewNewsAttachments(newAtts);
+                          }}
+                          style={{ marginBottom: '10px', width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                        >
+                          <option value="PDF">Opsi PDF</option>
+                          <option value="Gambar">Opsi Gambar</option>
+                          <option value="Video Youtube">Opsi Video Youtube</option>
+                          <option value="Link Lainnya">Link Lainnya</option>
+                        </select>
+                        
+                        {att.type === 'Gambar' ? (
+                          <div style={{ marginBottom: '10px' }}>
+                            <input 
+                              type="file" 
+                              accept="image/*"
+                              onChange={(e) => {
+                                if (e.target.files && e.target.files.length > 0) {
+                                  const newAtts = [...newNewsAttachments];
+                                  newAtts[index].file = e.target.files[0];
+                                  setNewNewsAttachments(newAtts);
+                                }
+                              }}
+                              style={{ width: '100%', fontSize: '0.8rem' }}
+                            />
+                            {att.existing_url && !att.file && <span style={{ fontSize: '0.7rem', color: '#3b82f6', display: 'block', marginTop: '4px' }}>Ada gambar tersimpan. Upload baru untuk mengganti.</span>}
+                          </div>
+                        ) : (
+                          <input 
+                            type="url" 
+                            placeholder={att.type === 'Video Youtube' ? 'https://youtube.com/watch?...' : 'https://...'}
+                            value={att.url}
+                            onChange={(e) => {
+                              const newAtts = [...newNewsAttachments];
+                              newAtts[index].url = e.target.value;
+                              setNewNewsAttachments(newAtts);
+                            }}
+                            style={{ marginBottom: '10px', width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                          />
+                        )}
+                        
+                        {['Video Youtube', 'PDF', 'Gambar'].includes(att.type) && (
+                          <input 
+                            type="text" 
+                            placeholder="Judul Lampiran"
+                            value={att.title}
+                            onChange={(e) => {
+                              const newAtts = [...newNewsAttachments];
+                              newAtts[index].title = e.target.value;
+                              setNewNewsAttachments(newAtts);
+                            }}
+                            style={{ marginBottom: '10px', width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                          />
+                        )}
+                        
+                        <textarea 
+                          rows={2}
+                          placeholder="Teks Opsional (muncul setelah lampiran ini)"
+                          value={att.text_opsional}
+                          onChange={(e) => {
+                            const newAtts = [...newNewsAttachments];
+                            newAtts[index].text_opsional = e.target.value;
+                            setNewNewsAttachments(newAtts);
+                          }}
+                          style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem' }}
+                        ></textarea>
+                      </div>
+                    ))}
+                  </div>
 
                   <div className="input-group" style={{ marginTop: '1rem' }}>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.3rem' }}>Paragraf Penutup (Opsional)</label>

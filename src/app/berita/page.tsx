@@ -123,6 +123,12 @@ const announcements = [
   { id: 4, title: "Rekrutmen Guru dan Musyrif Asrama Tahun Ajaran Baru", date: "20 April 2026" },
 ];
 
+
+const toTitleCase = (str: string) => {
+  if (!str) return "";
+  return str.replace(/\b\w/g, char => char.toUpperCase());
+};
+
 export default function BeritaPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -212,7 +218,7 @@ export default function BeritaPage() {
             >
               <div className="slide-overlay">
                 <div className="slide-content container">
-                  <h1 className="slide-title">{finalSliderData[currentSlide]?.judul_utama || finalSliderData[currentSlide]?.title}</h1>
+                  <h1 className="slide-title">{toTitleCase(finalSliderData[currentSlide]?.judul_utama || finalSliderData[currentSlide]?.title || "")}</h1>
                   <div className="slide-meta">
                     <span className="slide-date">{finalSliderData[currentSlide]?.created_at ? new Date(finalSliderData[currentSlide].created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : finalSliderData[currentSlide]?.date}</span>
                   </div>
@@ -272,7 +278,7 @@ export default function BeritaPage() {
                       />
                       <div className="news-grid-overlay">
                         <h3 className="news-title">
-                          {news.judul_utama || news.title}
+                          {toTitleCase(news.judul_utama || news.title || "")}
                         </h3>
                       <div className="news-meta">
                         <span>{news.penulis || 'Humas'} - {news.created_at ? new Date(news.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : news.date}</span>
@@ -334,7 +340,7 @@ export default function BeritaPage() {
                     <li key={item.id}>
                       <Link href={`/berita/${item.id}`}>
                         <div className="ann-date">{item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : item.date}</div>
-                        <div className="ann-title">{item.judul_utama || item.title}</div>
+                        <div className="ann-title">{toTitleCase(item.judul_utama || item.title || "")}</div>
                       </Link>
                     </li>
                   ))}

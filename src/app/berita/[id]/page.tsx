@@ -136,6 +136,25 @@ export default function BeritaDetailPage() {
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textToShare)}`, '_blank');
   };
 
+  
+  const toTitleCase = (str: string) => {
+    if (!str) return "";
+    return str.replace(/\b\w/g, char => char.toUpperCase());
+  };
+
+  const handleShareIG = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(pageUrl).then(() => {
+        alert("Tautan berita disalin! Anda bisa membagikannya di Instagram Story atau DM.");
+        window.open('https://instagram.com', '_blank');
+      }).catch(() => {
+        alert("Gagal menyalin tautan.");
+      });
+    } else {
+      alert("Browser Anda tidak mendukung penyalinan otomatis.");
+    }
+  };
+
   const getYouTubeEmbedUrl = (url: string) => {
     if (!url) return "";
     let videoId = "";
@@ -172,7 +191,7 @@ export default function BeritaDetailPage() {
             <div className="article-category">{article.kategori}</div>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
-              <h1 className="article-title" style={{ flex: 1, margin: 0 }}>{article.judul_utama}</h1>
+              <h1 className="article-title" style={{ flex: 1, margin: 0 }}>{toTitleCase(article.judul_utama)}</h1>
               <button 
                 onClick={handleShareWhatsApp}
                 disabled={isSharing}
@@ -297,6 +316,57 @@ export default function BeritaDetailPage() {
             </div>
           )}
 
+          
+          {article.lampiran_tambahan && Array.isArray(article.lampiran_tambahan) && article.lampiran_tambahan.map((att: any, idx: number) => (
+            <div key={idx} style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+              {att.type === 'Video Youtube' ? (
+                <div className="video-container">
+                  {att.title && (
+                    <h4 style={{ marginBottom: '1.5rem', fontSize: '1.8rem', color: '#000000', fontFamily: 'var(--font-custom), serif', fontWeight: 'bold' }}>
+                      {att.title}
+                    </h4>
+                  )}
+                  <iframe 
+                    width="100%" 
+                    height="400" 
+                    src={getYouTubeEmbedUrl(att.url)} 
+                    title="YouTube video player" 
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              ) : att.type === 'Gambar' ? (
+                <div className="attachment-image">
+                  {att.title && (
+                    <h4 style={{ marginBottom: '1.5rem', fontSize: '1.8rem', color: '#000000', fontFamily: 'var(--font-custom), serif', fontWeight: 'bold' }}>
+                      {att.title}
+                    </h4>
+                  )}
+                  <img src={att.url} alt="Lampiran" style={{ maxWidth: '100%', borderRadius: '10px' }} />
+                </div>
+              ) : (
+                <div>
+                  {att.title && (
+                    <h4 style={{ marginBottom: '1.5rem', fontSize: '1.8rem', color: '#000000', fontFamily: 'var(--font-custom), serif', fontWeight: 'bold' }}>
+                      {att.title}
+                    </h4>
+                  )}
+                  <a href={att.url} target="_blank" rel="noopener noreferrer" className="btn-download">
+                    Lihat / Unduh {att.type}
+                  </a>
+                </div>
+              )}
+              {att.text_opsional && (
+                <div className="article-body" style={{ marginTop: '1.5rem', fontSize: '1.15rem', lineHeight: '1.8', color: '#1e293b', fontFamily: "'Georgia', serif" }}>
+                  {att.text_opsional.split('\n').map((paragraph: string, pIdx: number) => (
+                    <p key={pIdx} style={{ marginBottom: '1.5rem' }}>{paragraph}</p>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+
           {/* Closing Paragraph */}
           {article.paragraf_penutup && (
             <div className="article-closing" style={{ marginTop: '2rem', fontSize: '1.15rem', lineHeight: '1.8', color: '#1e293b', fontFamily: "'Georgia', serif" }}>
@@ -315,7 +385,7 @@ export default function BeritaDetailPage() {
                 pengumumanList.map(p => (
                   <Link href={`/berita/${p.id}`} key={p.id} className="widget-item pengumuman-item">
                     <span className="widget-date">{new Date(p.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                    <h4>{p.judul_utama}</h4>
+                    <h4>{toTitleCase(p.judul_utama)}</h4>
                   </Link>
                 ))
               ) : (
@@ -341,7 +411,7 @@ export default function BeritaDetailPage() {
                     </div>
                     <div className="berita-item-info">
                       <span className="widget-date">{new Date(b.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                      <h4>{b.judul_utama}</h4>
+                      <h4>{toTitleCase(b.judul_utama)}</h4>
                     </div>
                   </Link>
                 ))

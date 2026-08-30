@@ -127,3 +127,10 @@ img {
   .grid-3 { grid-template-columns: repeat(3, 1fr); }
   .grid-4 { grid-template-columns: repeat(4, 1fr); }
 }
+\n
+/* Fix for Mobile Bottom Navbar Overlap */
+@media (max-width: 992px) {
+  body {
+    padding-bottom: 75px !important;
+  }
+}
