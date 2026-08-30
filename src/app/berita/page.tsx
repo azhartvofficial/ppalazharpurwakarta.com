@@ -214,7 +214,7 @@ export default function BeritaPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6 }}
               className="slide-item"
-              style={{ backgroundImage: `url(${finalSliderData[currentSlide]?.gambar_judul_url || finalSliderData[currentSlide]?.image || 'https://images.unsplash.com/photo-1577985043696-8bd54d9f093f?q=80&w=1200&auto=format&fit=crop'})` }}
+              style={{ backgroundImage: `url('${finalSliderData[currentSlide]?.gambar_judul_url || finalSliderData[currentSlide]?.image || 'https://images.unsplash.com/photo-1577985043696-8bd54d9f093f?q=80&w=1200&auto=format&fit=crop'}')` }}
             >
               <div className="slide-overlay">
                 <div className="slide-content container">

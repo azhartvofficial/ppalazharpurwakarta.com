@@ -45,7 +45,7 @@ export default function Hero() {
           }
           
           return {
-            image: item.foto_utama_url || item.news_articles?.gambar_judul_url || '',
+            image: item.foto_utama_url || item.news_articles?.gambar_judul_url || 'https://images.unsplash.com/photo-1577985043696-8bd54d9f093f?q=80&w=1200&auto=format&fit=crop',
             title: item.judul_utama || item.news_articles?.judul_utama || '',
             desc: finalDesc,
             isNews: item.tipe === 'berita',
