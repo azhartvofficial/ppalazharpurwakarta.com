@@ -140,7 +140,9 @@ const Preloader = () => {
         left: 0,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "#002147",
+        backgroundColor: "#ffffff",
+        backgroundImage: "radial-gradient(#cbd5e1 1px, transparent 1px)",
+        backgroundSize: "24px 24px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -186,9 +188,11 @@ const Preloader = () => {
           left: 0;
           width: 100%;
           height: 100%;
-          background: #002147;
+          background: #ffffff;
+          background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+          background-size: 24px 24px;
           display: flex;
-          justify-content: center;
+          justifyContent: center;
           align-items: center;
           z-index: 9999;
           opacity: 0;
@@ -219,7 +223,7 @@ const Preloader = () => {
           object-fit: contain;
           position: relative;
           z-index: 10;
-          filter: drop-shadow(0 0 10px rgba(255,255,255,0.15));
+          filter: drop-shadow(0 0 10px rgba(0,0,0,0.05));
           transform: scale(1) !important;
           animation: logoFadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
         }
@@ -242,14 +246,14 @@ const Preloader = () => {
         .ball, .trail {
           position: absolute;
           border-radius: 50%;
-          background: #ffffff;
+          background: #002147;
         }
 
         .ball {
           width: 12px;
           height: 12px;
           z-index: 15;
-          box-shadow: 0 0 15px #ffffff, 0 0 30px #ffffff;
+          box-shadow: 0 0 10px rgba(0, 33, 71, 0.4), 0 0 20px rgba(0, 33, 71, 0.2);
         }
 
         .trail {
@@ -318,11 +322,11 @@ const Preloader = () => {
         @keyframes logoFadeIn {
           from {
             opacity: 0;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.0)) blur(4px);
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.0)) blur(4px);
           }
           to {
             opacity: 1;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.15)) blur(0px);
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.05)) blur(0px);
           }
         }
 
