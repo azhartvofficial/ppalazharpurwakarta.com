@@ -141,10 +141,6 @@ const Preloader = () => {
         width: "100vw",
         height: "100vh",
         backgroundColor: "#002147",
-        backgroundImage: "url('/kaligrafi-bg.svg')",
-        backgroundSize: "400px",
-        backgroundRepeat: "repeat",
-        backgroundPosition: "center",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -191,10 +187,6 @@ const Preloader = () => {
           width: 100%;
           height: 100%;
           background: #002147;
-          background-image: url('/kaligrafi-bg.svg');
-          background-size: 400px;
-          background-position: center;
-          background-repeat: repeat;
           display: flex;
           justifyContent: center;
           align-items: center;
