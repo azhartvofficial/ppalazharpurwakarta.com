@@ -109,14 +109,8 @@ const EducationLevels = () => {
               style={{ display: "flex", flexDirection: "column" }}
             >
               <Link 
-                href={level.comingSoon ? "#" : level.link} 
+                href={level.link} 
                 className="level-card"
-                onClick={(e) => {
-                  if ((level as any).comingSoon) {
-                    e.preventDefault();
-                    alert("TKIT Al-Azhar Segera Hadir!");
-                  }
-                }}
               >
                 <div className="card-content">
                   <div className="icon-box" style={{ '--unit-color': level.color } as React.CSSProperties}>
@@ -124,11 +118,6 @@ const EducationLevels = () => {
                   </div>
                   <h3 className="level-label">
                     {level.title}
-                    {(level as any).comingSoon && (
-                      <span style={{ display: 'block', fontSize: '0.75rem', color: '#ff8c00', marginTop: '0.5rem', textAlign: 'center' }}>
-                        (Segera Hadir)
-                      </span>
-                    )}
                   </h3>
                 </div>
               </Link>
