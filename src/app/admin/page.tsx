@@ -3528,6 +3528,13 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                         }} className="btn-add-item" style={{ background: '#002147', color: 'white', boxShadow: '0 4px 6px -1px rgba(0, 33, 71, 0.3)' }}>
                           Tulis Artikel Baru
                         </button>
+                        <a href="/template-unduhan" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', background: '#ff8c00', color: 'white', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(255, 140, 0, 0.3)', transition: 'transform 0.2s' }} title="Buka Template Unduhan">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                          </svg>
+                        </a>
                       </div>
                     </div>
 
