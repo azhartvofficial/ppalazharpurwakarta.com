@@ -48,7 +48,7 @@ export default function SejarahPage() {
                 Pesantren Al-Azhar Purwakarta adalah lembaga pendidikan Islam yang bersifat independen serta tidak memiliki keterkaitan dengan partai politik atau organisasi massa tertentu, juga tidak berhubungan atau terlibat dengan sekte atau ajaran atau aliran agama yang dilarang oleh Pemerintah Republik Indonesia. Tahfidz dan Bahasa Arab merupakan program unggulan dari lembaga kami.
               </p>
               <p>
-                Pesantren Al-Azhar Purwakarta menerapkan sistem pendidikan berbasis Boarding School & Full Day School (Non Mondok). Unit Pendidikan yang ada di Pesantren Al-Azhar Purwakarta dimulai dari jenjang SDIT Al-Azhar, SMP Islam Al-Azhar, Madrasah Aliyah Unggulan Al-Azhar, dan akan segera hadir jenjang pendidikan TKIT Al-Azhar Purwakarta.
+                Pesantren Al-Azhar Purwakarta menerapkan sistem pendidikan berbasis Boarding School & Full Day School (Non Mondok). Unit Pendidikan yang ada di Pesantren Al-Azhar Purwakarta dimulai dari jenjang SDIT Al-Azhar, SMP Islam Al-Azhar, Madrasah Aliyah Unggulan Al-Azhar, dan TKIT Al-Azhar Purwakarta.
               </p>
             </div>
             <div className="sejarah-img">

@@ -61,8 +61,7 @@ const EducationLevels = () => {
     },
     {
       title: "TKIT Al-Azhar",
-      link: "#",
-      comingSoon: true,
+      link: "/unit/tkit",
       icon: (
         <img 
           src="https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999210/xblypre0sq4suc8bjdld.png" 
@@ -70,7 +69,7 @@ const EducationLevels = () => {
           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />
       ),
-      color: "#6c757d"
+      color: "#00a3cc"
     },
   ];
 
