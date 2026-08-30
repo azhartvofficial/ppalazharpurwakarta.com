@@ -225,6 +225,35 @@ export default function BeritaDetailPage() {
                   </svg>
                 )}
               </button>
+              
+              <button 
+                onClick={handleShareIG}
+                title="Bagikan ke Instagram"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '40px',
+                  height: '40px',
+                  background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+                  color: 'white',
+                  borderRadius: '50%',
+                  border: 'none',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 6px -1px rgba(220, 39, 67, 0.2), 0 2px 4px -1px rgba(220, 39, 67, 0.1)',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  flexShrink: 0,
+                  marginTop: '4px'
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 8px -1px rgba(220, 39, 67, 0.3)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(220, 39, 67, 0.2)'; }}
+              >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                  </svg>
+              </button>
             </div>
             
             <div className="article-meta">
