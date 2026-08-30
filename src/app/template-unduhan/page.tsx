@@ -124,7 +124,7 @@ export default function TemplateUnduhanPage() {
                         Salin
                       </button>
                       <a 
-                        href="instagram://camera" 
+                        href="instagram://" 
                         target="_blank" 
                         rel="noopener noreferrer" 
                         className="ig-btn"
@@ -381,6 +381,7 @@ export default function TemplateUnduhanPage() {
           font-size: 0.85rem;
           cursor: pointer;
           transition: background 0.2s;
+          flex-shrink: 0;
         }
 
         .copy-btn:hover {
@@ -395,9 +396,12 @@ export default function TemplateUnduhanPage() {
           color: white;
           width: 40px;
           height: 40px;
+          min-width: 40px;
+          min-height: 40px;
           border-radius: 6px;
           text-decoration: none;
           transition: transform 0.2s;
+          flex-shrink: 0;
         }
 
         .ig-btn:hover {
