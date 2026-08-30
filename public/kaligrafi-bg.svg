@@ -3,29 +3,29 @@
     <style>
       .arabic { 
         font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade', 'Arial', serif; 
-        font-size: 32px; 
-        fill: rgba(255,255,255,0.08); 
+        font-size: 36px; 
+        fill: rgba(255,255,255,0.06); 
       }
       .large { 
-        font-size: 52px; 
-        fill: rgba(255,255,255,0.05); 
+        font-size: 56px; 
+        fill: rgba(255,255,255,0.04); 
       }
       .medium {
-        font-size: 42px;
-        fill: rgba(255,255,255,0.06);
+        font-size: 46px;
+        fill: rgba(255,255,255,0.05);
       }
       .bg { fill: transparent; }
     </style>
     <pattern id="calligraphy" x="0" y="0" width="400" height="400" patternUnits="userSpaceOnUse">
       <rect width="400" height="400" class="bg" />
-      <text x="40" y="90" class="arabic large" transform="rotate(-15 40 90)">العلم نور</text>
-      <text x="220" y="160" class="arabic medium" transform="rotate(10 220 160)">اقرأ باسم ربك</text>
-      <text x="70" y="270" class="arabic medium" transform="rotate(-5 70 270)">الحمد لله</text>
-      <text x="250" y="340" class="arabic large" transform="rotate(15 250 340)">بسم الله</text>
-      <text x="320" y="60" class="arabic" transform="rotate(-25 320 60)">الأخلاق</text>
-      <text x="10" y="200" class="arabic" transform="rotate(25 10 200)">النجاح</text>
-      <text x="280" y="250" class="arabic" transform="rotate(-10 280 250)">ما شاء الله</text>
-      <text x="150" y="40" class="arabic" transform="rotate(5 150 40)">سبحان الله</text>
+      <text x="30" y="90" class="arabic large" transform="rotate(-15 30 90)">الأزهر</text>
+      <text x="210" y="160" class="arabic medium" transform="rotate(10 210 160)">الأزهر بورواكارتا</text>
+      <text x="70" y="270" class="arabic medium" transform="rotate(-5 70 270)">الأزهر</text>
+      <text x="250" y="350" class="arabic large" transform="rotate(15 250 350)">الأزهر</text>
+      <text x="310" y="60" class="arabic" transform="rotate(-25 310 60)">الأزهر بورواكارتا</text>
+      <text x="10" y="200" class="arabic" transform="rotate(25 10 200)">الأزهر</text>
+      <text x="270" y="250" class="arabic" transform="rotate(-10 270 250)">الأزهر بورواكارتا</text>
+      <text x="150" y="40" class="arabic" transform="rotate(5 150 40)">الأزهر</text>
     </pattern>
   </defs>
   <rect width="100%" height="100%" fill="url(#calligraphy)" />
