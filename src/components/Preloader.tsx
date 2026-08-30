@@ -140,9 +140,11 @@ const Preloader = () => {
         left: 0,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "rgba(255, 255, 255, 0.7)",
-        backdropFilter: "blur(15px)",
-        WebkitBackdropFilter: "blur(15px)",
+        backgroundColor: "#002147",
+        backgroundImage: "url('/kaligrafi-bg.svg')",
+        backgroundSize: "400px",
+        backgroundRepeat: "repeat",
+        backgroundPosition: "center",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -188,9 +190,11 @@ const Preloader = () => {
           left: 0;
           width: 100%;
           height: 100%;
-          background: rgba(255, 255, 255, 0.7);
-          backdrop-filter: blur(15px);
-          -webkit-backdrop-filter: blur(15px);
+          background: #002147;
+          background-image: url('/kaligrafi-bg.svg');
+          background-size: 400px;
+          background-position: center;
+          background-repeat: repeat;
           display: flex;
           justifyContent: center;
           align-items: center;
@@ -246,14 +250,14 @@ const Preloader = () => {
         .ball, .trail {
           position: absolute;
           border-radius: 50%;
-          background: #002147;
+          background: #ffffff;
         }
 
         .ball {
           width: 12px;
           height: 12px;
           z-index: 15;
-          box-shadow: 0 0 10px rgba(0, 33, 71, 0.4), 0 0 20px rgba(0, 33, 71, 0.2);
+          box-shadow: 0 0 15px #ffffff, 0 0 30px #ffffff;
         }
 
         .trail {
@@ -322,11 +326,11 @@ const Preloader = () => {
         @keyframes logoFadeIn {
           from {
             opacity: 0;
-            filter: drop-shadow(0 0 5px rgba(0,0,0,0.0)) blur(4px);
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.0)) blur(4px);
           }
           to {
             opacity: 1;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.05)) blur(0px);
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.15)) blur(0px);
           }
         }
 
