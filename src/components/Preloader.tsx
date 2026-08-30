@@ -141,8 +141,10 @@ const Preloader = () => {
         width: "100vw",
         height: "100vh",
         backgroundColor: "#ffffff",
-        backgroundImage: "radial-gradient(#cbd5e1 1px, transparent 1px)",
-        backgroundSize: "24px 24px",
+        backgroundImage: "url('/kaligrafi-bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -189,8 +191,10 @@ const Preloader = () => {
           width: 100%;
           height: 100%;
           background: #ffffff;
-          background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-          background-size: 24px 24px;
+          background-image: url('/kaligrafi-bg.png');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
           display: flex;
           justifyContent: center;
           align-items: center;
