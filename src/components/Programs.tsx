@@ -46,20 +46,35 @@ export default function Programs() {
         .eq('kategori', 'Artikel Berita')
         .eq('status', 'Published')
         .order('created_at', { ascending: false })
-        .limit(6);
+        .limit(9);
       
+      let fetchedNews: any[] = [];
       if (data && !error && data.length > 0) {
-        setDisplayNews(data.map(item => ({
+        fetchedNews = data.map(item => ({
           id: item.id,
           title: item.judul_utama,
           date: item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : '',
           category: item.kategori,
           image: item.gambar_judul_url || 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2070&auto=format&fit=crop',
-          excerpt: item.isi_berita ? item.isi_berita.substring(0, 100) + '...' : ''
-        })));
-      } else {
-        setDisplayNews([]);
+          excerpt: item.isi_berita ? item.isi_berita.substring(0, 100) + '...' : '',
+          isComingSoon: false
+        }));
       }
+
+      // Selalu lengkapi agar jumlahnya pas 9 slide (3 slide x 3 berita di desktop)
+      while (fetchedNews.length < 9) {
+        fetchedNews.push({
+          id: `coming-soon-${fetchedNews.length}`,
+          title: 'Berita Segera Hadir',
+          date: 'Nantikan',
+          category: 'Segera Hadir',
+          image: 'https://images.unsplash.com/photo-1503694978374-8a2fa686963a?q=80&w=2069&auto=format&fit=crop',
+          excerpt: 'Tim Azhar TV sedang menyiapkan berita dan liputan terbaru untuk Anda. Tetap pantau halaman ini.',
+          isComingSoon: true
+        });
+      }
+
+      setDisplayNews(fetchedNews);
       setLoading(false);
     };
     fetchLatestNews();
@@ -102,7 +117,11 @@ export default function Programs() {
                     <span className="news-date">{item.date}</span>
                     <h3 className="news-title">{item.title}</h3>
                     <p className="news-excerpt">{item.excerpt}</p>
-                    <Link href={item.id ? `/berita/${item.id}` : "/berita"} className="read-more">Baca Selengkapnya &rarr;</Link>
+                    {item.isComingSoon ? (
+                      <span className="read-more" style={{ color: '#94a3b8', cursor: 'not-allowed' }}>Segera Hadir...</span>
+                    ) : (
+                      <Link href={item.id ? `/berita/${item.id}` : "/berita"} className="read-more">Baca Selengkapnya &rarr;</Link>
+                    )}
                   </div>
                 </motion.div>
               ))
