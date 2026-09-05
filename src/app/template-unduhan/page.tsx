@@ -23,6 +23,7 @@ export default function TemplateUnduhanPage() {
         .from('news_articles')
         .select('*')
         .eq('status', 'Published')
+        .neq('kategori', 'Papan Pengumuman')
         .order('created_at', { ascending: false })
         .limit(20);
 
