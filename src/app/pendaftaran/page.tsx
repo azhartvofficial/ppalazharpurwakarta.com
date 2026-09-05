@@ -559,40 +559,54 @@ export default function PendaftaranPage() {
             padding: 3rem 1.5rem;
           }
           .alur-grid {
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 0.5rem;
           }
           .alur-grid::before {
-            top: 0; bottom: 0; left: 50%; width: 2px; height: 100%;
-            transform: translateX(-50%);
+            display: none; /* Hide background line on mobile */
           }
           .alur-item {
-            width: 100%;
-            max-width: 250px;
-            margin-bottom: 0;
-            background: white;
-            padding: 1rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
+            width: calc(33.33% - 10px);
+            min-width: 80px;
+            max-width: none;
+            background: transparent;
+            padding: 0;
+            border: none;
+            box-shadow: none;
           }
           .alur-arrow {
-            transform: rotate(90deg);
-            margin-top: 0;
-            padding: 8px 0;
+            display: none !important;
           }
           .alur-icon-wrapper {
-            width: 70px;
-            height: 70px;
-            margin-bottom: 1rem;
-            border-radius: 16px;
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 0.5rem;
+            border-radius: 12px;
+            border-width: 1.5px;
           }
           .alur-icon {
-            font-size: 2rem;
+            font-size: 1.25rem;
           }
           .alur-title {
-            font-size: 0.95rem;
+            font-size: 0.75rem;
+            margin-bottom: 0.1rem;
+          }
+          .alur-date {
+            font-size: 0.65rem;
+          }
+          .alur-status {
+            width: 18px;
+            height: 18px;
+            top: -5px;
+            right: -5px;
+            border-width: 2px;
+          }
+          .alur-status svg {
+            width: 10px;
+            height: 10px;
           }
       `}</style>
     </main>
