@@ -69,10 +69,10 @@ export default function Programs() {
           for (let i = 0; i < needed; i++) {
             fetchedNews.push({
               id: `coming-soon-${fetchedNews.length + i}`,
-              title: '\u00A0',
-              date: '\u00A0',
-              category: '',
-              image: 'https://images.unsplash.com/photo-1503694978374-8a2fa686963a?q=80&w=2069&auto=format&fit=crop',
+              title: 'Berita Segera Hadir',
+              date: 'Nantikan',
+              category: 'Segera Hadir',
+              image: 'https://placehold.co/800x500/f8fafc/64748b?text=Segera+Hadir',
               excerpt: 'Tim Azhar TV sedang menyiapkan berita dan liputan terbaru untuk Anda. Tetap pantau halaman ini.',
               isComingSoon: true
             });
@@ -83,10 +83,10 @@ export default function Programs() {
         while (fetchedNews.length < 3) {
           fetchedNews.push({
             id: `coming-soon-${fetchedNews.length}`,
-            title: '\u00A0',
-            date: '\u00A0',
-            category: '',
-            image: 'https://images.unsplash.com/photo-1503694978374-8a2fa686963a?q=80&w=2069&auto=format&fit=crop',
+            title: 'Berita Segera Hadir',
+            date: 'Nantikan',
+            category: 'Segera Hadir',
+            image: 'https://placehold.co/800x500/f8fafc/64748b?text=Segera+Hadir',
             excerpt: 'Tim Azhar TV sedang menyiapkan berita dan liputan terbaru untuk Anda. Tetap pantau halaman ini.',
             isComingSoon: true
           });
@@ -137,7 +137,7 @@ export default function Programs() {
                     <h3 className="news-title">{item.title}</h3>
                     <p className="news-excerpt">{item.excerpt}</p>
                     {item.isComingSoon ? (
-                      <span className="read-more" style={{ color: '#94a3b8', cursor: 'not-allowed' }}>&nbsp;</span>
+                      <span className="read-more" style={{ color: '#94a3b8', cursor: 'not-allowed' }}>Segera Hadir...</span>
                     ) : (
                       <Link href={item.id ? `/berita/${item.id}` : "/berita"} className="read-more">Baca Selengkapnya &rarr;</Link>
                     )}
