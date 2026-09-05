@@ -229,7 +229,7 @@ export default function Programs() {
           display: none;
         }
 
-        .news-card {
+        :global(.news-card) {
           flex: 0 0 calc((100% - 4rem) / 3);
           scroll-snap-align: none; /* Handled by media queries */
           background: white;
@@ -242,12 +242,12 @@ export default function Programs() {
 
         /* Snap every 3 items on desktop */
         @media (min-width: 993px) {
-          .news-card:nth-child(3n + 1) {
+          :global(.news-card:nth-child(3n + 1)) {
             scroll-snap-align: start;
           }
         }
 
-        .news-card:hover {
+        :global(.news-card:hover) {
           transform: translateY(-12px);
           box-shadow: 0 35px 70px rgba(0, 33, 71, 0.15);
         }
@@ -267,7 +267,7 @@ export default function Programs() {
           transition: transform 1s ease;
         }
 
-        .news-card:hover .news-img {
+        :global(.news-card:hover .news-img) {
           transform: scale(1.1);
         }
 
@@ -373,7 +373,7 @@ export default function Programs() {
 
         @media (max-width: 992px) {
           .blue-title { font-size: 2.8rem; }
-          .news-card { 
+          :global(.news-card) { 
             flex: 0 0 calc((100% - 2rem) / 2); 
             scroll-snap-align: start;
           }
@@ -385,7 +385,7 @@ export default function Programs() {
         @media (max-width: 768px) {
           .news-section { padding: 1rem 0; }
           .blue-title { font-size: 2.2rem; }
-          .news-card { 
+          :global(.news-card) { 
             flex: 0 0 calc(100% - 1rem); 
             scroll-snap-align: center;
           }
