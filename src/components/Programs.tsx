@@ -46,7 +46,7 @@ export default function Programs() {
         .eq('kategori', 'Artikel Berita')
         .eq('status', 'Published')
         .order('created_at', { ascending: false })
-        .limit(9);
+        .limit(15);
       
       let fetchedNews: any[] = [];
       if (data && !error && data.length > 0) {
@@ -61,17 +61,36 @@ export default function Programs() {
         }));
       }
 
-      // Selalu lengkapi agar jumlahnya pas 9 slide (3 slide x 3 berita di desktop)
-      while (fetchedNews.length < 9) {
-        fetchedNews.push({
-          id: `coming-soon-${fetchedNews.length}`,
-          title: 'Berita Segera Hadir',
-          date: 'Nantikan',
-          category: 'Segera Hadir',
-          image: 'https://images.unsplash.com/photo-1503694978374-8a2fa686963a?q=80&w=2069&auto=format&fit=crop',
-          excerpt: 'Tim Azhar TV sedang menyiapkan berita dan liputan terbaru untuk Anda. Tetap pantau halaman ini.',
-          isComingSoon: true
-        });
+      // Pastikan jumlah berita adalah kelipatan 3 agar pas di slider desktop
+      if (fetchedNews.length > 0) {
+        const remainder = fetchedNews.length % 3;
+        if (remainder !== 0) {
+          const needed = 3 - remainder;
+          for (let i = 0; i < needed; i++) {
+            fetchedNews.push({
+              id: `coming-soon-${fetchedNews.length + i}`,
+              title: 'Berita Segera Hadir',
+              date: 'Nantikan',
+              category: 'Segera Hadir',
+              image: 'https://images.unsplash.com/photo-1503694978374-8a2fa686963a?q=80&w=2069&auto=format&fit=crop',
+              excerpt: 'Tim Azhar TV sedang menyiapkan berita dan liputan terbaru untuk Anda. Tetap pantau halaman ini.',
+              isComingSoon: true
+            });
+          }
+        }
+      } else {
+        // Jika belum ada sama sekali, tampilkan 3 placeholder
+        while (fetchedNews.length < 3) {
+          fetchedNews.push({
+            id: `coming-soon-${fetchedNews.length}`,
+            title: 'Berita Segera Hadir',
+            date: 'Nantikan',
+            category: 'Segera Hadir',
+            image: 'https://images.unsplash.com/photo-1503694978374-8a2fa686963a?q=80&w=2069&auto=format&fit=crop',
+            excerpt: 'Tim Azhar TV sedang menyiapkan berita dan liputan terbaru untuk Anda. Tetap pantau halaman ini.',
+            isComingSoon: true
+          });
+        }
       }
 
       setDisplayNews(fetchedNews);
