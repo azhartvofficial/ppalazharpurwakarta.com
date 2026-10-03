@@ -531,6 +531,7 @@ export default function AdminDashboardPage() {
   const [berandaPreview, setBerandaPreview] = useState("");
   const [isUploadingBeranda, setIsUploadingBeranda] = useState(false);
   const [selectedBeritaId, setSelectedBeritaId] = useState("");
+  const [customPinTitle, setCustomPinTitle] = useState("");
   const [publishedNewsForPin, setPublishedNewsForPin] = useState<any[]>([]);
   const [isFetchingBeritaForPin, setIsFetchingBeritaForPin] = useState(false);
   const [editBerandaId, setEditBerandaId] = useState<string | null>(null);
@@ -2348,6 +2349,7 @@ export default function AdminDashboardPage() {
     setBerandaPreview("");
     setBerandaFile(null);
     setSelectedBeritaId("");
+    setCustomPinTitle("");
   };
 
   const compressImage = async (file: File, maxMB: number = 2): Promise<File> => {
@@ -2498,6 +2500,14 @@ export default function AdminDashboardPage() {
         const selectedNews = publishedNewsForPin.find(n => n.id === selectedBeritaId);
         if (!selectedNews) throw new Error("Berita tidak ditemukan.");
         
+        let finalTitle = customPinTitle.trim() || selectedNews.judul_utama || '';
+        
+        if (finalTitle.length > 80) {
+          openAlert("Gagal Sematkan! Judul berita (atau judul asli) melebihi 80 karakter. Silakan isi 'Buat judul baru untuk tampilan berita' di atas dengan judul yang lebih pendek agar tidak merusak format.");
+          setIsUploadingBeranda(false);
+          return;
+        }
+        
         let strippedDesc = "";
         if (selectedNews.isi_berita) {
           strippedDesc = selectedNews.isi_berita.replace(/<[^>]+>/g, '');
@@ -2513,7 +2523,7 @@ export default function AdminDashboardPage() {
             tipe: 'berita',
             berita_id: selectedBeritaId,
             foto_utama_url: selectedNews.gambar_judul_url || '',
-            judul_utama: selectedNews.judul_utama || '',
+            judul_utama: finalTitle,
             deskripsi: strippedDesc,
             status: 'Rilis'
           })
@@ -9094,6 +9104,20 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
               
               {berandaModalType === "berita" && (
                 <div>
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.5rem' }}>Buat judul baru untuk tampilan berita (Opsional, Maks 80 Karakter)</label>
+                    <input
+                      type="text"
+                      value={customPinTitle}
+                      onChange={(e) => setCustomPinTitle(e.target.value)}
+                      maxLength={80}
+                      placeholder="Kosongkan jika ingin menggunakan judul asli"
+                      style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '0.95rem' }}
+                    />
+                    {customPinTitle && customPinTitle.length > 70 && (
+                      <div style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '4px' }}>{customPinTitle.length}/80 karakter</div>
+                    )}
+                  </div>
                   <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1rem' }}>Pilih berita yang sudah diterbitkan untuk disematkan di slider utama beranda.</p>
                   <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0.5rem' }}>
                     {isFetchingBeritaForPin ? (

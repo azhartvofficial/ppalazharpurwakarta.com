@@ -138,9 +138,9 @@ export default function Hero() {
             <Link href="/pendaftaran" className="glass-btn-pill">
               {t('ctaDaftar')}
             </Link>
-            <Link href="/profil/alazhapurwakarta" className="glass-btn-pill secondary">
-              <span className="desk-text">{t('ctaJelajahi')}</span>
-              <span className="mob-text">JELAJAHI<br/>AL-AZHAR</span>
+            <Link href="/berita" className="glass-btn-pill secondary">
+              <span className="desk-text">BERITA SELENGKAPNYA</span>
+              <span className="mob-text">BERITA<br/>SELENGKAPNYA</span>
             </Link>
           </div>
         </div>
@@ -246,6 +246,10 @@ export default function Hero() {
           opacity: 0.9;
           font-weight: 400;
           line-height: 1.6;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
 
         .hero-inline-news {
