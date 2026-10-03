@@ -532,6 +532,7 @@ export default function AdminDashboardPage() {
   const [isUploadingBeranda, setIsUploadingBeranda] = useState(false);
   const [selectedBeritaId, setSelectedBeritaId] = useState("");
   const [customPinTitle, setCustomPinTitle] = useState("");
+  const [customPinDesc, setCustomPinDesc] = useState("");
   const [publishedNewsForPin, setPublishedNewsForPin] = useState<any[]>([]);
   const [isFetchingBeritaForPin, setIsFetchingBeritaForPin] = useState(false);
   const [editBerandaId, setEditBerandaId] = useState<string | null>(null);
@@ -2350,6 +2351,7 @@ export default function AdminDashboardPage() {
     setBerandaFile(null);
     setSelectedBeritaId("");
     setCustomPinTitle("");
+    setCustomPinDesc("");
   };
 
   const compressImage = async (file: File, maxMB: number = 2): Promise<File> => {
@@ -9117,6 +9119,17 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                     {customPinTitle && customPinTitle.length > 70 && (
                       <div style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '4px' }}>{customPinTitle.length}/80 karakter</div>
                     )}
+                  </div>
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 800, color: '#475569', marginBottom: '0.5rem' }}>Buat deskripsi singkat (Opsional, pas 2 baris)</label>
+                    <textarea
+                      value={customPinDesc}
+                      onChange={(e) => setCustomPinDesc(e.target.value)}
+                      maxLength={150}
+                      rows={2}
+                      placeholder="Kosongkan jika ingin mengambil otomatis dari isi berita"
+                      style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '0.95rem', resize: 'vertical' }}
+                    />
                   </div>
                   <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1rem' }}>Pilih berita yang sudah diterbitkan untuk disematkan di slider utama beranda.</p>
                   <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0.5rem' }}>
