@@ -2085,11 +2085,24 @@ export default function AdminDashboardPage() {
     setShowMasterPasswordPrompt(true);
   };
 
-  // Kompres gambar lampiran sebelum upload (file mentah dari HP bisa puluhan MB -> "Failed to fetch")
+  // Salin file ke memori. Browser (Chrome) membatalkan upload dengan "Failed to fetch"
+  // (ERR_UPLOAD_FILE_CHANGED) bila file asli di disk berubah/berasal dari Google Drive/OneDrive.
+  const toMemoryFile = async (file: File): Promise<File> => {
+    const buf = await file.arrayBuffer();
+    return new File([buf], file.name || `img-${Date.now()}.jpg`, { type: file.type || 'image/jpeg' });
+  };
+
+  // Siapkan gambar lampiran: salin ke memori + kompres bila besar
   const prepareImageForUpload = async (file: File): Promise<File> => {
+    let mem: File;
     try {
-      if (!file.type.startsWith('image/') || file.type === 'image/gif' || file.size <= 400 * 1024) return file;
-      const compressed = await imageCompression(file, {
+      mem = await toMemoryFile(file);
+    } catch {
+      throw new Error('file gambar tidak bisa dibaca (kemungkinan dari Google Drive/OneDrive atau sudah dipindah/diubah). Simpan foto ke folder lokal (mis. Downloads) lalu pilih ulang gambarnya.');
+    }
+    if (!mem.type.startsWith('image/') || mem.type === 'image/gif' || mem.size <= 400 * 1024) return mem;
+    try {
+      const compressed = await imageCompression(mem, {
         maxSizeMB: 1,
         maxWidthOrHeight: 1600,
         useWebWorker: true,
@@ -2099,7 +2112,7 @@ export default function AdminDashboardPage() {
       return new File([compressed], `img-${Date.now()}.${ext}`, { type });
     } catch (err) {
       console.error('Compression error (lampiran):', err);
-      return file;
+      return mem;
     }
   };
 
@@ -5881,9 +5894,14 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           <input 
                             type="file" 
                             accept="image/*"
-                            onChange={(e) => {
-                              if (e.target.files && e.target.files.length > 0) {
-                                setNewNewsAttachmentFile(e.target.files[0]);
+                            onChange={async (e) => {
+                              const picked = e.target.files?.[0];
+                              if (!picked) return;
+                              try {
+                                setNewNewsAttachmentFile(await prepareImageForUpload(picked));
+                              } catch (err: any) {
+                                openAlert('Gagal membaca gambar: ' + err.message);
+                                e.target.value = '';
                               }
                             }}
                             required={!newNewsAttachmentUrl}
@@ -5965,15 +5983,21 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                             <input 
                               type="file" 
                               accept="image/*"
-                              onChange={(e) => {
-                                if (e.target.files && e.target.files.length > 0) {
-                                  const newAtts = [...newNewsAttachments];
-                                  newAtts[index].file = e.target.files[0];
-                                  setNewNewsAttachments(newAtts);
+                              onChange={async (e) => {
+                                const picked = e.target.files?.[0];
+                                if (!picked) return;
+                                const attId = att.id;
+                                try {
+                                  const mem = await prepareImageForUpload(picked);
+                                  setNewNewsAttachments(prev => prev.map(a => a.id === attId ? { ...a, file: mem } : a));
+                                } catch (err: any) {
+                                  openAlert('Gagal membaca gambar: ' + err.message);
+                                  e.target.value = '';
                                 }
                               }}
                               style={{ width: '100%', fontSize: '0.8rem' }}
                             />
+                            {att.file && <span style={{ fontSize: '0.7rem', color: '#16a34a', display: 'block', marginTop: '4px', fontWeight: 700 }}>✓ Gambar siap diunggah ({(att.file.size / 1024).toFixed(0)} KB)</span>}
                             {att.existing_url && !att.file && <span style={{ fontSize: '0.7rem', color: '#3b82f6', display: 'block', marginTop: '4px' }}>Ada gambar tersimpan. Upload baru untuk mengganti.</span>}
                           </div>
                         ) : (
