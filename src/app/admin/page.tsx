@@ -2056,6 +2056,22 @@ export default function AdminDashboardPage() {
     setNewNewsAuthor(news.penulis);
     setNewNewsOptionalSources(news.sumber_opsional || "");
     setNewNewsStatus(news.status as any);
+    // Muat lampiran tambahan yang sudah tersimpan agar tidak hilang saat disimpan ulang
+    let existingExtras: any[] = [];
+    try {
+      existingExtras = Array.isArray(news.lampiran_tambahan)
+        ? news.lampiran_tambahan
+        : (typeof news.lampiran_tambahan === 'string' ? JSON.parse(news.lampiran_tambahan) : []);
+    } catch { existingExtras = []; }
+    setNewNewsAttachments((existingExtras || []).map((a: any) => ({
+      id: Math.random().toString(36).substring(7),
+      type: a.type || 'Gambar',
+      url: a.type === 'Gambar' ? '' : (a.url || ''),
+      title: a.title || '',
+      file: null,
+      text_opsional: a.text_opsional || '',
+      existing_url: a.type === 'Gambar' ? (a.url || '') : undefined,
+    })));
     setShowAddNewsModal(true);
   };
 
@@ -2067,6 +2083,52 @@ export default function AdminDashboardPage() {
     }
     setPendingSuperAdminAction(() => executeSubmitNews);
     setShowMasterPasswordPrompt(true);
+  };
+
+  // Kompres gambar lampiran sebelum upload (file mentah dari HP bisa puluhan MB -> "Failed to fetch")
+  const prepareImageForUpload = async (file: File): Promise<File> => {
+    try {
+      if (!file.type.startsWith('image/') || file.type === 'image/gif' || file.size <= 400 * 1024) return file;
+      const compressed = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1600,
+        useWebWorker: true,
+      });
+      const type = compressed.type || 'image/jpeg';
+      const ext = type.split('/')[1]?.replace('jpeg', 'jpg') || 'jpg';
+      return new File([compressed], `img-${Date.now()}.${ext}`, { type });
+    } catch (err) {
+      console.error('Compression error (lampiran):', err);
+      return file;
+    }
+  };
+
+  // Upload ke storage dengan retry otomatis bila koneksi terputus
+  const uploadNewsImage = async (prefix: string, rawFile: File): Promise<string> => {
+    const file = await prepareImageForUpload(rawFile);
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const fileName = `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
+    let lastError: any = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const { error } = await supabase.storage
+          .from('berita-images')
+          .upload(fileName, file, { contentType: file.type || 'image/jpeg', upsert: true });
+        if (!error) {
+          return supabase.storage.from('berita-images').getPublicUrl(fileName).data.publicUrl;
+        }
+        lastError = error;
+        if (!/fetch|network|timeout/i.test(error.message || '')) break; // error non-jaringan, jangan retry
+      } catch (err) {
+        lastError = err;
+      }
+      await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
+    }
+    const msg = lastError?.message || String(lastError);
+    if (/fetch|network/i.test(msg)) {
+      throw new Error(`koneksi ke server terputus (ukuran file ${(file.size / 1024 / 1024).toFixed(1)} MB). Periksa internet lalu coba lagi.`);
+    }
+    throw new Error(msg);
   };
 
   const executeSubmitNews = async () => {
@@ -2103,38 +2165,26 @@ export default function AdminDashboardPage() {
 
       let finalAttachmentUrl = newNewsAttachmentUrl;
       if (newNewsAttachmentType === 'Gambar' && newNewsAttachmentFile) {
-        const fileExt = newNewsAttachmentFile.name.split('.').pop();
-        const fileName = `attachment-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
-        const filePath = `${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('berita-images')
-          .upload(filePath, newNewsAttachmentFile);
-
-        if (uploadError) {
-          throw new Error('Gagal mengunggah gambar lampiran: ' + uploadError.message);
+        try {
+          finalAttachmentUrl = await uploadNewsImage('attachment', newNewsAttachmentFile);
+        } catch (err: any) {
+          throw new Error('Gagal mengunggah gambar lampiran: ' + err.message);
         }
-
-        const { data: publicUrlData } = supabase.storage
-          .from('berita-images')
-          .getPublicUrl(filePath);
-
-        finalAttachmentUrl = publicUrlData.publicUrl;
       }
 
       let finalLampiranTambahan = [];
       for (const att of newNewsAttachments) {
         let finalAttUrl = att.url;
         if (att.type === 'Gambar' && att.file) {
-          const fileExt = att.file.name.split('.').pop();
-          const fileName = `att-extra-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
-          const { error: uploadError } = await supabase.storage.from('berita-images').upload(fileName, att.file);
-          if (uploadError) throw new Error('Gagal mengunggah lampiran tambahan: ' + uploadError.message);
-          const { data: publicUrlData } = supabase.storage.from('berita-images').getPublicUrl(fileName);
-          finalAttUrl = publicUrlData.publicUrl;
+          try {
+            finalAttUrl = await uploadNewsImage('att-extra', att.file);
+          } catch (err: any) {
+            throw new Error('Gagal mengunggah lampiran tambahan: ' + err.message);
+          }
         } else if (att.type === 'Gambar' && !att.file && att.existing_url) {
            finalAttUrl = att.existing_url;
         }
+        if (att.type === 'Gambar' && !finalAttUrl) continue; // lampiran gambar kosong, lewati
         finalLampiranTambahan.push({
           type: att.type,
           url: finalAttUrl,
@@ -3532,6 +3582,7 @@ CREATE POLICY "Allow public selects" ON public.visitor_logs FOR SELECT USING (tr
                           setNewNewsAttachmentType("");
                           setNewNewsAttachmentUrl("");
                           setNewNewsAttachmentTitle("");
+                          setNewNewsAttachments([]);
                           setNewNewsAttachmentFile(null);
                           setNewNewsAuthor("");
                           setNewNewsOptionalSources("");
