@@ -477,7 +477,7 @@ export default function LoginPage() {
         .login-layout {
           height: 100vh;
           overflow: hidden;
-          background: url('https://res.cloudinary.com/dpgqct4hz/image/upload/f_auto,q_auto/v1778999215/vdc4p1otuifswwdjx7zt.jpg') center/cover no-repeat fixed;
+          background: url('/Al-Azhar%201.png') center/cover no-repeat fixed;
           font-family: 'Inter', sans-serif;
           position: relative;
         }
